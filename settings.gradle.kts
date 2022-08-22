@@ -1,2 +1,2 @@
-rootProject.name = "antlr-python-experiments"
+rootProject.name = "rosie"
 

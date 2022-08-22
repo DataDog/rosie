@@ -1,6 +1,6 @@
 # Build container
 # # ./gradlew build
-# $ docker build --build-arg JAR_FILE=build/libs/\*.jar -t analysis-engine  .
+# $ docker build --build-arg JAR_FILE=build/libs/\*.jar -t rosie  .
 
 
 FROM amazoncorretto:17
