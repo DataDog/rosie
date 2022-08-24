@@ -20,18 +20,13 @@ public class Main {
 
         String filename = "/Users/julien/git/antlr-python-experiments/src/test/data/request.py";
 
-        System.out.println("reading file: " + filename);
-
-
         if (!Files.exists(Path.of(filename))){
-            System.out.println("file does not exists");
             System.exit(1);
         }
 
         File file = new File(filename);
         try {
             ScriptEngine graalEngine = new ScriptEngineManager().getEngineByName("graal.js");
-            long startTime = System.currentTimeMillis();
             PythonLexer lexer = new PythonLexer(new ANTLRFileStream(filename));
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             PythonParser parser = new PythonParser(tokens);
@@ -42,10 +37,6 @@ public class Main {
             codigaVisitor.visit(parser.root());
 
             fileInputStream.close();
-            long endTime = System.currentTimeMillis();
-            long timeSpent = endTime - startTime;
-            System.out.println("time spent: " + timeSpent);
-            System.out.println("error reported: " + codigaVisitor.errorReporting.getErrors().size());
             for(AnalysisError analysisError: codigaVisitor.errorReporting.getErrors()) {
                 String error = String.format("line %s: %s", analysisError.line(), analysisError.message());
                 System.out.println(error);

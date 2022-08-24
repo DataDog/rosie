@@ -11,8 +11,9 @@ import org.springframework.context.annotation.Configuration;
 public class ServerConfiguration {
 
     private Logger logger = LoggerFactory.getLogger(ServerConfiguration.class);
+
     @Bean
-    public InjectorService testInjectorService() {
+    public InjectorService injectorService() {
         logger.info("Creating injector service");
         return new InjectorServiceImpl();
     }

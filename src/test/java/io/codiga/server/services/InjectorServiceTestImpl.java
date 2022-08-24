@@ -2,9 +2,9 @@ package io.codiga.server.services;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import io.codiga.server.ServerGuiceTestModule;
+import io.codiga.server.guice.ServerGuiceTestModule;
 
-public class InjectorServiceTestImpl implements InjectorService{
+public class InjectorServiceTestImpl implements InjectorService {
     private Injector injector;
 
 

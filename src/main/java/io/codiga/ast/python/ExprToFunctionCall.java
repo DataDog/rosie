@@ -1,12 +1,9 @@
-package io.codiga.ast;
+package io.codiga.ast.python;
 
 import io.codiga.model.ast.FunctionCall;
 import io.codiga.model.ast.FunctionCallArgument;
 import io.codiga.parser.python.gen.PythonParser;
-import org.graalvm.polyglot.Context;
 
-import javax.swing.text.html.Option;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +11,6 @@ import java.util.Optional;
 import static io.codiga.ast.AstUtils.isFunctionCall;
 
 public class ExprToFunctionCall {
-
-
 
 
     public static Optional<FunctionCall> transformExprToFunctionCall(PythonParser.ExprContext ctx) {
@@ -40,7 +35,7 @@ public class ExprToFunctionCall {
             line = atom.getStart().getLine();
         }
 
-        for (PythonParser.ArgumentContext argumentContext: trailerContext.arguments().arglist().argument()){
+        for (PythonParser.ArgumentContext argumentContext : trailerContext.arguments().arglist().argument()) {
             Optional<String> argumentName = Optional.empty();
             String argumentValue = null;
             if (argumentContext.ASSIGN() != null) {

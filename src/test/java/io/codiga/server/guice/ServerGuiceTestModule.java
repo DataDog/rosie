@@ -1,4 +1,4 @@
-package io.codiga.server;
+package io.codiga.server.guice;
 
 import com.google.inject.AbstractModule;
 import io.codiga.metrics.MetricsDummy;

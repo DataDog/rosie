@@ -1,32 +1,22 @@
-
-package io.codiga.ast;
+package io.codiga.ast.python;
 
 import io.codiga.model.ast.FunctionCall;
-import io.codiga.parser.python.CodigaVisitor;
-import io.codiga.parser.python.gen.PythonLexer;
 import io.codiga.parser.python.gen.PythonParser;
-import org.antlr.v4.runtime.ANTLRFileStream;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import java.io.FileInputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.ast.AstUtils.isFunctionCall;
-import static io.codiga.ast.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.ast.python.ExprToFunctionCall.transformExprToFunctionCall;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ExprToFunctionCallTest extends TestUtils{
+public class ExprToFunctionCallTest extends PythonTestUtils {
 
     private Logger log = Logger.getLogger("Test");
 
@@ -46,15 +36,11 @@ public class ExprToFunctionCallTest extends TestUtils{
 
         ParseTree root = parseCode(code);
 
-        System.out.println("expr nodes");
         List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.ExprContext.class);
 
-        for (ParseTree node: exprNodes) {
-            System.out.println(String.format("%s - %s", node.getText(), node.getClass()));
-            if(isFunctionCall(node)) {
-                System.out.println("is function call");
+        for (ParseTree node : exprNodes) {
+            if (isFunctionCall(node)) {
                 Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node);
-                System.out.println(functionCallOptional);
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();
                 assertEquals(functionCall.functionName(), "get");
@@ -77,14 +63,11 @@ public class ExprToFunctionCallTest extends TestUtils{
 
         ParseTree root = parseCode(code);
 
-        System.out.println("expr nodes");
         List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.ExprContext.class);
 
-        for (ParseTree node: exprNodes) {
-            System.out.println(String.format("%s - %s", node.getText(), node.getClass()));
-            if(isFunctionCall(node)) {
+        for (ParseTree node : exprNodes) {
+            if (isFunctionCall(node)) {
                 Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node);
-                System.out.println(functionCallOptional);
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();
                 assertEquals(functionCall.functionName(), "get");

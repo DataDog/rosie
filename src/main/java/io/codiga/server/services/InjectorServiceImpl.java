@@ -6,7 +6,6 @@ import io.codiga.server.guice.ServerGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//@Service
 public class InjectorServiceImpl implements InjectorService {
     private Injector injector;
     private Logger logger = LoggerFactory.getLogger(InjectorServiceImpl.class);

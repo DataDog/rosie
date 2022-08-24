@@ -26,7 +26,6 @@ public class ErrorReporting {
 
     @HostAccess.Export
     public void addError(int line, String message, String severity, String category) {
-//            System.out.println("adding errors on line " + line);
         errors.add(new AnalysisError(line, message, Severity.CRITICAL, Category.BEST_PRACTICE, List.of()));
     }
 }
