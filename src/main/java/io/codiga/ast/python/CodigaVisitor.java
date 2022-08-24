@@ -1,21 +1,21 @@
-package io.codiga.parser.python;
+package io.codiga.ast.python;
 
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.ast.common.ErrorReporting;
 import io.codiga.model.ast.FunctionCall;
 import io.codiga.model.error.AnalysisError;
-import io.codiga.parser.common.ErrorReporting;
 import io.codiga.parser.python.gen.PythonParser;
 import io.codiga.parser.python.gen.PythonParserBaseVisitor;
 import org.graalvm.polyglot.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.OutputStream;
 import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.ast.AstUtils.isFunctionCall;
 import static io.codiga.ast.python.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.ast.vm.VmUtils.createContext;
 
 public class CodigaVisitor extends PythonParserBaseVisitor<List<AnalysisError>> {
 
@@ -40,13 +40,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<AnalysisError>> 
         if (isFunctionCall(ctx)) {
             Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall(ctx);
             if (functionCallOptional.isPresent()) {
-                Context context = Context
-                    .newBuilder()
-                    .allowAllAccess(true)
-                    .logHandler(OutputStream.nullOutputStream())
-                    .build();
-                context.getBindings("js").putMember("root", functionCallOptional.get());
-                context.getBindings("js").putMember("addError", errorReporting);
+                Context context = createContext(functionCallOptional.get(), errorReporting);
                 String finalCode = " reportError = addError.addError; " + this.analyzerRule.code() + " visit(root);";
                 context.eval("js", finalCode);
             }

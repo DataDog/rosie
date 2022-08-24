@@ -1,7 +1,7 @@
 package io.codiga;
 
+import io.codiga.ast.python.CodigaVisitor;
 import io.codiga.model.error.AnalysisError;
-import io.codiga.parser.python.CodigaVisitor;
 import io.codiga.parser.python.gen.PythonLexer;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.ANTLRFileStream;
@@ -20,7 +20,7 @@ public class Main {
 
         String filename = "/Users/julien/git/antlr-python-experiments/src/test/data/request.py";
 
-        if (!Files.exists(Path.of(filename))){
+        if (!Files.exists(Path.of(filename))) {
             System.exit(1);
         }
 
@@ -37,7 +37,7 @@ public class Main {
             codigaVisitor.visit(parser.root());
 
             fileInputStream.close();
-            for(AnalysisError analysisError: codigaVisitor.errorReporting.getErrors()) {
+            for (AnalysisError analysisError : codigaVisitor.errorReporting.getErrors()) {
                 String error = String.format("line %s: %s", analysisError.line(), analysisError.message());
                 System.out.println(error);
             }

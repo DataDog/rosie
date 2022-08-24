@@ -1,4 +1,4 @@
-package io.codiga.server.e2e.python;
+package io.codiga.server.e2e.security;
 
 import io.codiga.server.ServerMainController;
 import io.codiga.server.configuration.ServerTestConfiguration;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ServerTestConfiguration.class})
 @TestPropertySource(locations = "classpath:test.properties")
-public class RequestTimeoutTest {
+public class InfiniteLoopTest {
     @Autowired
     private ServerMainController controller;
 
@@ -32,26 +32,20 @@ public class RequestTimeoutTest {
 
     String pythonCode = """            
         r = requests.get(w, verify=False)
-        r = requests.get(w, verify=False, timeout=10)
-                            """;
+                    """;
 
     String ruleCode = """
         function visit(node) {
-            var hasTimeout = false;
-            for (var i = 0 ; i < node.arguments().size() ; i++){
-                const argument = node.arguments().get(i);
-                if(argument.name().isPresent() && argument.name().get() == "timeout") {
-                    hasTimeout = true;
-                }
-            }
-            if(!hasTimeout){
-                reportError(node.line(), "timeout not defined", "CRITICAL", "SAFETY");
+            var a = 0;
+            while(true) {
+                a = a + 1;
+                a = a - 1;
             }
         }
         """;
 
     @Test
-    public void testPythonRequestTimeout() throws Exception {
+    public void testInfiniteLoop() throws Exception {
         Request request = new RequestBuilder()
             .setFilename("bla.py")
             .setLanguage("python")
@@ -61,7 +55,7 @@ public class RequestTimeoutTest {
                 List.of(
                     new RuleBuilder()
                         .setDescription("new python rule")
-                        .setIdentifier("python-timeout")
+                        .setIdentifier("python-infinite")
                         .setContentBase64(encodeBase64(ruleCode))
                         .createRule()
                 )
@@ -69,8 +63,6 @@ public class RequestTimeoutTest {
         Response response = this.restTemplate.postForObject(
             "http://localhost:" + port + "/analyze", request,
             Response.class);
-        assertEquals(1, response.violations.size());
-        assertEquals(1, response.violations.get(0).line);
-        assertEquals("timeout not defined", response.violations.get(0).message);
+        assertEquals(0, response.violations.size());
     }
 }

@@ -1,4 +1,4 @@
-package io.codiga.parser.common;
+package io.codiga.ast.common;
 
 import io.codiga.model.error.AnalysisError;
 import io.codiga.model.error.Category;
@@ -12,7 +12,6 @@ public class ErrorReporting {
 
 
     public List<AnalysisError> errors;
-
 
 
     public ErrorReporting() {
