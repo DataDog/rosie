@@ -3,6 +3,8 @@ package io.codiga.server;
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.metrics.MetricsInterface;
+import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.model.error.AnalysisResult;
 import io.codiga.server.request.Request;
 import io.codiga.server.response.*;
@@ -19,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static io.codiga.metrics.MetricsName.*;
-import static io.codiga.model.utils.ModelUtils.editTypeToString;
+import static io.codiga.model.utils.ModelUtils.*;
 import static io.codiga.server.constants.Languages.SUPPORTED_LANGUAGES;
 import static io.codiga.server.response.ResponseErrors.*;
 import static io.codiga.utils.Version.CURRENT_VERSION;
@@ -76,12 +78,12 @@ public class ServerMainController {
 
         if (request.isValid()) {
             return CompletableFuture.completedFuture(
-                new Response(null, List.of(INVALID_REQUEST)));
+                new Response(List.of(), List.of(INVALID_REQUEST)));
         }
 
         if (!SUPPORTED_LANGUAGES.contains(request.language)) {
             return CompletableFuture.completedFuture(
-                new Response(null, List.of(LANGUAGE_NOT_SUPPORTED)));
+                new Response(List.of(), List.of(LANGUAGE_NOT_SUPPORTED)));
         }
 
         List<AnalyzerRule> rules = null;
@@ -91,17 +93,24 @@ public class ServerMainController {
             decodedCode = new String(Base64.getDecoder().decode(request.codeBase64.getBytes()));
         } catch (IllegalArgumentException iae) {
             logger.info("code is not base64");
-            return CompletableFuture.completedFuture(new Response(null, List.of(CODE_NOT_BASE64)));
+            return CompletableFuture.completedFuture(new Response(List.of(), List.of(CODE_NOT_BASE64)));
         }
 
         try {
-            rules = request.rules.stream().map(r -> new AnalyzerRule(r.id, new String(Base64.getDecoder().decode(r.contentBase64.getBytes())))).toList();
+            rules = request.rules.stream().map(r -> {
+                String decodedRuleCode = new String(Base64.getDecoder().decode(r.contentBase64.getBytes()));
+                Language language = languageFromString(r.language);
+                RuleType ruleType = ruleTypeFromString(r.type);
+                AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, decodedRuleCode);
+                return analyzerRule;
+            }).toList();
         } catch (IllegalArgumentException iae) {
             logger.error("rule is not base64: " + rules);
-            return CompletableFuture.completedFuture(new Response(null, List.of(RULE_NOT_BASE64)));
+            return CompletableFuture.completedFuture(new Response(List.of(), List.of(RULE_NOT_BASE64)));
         }
 
-        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(request.language, request.filename, decodedCode, rules);
+        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language),
+            request.filename, decodedCode, rules);
 
         return violationsFuture.thenApply(analysisResult -> {
             List<io.codiga.server.response.RuleResponse> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
@@ -130,7 +139,7 @@ public class ServerMainController {
                 }).toList();
                 return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors());
             }).toList();
-            return new Response(rulesReponses, null);
+            return new Response(rulesReponses, List.of());
         });
     }
 }

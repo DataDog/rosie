@@ -39,7 +39,6 @@ public class PythonAnalyzer {
                     PythonParser parser = new PythonParser(tokens);
                     parser.setBuildParseTree(true);
 
-
                     CodigaVisitor codigaVisitor = new CodigaVisitor(rule);
                     codigaVisitor.visit(parser.root());
                     logger.info("error reported: " + codigaVisitor.errorReporting.getErrors().size());

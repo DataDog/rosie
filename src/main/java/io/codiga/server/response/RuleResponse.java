@@ -3,7 +3,7 @@ package io.codiga.server.response;
 import java.util.List;
 
 public class RuleResponse {
-    String identifier;
+    public String identifier;
     public List<Violation> violations;
     public List<String> errors;
 

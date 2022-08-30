@@ -1,17 +1,23 @@
 package io.codiga.server.request;
 
 public class RuleBuilder {
-    private String identifier;
-    private String description;
+    private String id;
+    private String language;
+    private String type;
     private String contentBase64;
 
-    public RuleBuilder setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public RuleBuilder setId(String id) {
+        this.id = id;
         return this;
     }
 
-    public RuleBuilder setDescription(String description) {
-        this.description = description;
+    public RuleBuilder setLanguage(String language) {
+        this.language = language;
+        return this;
+    }
+
+    public RuleBuilder setType(String type) {
+        this.type = type;
         return this;
     }
 
@@ -21,6 +27,6 @@ public class RuleBuilder {
     }
 
     public Rule createRule() {
-        return new Rule(identifier, description, contentBase64);
+        return new Rule(id, language, type, contentBase64);
     }
 }

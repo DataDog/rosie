@@ -16,6 +16,8 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.List;
 
 import static io.codiga.model.ErrorCode.RULE_TIMEOUT;
+import static io.codiga.server.constants.Languages.LANGUAGE_PYTHON;
+import static io.codiga.server.constants.Languages.RULE_TYPE_FUNCTION_CALL;
 import static io.codiga.utils.Base64Utils.encodeBase64;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -55,8 +57,9 @@ public class InfiniteLoopTest {
             .setRules(
                 List.of(
                     new RuleBuilder()
-                        .setDescription("new python rule")
-                        .setIdentifier("python-infinite")
+                        .setId("python-infinite")
+                        .setLanguage(LANGUAGE_PYTHON)
+                        .setType(RULE_TYPE_FUNCTION_CALL)
                         .setContentBase64(encodeBase64(ruleCode))
                         .createRule()
                 )

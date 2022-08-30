@@ -26,6 +26,8 @@ Each rules is defined as below:
   "rules": [
     {
       "id": "ruleset/myrule",
+      "language": "python",
+      "type": "FunctionCall",
       "ruleCode": "ICAgICAgICBmdW5jdGlvbiB2aXNpdChub2RlKSB7CiAgICAgICAgICAgIHZhciBoYXNUaW1lb3V0ID0gZmFsc2U7CiAgICAgICAgICAgIGZvciAodmFyIGkgPSAwIDsgaSA8IG5vZGUuYXJndW1lbnRzKCkuc2l6ZSgpIDsgaSsrKXsKICAgICAgICAgICAgICAgIGNvbnN0IGFyZ3VtZW50ID0gbm9kZS5hcmd1bWVudHMoKS5nZXQoaSk7CiAgICAgICAgICAgICAgICBpZihhcmd1bWVudC5uYW1lKCkuaXNQcmVzZW50KCkgJiYgYXJndW1lbnQubmFtZSgpLmdldCgpID09ICJ0aW1lb3V0IikgewogICAgICAgICAgICAgICAgICAgIGhhc1RpbWVvdXQgPSB0cnVlOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICAgIGlmKCFoYXNUaW1lb3V0KXsKICAgICAgICAgICAgICAgIHJlcG9ydEVycm9yKG5vZGUubGluZSgpLCAidGltZW91dCBub3QgZGVmaW5lZCIsICJDUklUSUNBTCIsICJTQUZFVFkiKTsKICAgICAgICAgICAgfQogICAgICAgIH0="
     }
   ]
