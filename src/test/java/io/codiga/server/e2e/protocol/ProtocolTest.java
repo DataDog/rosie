@@ -19,8 +19,7 @@ import java.util.List;
 
 import static io.codiga.model.ErrorCode.ERROR_LANGUAGE_MISMATCH;
 import static io.codiga.server.constants.Languages.*;
-import static io.codiga.server.response.ResponseErrors.CODE_NOT_BASE64;
-import static io.codiga.server.response.ResponseErrors.LANGUAGE_NOT_SUPPORTED;
+import static io.codiga.server.response.ResponseErrors.*;
 import static io.codiga.utils.Base64Utils.encodeBase64;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -135,5 +134,31 @@ public class ProtocolTest {
         assertEquals(0, response.ruleResponses.size());
         assertEquals(1, response.errors.size());
         assertEquals(CODE_NOT_BASE64, response.errors.get(0));
+    }
+
+    @Test
+    public void testInvalidRuleCode() throws Exception {
+        Request request = new RequestBuilder()
+            .setFilename("bla.py")
+            .setLanguage(LANGUAGE_PYTHON)
+            .setFileEncoding("utf-8")
+            .setCodeBase64(encodeBase64(pythonCode))
+            .setRules(
+                List.of(
+                    new RuleBuilder()
+                        .setId("python-timeout")
+                        .setContentBase64("22#@#@#232@@#%%")
+                        .setLanguage(LANGUAGE_PYTHON)
+                        .setType(RULE_TYPE_FUNCTION_CALL)
+                        .createRule()
+                )
+            ).createRequest();
+        Response response = this.restTemplate.postForObject(
+            "http://localhost:" + port + "/analyze", request,
+            Response.class);
+        logger.info("response: " + response.errors);
+        assertEquals(0, response.ruleResponses.size());
+        assertEquals(1, response.errors.size());
+        assertEquals(RULE_NOT_BASE64, response.errors.get(0));
     }
 }
