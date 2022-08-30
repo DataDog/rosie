@@ -1,17 +1,15 @@
 package io.codiga.server.request;
 
 public class Rule {
-    public String identifier;
-    public String description;
+    public String id;
     public String contentBase64;
 
     public Rule() {
-
+        // intentionally left blank
     }
 
-    public Rule(String identifier, String description, String contentBase64) {
-        this.identifier = identifier;
-        this.description = description;
+    public Rule(String id, String description, String contentBase64) {
+        this.id = id;
         this.contentBase64 = contentBase64;
     }
 }

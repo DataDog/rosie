@@ -3,13 +3,11 @@ package io.codiga.server.response;
 import java.util.List;
 
 public class Response {
-    public List<Violation> violations;
-    public List<ResponseError> errors;
-    public String error;
+    public List<RuleResponse> ruleResponses;
+    public List<String> errors;
 
-    public Response(List<Violation> violations, List<ResponseError> responseErrors, String error) {
-        this.violations = violations;
-        this.errors = responseErrors;
-        this.error = error;
+    public Response(List<RuleResponse> ruleResponses, List<String> errors) {
+        this.ruleResponses = ruleResponses;
+        this.errors = errors;
     }
 }

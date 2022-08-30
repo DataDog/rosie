@@ -3,7 +3,7 @@ package io.codiga.server;
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.metrics.MetricsInterface;
-import io.codiga.model.error.AnalysisError;
+import io.codiga.model.error.AnalysisResult;
 import io.codiga.server.request.Request;
 import io.codiga.server.response.*;
 import io.codiga.server.services.InjectorService;
@@ -42,6 +42,7 @@ public class ServerMainController {
 
     /**
      * Handle all exception not being handled or caught in this controller.
+     *
      * @param req
      * @param exception
      * @return
@@ -74,11 +75,13 @@ public class ServerMainController {
         metrics.incrementMetric(METRIC_ANALYSIS_REQUEST);
 
         if (request.isValid()) {
-            return CompletableFuture.completedFuture(new Response(null, null, INVALID_REQUEST));
+            return CompletableFuture.completedFuture(
+                new Response(null, List.of(INVALID_REQUEST)));
         }
 
         if (!SUPPORTED_LANGUAGES.contains(request.language)) {
-            return CompletableFuture.completedFuture(new Response(null, null, LANGUAGE_NOT_SUPPORTED));
+            return CompletableFuture.completedFuture(
+                new Response(null, List.of(LANGUAGE_NOT_SUPPORTED)));
         }
 
         List<AnalyzerRule> rules = null;
@@ -88,36 +91,46 @@ public class ServerMainController {
             decodedCode = new String(Base64.getDecoder().decode(request.codeBase64.getBytes()));
         } catch (IllegalArgumentException iae) {
             logger.info("code is not base64");
-            return CompletableFuture.completedFuture(new Response(null, null, CODE_NOT_BASE64));
+            return CompletableFuture.completedFuture(new Response(null, List.of(CODE_NOT_BASE64)));
         }
 
         try {
-            rules = request.rules.stream().map(r -> new AnalyzerRule(r.identifier, r.description, new String(Base64.getDecoder().decode(r.contentBase64.getBytes())))).toList();
+            rules = request.rules.stream().map(r -> new AnalyzerRule(r.id, new String(Base64.getDecoder().decode(r.contentBase64.getBytes())))).toList();
         } catch (IllegalArgumentException iae) {
             logger.error("rule is not base64: " + rules);
-            return CompletableFuture.completedFuture(new Response(null, null, RULE_NOT_BASE64));
+            return CompletableFuture.completedFuture(new Response(null, List.of(RULE_NOT_BASE64)));
         }
 
-        CompletableFuture<List<AnalysisError>> violationsFuture = analyzer.analyze(request.language, request.filename, decodedCode, rules);
+        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(request.language, request.filename, decodedCode, rules);
 
-        return violationsFuture.thenApply(violations -> {
-            List<Violation> serverViolations = violations.stream().map(v -> {
-                List<ViolationFix> fixes = v.fixes().stream().map(fix -> {
-                    List<ViolationFixEdit> edits = fix.edits().stream().map(edit -> {
-                        return new ViolationFixEdit(
+        return violationsFuture.thenApply(analysisResult -> {
+            List<io.codiga.server.response.RuleResponse> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
+                List<Violation> violations = ruleResult.violations().stream().map(ruleViolation -> {
+                    List<ViolationFix> fixes = ruleViolation.fixes().stream().map(fix -> {
+                        List<ViolationFixEdit> edits = fix.edits().stream().map(edit -> new ViolationFixEdit(
                             new Position(edit.start().line(), edit.start().positionInLine()),
                             new Position(edit.end().line(), edit.end().positionInLine()),
                             editTypeToString(edit.kind()),
                             edit.content().orElse(null)
-                        );
-                    }).toList();
+                        )).toList();
+                        return new ViolationFix(fix.description(), edits);
 
-                    return new ViolationFix(fix.description(), edits);
+                    }).toList();
+                    Position start = null;
+                    Position end = null;
+                    if (ruleViolation.start() != null) {
+                        start = new Position(ruleViolation.start().line(), ruleViolation.start().positionInLine());
+                    }
+                    if (ruleViolation.end() != null) {
+                        end = new Position(ruleViolation.end().line(), ruleViolation.end().positionInLine());
+                    }
+                    return new Violation(start, end, ruleViolation.message(),
+                        ruleViolation.severity().toString(), ruleViolation.category().toString(), fixes);
 
                 }).toList();
-                return new Violation(v.message(), v.line(), v.severity().toString(), v.category().toString(), fixes);
+                return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors());
             }).toList();
-            return new Response(serverViolations, null, null);
+            return new Response(rulesReponses, null);
         });
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 
+import static io.codiga.model.ErrorCode.RULE_TIMEOUT;
 import static io.codiga.utils.Base64Utils.encodeBase64;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -63,6 +64,7 @@ public class InfiniteLoopTest {
         Response response = this.restTemplate.postForObject(
             "http://localhost:" + port + "/analyze", request,
             Response.class);
-        assertEquals(0, response.violations.size());
+        assertEquals(1, response.ruleResponses.size());
+        assertEquals(RULE_TIMEOUT, response.ruleResponses.get(0).errors.get(0));
     }
 }

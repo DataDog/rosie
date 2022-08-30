@@ -1,7 +1,7 @@
 package io.codiga;
 
 import io.codiga.ast.python.CodigaVisitor;
-import io.codiga.model.error.AnalysisError;
+import io.codiga.model.error.Violation;
 import io.codiga.parser.python.gen.PythonLexer;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.ANTLRFileStream;
@@ -37,9 +37,9 @@ public class Main {
             codigaVisitor.visit(parser.root());
 
             fileInputStream.close();
-            for (AnalysisError analysisError : codigaVisitor.errorReporting.getErrors()) {
-                String error = String.format("line %s: %s", analysisError.line(), analysisError.message());
-                System.out.println(error);
+            for (Violation analysisError : codigaVisitor.errorReporting.getErrors()) {
+//                String error = String.format("line %s: %s", analysisError.line(), analysisError.message());
+//                System.out.println(error);
             }
         } catch (IOException notFound) {
             System.out.println("exception");

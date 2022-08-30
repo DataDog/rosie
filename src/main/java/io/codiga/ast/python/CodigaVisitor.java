@@ -3,7 +3,7 @@ package io.codiga.ast.python;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.ast.common.ErrorReporting;
 import io.codiga.model.ast.FunctionCall;
-import io.codiga.model.error.AnalysisError;
+import io.codiga.model.error.Violation;
 import io.codiga.parser.python.gen.PythonParser;
 import io.codiga.parser.python.gen.PythonParserBaseVisitor;
 import org.graalvm.polyglot.Context;
@@ -17,7 +17,7 @@ import static io.codiga.ast.AstUtils.isFunctionCall;
 import static io.codiga.ast.python.ExprToFunctionCall.transformExprToFunctionCall;
 import static io.codiga.ast.vm.VmUtils.createContext;
 
-public class CodigaVisitor extends PythonParserBaseVisitor<List<AnalysisError>> {
+public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
 
     public ErrorReporting errorReporting;
     private AnalyzerRule analyzerRule;
@@ -30,13 +30,13 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<AnalysisError>> 
 
 
     @Override
-    public List<AnalysisError> visitFuncdef(PythonParser.FuncdefContext ctx) {
+    public List<Violation> visitFuncdef(PythonParser.FuncdefContext ctx) {
 
         return visitChildren(ctx);
     }
 
     @Override
-    public List<AnalysisError> visitExpr(PythonParser.ExprContext ctx) {
+    public List<Violation> visitExpr(PythonParser.ExprContext ctx) {
         if (isFunctionCall(ctx)) {
             Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall(ctx);
             if (functionCallOptional.isPresent()) {

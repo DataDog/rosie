@@ -1,4 +1,4 @@
 package io.codiga.analyzer.rule;
 
-public record AnalyzerRule(String name, String description, String code) {
+public record AnalyzerRule(String name, String code) {
 }

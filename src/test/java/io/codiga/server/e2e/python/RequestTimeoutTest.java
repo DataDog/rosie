@@ -45,7 +45,7 @@ public class RequestTimeoutTest {
                 }
             }
             if(!hasTimeout){
-                reportError(node.line(), "timeout not defined", "CRITICAL", "SAFETY");
+                reportError(node.line(), 10, node.line(), 11, "timeout not defined", "CRITICAL", "SAFETY");
             }
         }
         """;
@@ -69,8 +69,8 @@ public class RequestTimeoutTest {
         Response response = this.restTemplate.postForObject(
             "http://localhost:" + port + "/analyze", request,
             Response.class);
-        assertEquals(1, response.violations.size());
-        assertEquals(1, response.violations.get(0).line);
-        assertEquals("timeout not defined", response.violations.get(0).message);
+        assertEquals(1, response.ruleResponses.size());
+        assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.line);
+        assertEquals("timeout not defined", response.ruleResponses.get(0).violations.get(0).message);
     }
 }

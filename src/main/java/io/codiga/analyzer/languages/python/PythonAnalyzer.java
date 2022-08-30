@@ -3,7 +3,8 @@ package io.codiga.analyzer.languages.python;
 import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.ast.python.CodigaVisitor;
-import io.codiga.model.error.AnalysisError;
+import io.codiga.model.error.AnalysisResult;
+import io.codiga.model.error.RuleResult;
 import io.codiga.parser.python.gen.PythonLexer;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.CharStreams;
@@ -17,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static io.codiga.model.ErrorCode.RULE_TIMEOUT;
 import static io.codiga.utils.CompletableFutureUtils.sequence;
 
 public class PythonAnalyzer {
@@ -25,10 +27,10 @@ public class PythonAnalyzer {
 
     private Logger logger = LoggerFactory.getLogger(PythonAnalyzer.class);
 
-    public CompletableFuture<List<AnalysisError>> analyze(String filename, String code, List<AnalyzerRule> rules) {
+    public CompletableFuture<AnalysisResult> analyze(String filename, String code, List<AnalyzerRule> rules) {
         logger.info("submitting new task");
-        List<CompletableFuture<List<AnalysisError>>> futures = rules.stream().map(rule -> {
-            CompletableFuture<List<AnalysisError>> future = CompletableFuture.supplyAsync(() -> {
+        List<CompletableFuture<RuleResult>> futures = rules.stream().map(rule -> {
+            CompletableFuture<RuleResult> future = CompletableFuture.supplyAsync(() -> {
                     logger.info("analysis start");
                     logger.info(code);
 
@@ -42,7 +44,7 @@ public class PythonAnalyzer {
                     codigaVisitor.visit(parser.root());
                     logger.info("error reported: " + codigaVisitor.errorReporting.getErrors().size());
                     logger.info("analysis done");
-                    return codigaVisitor.errorReporting.getErrors();
+                    return new RuleResult(rule.name(), codigaVisitor.errorReporting.getErrors(), null);
                 }, pool.service)
                 .orTimeout(1000, TimeUnit.MILLISECONDS)
                 .whenComplete((r, e) -> {
@@ -56,16 +58,16 @@ public class PythonAnalyzer {
                     }
                 })
                 .exceptionally(exception -> {
-                    return List.of();
+                    return new RuleResult(rule.name(), List.of(), List.of(RULE_TIMEOUT));
                 });
             return future;
         }).toList();
 
 
         return sequence(futures).thenApply(listOfList -> {
-            List<AnalysisError> finalList = new ArrayList<>();
-            listOfList.forEach(l -> finalList.addAll(l));
-            return finalList;
+            List<RuleResult> finalList = new ArrayList<>();
+            listOfList.forEach(l -> finalList.add(l));
+            return new AnalysisResult(finalList);
         });
     }
 }
