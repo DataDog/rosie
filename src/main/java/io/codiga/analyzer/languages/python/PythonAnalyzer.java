@@ -51,7 +51,7 @@ public class PythonAnalyzer {
                         if (e instanceof TimeoutException) {
                             logger.error(String.format("rule %s timeout", rule.name()));
                         } else {
-                            logger.error(String.format("exception when analyzing python code for rule %s: %s", rule.name() e));
+                            logger.error(String.format("exception when analyzing python code for rule %s: %s", rule.name(), e));
                             e.printStackTrace();
                         }
                     }
