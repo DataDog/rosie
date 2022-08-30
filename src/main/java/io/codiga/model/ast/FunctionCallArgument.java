@@ -1,8 +1,12 @@
 package io.codiga.model.ast;
 
-import java.util.Optional;
 
-public record FunctionCallArgument(Optional<String> name,
-                                   String value) {
+public class FunctionCallArgument {
+    public String name;
+    public String value;
 
+    public FunctionCallArgument(String n, String v) {
+        this.name = n;
+        this.value = v;
+    }
 }

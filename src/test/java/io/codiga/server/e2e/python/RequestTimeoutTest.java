@@ -43,15 +43,10 @@ public class RequestTimeoutTest {
 
     String ruleCode = """
         function visit(node) {
-            var hasTimeout = false;
-            for (var i = 0 ; i < node.arguments().size() ; i++){
-                const argument = node.arguments().get(i);
-                if(argument.name().isPresent() && argument.name().get() == "timeout") {
-                    hasTimeout = true;
-                }
-            }
+            const hasTimeout = node.arguments.filter(a => a.name && a.name == "timeout").length > 0;
+
             if(!hasTimeout){
-                reportError(node.line(), 10, node.line(), 11, "timeout not defined", "CRITICAL", "SAFETY");
+                reportError(node.line, 10, node.line, 11, "timeout not defined", "CRITICAL", "SAFETY");
             }
         }
         """;

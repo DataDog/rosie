@@ -14,7 +14,7 @@ public class ExprToFunctionCall {
 
 
     public static Optional<FunctionCall> transformExprToFunctionCall(PythonParser.ExprContext ctx) {
-        Optional<String> objectOrModule = Optional.empty();
+        String objectOrModule = null;
         String functionName = null;
         List<FunctionCallArgument> functionArguments = new ArrayList<>();
         int line = 0;
@@ -27,7 +27,7 @@ public class ExprToFunctionCall {
         PythonParser.TrailerContext trailerContext = ctx.trailer().get(0);
 
         if (trailerContext.name() != null) {
-            objectOrModule = Optional.ofNullable(atom.getText());
+            objectOrModule = atom.getText();
             functionName = trailerContext.name().getText();
             line = trailerContext.name().getStart().getLine();
         } else {
@@ -36,18 +36,16 @@ public class ExprToFunctionCall {
         }
 
         for (PythonParser.ArgumentContext argumentContext : trailerContext.arguments().arglist().argument()) {
-            Optional<String> argumentName = Optional.empty();
+            String argumentName = null;
             String argumentValue = null;
             if (argumentContext.ASSIGN() != null) {
-                argumentName = Optional.of(argumentContext.test(0).getText());
+                argumentName = argumentContext.test(0).getText();
                 argumentValue = argumentContext.test(1).getText();
             } else {
                 argumentValue = argumentContext.test(0).getText();
             }
             functionArguments.add(new FunctionCallArgument(argumentName, argumentValue));
         }
-
         return Optional.of(new FunctionCall(objectOrModule, functionName, functionArguments, line));
-
     }
 }
