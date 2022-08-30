@@ -57,6 +57,7 @@ public class PythonAnalyzer {
                     }
                 })
                 .exceptionally(exception -> {
+                    logger.error(String.format("reporting rule %s as timeout", rule.name()));
                     return new RuleResult(rule.name(), List.of(), List.of(RULE_TIMEOUT));
                 });
             return future;
