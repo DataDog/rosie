@@ -7,6 +7,8 @@ import io.codiga.server.request.RequestBuilder;
 import io.codiga.server.request.RuleBuilder;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -31,6 +33,8 @@ public class RequestTimeoutTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    private static final Logger logger = LoggerFactory.getLogger(RequestTimeoutTest.class);
 
     String pythonCode = """            
         r = requests.get(w, verify=False)
@@ -72,7 +76,9 @@ public class RequestTimeoutTest {
         Response response = this.restTemplate.postForObject(
             "http://localhost:" + port + "/analyze", request,
             Response.class);
+
         assertEquals(1, response.ruleResponses.size());
+        assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals("timeout not defined", response.ruleResponses.get(0).violations.get(0).message);
     }

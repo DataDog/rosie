@@ -43,7 +43,8 @@ A response is composed with
 
 List of general errors:
 
-- `invalid-code`: the code being based (base64) is invalid
+- `code-not-base64`: the code being based (base64) is invalid
+- `rule-not-base64`: the rule is not encoded in base64
 - `invalid-request`: elements missing in the request
 - `language-not-supported`: language not supported
 - `unavailable`: the server is not available (overloaded)
