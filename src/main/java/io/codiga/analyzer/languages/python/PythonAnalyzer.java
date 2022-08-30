@@ -1,6 +1,7 @@
 package io.codiga.analyzer.languages.python;
 
 import io.codiga.analyzer.AnalyzerFuturePool;
+import io.codiga.analyzer.languages.AnalyzerCommon;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.ast.python.CodigaVisitor;
 import io.codiga.model.error.AnalysisResult;
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeoutException;
 import static io.codiga.model.ErrorCode.RULE_TIMEOUT;
 import static io.codiga.utils.CompletableFutureUtils.sequence;
 
-public class PythonAnalyzer {
+public class PythonAnalyzer extends AnalyzerCommon {
 
     private AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
 
@@ -45,7 +46,7 @@ public class PythonAnalyzer {
                     logger.info("analysis done");
                     return new RuleResult(rule.name(), codigaVisitor.errorReporting.getErrors(), null);
                 }, pool.service)
-                .orTimeout(1000, TimeUnit.MILLISECONDS)
+                .orTimeout(getTimeout(), TimeUnit.MILLISECONDS)
                 .whenComplete((r, e) -> {
                     if (e != null) {
                         if (e instanceof TimeoutException) {
