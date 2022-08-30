@@ -53,6 +53,15 @@ The result contains all the violations for each rule. Each rule reports:
 
 - `id`: the identifier of the rule
 - `violations`: the list of violations
+- `errors`: list of errors when processing the rule
+- `executionError`: a string that reports the VM error when processing the code
+
+At the rule level, the errors are:
+
+- `language-mismatch`: mismatch between the rule language and the code language
+- `rule-timeout`: the rule did not execute within the allocated time
+- `error-unknown`: unknown error
+- `error-execution`: the code of the rule is not correct and the string `executionError` contains a message
 
 For each `violation`, we the response contains:
 

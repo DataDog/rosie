@@ -36,4 +36,11 @@ public class VmUtils {
         context.getBindings("js").putMember("addError", errorReporting);
         return context;
     }
+
+    public static String formatVmErrorMessage(String errorMessage) {
+        String executionMessage = errorMessage
+            .replace("org.graalvm.polyglot.PolyglotException:", "")
+            .replaceAll(".* failed due to: ", "");
+        return executionMessage;
+    }
 }

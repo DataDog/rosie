@@ -137,7 +137,7 @@ public class ServerMainController {
                         ruleViolation.severity().toString(), ruleViolation.category().toString(), fixes);
 
                 }).toList();
-                return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors());
+                return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors(), ruleResult.executionError());
             }).toList();
             return new Response(rulesReponses, List.of());
         });

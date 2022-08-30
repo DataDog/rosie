@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static io.codiga.model.ErrorCode.ERROR_LANGUAGE_MISMATCH;
+import static io.codiga.model.ErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
 
 public class Analyzer {
 
@@ -32,7 +32,7 @@ public class Analyzer {
         // Return an error for the rule with an invalid language
         completedResult = completedResult.thenApply(result -> {
             for (AnalyzerRule analyzerRule : rulesWithInvalidLanguage) {
-                result.ruleResults().add(new RuleResult(analyzerRule.name(), List.of(), List.of(ERROR_LANGUAGE_MISMATCH)));
+                result.ruleResults().add(new RuleResult(analyzerRule.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null));
             }
             return result;
         });

@@ -17,7 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 
-import static io.codiga.model.ErrorCode.ERROR_LANGUAGE_MISMATCH;
+import static io.codiga.model.ErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
 import static io.codiga.server.constants.Languages.*;
 import static io.codiga.server.response.ResponseErrors.*;
 import static io.codiga.utils.Base64Utils.encodeBase64;
@@ -106,7 +106,7 @@ public class ProtocolTest {
         logger.info("response: " + response.errors);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.errors.size());
-        assertEquals(ERROR_LANGUAGE_MISMATCH, response.ruleResponses.get(0).errors.get(0));
+        assertEquals(ERROR_RULE_LANGUAGE_MISMATCH, response.ruleResponses.get(0).errors.get(0));
         assertEquals("python-timeout", response.ruleResponses.get(0).identifier);
     }
 

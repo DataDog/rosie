@@ -4,5 +4,6 @@ public enum Severity {
     CRITICAL,
     ERROR,
     WARNING,
-    INFORMATIONAL
+    INFORMATIONAL,
+    UNKNOWN,
 }

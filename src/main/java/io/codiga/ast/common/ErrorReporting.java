@@ -1,13 +1,14 @@
 package io.codiga.ast.common;
 
-import io.codiga.model.error.Category;
 import io.codiga.model.error.Position;
-import io.codiga.model.error.Severity;
 import io.codiga.model.error.Violation;
 import org.graalvm.polyglot.HostAccess;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static io.codiga.model.error.CategoryUtils.categoryFromString;
+import static io.codiga.model.error.SeverityUtils.severityFromString;
 
 public class ErrorReporting {
 
@@ -31,8 +32,8 @@ public class ErrorReporting {
                 new Position(startLine, startCol),
                 new Position(endLine, endCol),
                 message,
-                Severity.CRITICAL,
-                Category.BEST_PRACTICE,
+                severityFromString(severity),
+                categoryFromString(category),
                 List.of()));
     }
 }
