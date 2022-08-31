@@ -36,16 +36,23 @@ public class RequestTimeoutTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestTimeoutTest.class);
 
-    String pythonCode = """
+    String pythonCodeWithError = """
+        import requests
         r = requests.get(w, verify=False)
+        r = requests.get(w, verify=False, timeout=10)
+                            """;
+
+    String pythonCodeNoImport = """
+        r = requests.get(w, verify=False)
+        print("foo")
         r = requests.get(w, verify=False, timeout=10)
                             """;
 
     String ruleCode = """
         function visit(node) {
             const hasTimeout = node.arguments.filter(a => a.name && a.name == "timeout").length > 0;
-
-            if(!hasTimeout){
+            const useRequestsPackage = node.getImports().filter(i => i.packageName == "requests").length > 0;
+            if(!hasTimeout && useRequestsPackage && node.functionName === "get" && node.moduleOrObject === "requests"){
                 reportError(node.start.line, node.start.col, node.end.line, node.end.col, "timeout not defined", "CRITICAL", "SAFETY");
             }
         }
@@ -57,7 +64,7 @@ public class RequestTimeoutTest {
             .setFilename("bla.py")
             .setLanguage("python")
             .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(pythonCode))
+            .setCodeBase64(encodeBase64(pythonCodeWithError))
             .setRules(
                 List.of(
                     new RuleBuilder()
@@ -74,7 +81,32 @@ public class RequestTimeoutTest {
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
-        assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.line);
+        assertEquals(2, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals("timeout not defined", response.ruleResponses.get(0).violations.get(0).message);
+    }
+
+    @Test
+    public void testPythonRequestTimeoutWithoutPackage() throws Exception {
+        Request request = new RequestBuilder()
+            .setFilename("bla.py")
+            .setLanguage("python")
+            .setFileEncoding("utf-8")
+            .setCodeBase64(encodeBase64(pythonCodeNoImport))
+            .setRules(
+                List.of(
+                    new RuleBuilder()
+                        .setId("python-timeout")
+                        .setContentBase64(encodeBase64(ruleCode))
+                        .setLanguage(LANGUAGE_PYTHON)
+                        .setType(RULE_TYPE_FUNCTION_CALL)
+                        .createRule()
+                )
+            ).createRequest();
+        Response response = this.restTemplate.postForObject(
+            "http://localhost:" + port + "/analyze", request,
+            Response.class);
+
+        assertEquals(1, response.ruleResponses.size());
+        assertEquals(0, response.ruleResponses.get(0).violations.size());
     }
 }

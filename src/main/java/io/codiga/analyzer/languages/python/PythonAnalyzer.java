@@ -59,6 +59,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
 
                         String executionMessage = formatVmErrorMessage(exception.getMessage());
                         logger.error(String.format("reporting rule %s as execution error", rule.name()));
+                        exception.printStackTrace();
                         return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage);
                     }
 

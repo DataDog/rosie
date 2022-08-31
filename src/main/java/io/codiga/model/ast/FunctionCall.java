@@ -18,9 +18,10 @@ public class FunctionCall extends AstElement {
                         List<FunctionCallArgument> argumentsList,
                         Position start,
                         Position end,
-                        ParserRuleContext parserRuleContext
+                        ParserRuleContext parserRuleContext,
+                        ParserRuleContext root
     ) {
-        super(start, end, parserRuleContext);
+        super(start, end, parserRuleContext, root);
         this.arguments = new FunctionCallArgument[argumentsList.size()];
         this.arguments = argumentsList.toArray(arguments);
         this.moduleOrObject = moduleOrObject;

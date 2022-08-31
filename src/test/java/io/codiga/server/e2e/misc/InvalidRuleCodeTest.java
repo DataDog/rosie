@@ -61,7 +61,7 @@ public class InvalidRuleCodeTest {
             .setRules(
                 List.of(
                     new RuleBuilder()
-                        .setId("python-timeout")
+                        .setId("invalid-rule")
                         .setContentBase64(encodeBase64(ruleCode))
                         .setLanguage(LANGUAGE_PYTHON)
                         .setType(RULE_TYPE_FUNCTION_CALL)

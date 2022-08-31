@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.ast.AstUtils.isFunctionCall;
 import static io.codiga.ast.python.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.ast.python.PythonAstUtils.isFunctionCall;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExprToFunctionCallTest extends PythonTestUtils {
@@ -40,7 +40,7 @@ public class ExprToFunctionCallTest extends PythonTestUtils {
 
         for (ParseTree node : exprNodes) {
             if (isFunctionCall(node)) {
-                Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node);
+                Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();
                 assertEquals(functionCall.functionName, "get");
@@ -67,7 +67,7 @@ public class ExprToFunctionCallTest extends PythonTestUtils {
 
         for (ParseTree node : exprNodes) {
             if (isFunctionCall(node)) {
-                Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node);
+                Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();
                 assertEquals(functionCall.functionName, "get");

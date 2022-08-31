@@ -2,6 +2,7 @@ package io.codiga.ast.python;
 
 import io.codiga.model.ast.FunctionCall;
 import io.codiga.model.ast.FunctionCallArgument;
+import io.codiga.model.ast.python.PythonFunctionCall;
 import io.codiga.model.common.Position;
 import io.codiga.parser.python.gen.PythonParser;
 
@@ -9,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.ast.AstUtils.isFunctionCall;
+import static io.codiga.ast.python.PythonAstUtils.isFunctionCall;
 
 public class ExprToFunctionCall {
 
 
-    public static Optional<FunctionCall> transformExprToFunctionCall(PythonParser.ExprContext ctx) {
+    public static Optional<FunctionCall> transformExprToFunctionCall(PythonParser.ExprContext ctx, PythonParser.RootContext root) {
         String objectOrModule = null;
         String functionName = null;
         List<FunctionCallArgument> functionArguments = new ArrayList<>();
@@ -44,10 +45,10 @@ public class ExprToFunctionCall {
             }
             Position argumentStart = new Position(argumentContext.start.getLine(), argumentContext.start.getCharPositionInLine());
             Position argumentEnd = new Position(argumentContext.stop.getLine(), argumentContext.stop.getCharPositionInLine());
-            functionArguments.add(new FunctionCallArgument(argumentName, argumentValue, argumentStart, argumentEnd, argumentContext));
+            functionArguments.add(new FunctionCallArgument(argumentName, argumentValue, argumentStart, argumentEnd, argumentContext, root));
         }
         Position start = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
         Position end = new Position(ctx.stop.getLine(), ctx.stop.getCharPositionInLine());
-        return Optional.of(new FunctionCall(objectOrModule, functionName, functionArguments, start, end, ctx));
+        return Optional.of(new PythonFunctionCall(objectOrModule, functionName, functionArguments, start, end, ctx, root));
     }
 }

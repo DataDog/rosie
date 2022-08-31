@@ -8,8 +8,8 @@ public class FunctionCallArgument extends AstElement {
     public String name;
     public String value;
 
-    public FunctionCallArgument(String n, String v, Position start, Position end, ParserRuleContext parserRuleContext) {
-        super(start, end, parserRuleContext);
+    public FunctionCallArgument(String n, String v, Position start, Position end, ParserRuleContext parserRuleContext, ParserRuleContext root) {
+        super(start, end, parserRuleContext, root);
         this.name = n;
         this.value = v;
     }
