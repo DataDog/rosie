@@ -1,4 +1,4 @@
-package io.codiga.server.response;
+package io.codiga.model.common;
 
 public class Position {
     public int line;

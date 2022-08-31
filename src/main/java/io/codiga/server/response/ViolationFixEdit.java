@@ -1,5 +1,7 @@
 package io.codiga.server.response;
 
+import io.codiga.model.common.Position;
+
 public class ViolationFixEdit {
     public Position start;
     public Position end;

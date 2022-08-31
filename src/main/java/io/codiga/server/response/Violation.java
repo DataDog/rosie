@@ -1,5 +1,7 @@
 package io.codiga.server.response;
 
+import io.codiga.model.common.Position;
+
 import java.util.List;
 
 public class Violation {

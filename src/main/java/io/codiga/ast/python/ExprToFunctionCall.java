@@ -2,6 +2,7 @@ package io.codiga.ast.python;
 
 import io.codiga.model.ast.FunctionCall;
 import io.codiga.model.ast.FunctionCallArgument;
+import io.codiga.model.common.Position;
 import io.codiga.parser.python.gen.PythonParser;
 
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ public class ExprToFunctionCall {
         String objectOrModule = null;
         String functionName = null;
         List<FunctionCallArgument> functionArguments = new ArrayList<>();
-        int line = 0;
 
         if (!isFunctionCall(ctx)) {
             return Optional.empty();
@@ -29,10 +29,8 @@ public class ExprToFunctionCall {
         if (trailerContext.name() != null) {
             objectOrModule = atom.getText();
             functionName = trailerContext.name().getText();
-            line = trailerContext.name().getStart().getLine();
         } else {
             functionName = atom.getText();
-            line = atom.getStart().getLine();
         }
 
         for (PythonParser.ArgumentContext argumentContext : trailerContext.arguments().arglist().argument()) {
@@ -44,8 +42,12 @@ public class ExprToFunctionCall {
             } else {
                 argumentValue = argumentContext.test(0).getText();
             }
-            functionArguments.add(new FunctionCallArgument(argumentName, argumentValue));
+            Position argumentStart = new Position(argumentContext.start.getLine(), argumentContext.start.getCharPositionInLine());
+            Position argumentEnd = new Position(argumentContext.stop.getLine(), argumentContext.stop.getCharPositionInLine());
+            functionArguments.add(new FunctionCallArgument(argumentName, argumentValue, argumentStart, argumentEnd));
         }
-        return Optional.of(new FunctionCall(objectOrModule, functionName, functionArguments, line));
+        Position start = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+        Position end = new Position(ctx.stop.getLine(), ctx.stop.getCharPositionInLine());
+        return Optional.of(new FunctionCall(objectOrModule, functionName, functionArguments, start, end));
     }
 }

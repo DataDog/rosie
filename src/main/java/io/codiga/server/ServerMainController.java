@@ -117,23 +117,16 @@ public class ServerMainController {
                 List<Violation> violations = ruleResult.violations().stream().map(ruleViolation -> {
                     List<ViolationFix> fixes = ruleViolation.fixes().stream().map(fix -> {
                         List<ViolationFixEdit> edits = fix.edits().stream().map(edit -> new ViolationFixEdit(
-                            new Position(edit.start().line(), edit.start().positionInLine()),
-                            new Position(edit.end().line(), edit.end().positionInLine()),
+                            edit.start(),
+                            edit.end(),
                             editTypeToString(edit.kind()),
                             edit.content().orElse(null)
                         )).toList();
                         return new ViolationFix(fix.description(), edits);
 
                     }).toList();
-                    Position start = null;
-                    Position end = null;
-                    if (ruleViolation.start() != null) {
-                        start = new Position(ruleViolation.start().line(), ruleViolation.start().positionInLine());
-                    }
-                    if (ruleViolation.end() != null) {
-                        end = new Position(ruleViolation.end().line(), ruleViolation.end().positionInLine());
-                    }
-                    return new Violation(start, end, ruleViolation.message(),
+
+                    return new Violation(ruleViolation.start(), ruleViolation.end(), ruleViolation.message(),
                         ruleViolation.severity().toString(), ruleViolation.category().toString(), fixes);
 
                 }).toList();

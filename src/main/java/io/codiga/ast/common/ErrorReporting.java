@@ -1,6 +1,6 @@
 package io.codiga.ast.common;
 
-import io.codiga.model.error.Position;
+import io.codiga.model.common.Position;
 import io.codiga.model.error.Violation;
 import org.graalvm.polyglot.HostAccess;
 

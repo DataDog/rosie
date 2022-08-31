@@ -36,7 +36,7 @@ public class RequestTimeoutTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestTimeoutTest.class);
 
-    String pythonCode = """            
+    String pythonCode = """
         r = requests.get(w, verify=False)
         r = requests.get(w, verify=False, timeout=10)
                             """;
@@ -46,7 +46,7 @@ public class RequestTimeoutTest {
             const hasTimeout = node.arguments.filter(a => a.name && a.name == "timeout").length > 0;
 
             if(!hasTimeout){
-                reportError(node.line, 10, node.line, 11, "timeout not defined", "CRITICAL", "SAFETY");
+                reportError(node.start.line, node.start.col, node.end.line, node.end.col, "timeout not defined", "CRITICAL", "SAFETY");
             }
         }
         """;
