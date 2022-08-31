@@ -44,10 +44,10 @@ public class ExprToFunctionCall {
             }
             Position argumentStart = new Position(argumentContext.start.getLine(), argumentContext.start.getCharPositionInLine());
             Position argumentEnd = new Position(argumentContext.stop.getLine(), argumentContext.stop.getCharPositionInLine());
-            functionArguments.add(new FunctionCallArgument(argumentName, argumentValue, argumentStart, argumentEnd));
+            functionArguments.add(new FunctionCallArgument(argumentName, argumentValue, argumentStart, argumentEnd, argumentContext));
         }
         Position start = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
         Position end = new Position(ctx.stop.getLine(), ctx.stop.getCharPositionInLine());
-        return Optional.of(new FunctionCall(objectOrModule, functionName, functionArguments, start, end));
+        return Optional.of(new FunctionCall(objectOrModule, functionName, functionArguments, start, end, ctx));
     }
 }
