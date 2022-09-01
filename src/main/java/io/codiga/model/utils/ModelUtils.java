@@ -29,6 +29,15 @@ public class ModelUtils {
         return Language.UNKNOWN;
     }
 
+    public static String stringFromLanguage(Language language) {
+        switch (language) {
+            case PYTHON:
+                return "python";
+            default:
+                return "unknown";
+        }
+    }
+
     public static RuleType ruleTypeFromString(String ruleType) {
         if (ruleType.equalsIgnoreCase(RULE_TYPE_FUNCTION_CALL)) {
             return RuleType.FUNCTION_CALL;

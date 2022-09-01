@@ -14,31 +14,40 @@ import java.util.concurrent.CompletableFuture;
 
 import static io.codiga.model.ErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
 
+/**
+ * This is the central analyzer. It receives requests to analyze code and dispatch
+ * to the appropriate language-specific analyzer.
+ */
 public class Analyzer {
 
     Logger logger = LoggerFactory.getLogger(Analyzer.class);
     PythonAnalyzer pythonAnalyzer = new PythonAnalyzer();
 
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules) {
+        // Distinguish between rules with valid languages and invalid ones.
         List<AnalyzerRule> rulesWithValidLanguage = rules.stream().filter(f -> f.language() == language).toList();
         List<AnalyzerRule> rulesWithInvalidLanguage = rules.stream().filter(f -> f.language() != language).toList();
-        CompletableFuture<AnalysisResult> completedResult = CompletableFuture.completedFuture(new AnalysisResult(List.of()));
+        CompletableFuture<AnalysisResult> completedResult;
 
-        logger.info("rules with invalid language" + rulesWithInvalidLanguage);
-
-        if (language == Language.PYTHON) {
-            completedResult = pythonAnalyzer.analyze(filename, code, rulesWithValidLanguage);
+        switch (language) {
+            case PYTHON:
+                completedResult = pythonAnalyzer.analyze(filename, code, rulesWithValidLanguage);
+                break;
+            default:
+                completedResult = CompletableFuture.completedFuture(new AnalysisResult(List.of()));
+                break;
         }
 
         // Return an error for the rule with an invalid language
-        completedResult = completedResult.thenApply(result -> {
+        return completedResult.thenApply(result -> {
             List<RuleResult> invalidLanguagesRuleResults = rulesWithInvalidLanguage.stream().map(r -> {
                 return new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null);
             }).toList();
-            List<RuleResult> allRuleResult = ImmutableList.<RuleResult>builder().addAll(result.ruleResults()).addAll(invalidLanguagesRuleResults).build();
+            List<RuleResult> allRuleResult = ImmutableList
+                .<RuleResult>builder()
+                .addAll(result.ruleResults())
+                .addAll(invalidLanguagesRuleResults).build();
             return new AnalysisResult(allRuleResult);
         });
-
-        return completedResult;
     }
 }
