@@ -1,5 +1,6 @@
 package io.codiga.analyzer;
 
+import com.google.common.collect.ImmutableList;
 import io.codiga.analyzer.languages.python.PythonAnalyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.Language;
@@ -31,10 +32,11 @@ public class Analyzer {
 
         // Return an error for the rule with an invalid language
         completedResult = completedResult.thenApply(result -> {
-            for (AnalyzerRule analyzerRule : rulesWithInvalidLanguage) {
-                result.ruleResults().add(new RuleResult(analyzerRule.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null));
-            }
-            return result;
+            List<RuleResult> invalidLanguagesRuleResults = rulesWithInvalidLanguage.stream().map(r -> {
+                return new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null);
+            }).toList();
+            List<RuleResult> allRuleResult = ImmutableList.<RuleResult>builder().addAll(result.ruleResults()).addAll(invalidLanguagesRuleResults).build();
+            return new AnalysisResult(allRuleResult);
         });
 
         return completedResult;

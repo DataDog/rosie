@@ -41,16 +41,4 @@ public class AstElement {
         return getNodesFromType(this.root, classType);
     }
 
-    void printTreeRec(ParseTree node, int nbSpaces) {
-
-        String classString = String.format("%s%s", " ".repeat(nbSpaces), node.getClass());
-        int spaces = 200 - classString.length();
-        String line = String.format("%s%s%s", classString, " ".repeat(spaces), node.getText());
-
-        System.out.println(line);
-        for (int i = 0; i < node.getChildCount(); i++) {
-            printTreeRec(node.getChild(i), nbSpaces + 2);
-        }
-
-    }
 }
