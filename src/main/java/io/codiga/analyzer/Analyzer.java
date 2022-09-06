@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static io.codiga.model.ErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
+import static io.codiga.utils.CompletableFutureUtils.sequence;
 
 /**
  * This is the central analyzer. It receives requests to analyze code and dispatch
@@ -37,7 +38,7 @@ public class Analyzer {
         // First, AST analysis
         switch (language) {
             case PYTHON:
-                completedResultForAst = pythonAnalyzer.analyze(filename, code, rulesWithValidLanguageForAst);
+                completedResultForAst = pythonAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst);
                 break;
             default:
                 completedResultForAst = CompletableFuture.completedFuture(new AnalysisResult(List.of()));
@@ -45,16 +46,18 @@ public class Analyzer {
         }
 
         // Second, pattern analysis
-        CompletableFuture<AnalysisResult> patternAnalysis = patternAnalyzer.analyze(filename, code, rulesWithValidLanguageForPattern);
+        CompletableFuture<AnalysisResult> patternAnalysis = patternAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForPattern);
+
+        CompletableFuture<List<AnalysisResult>> allFutures = sequence(List.of(patternAnalysis, completedResultForAst));
 
         // Return an error for the rule with an invalid language
-        return completedResultForAst.thenApply(result -> {
+        return allFutures.thenApply(result -> {
             List<RuleResult> invalidLanguagesRuleResults = rulesWithInvalidLanguage.stream().map(r -> {
                 return new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null);
             }).toList();
             List<RuleResult> allRuleResult = ImmutableList
                 .<RuleResult>builder()
-                .addAll(result.ruleResults())
+                .addAll(result.stream().flatMap(r -> r.ruleResults().stream()).toList())
                 .addAll(invalidLanguagesRuleResults).build();
             return new AnalysisResult(allRuleResult);
         });

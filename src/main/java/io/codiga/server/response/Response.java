@@ -10,4 +10,12 @@ public class Response {
         this.ruleResponses = ruleResponses;
         this.errors = errors;
     }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+            "ruleResponses=" + ruleResponses +
+            ", errors=" + errors +
+            '}';
+    }
 }

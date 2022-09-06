@@ -41,13 +41,14 @@ public class E2EBase {
     protected final Logger logger = LoggerFactory.getLogger(RequestTimeoutTest.class);
 
 
-    public Response executeTest(String filename,
-                                String code,
-                                Language language,
-                                String ruleCode,
-                                String ruleName,
-                                String ruleType,
-                                String entityChecked) {
+    public Response executeTestWithPattern(String filename,
+                                           String code,
+                                           Language language,
+                                           String ruleCode,
+                                           String ruleName,
+                                           String ruleType,
+                                           String entityChecked,
+                                           String pattern) {
         Request request = new RequestBuilder()
             .setFilename(filename)
             .setLanguage(stringFromLanguage(language))
@@ -61,6 +62,7 @@ public class E2EBase {
                         .setLanguage(stringFromLanguage(language))
                         .setType(ruleType)
                         .setEntityChecked(entityChecked)
+                        .setPattern(pattern)
                         .createRule()
                 )
             ).createRequest();
@@ -68,5 +70,15 @@ public class E2EBase {
             "http://localhost:" + port + "/analyze", request,
             Response.class);
         return response;
+    }
+
+    public Response executeTest(String filename,
+                                String code,
+                                Language language,
+                                String ruleCode,
+                                String ruleName,
+                                String ruleType,
+                                String entityChecked) {
+        return executeTestWithPattern(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, null);
     }
 }

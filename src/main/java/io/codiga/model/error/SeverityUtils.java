@@ -5,9 +5,12 @@ import java.util.Map;
 public class SeverityUtils {
     private final static Map<String, Severity> STRING_TO_SEVERITY = Map.of(
         "critical", Severity.CRITICAL,
+        "crit", Severity.CRITICAL,
         "error", Severity.ERROR,
         "warning", Severity.WARNING,
-        "informational", Severity.INFORMATIONAL
+        "warn", Severity.WARNING,
+        "informational", Severity.INFORMATIONAL,
+        "info", Severity.INFORMATIONAL
     );
 
     public static Severity severityFromString(String severityString) {

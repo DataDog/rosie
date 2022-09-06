@@ -39,6 +39,9 @@ public class ModelUtils {
     }
 
     public static RuleType ruleTypeFromString(String ruleType) {
+        if (ruleType == null){
+            return RuleType.UNKNOWN;
+        }
         if (ruleType.equalsIgnoreCase(RULE_TYPE_AST)) {
             return RuleType.AST_CHECK;
         }
@@ -49,6 +52,9 @@ public class ModelUtils {
     }
 
     public static EntityChecked entityCheckedFromString(String entityChecked) {
+        if (entityChecked == null) {
+            return EntityChecked.UNKNOWN;
+        }
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FUNCTION_CALL)) {
             return EntityChecked.FUNCTION_CALL;
         }

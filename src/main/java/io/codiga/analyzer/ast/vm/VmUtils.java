@@ -22,16 +22,22 @@ public class VmUtils {
         denyAccess(Object.class, false).
         build();
 
-    public static Context createContext(Object root, ErrorReporting errorReporting) {
-        Context context = Context
-            .newBuilder("js")
-            .allowHostAccess(SANDBOX)
-            .allowExperimentalOptions(false)
-            .allowValueSharing(true)
-            .allowIO(false)
 
-            .logHandler(OutputStream.nullOutputStream())
-            .build();
+    public static Context createEmptyContext() {
+        return (
+            Context
+                .newBuilder("js")
+                .allowHostAccess(SANDBOX)
+                .allowExperimentalOptions(false)
+                .allowValueSharing(true)
+                .allowIO(false)
+
+                .logHandler(OutputStream.nullOutputStream())
+                .build());
+    }
+
+    public static Context createContextForAst(Object root, ErrorReporting errorReporting) {
+        Context context = createEmptyContext();
         context.getBindings("js").putMember("root", root);
         context.getBindings("js").putMember("addError", errorReporting);
         return context;

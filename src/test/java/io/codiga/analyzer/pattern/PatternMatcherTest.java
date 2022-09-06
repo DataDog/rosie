@@ -4,7 +4,6 @@ import io.codiga.analyzer.ast.languages.python.PythonTestUtils;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
-import io.codiga.model.error.Violation;
 import io.codiga.model.pattern.PatternObject;
 import io.codiga.model.pattern.PatternVariable;
 import org.junit.jupiter.api.AfterAll;
@@ -23,6 +22,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class PatternMatcherTest extends PythonTestUtils {
 
     Logger logger = LoggerFactory.getLogger(PatternMatcherTest.class);
+    String code = """
+        def print_foo():
+          with open("myfile.txt", "r") as myfile:
+            content = myfile.read()
+                    """;
+    String ruleCode = """
+        function visit(pattern) {
+            console.log(pattern.position);
+        }
+        """;
 
     @BeforeAll
     public static void init() {
@@ -33,22 +42,11 @@ public class PatternMatcherTest extends PythonTestUtils {
 
     }
 
-    String code = """
-def print_foo():
-  with open("myfile.txt", "r") as myfile:
-    content = myfile.read()
-            """;
-    String ruleCode = """
-        function visit(pattern) {
-            console.log("foo");
-        }
-        """;
-
     @Test
     @DisplayName("Extract the variables from the pattern")
     public void testVariablesExtraction() {
         String pattern = "open(${file}, \"r\")";
-        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, code, pattern);
+        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
         PatternMatcher patternMatcher = new PatternMatcher(code, rule);
 
         List<PatternVariable> variables = patternMatcher.getVariables();
@@ -62,7 +60,7 @@ def print_foo():
     @DisplayName("Correctly transform the pattern into regular expression")
     public void testRegularExpressionGeneration() {
         String pattern = "open(${file}, \"${mode}\")";
-        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, code, pattern);
+        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
         PatternMatcher patternMatcher = new PatternMatcher(code, rule);
 
         List<PatternVariable> variables = patternMatcher.getVariables();
@@ -73,25 +71,11 @@ def print_foo():
     @DisplayName("Correctly get the pattern object")
     public void testPatternObject() {
         String pattern = "open(${file}, \"${mode}\")";
-        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, code, pattern);
+        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
         PatternMatcher patternMatcher = new PatternMatcher(code, rule);
-        PatternObject patternObject= patternMatcher.getPatternObject();
-        assertFalse(patternObject.variables.isEmpty());
-        assertEquals(patternObject.variables.size(), 2);
-        logger.info(patternObject.toString());
-
-    }
-
-    @Test
-    @DisplayName("Correctly report issues")
-    public void testPatternMatch() {
-        String pattern = "open(${file}, \"r\")";
-        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, code, pattern);
-        PatternMatcher patternMatcher = new PatternMatcher(code, rule);
-
-        List<Violation> violations = patternMatcher.getViolations();
-        logger.info("violations: " + violations);
-//        assertEquals(1, violations.size());
-
+        List<PatternObject> patternObjects = patternMatcher.getPatternObjects();
+        assertEquals(patternObjects.size(), 1);
+        assertFalse(patternObjects.get(0).variables.isEmpty());
+        assertEquals(patternObjects.get(0).variables.size(), 2);
     }
 }

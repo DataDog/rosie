@@ -21,4 +21,14 @@ public class RuleResponse {
         this.errors = errors;
         this.executionError = executionError;
     }
+
+    @Override
+    public String toString() {
+        return "RuleResponse{" +
+            "identifier='" + identifier + '\'' +
+            ", violations=" + violations +
+            ", errors=" + errors +
+            ", executionError='" + executionError + '\'' +
+            '}';
+    }
 }
