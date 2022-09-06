@@ -41,8 +41,8 @@ public class PatternMatcher {
 
     private String stripVariable(String variableName) {
         return variableName
-            .replace("\\$\\{", "")
-            .replace("\\}", "");
+            .replace("${", "")
+            .replace("}", "");
 
     }
 

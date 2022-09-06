@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.python.ExprToFunctionCall.transformExprToFunctionCall;
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
+import static io.codiga.analyzer.ast.vm.VmUtils.buildExecutableCode;
 import static io.codiga.analyzer.ast.vm.VmUtils.createContextForAst;
 
 public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
@@ -52,7 +53,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
             Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall(ctx, this.root);
             if (functionCallOptional.isPresent()) {
                 Context context = createContextForAst(functionCallOptional.get(), errorReporting);
-                String finalCode = " reportError = addError.addError; " + this.analyzerRule.code() + " visit(root);";
+                String finalCode = buildExecutableCode(this.analyzerRule.code());
                 context.eval("js", finalCode);
             }
         } else {

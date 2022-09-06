@@ -49,4 +49,14 @@ public class VmUtils {
             .replaceAll(".* failed due to: ", "");
         return executionMessage;
     }
+
+    public static String buildExecutableCode(String javaScriptCode) {
+        String finalCode = " reportError = addError.addError; " +
+            "buildFix = addError.buildFix; " +
+            "buildError = addError.buildViolation; " +
+            "buildEdit = addError.buildEdit; " +
+            "addError = addError.addViolation; " +
+            javaScriptCode + " visit(root);";
+        return finalCode;
+    }
 }

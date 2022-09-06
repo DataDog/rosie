@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.codiga.analyzer.ast.vm.VmUtils.buildExecutableCode;
 import static io.codiga.analyzer.ast.vm.VmUtils.createContextForAst;
 
 public class PatternAnalyzer extends AnalyzerCommon {
@@ -32,7 +33,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
             logger.info("found pattern: " + patternObject);
 
             ErrorReporting errorReporting = new ErrorReporting();
-            String finalCode = " reportError = addError.addError; " + rule.code() + " visit(root);";
+            String finalCode = buildExecutableCode(rule.code());
 
             Context context = createContextForAst(patternObject, errorReporting);
             context.eval("js", finalCode);

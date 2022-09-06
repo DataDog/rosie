@@ -6,6 +6,7 @@ import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.EditType;
 
+import static io.codiga.model.error.EditType.*;
 import static io.codiga.server.constants.Languages.*;
 
 public class ModelUtils {
@@ -20,6 +21,23 @@ public class ModelUtils {
                 return "update";
         }
         throw new IllegalArgumentException();
+    }
+
+
+    public static EditType editTypeFromString(String editType) {
+        if (editType.equalsIgnoreCase("add")) {
+            return ADD;
+        }
+        if (editType.equalsIgnoreCase("remove")) {
+            return REMOVE;
+        }
+        if (editType.equalsIgnoreCase("update")) {
+            return UPDATE;
+        }
+        if (editType.equalsIgnoreCase("replace")) {
+            return UPDATE;
+        }
+        return UNKNOWN;
     }
 
     public static Language languageFromString(String language) {
@@ -39,7 +57,7 @@ public class ModelUtils {
     }
 
     public static RuleType ruleTypeFromString(String ruleType) {
-        if (ruleType == null){
+        if (ruleType == null) {
             return RuleType.UNKNOWN;
         }
         if (ruleType.equalsIgnoreCase(RULE_TYPE_AST)) {

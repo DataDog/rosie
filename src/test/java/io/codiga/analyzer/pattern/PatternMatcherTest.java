@@ -75,7 +75,7 @@ public class PatternMatcherTest extends PythonTestUtils {
         PatternMatcher patternMatcher = new PatternMatcher(code, rule);
         List<PatternObject> patternObjects = patternMatcher.getPatternObjects();
         assertEquals(patternObjects.size(), 1);
-        assertFalse(patternObjects.get(0).variables.isEmpty());
-        assertEquals(patternObjects.get(0).variables.size(), 2);
+        assertFalse(patternObjects.get(0).javaVariables.isEmpty());
+        assertEquals(patternObjects.get(0).javaVariables.size(), 2);
     }
 }

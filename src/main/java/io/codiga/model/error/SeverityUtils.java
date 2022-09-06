@@ -14,6 +14,6 @@ public class SeverityUtils {
     );
 
     public static Severity severityFromString(String severityString) {
-        return STRING_TO_SEVERITY.getOrDefault(severityString, Severity.UNKNOWN);
+        return STRING_TO_SEVERITY.getOrDefault(severityString.toLowerCase(), Severity.UNKNOWN);
     }
 }

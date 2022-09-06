@@ -16,7 +16,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.text.html.parser.Entity;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -31,10 +30,8 @@ import static io.codiga.utils.Version.CURRENT_VERSION;
 @RestController
 public class ServerMainController {
 
-    Logger logger = LoggerFactory.getLogger(ServerMainController.class);
-
     final InjectorService injectorService;
-
+    Logger logger = LoggerFactory.getLogger(ServerMainController.class);
     private Analyzer analyzer = new Analyzer();
 
     private MetricsInterface metrics;
@@ -120,19 +117,19 @@ public class ServerMainController {
         return violationsFuture.thenApply(analysisResult -> {
             List<io.codiga.server.response.RuleResponse> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
                 List<Violation> violations = ruleResult.violations().stream().map(ruleViolation -> {
-                    List<ViolationFix> fixes = ruleViolation.fixes().stream().map(fix -> {
-                        List<ViolationFixEdit> edits = fix.edits().stream().map(edit -> new ViolationFixEdit(
-                            edit.start(),
-                            edit.end(),
-                            editTypeToString(edit.kind()),
-                            edit.content().orElse(null)
+                    List<ViolationFix> fixes = ruleViolation.fixes.stream().map(fix -> {
+                        List<ViolationFixEdit> edits = fix.edits.stream().map(edit -> new ViolationFixEdit(
+                            edit.start,
+                            edit.end,
+                            editTypeToString(edit.editType),
+                            edit.content
                         )).toList();
-                        return new ViolationFix(fix.description(), edits);
+                        return new ViolationFix(fix.description, edits);
 
                     }).toList();
 
-                    return new Violation(ruleViolation.start(), ruleViolation.end(), ruleViolation.message(),
-                        ruleViolation.severity().toString(), ruleViolation.category().toString(), fixes);
+                    return new Violation(ruleViolation.start, ruleViolation.end, ruleViolation.message,
+                        ruleViolation.severity.toString(), ruleViolation.category.toString(), fixes);
 
                 }).toList();
                 return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors(), ruleResult.executionError());

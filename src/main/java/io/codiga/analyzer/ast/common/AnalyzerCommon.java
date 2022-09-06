@@ -103,8 +103,8 @@ public abstract class AnalyzerCommon {
             // ignore the violations being ignored
             List<RuleResult> fileteredList = finalList.stream().map(ruleResult -> {
                 List<Violation> filteredViolations = ruleResult.violations().stream().filter(v -> {
-                    if (v.start() != null) {
-                        long previousLine = v.start().line - 1;
+                    if (v.start != null) {
+                        long previousLine = v.start.line - 1;
                         return !linesToIgnore.contains(previousLine);
                     }
                     return false;
