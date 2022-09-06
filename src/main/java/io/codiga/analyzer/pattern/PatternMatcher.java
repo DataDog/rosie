@@ -1,0 +1,145 @@
+package io.codiga.analyzer.pattern;
+import com.google.common.annotations.VisibleForTesting;
+import io.codiga.model.common.Position;
+import io.codiga.model.pattern.PatternObject;
+import io.codiga.model.pattern.PatternVariableValue;
+import io.codiga.model.pattern.PatternVariable;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
+import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.model.error.Violation;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class PatternMatcher {
+
+    private String code;
+    private AnalyzerRule analyzerRule;
+
+    private static final Logger logger = LoggerFactory.getLogger(PatternMatcher.class);
+
+    private List<String> codeLines;
+
+    public PatternMatcher(String code, AnalyzerRule rule) {
+        this.code = code;
+        this.analyzerRule = rule;
+        this.codeLines = new ArrayList<>();
+
+        Scanner scanner = new Scanner(code);
+
+        while (scanner.hasNextLine()) {
+            this.codeLines.add(scanner.nextLine());
+        }
+        scanner.close();
+    }
+
+    private String stripVariable(String variableName) {
+        return variableName
+            .replace("\\$\\{", "")
+            .replace("\\}", "");
+
+    }
+
+    private Position getCodePosition(int index) {
+        int lineNumber = 1;
+        for(String line: codeLines) {
+            if(index < line.length()) {
+                return new Position(lineNumber, index);
+            }
+            index = index - line.length() - 1;
+            lineNumber = lineNumber + 1;
+        }
+        return null;
+    }
+
+    public static String prepareStringForRegularExpression(String originalString) {
+        return originalString
+            .replace("(", "\\(")
+            .replace(")", "\\)");
+    }
+
+    @VisibleForTesting
+    public List<PatternVariable> getVariables() {
+        ArrayList<PatternVariable> patternVariableArrayList = new ArrayList<>();
+        Pattern pattern = Pattern.compile("(\\$\\{[^\\}]*\\})", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(prepareStringForRegularExpression(analyzerRule.pattern()));
+
+        while(matcher.find()) {
+            if(matcher.groupCount() != 1) {
+                continue;
+            }
+            int start = matcher.start(0);
+            int end = matcher.end(0);
+            String found = matcher.group(0);
+            logger.info("found: " + found);
+            PatternVariable patternVariable = new PatternVariable(found, start, end);
+            patternVariableArrayList.add(patternVariable);
+        }
+
+        // return immutable list
+        return List.copyOf(patternVariableArrayList);
+    }
+
+    @VisibleForTesting
+    public String getRegularExpression() {
+        List<PatternVariable> patternVariables = this.getVariables().stream().sorted(new Comparator<PatternVariable>() {
+            @Override
+            public int compare(PatternVariable o1, PatternVariable o2) {
+                return o2.start() - o1.start();
+            }
+        }).toList();
+        patternVariables.forEach(pv -> logger.info("start: " + pv.start()));
+        String regularExpression = prepareStringForRegularExpression(this.analyzerRule.pattern());
+        for(PatternVariable patternVariable: patternVariables) {
+            regularExpression = regularExpression.substring(0, patternVariable.start()) + "(.+)" + regularExpression.substring(patternVariable.end(), regularExpression.length());
+        }
+        return regularExpression;
+
+    }
+
+    public PatternObject getPatternObject() {
+        String regularExpression = this.getRegularExpression();
+        List<PatternVariable> patternVariables = this.getVariables();
+        HashMap<String, PatternVariableValue> variables = new HashMap<>();
+
+        Pattern pattern = Pattern.compile(regularExpression);
+        Matcher matcher = pattern.matcher(this.code);
+
+        if (matcher.find()) {
+            logger.info("group count: " + matcher.groupCount());
+            logger.info("matcher: " + matcher.group());
+
+            for(int i = 1 ; i <= matcher.groupCount() ; i++) {
+                int startIndex = matcher.start(i);
+                int endIndex = matcher.end(i);
+                logger.info("startIndex: " + startIndex);
+                logger.info("endIndex: " + endIndex);
+
+                PatternVariableValue patternPosition = new PatternVariableValue(matcher.group(i),
+                    getCodePosition(startIndex + 1),
+                    getCodePosition(endIndex + 1),
+                    startIndex,
+                    endIndex);
+                PatternVariable patternVariable = patternVariables.get(i - 1);
+                variables.put(stripVariable(patternVariable.name()), patternPosition);
+                logger.info(matcher.group(i));
+            }
+            logger.info("variables:" + variables);
+            return new PatternObject(
+                getCodePosition(matcher.start(0) + 1),
+                getCodePosition(matcher.end(0) + 1),
+                matcher.start(0),
+                matcher.end(0),
+                variables);
+        }
+        logger.info("end");
+        return null;
+    }
+
+    public List<Violation> getViolations() {
+        return List.of();
+    }
+}

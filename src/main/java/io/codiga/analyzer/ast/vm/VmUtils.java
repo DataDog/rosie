@@ -1,6 +1,6 @@
-package io.codiga.ast.vm;
+package io.codiga.analyzer.ast.vm;
 
-import io.codiga.ast.common.ErrorReporting;
+import io.codiga.analyzer.ast.common.ErrorReporting;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 

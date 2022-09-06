@@ -70,7 +70,8 @@ public class ProtocolTest {
                         .setId("python-timeout")
                         .setContentBase64(encodeBase64(ruleCode))
                         .setLanguage(LANGUAGE_PYTHON)
-                        .setType(RULE_TYPE_FUNCTION_CALL)
+                        .setType(RULE_TYPE_AST)
+                        .setEntityChecked(ENTITY_CHECKED_FUNCTION_CALL)
                         .createRule()
                 )
             ).createRequest();
@@ -96,7 +97,8 @@ public class ProtocolTest {
                         .setId("python-timeout")
                         .setContentBase64(encodeBase64(ruleCode))
                         .setLanguage(LANGUAGE_JAVA)
-                        .setType(RULE_TYPE_FUNCTION_CALL)
+                        .setType(RULE_TYPE_AST)
+                        .setEntityChecked(ENTITY_CHECKED_FUNCTION_CALL)
                         .createRule()
                 )
             ).createRequest();
@@ -123,7 +125,8 @@ public class ProtocolTest {
                         .setId("python-timeout")
                         .setContentBase64(encodeBase64(ruleCode))
                         .setLanguage(LANGUAGE_PYTHON)
-                        .setType(RULE_TYPE_FUNCTION_CALL)
+                        .setType(RULE_TYPE_AST)
+                        .setEntityChecked(ENTITY_CHECKED_FUNCTION_CALL)
                         .createRule()
                 )
             ).createRequest();
@@ -149,7 +152,8 @@ public class ProtocolTest {
                         .setId("python-timeout")
                         .setContentBase64("22#@#@#232@@#%%")
                         .setLanguage(LANGUAGE_PYTHON)
-                        .setType(RULE_TYPE_FUNCTION_CALL)
+                        .setType(RULE_TYPE_AST)
+                        .setEntityChecked(ENTITY_CHECKED_FUNCTION_CALL)
                         .createRule()
                 )
             ).createRequest();

@@ -1,7 +1,8 @@
-package io.codiga.ast.python;
+package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.analyzer.rule.AnalyzerRule;
-import io.codiga.ast.common.ErrorReporting;
+import io.codiga.analyzer.ast.common.ErrorReporting;
+import io.codiga.model.EntityChecked;
 import io.codiga.model.RuleType;
 import io.codiga.model.ast.FunctionCall;
 import io.codiga.model.error.Violation;
@@ -14,9 +15,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.ast.python.ExprToFunctionCall.transformExprToFunctionCall;
-import static io.codiga.ast.python.PythonAstUtils.isFunctionCall;
-import static io.codiga.ast.vm.VmUtils.createContext;
+import static io.codiga.analyzer.ast.languages.python.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
+import static io.codiga.analyzer.ast.vm.VmUtils.createContext;
 
 public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
 
@@ -46,13 +47,16 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
 
     @Override
     public List<Violation> visitExpr(PythonParser.ExprContext ctx) {
-        if (analyzerRule.ruleType() == RuleType.FUNCTION_CALL && isFunctionCall(ctx)) {
+        if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.FUNCTION_CALL && isFunctionCall(ctx)) {
+            logger.info("rule ok to run");
             Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall(ctx, this.root);
             if (functionCallOptional.isPresent()) {
                 Context context = createContext(functionCallOptional.get(), errorReporting);
                 String finalCode = " reportError = addError.addError; " + this.analyzerRule.code() + " visit(root);";
                 context.eval("js", finalCode);
             }
+        } else {
+            logger.info("bad type of rule");
         }
 
         return visitChildren(ctx);

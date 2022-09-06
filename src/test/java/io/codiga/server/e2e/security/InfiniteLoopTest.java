@@ -6,7 +6,8 @@ import io.codiga.server.response.Response;
 import org.junit.jupiter.api.Test;
 
 import static io.codiga.model.ErrorCode.ERROR_RULE_TIMEOUT;
-import static io.codiga.server.constants.Languages.RULE_TYPE_FUNCTION_CALL;
+import static io.codiga.server.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
+import static io.codiga.server.constants.Languages.RULE_TYPE_AST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InfiniteLoopTest extends E2EBase {
@@ -26,7 +27,7 @@ public class InfiniteLoopTest extends E2EBase {
 
     @Test
     public void testInfiniteLoop() throws Exception {
-        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "python-infinite", RULE_TYPE_FUNCTION_CALL);
+        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "python-infinite", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(ERROR_RULE_TIMEOUT, response.ruleResponses.get(0).errors.get(0));

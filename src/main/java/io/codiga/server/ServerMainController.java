@@ -3,6 +3,7 @@ package io.codiga.server;
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.metrics.MetricsInterface;
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.AnalysisResult;
@@ -15,6 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.html.parser.Entity;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -81,6 +83,8 @@ public class ServerMainController {
                 new Response(List.of(), List.of(INVALID_REQUEST)));
         }
 
+        logger.info(String.format("request: %s", request));
+
         if (!SUPPORTED_LANGUAGES.contains(request.language)) {
             return CompletableFuture.completedFuture(
                 new Response(List.of(), List.of(LANGUAGE_NOT_SUPPORTED)));
@@ -100,8 +104,9 @@ public class ServerMainController {
             rules = request.rules.stream().map(r -> {
                 String decodedRuleCode = new String(Base64.getDecoder().decode(r.contentBase64.getBytes()));
                 Language language = languageFromString(r.language);
+                EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
                 RuleType ruleType = ruleTypeFromString(r.type);
-                AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, decodedRuleCode);
+                AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern);
                 return analyzerRule;
             }).toList();
         } catch (IllegalArgumentException iae) {

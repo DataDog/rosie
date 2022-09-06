@@ -33,6 +33,6 @@ public class Request {
     }
 
     public String toString() {
-        return String.format("%s %s %s %s", filename, language, filename, fileEncoding);
+        return String.format("%s %s %s %s %s", filename, language, filename, fileEncoding, String.join(", ", rules.stream().map(r -> r.toString()).toList()));
     }
 }

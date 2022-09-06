@@ -8,4 +8,8 @@ public class Position {
         this.line = line;
         this.col = col;
     }
+
+    public String toString() {
+        return String.format("Position [%s %s]", this.line, this.col);
+    }
 }

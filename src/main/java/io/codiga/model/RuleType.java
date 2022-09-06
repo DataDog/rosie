@@ -1,6 +1,7 @@
 package io.codiga.model;
 
 public enum RuleType {
-    FUNCTION_CALL,
-    UNKNOWN,
+    AST_CHECK,
+    PATTERN,
+    UNKNOWN
 }

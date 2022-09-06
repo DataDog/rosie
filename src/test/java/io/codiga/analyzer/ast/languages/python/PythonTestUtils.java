@@ -1,6 +1,6 @@
-package io.codiga.ast.python;
+package io.codiga.analyzer.ast.languages.python;
 
-import io.codiga.ast.TestUtils;
+import io.codiga.analyzer.ast.TestUtils;
 import io.codiga.parser.python.gen.PythonLexer;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.CharStream;

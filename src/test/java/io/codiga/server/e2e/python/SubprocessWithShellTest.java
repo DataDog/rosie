@@ -5,7 +5,8 @@ import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.Test;
 
-import static io.codiga.server.constants.Languages.RULE_TYPE_FUNCTION_CALL;
+import static io.codiga.server.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
+import static io.codiga.server.constants.Languages.RULE_TYPE_AST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -32,7 +33,7 @@ public class SubprocessWithShellTest extends E2EBase {
 
     @Test
     public void testPythonSubprocessWithShell() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "subprocess-with-shell", RULE_TYPE_FUNCTION_CALL);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "subprocess-with-shell", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -42,7 +43,7 @@ public class SubprocessWithShellTest extends E2EBase {
 
     @Test
     public void testPythonSubprocessWithShellWithoutPackage() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeNoImport, Language.PYTHON, ruleCode, "subprocess-with-shell", RULE_TYPE_FUNCTION_CALL);
+        Response response = executeTest("bla.py", pythonCodeNoImport, Language.PYTHON, ruleCode, "subprocess-with-shell", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());

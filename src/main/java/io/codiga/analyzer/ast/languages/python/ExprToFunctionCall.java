@@ -1,4 +1,4 @@
-package io.codiga.ast.python;
+package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.model.ast.FunctionCall;
 import io.codiga.model.ast.FunctionCallArgument;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.ast.python.PythonAstUtils.isFunctionCall;
+import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
 
 public class ExprToFunctionCall {
 

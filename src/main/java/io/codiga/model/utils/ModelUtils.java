@@ -1,12 +1,12 @@
 package io.codiga.model.utils;
 
 
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.EditType;
 
-import static io.codiga.server.constants.Languages.LANGUAGE_PYTHON;
-import static io.codiga.server.constants.Languages.RULE_TYPE_FUNCTION_CALL;
+import static io.codiga.server.constants.Languages.*;
 
 public class ModelUtils {
 
@@ -39,9 +39,19 @@ public class ModelUtils {
     }
 
     public static RuleType ruleTypeFromString(String ruleType) {
-        if (ruleType.equalsIgnoreCase(RULE_TYPE_FUNCTION_CALL)) {
-            return RuleType.FUNCTION_CALL;
+        if (ruleType.equalsIgnoreCase(RULE_TYPE_AST)) {
+            return RuleType.AST_CHECK;
+        }
+        if (ruleType.equalsIgnoreCase(RULE_TYPE_PATTERN)) {
+            return RuleType.PATTERN;
         }
         return RuleType.UNKNOWN;
+    }
+
+    public static EntityChecked entityCheckedFromString(String entityChecked) {
+        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FUNCTION_CALL)) {
+            return EntityChecked.FUNCTION_CALL;
+        }
+        return EntityChecked.UNKNOWN;
     }
 }

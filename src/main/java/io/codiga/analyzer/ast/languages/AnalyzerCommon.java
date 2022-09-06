@@ -1,4 +1,4 @@
-package io.codiga.analyzer.languages;
+package io.codiga.analyzer.ast.languages;
 
 import java.util.ArrayList;
 import java.util.List;

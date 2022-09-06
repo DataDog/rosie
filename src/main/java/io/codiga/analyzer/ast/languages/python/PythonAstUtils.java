@@ -1,4 +1,4 @@
-package io.codiga.ast.python;
+package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;

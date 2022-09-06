@@ -1,6 +1,6 @@
 package io.codiga;
 
-import io.codiga.ast.python.CodigaVisitor;
+import io.codiga.analyzer.ast.languages.python.CodigaVisitor;
 import io.codiga.model.error.Violation;
 import io.codiga.parser.python.gen.PythonLexer;
 import io.codiga.parser.python.gen.PythonParser;

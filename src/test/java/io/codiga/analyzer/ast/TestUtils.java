@@ -1,4 +1,4 @@
-package io.codiga.ast;
+package io.codiga.analyzer.ast;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 

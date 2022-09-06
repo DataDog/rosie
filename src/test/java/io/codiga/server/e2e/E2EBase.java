@@ -46,7 +46,8 @@ public class E2EBase {
                                 Language language,
                                 String ruleCode,
                                 String ruleName,
-                                String ruleType) {
+                                String ruleType,
+                                String entityChecked) {
         Request request = new RequestBuilder()
             .setFilename(filename)
             .setLanguage(stringFromLanguage(language))
@@ -59,6 +60,7 @@ public class E2EBase {
                         .setContentBase64(encodeBase64(ruleCode))
                         .setLanguage(stringFromLanguage(language))
                         .setType(ruleType)
+                        .setEntityChecked(entityChecked)
                         .createRule()
                 )
             ).createRequest();

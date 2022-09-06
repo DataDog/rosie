@@ -1,4 +1,4 @@
-package io.codiga.ast.common;
+package io.codiga.analyzer.ast.common;
 
 import io.codiga.model.common.Position;
 import io.codiga.model.error.Violation;

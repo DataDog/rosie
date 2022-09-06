@@ -1,6 +1,6 @@
-package io.codiga.analyzer.languages;
+package io.codiga.analyzer.ast.languages;
 
-import io.codiga.ast.python.PythonTestUtils;
+import io.codiga.analyzer.ast.languages.python.PythonTestUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package io.codiga.ast.python;
+package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.model.ast.FunctionCall;
 import io.codiga.parser.python.gen.PythonParser;
@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.ast.python.ExprToFunctionCall.transformExprToFunctionCall;
-import static io.codiga.ast.python.PythonAstUtils.isFunctionCall;
+import static io.codiga.analyzer.ast.languages.python.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExprToFunctionCallTest extends PythonTestUtils {

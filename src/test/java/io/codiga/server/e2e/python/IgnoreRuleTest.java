@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.codiga.server.constants.Languages.RULE_TYPE_FUNCTION_CALL;
+import static io.codiga.server.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
+import static io.codiga.server.constants.Languages.RULE_TYPE_AST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IgnoreRuleTest extends E2EBase {
@@ -35,7 +36,7 @@ public class IgnoreRuleTest extends E2EBase {
 
     @Test
     public void testPythonRequestTimeout() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-timeout", RULE_TYPE_FUNCTION_CALL);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-timeout", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
