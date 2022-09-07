@@ -65,5 +65,5 @@ public class PatternPythonReadOnlyFileTest extends E2EBase {
         // finally check the verified code
         assertEquals(fixedCode, applyFix(code, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
     }
-    
+
 }

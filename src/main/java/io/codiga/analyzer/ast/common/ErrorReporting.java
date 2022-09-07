@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.common;
 
 import io.codiga.model.common.Position;
 import io.codiga.model.error.Edit;
+import io.codiga.model.error.EditType;
 import io.codiga.model.error.Fix;
 import io.codiga.model.error.Violation;
 import org.graalvm.polyglot.HostAccess;
@@ -64,4 +65,20 @@ public class ErrorReporting {
     public Edit buildEdit(int startLine, int startCol, int endLine, int endCol, String editType, String content) {
         return new Edit(new Position(startLine, startCol), new Position(endLine, endCol), editTypeFromString(editType), content);
     }
+
+    @HostAccess.Export
+    public Edit buildEditAdd(int startLine, int startCol, String content) {
+        return new Edit(new Position(startLine, startCol), null, EditType.ADD, content);
+    }
+
+    @HostAccess.Export
+    public Edit buildEditUpdate(int startLine, int startCol, int endLine, int endCol, String content) {
+        return new Edit(new Position(startLine, startCol), new Position(endLine, endCol), EditType.UPDATE, content);
+    }
+
+    @HostAccess.Export
+    public Edit buildEditRemove(int startLine, int startCol, int endLine, int endCol) {
+        return new Edit(new Position(startLine, startCol), new Position(endLine, endCol), EditType.REMOVE, null);
+    }
+
 }

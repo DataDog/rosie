@@ -26,7 +26,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
         PythonParser parser = new PythonParser(tokens);
         parser.setBuildParseTree(true);
 
-        CodigaVisitor codigaVisitor = new CodigaVisitor(rule);
+        CodigaVisitor codigaVisitor = new CodigaVisitor(rule, code);
         codigaVisitor.visit(parser.root());
         logger.info("error reported: " + codigaVisitor.errorReporting.getErrors().size());
         logger.info("analysis done");

@@ -97,6 +97,12 @@ public class E2EBase {
                     lines.set(lineIndex, line);
                 }
             }
+            if (violationFixEdit.editType.equalsIgnoreCase("add")) {
+                int lineIndex = violationFixEdit.start.line - 1;
+                String line = lines.get(lineIndex);
+                line = line.substring(0, violationFixEdit.start.col - 1) + violationFixEdit.content + line.substring(violationFixEdit.start.col - 1, line.length());
+                lines.set(lineIndex, line);
+            }
         }
         return String.join("\n", lines);
     }

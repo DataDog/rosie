@@ -5,6 +5,8 @@ import io.codiga.model.ast.FunctionCallArgument;
 import io.codiga.model.ast.python.PythonFunctionCall;
 import io.codiga.model.common.Position;
 import io.codiga.parser.python.gen.PythonParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.Optional;
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
 
 public class ExprToFunctionCall {
+
+    private static final Logger logger = LoggerFactory.getLogger(ExprToFunctionCall.class);
 
 
     public static Optional<FunctionCall> transformExprToFunctionCall(PythonParser.ExprContext ctx, PythonParser.RootContext root) {
@@ -37,14 +41,23 @@ public class ExprToFunctionCall {
         for (PythonParser.ArgumentContext argumentContext : trailerContext.arguments().arglist().argument()) {
             String argumentName = null;
             String argumentValue = null;
+            Position argumentStart;
+            Position argumentEnd;
+
             if (argumentContext.ASSIGN() != null) {
                 argumentName = argumentContext.test(0).getText();
                 argumentValue = argumentContext.test(1).getText();
+                argumentStart = new Position(argumentContext.start.getLine(), argumentContext.start.getCharPositionInLine());
+                argumentEnd = new Position(argumentContext.test(1).stop.getLine(), argumentContext.test(1).stop.getCharPositionInLine() + argumentValue.length());
             } else {
+                argumentStart = new Position(argumentContext.start.getLine(), argumentContext.start.getCharPositionInLine());
+                argumentEnd = new Position(argumentContext.stop.getLine(), argumentContext.stop.getCharPositionInLine());
+
                 argumentValue = argumentContext.test(0).getText();
             }
-            Position argumentStart = new Position(argumentContext.start.getLine(), argumentContext.start.getCharPositionInLine());
-            Position argumentEnd = new Position(argumentContext.stop.getLine(), argumentContext.stop.getCharPositionInLine());
+
+            logger.info("argument start: " + argumentStart);
+            logger.info("argument end: " + argumentEnd);
             functionArguments.add(new FunctionCallArgument(argumentName, argumentValue, argumentStart, argumentEnd, argumentContext, root));
         }
         Position start = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());

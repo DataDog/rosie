@@ -1,6 +1,5 @@
 package io.codiga.analyzer.ast.vm;
 
-import io.codiga.analyzer.ast.common.ErrorReporting;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 
@@ -36,10 +35,11 @@ public class VmUtils {
                 .build());
     }
 
-    public static Context createContextForAst(Object root, ErrorReporting errorReporting) {
+    public static Context createContextForJavaScriptExecution(ExecutionEnvironment executionEnvironment) {
         Context context = createEmptyContext();
-        context.getBindings("js").putMember("root", root);
-        context.getBindings("js").putMember("addError", errorReporting);
+        context.getBindings("js").putMember("root", executionEnvironment.rootObject);
+        context.getBindings("js").putMember("addError", executionEnvironment.errorReporting);
+        context.getBindings("js").putMember("code", executionEnvironment.code);
         return context;
     }
 
@@ -55,8 +55,11 @@ public class VmUtils {
             "buildFix = addError.buildFix; " +
             "buildError = addError.buildViolation; " +
             "buildEdit = addError.buildEdit; " +
+            "buildEditAdd = addError.buildEditAdd; " +
+            "buildEditUpdate = addError.buildEditUpdate; " +
+            "buildEditRemove = addError.buildEditRemove; " +
             "addError = addError.addViolation; " +
-            javaScriptCode + " visit(root);";
+            javaScriptCode + " visit(root, code);";
         return finalCode;
     }
 }
