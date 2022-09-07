@@ -6,14 +6,10 @@ public class ExecutionEnvironmentBuilder {
     private Object rootObject;
     private ErrorReporting errorReporting;
     private String code;
+    private boolean logOutput = false;
 
     public ExecutionEnvironmentBuilder setRootObject(Object rootObject) {
         this.rootObject = rootObject;
-        return this;
-    }
-
-    public ExecutionEnvironmentBuilder setErrorReporting(ErrorReporting errorReporting) {
-        this.errorReporting = errorReporting;
         return this;
     }
 
@@ -22,7 +18,12 @@ public class ExecutionEnvironmentBuilder {
         return this;
     }
 
+    public ExecutionEnvironmentBuilder setLogOutput(boolean logOutput) {
+        this.logOutput = logOutput;
+        return this;
+    }
+
     public ExecutionEnvironment createExecutionEnvironment() {
-        return new ExecutionEnvironment(rootObject, errorReporting, code);
+        return new ExecutionEnvironment(rootObject, code, logOutput);
     }
 }

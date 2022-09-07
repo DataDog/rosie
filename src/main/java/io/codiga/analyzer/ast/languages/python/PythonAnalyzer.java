@@ -18,19 +18,15 @@ public class PythonAnalyzer extends AnalyzerCommon {
     private Logger logger = LoggerFactory.getLogger(PythonAnalyzer.class);
 
     @Override
-    public RuleResult execute(String filename, String code, AnalyzerRule rule) {
-        logger.info("analysis start");
-
+    public RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput) {
         PythonLexer lexer = new PythonLexer(CharStreams.fromString(code));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         PythonParser parser = new PythonParser(tokens);
         parser.setBuildParseTree(true);
 
-        CodigaVisitor codigaVisitor = new CodigaVisitor(rule, code);
+        CodigaVisitor codigaVisitor = new CodigaVisitor(rule, code, logOutput);
         codigaVisitor.visit(parser.root());
-        logger.info("error reported: " + codigaVisitor.errorReporting.getErrors().size());
-        logger.info("analysis done");
-        return new RuleResult(rule.name(), codigaVisitor.errorReporting.getErrors(), List.of(), null);
+        return new RuleResult(rule.name(), codigaVisitor.getViolations(), List.of(), null, codigaVisitor.getOutput());
     }
 
 

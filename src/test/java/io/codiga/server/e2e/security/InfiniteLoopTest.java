@@ -27,7 +27,7 @@ public class InfiniteLoopTest extends E2EBase {
 
     @Test
     public void testInfiniteLoop() throws Exception {
-        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "python-infinite", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL);
+        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "python-infinite", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(ERROR_RULE_TIMEOUT, response.ruleResponses.get(0).errors.get(0));

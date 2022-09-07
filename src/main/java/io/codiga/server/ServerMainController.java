@@ -110,9 +110,8 @@ public class ServerMainController {
             logger.error("rule is not base64: " + rules);
             return CompletableFuture.completedFuture(new Response(List.of(), List.of(RULE_NOT_BASE64)));
         }
-
         CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language),
-            request.filename, decodedCode, rules);
+            request.filename, decodedCode, rules, request.logOutput);
 
         return violationsFuture.thenApply(analysisResult -> {
             List<io.codiga.server.response.RuleResponse> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
@@ -132,7 +131,7 @@ public class ServerMainController {
                         ruleViolation.severity.toString(), ruleViolation.category.toString(), fixes);
 
                 }).toList();
-                return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors(), ruleResult.executionError());
+                return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output());
             }).toList();
             return new Response(rulesReponses, List.of());
         });

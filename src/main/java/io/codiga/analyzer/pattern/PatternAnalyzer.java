@@ -2,7 +2,6 @@ package io.codiga.analyzer.pattern;
 
 import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
-import io.codiga.analyzer.ast.common.ErrorReporting;
 import io.codiga.analyzer.ast.vm.ExecutionEnvironment;
 import io.codiga.analyzer.ast.vm.ExecutionEnvironmentBuilder;
 import io.codiga.analyzer.rule.AnalyzerRule;
@@ -26,29 +25,30 @@ public class PatternAnalyzer extends AnalyzerCommon {
     private Logger logger = LoggerFactory.getLogger(PatternAnalyzer.class);
 
     @Override
-    public RuleResult execute(String filename, String code, AnalyzerRule rule) {
+    public RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput) {
         PatternMatcher patternMatcher = new PatternMatcher(code, rule);
         List<PatternObject> patternObjects = patternMatcher.getPatternObjects();
         List<Violation> violations = new ArrayList<>();
+        String output = null;
 
         for (PatternObject patternObject : patternObjects) {
             logger.info("found pattern: " + patternObject);
 
-            ErrorReporting errorReporting = new ErrorReporting();
             String finalCode = buildExecutableCode(rule.code());
 
             ExecutionEnvironment executionEnvironment = new ExecutionEnvironmentBuilder()
                 .setCode(code)
                 .setRootObject(patternObject)
-                .setErrorReporting(errorReporting)
+                .setLogOutput(logOutput)
                 .createExecutionEnvironment();
 
             Context context = createContextForJavaScriptExecution(executionEnvironment);
             context.eval("js", finalCode);
-            logger.info("errors: " + errorReporting.getErrors());
-            violations.addAll(errorReporting.getErrors());
+            logger.info("errors: " + executionEnvironment.errorReporting.getErrors());
+            violations.addAll(executionEnvironment.errorReporting.getErrors());
+            output = executionEnvironment.getOutput();
         }
-        return new RuleResult(rule.name(), List.copyOf(violations), List.of(), null);
+        return new RuleResult(rule.name(), List.copyOf(violations), List.of(), null, output);
     }
 
 }

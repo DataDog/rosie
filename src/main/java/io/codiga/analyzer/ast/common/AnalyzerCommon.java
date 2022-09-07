@@ -64,34 +64,34 @@ public abstract class AnalyzerCommon {
         }
     }
 
-    public abstract RuleResult execute(String filename, String code, AnalyzerRule rule);
+    public abstract RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput);
 
-    public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules) {
+    public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         // Get the lines to ignore that have codiga-disable
         List<Long> linesToIgnore = getCommentsLine(code, getCommentsSymbol(language));
 
 
         List<CompletableFuture<RuleResult>> futures = rules.stream().map(rule -> {
             CompletableFuture<RuleResult> future = CompletableFuture
-                .supplyAsync(() -> execute(filename, code, rule), pool.service)
+                .supplyAsync(() -> execute(filename, code, rule, logOutput), pool.service)
                 .orTimeout(getTimeout(), TimeUnit.MILLISECONDS)
                 .exceptionally(exception -> {
                     logger.info("caught exception: " + exception.getMessage());
                     if (exception instanceof TimeoutException) {
                         logger.error(String.format("reporting rule %s as timeout", rule.name()));
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null);
+                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null);
                     }
 
                     if (exception.getCause() != null && exception.getCause() instanceof PolyglotException) {
                         String executionMessage = formatVmErrorMessage(exception.getMessage());
                         logger.error(String.format("reporting rule %s as execution error", rule.name()));
                         exception.printStackTrace();
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage);
+                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage, null);
                     }
 
                     logger.error(String.format("unhandled exception for rule %s: %s - %s", rule.name(), exception, exception.getMessage()));
 
-                    return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), null);
+                    return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), null, null);
                 });
             return future;
         }).toList();
@@ -109,7 +109,7 @@ public abstract class AnalyzerCommon {
                     }
                     return false;
                 }).toList();
-                return new RuleResult(ruleResult.identifier(), filteredViolations, ruleResult.errors(), ruleResult.executionError());
+                return new RuleResult(ruleResult.identifier(), filteredViolations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output());
             }).toList();
             return new AnalysisResult(fileteredList);
         });

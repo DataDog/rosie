@@ -22,21 +22,19 @@ public class VmUtils {
         build();
 
 
-    public static Context createEmptyContext() {
-        return (
-            Context
-                .newBuilder("js")
-                .allowHostAccess(SANDBOX)
-                .allowExperimentalOptions(false)
-                .allowValueSharing(true)
-                .allowIO(false)
-
-                .logHandler(OutputStream.nullOutputStream())
-                .build());
-    }
-
     public static Context createContextForJavaScriptExecution(ExecutionEnvironment executionEnvironment) {
-        Context context = createEmptyContext();
+        Context.Builder contextBuilder = Context
+            .newBuilder("js")
+            .allowHostAccess(SANDBOX)
+            .allowExperimentalOptions(false)
+            .allowValueSharing(true)
+            .allowIO(false)
+            .logHandler(OutputStream.nullOutputStream());
+
+        if (executionEnvironment.getOutputStream() != null) {
+            contextBuilder.out(executionEnvironment.getOutputStream());
+        }
+        Context context = contextBuilder.build();
         context.getBindings("js").putMember("root", executionEnvironment.rootObject);
         context.getBindings("js").putMember("addError", executionEnvironment.errorReporting);
         context.getBindings("js").putMember("code", executionEnvironment.code);

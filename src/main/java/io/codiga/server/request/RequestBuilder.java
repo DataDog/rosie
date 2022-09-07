@@ -9,6 +9,8 @@ public class RequestBuilder {
     private String codeBase64;
     private List<Rule> rules;
 
+    private boolean logOutput = false;
+
     public RequestBuilder setFilename(String filename) {
         this.filename = filename;
         return this;
@@ -34,7 +36,12 @@ public class RequestBuilder {
         return this;
     }
 
+    public RequestBuilder setLogOutput(boolean logOutput) {
+        this.logOutput = logOutput;
+        return this;
+    }
+
     public Request createRequest() {
-        return new Request(filename, language, fileEncoding, codeBase64, rules);
+        return new Request(filename, language, fileEncoding, codeBase64, rules, logOutput);
     }
 }

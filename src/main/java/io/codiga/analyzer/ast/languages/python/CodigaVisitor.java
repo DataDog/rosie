@@ -1,6 +1,5 @@
 package io.codiga.analyzer.ast.languages.python;
 
-import io.codiga.analyzer.ast.common.ErrorReporting;
 import io.codiga.analyzer.ast.vm.ExecutionEnvironment;
 import io.codiga.analyzer.ast.vm.ExecutionEnvironmentBuilder;
 import io.codiga.analyzer.rule.AnalyzerRule;
@@ -14,6 +13,7 @@ import org.graalvm.polyglot.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,15 +24,31 @@ import static io.codiga.analyzer.ast.vm.VmUtils.createContextForJavaScriptExecut
 
 public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
 
-    public ErrorReporting errorReporting;
+    List<Violation> violations;
     private AnalyzerRule analyzerRule;
     private PythonParser.RootContext root;
+    private StringBuffer output;
+    private boolean logOutput;
     private Logger logger = LoggerFactory.getLogger(CodigaVisitor.class);
 
-    public CodigaVisitor(AnalyzerRule rule, String code) {
-        this.errorReporting = new ErrorReporting();
+    public CodigaVisitor(AnalyzerRule rule, String code, boolean logOutput) {
         this.analyzerRule = rule;
         this.root = null;
+        this.logOutput = logOutput;
+        this.violations = new ArrayList<>();
+        this.output = new StringBuffer();
+    }
+
+    public String getOutput() {
+        String finalString = this.output.toString();
+        if (finalString.isEmpty()) {
+            return null;
+        }
+        return finalString;
+    }
+
+    public List<Violation> getViolations() {
+        return this.violations;
     }
 
     @Override
@@ -57,12 +73,18 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
                 ExecutionEnvironment executionEnvironment = new ExecutionEnvironmentBuilder()
                     .setCode(null)
                     .setRootObject(functionCallOptional.get())
-                    .setErrorReporting(errorReporting)
+                    .setLogOutput(logOutput)
                     .createExecutionEnvironment();
 
                 Context context = createContextForJavaScriptExecution(executionEnvironment);
                 String finalCode = buildExecutableCode(this.analyzerRule.code());
                 context.eval("js", finalCode);
+                violations.addAll(executionEnvironment.errorReporting.getErrors());
+                String executionOutput = executionEnvironment.getOutput();
+                logger.info("OUTPUT: " + executionOutput);
+                if (executionOutput != null) {
+                    this.output.append(executionOutput);
+                }
             }
         } else {
             logger.info("bad type of rule");

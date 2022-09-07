@@ -36,7 +36,7 @@ public class AnalyzerCommonTest extends PythonTestUtils {
             """;
         AnalyzerCommon analyzerCommon = new AnalyzerCommon() {
             @Override
-            public RuleResult execute(String filename, String code, AnalyzerRule rule) {
+            public RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput) {
                 return null;
             }
         };

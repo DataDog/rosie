@@ -35,6 +35,7 @@ public class RequestTimeoutTest extends E2EBase {
             const nbArguments = node.arguments.length;
             const useRequestsPackage = node.getImports().filter(i => i.packageName == "requests").length > 0;
             if(!hasTimeout && useRequestsPackage && node.functionName === "get" && node.moduleOrObject === "requests"){
+            console.log("REPORT ISSUE");
                 const error = buildError(node.start.line, node.start.col, node.end.line, node.end.col, "timeout not defined", "CRITICAL", "SAFETY");
                 const lineToInsert = arguments[arguments.length - 1].end.line;
                 const colToInsert = arguments[arguments.length - 1].end.col + 1;
@@ -47,7 +48,7 @@ public class RequestTimeoutTest extends E2EBase {
 
     @Test
     public void testPythonRequestTimeout() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-timeout", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-timeout", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -65,7 +66,7 @@ public class RequestTimeoutTest extends E2EBase {
 
     @Test
     public void testPythonRequestTimeoutWithoutPackage() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeNoImport, Language.PYTHON, ruleCode, "python-timeout", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL);
+        Response response = executeTest("bla.py", pythonCodeNoImport, Language.PYTHON, ruleCode, "python-timeout", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());

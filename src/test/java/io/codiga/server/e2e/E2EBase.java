@@ -47,12 +47,14 @@ public class E2EBase {
                                            String ruleName,
                                            String ruleType,
                                            String entityChecked,
-                                           String pattern) {
+                                           String pattern,
+                                           boolean logOutput) {
         Request request = new RequestBuilder()
             .setFilename(filename)
             .setLanguage(stringFromLanguage(language))
             .setFileEncoding("utf-8")
             .setCodeBase64(encodeBase64(code))
+            .setLogOutput(logOutput)
             .setRules(
                 List.of(
                     new RuleBuilder()
@@ -77,8 +79,9 @@ public class E2EBase {
                                 String ruleCode,
                                 String ruleName,
                                 String ruleType,
-                                String entityChecked) {
-        return executeTestWithPattern(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, null);
+                                String entityChecked,
+                                boolean logOutput) {
+        return executeTestWithPattern(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, null, logOutput);
     }
 
     protected String applyFix(String originalCode, ViolationFix violationFix) {

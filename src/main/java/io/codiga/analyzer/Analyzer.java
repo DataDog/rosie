@@ -27,7 +27,7 @@ public class Analyzer {
     PythonAnalyzer pythonAnalyzer = new PythonAnalyzer();
     PatternAnalyzer patternAnalyzer = new PatternAnalyzer();
 
-    public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules) {
+    public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         // Distinguish between rules with valid languages and invalid ones.
         List<AnalyzerRule> rulesWithValidLanguage = rules.stream().filter(f -> f.language() == language).toList();
         List<AnalyzerRule> rulesWithValidLanguageForAst = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.AST_CHECK).toList();
@@ -38,7 +38,7 @@ public class Analyzer {
         // First, AST analysis
         switch (language) {
             case PYTHON:
-                completedResultForAst = pythonAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst);
+                completedResultForAst = pythonAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
                 break;
             default:
                 completedResultForAst = CompletableFuture.completedFuture(new AnalysisResult(List.of()));
@@ -46,14 +46,14 @@ public class Analyzer {
         }
 
         // Second, pattern analysis
-        CompletableFuture<AnalysisResult> patternAnalysis = patternAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForPattern);
+        CompletableFuture<AnalysisResult> patternAnalysis = patternAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForPattern, logOutput);
 
         CompletableFuture<List<AnalysisResult>> allFutures = sequence(List.of(patternAnalysis, completedResultForAst));
 
         // Return an error for the rule with an invalid language
         return allFutures.thenApply(result -> {
             List<RuleResult> invalidLanguagesRuleResults = rulesWithInvalidLanguage.stream().map(r -> {
-                return new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null);
+                return new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null, null);
             }).toList();
             List<RuleResult> allRuleResult = ImmutableList
                 .<RuleResult>builder()

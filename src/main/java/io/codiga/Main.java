@@ -33,11 +33,11 @@ public class Main {
             parser.setBuildParseTree(true);
             FileInputStream fileInputStream = new FileInputStream(file);
 
-            CodigaVisitor codigaVisitor = new CodigaVisitor(null, null);
+            CodigaVisitor codigaVisitor = new CodigaVisitor(null, null, false);
             codigaVisitor.visit(parser.root());
 
             fileInputStream.close();
-            for (Violation analysisError : codigaVisitor.errorReporting.getErrors()) {
+            for (Violation analysisError : codigaVisitor.getViolations()) {
 //                String error = String.format("line %s: %s", analysisError.line(), analysisError.message());
 //                System.out.println(error);
             }

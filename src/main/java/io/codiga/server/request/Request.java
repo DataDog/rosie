@@ -9,27 +9,29 @@ public class Request {
     public String fileEncoding;
     public String codeBase64;
     public List<Rule> rules;
+    public boolean logOutput;
 
 
     public Request() {
 
     }
 
-    public Request(String filename, String language, String fileEncoding, String codeBase64, List<Rule> rules) {
+    public Request(String filename, String language, String fileEncoding, String codeBase64, List<Rule> rules, boolean logOutput) {
         this.filename = filename;
         this.language = language;
         this.fileEncoding = fileEncoding;
         this.codeBase64 = codeBase64;
         this.rules = rules;
+        this.logOutput = logOutput;
     }
 
     public boolean isValid() {
         return (this.fileEncoding == null ||
-                this.filename == null ||
-                this.language == null ||
-                this.codeBase64 == null ||
-                this.rules == null ||
-                this.rules.isEmpty());
+            this.filename == null ||
+            this.language == null ||
+            this.codeBase64 == null ||
+            this.rules == null ||
+            this.rules.isEmpty());
     }
 
     public String toString() {
