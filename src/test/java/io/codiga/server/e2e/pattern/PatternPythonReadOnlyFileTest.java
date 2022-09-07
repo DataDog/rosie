@@ -19,9 +19,14 @@ public class PatternPythonReadOnlyFileTest extends E2EBase {
     String code = """
         def print_foo():
           with open("myfile.txt", "r") as myfile:
-            content = myfile.read()
-        """;
-    String ruleCode = """
+            content = myfile.read()""";
+
+    String fixedCode = """
+        def print_foo():
+          with open("myfile.txt") as myfile:
+            content = myfile.read()""";
+
+    String ruleCodeUpdate = """
         function visit(pattern) {
             const error = buildError(pattern.start.line, pattern.start.col, pattern.end.line, pattern.end.col, "file with read-only defined", "WARN", "bestpractices");
             const filename = pattern.variables.get("file").value;
@@ -32,11 +37,12 @@ public class PatternPythonReadOnlyFileTest extends E2EBase {
         }
         """;
 
+
     @Test
-    @DisplayName("Remove the read-only flag when opening a file")
-    public void testPythonPatternReadOnlyFlag() throws Exception {
+    @DisplayName("Remove the read-only flag when opening a file - update version")
+    public void testPythonPatternReadOnlyFlagUpdate() throws Exception {
         String pattern = "open(\"${file}\", \"r\")";
-        Response response = executeTestWithPattern("bla.py", code, Language.PYTHON, ruleCode, "remove-file-read-only", RULE_TYPE_PATTERN, null, pattern);
+        Response response = executeTestWithPattern("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-file-read-only", RULE_TYPE_PATTERN, null, pattern);
 
         logger.info("response: " + response);
 
@@ -55,5 +61,9 @@ public class PatternPythonReadOnlyFileTest extends E2EBase {
         assertEquals(31, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.line);
         assertEquals("open(\"myfile.txt\")", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).content);
+
+        // finally check the verified code
+        assertEquals(fixedCode, applyFix(code, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
     }
+    
 }

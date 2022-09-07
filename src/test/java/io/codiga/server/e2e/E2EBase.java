@@ -8,6 +8,8 @@ import io.codiga.server.request.Request;
 import io.codiga.server.request.RequestBuilder;
 import io.codiga.server.request.RuleBuilder;
 import io.codiga.server.response.Response;
+import io.codiga.server.response.ViolationFix;
+import io.codiga.server.response.ViolationFixEdit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import static io.codiga.model.utils.ModelUtils.stringFromLanguage;
 import static io.codiga.utils.Base64Utils.encodeBase64;
@@ -28,18 +32,13 @@ import static io.codiga.utils.Base64Utils.encodeBase64;
 @TestPropertySource(locations = "classpath:test.properties")
 public class E2EBase {
 
+    protected final Logger logger = LoggerFactory.getLogger(RequestTimeoutTest.class);
     @Autowired
     private ServerMainController controller;
-
     @LocalServerPort
     private int port;
-
     @Autowired
     private TestRestTemplate restTemplate;
-
-
-    protected final Logger logger = LoggerFactory.getLogger(RequestTimeoutTest.class);
-
 
     public Response executeTestWithPattern(String filename,
                                            String code,
@@ -80,5 +79,25 @@ public class E2EBase {
                                 String ruleType,
                                 String entityChecked) {
         return executeTestWithPattern(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, null);
+    }
+
+    protected String applyFix(String originalCode, ViolationFix violationFix) {
+        List<String> lines = new ArrayList<>();
+        Scanner scanner = new Scanner(originalCode);
+        while (scanner.hasNext()) {
+            lines.add(scanner.nextLine());
+        }
+
+        for (ViolationFixEdit violationFixEdit : violationFix.edits) {
+            if (violationFixEdit.editType.equalsIgnoreCase("update")) {
+                if (violationFixEdit.start.line == violationFixEdit.end.line) {
+                    int lineIndex = violationFixEdit.start.line - 1;
+                    String line = lines.get(lineIndex);
+                    line = line.substring(0, violationFixEdit.start.col - 1) + violationFixEdit.content + line.substring(violationFixEdit.end.col - 1, line.length());
+                    lines.set(lineIndex, line);
+                }
+            }
+        }
+        return String.join("\n", lines);
     }
 }
