@@ -85,6 +85,9 @@ public class E2EBase {
     }
 
     protected String applyFix(String originalCode, ViolationFix violationFix) {
+        logger.info("====== START OF ORIGINAL CODE =======");
+        logger.info(originalCode);
+        logger.info("======= END OF ORIGINAL CODE ========");
         List<String> lines = new ArrayList<>();
         Scanner scanner = new Scanner(originalCode);
         while (scanner.hasNext()) {
@@ -93,9 +96,11 @@ public class E2EBase {
 
         for (ViolationFixEdit violationFixEdit : violationFix.edits) {
             if (violationFixEdit.editType.equalsIgnoreCase("update")) {
+
                 if (violationFixEdit.start.line == violationFixEdit.end.line) {
                     int lineIndex = violationFixEdit.start.line - 1;
                     String line = lines.get(lineIndex);
+                    logger.info(String.format("updating line %s:%s-%s:%s -> %s", violationFixEdit.start.line, violationFixEdit.start.col, violationFixEdit.end.line, violationFixEdit.end.col, line));
                     line = line.substring(0, violationFixEdit.start.col - 1) + violationFixEdit.content + line.substring(violationFixEdit.end.col - 1, line.length());
                     lines.set(lineIndex, line);
                 }
@@ -107,6 +112,10 @@ public class E2EBase {
                 lines.set(lineIndex, line);
             }
         }
-        return String.join("\n", lines);
+        String newCode = String.join("\n", lines);
+        logger.info("====== START OF UPDATED CODE =======");
+        logger.info(newCode);
+        logger.info("======= END OF UPDATED CODE ========");
+        return newCode;
     }
 }

@@ -12,6 +12,9 @@ import static io.codiga.server.constants.Languages.*;
 public class ModelUtils {
 
     public static String editTypeToString(EditType editType) {
+        if (editType == null) {
+            return "unknown";
+        }
         switch (editType) {
             case ADD:
                 return "add";
@@ -20,11 +23,14 @@ public class ModelUtils {
             case UPDATE:
                 return "update";
         }
-        throw new IllegalArgumentException();
+        return "unknown";
     }
 
 
     public static EditType editTypeFromString(String editType) {
+        if (editType == null) {
+            return UNKNOWN;
+        }
         if (editType.equalsIgnoreCase("add")) {
             return ADD;
         }

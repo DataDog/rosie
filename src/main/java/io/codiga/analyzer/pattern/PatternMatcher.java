@@ -48,8 +48,11 @@ public class PatternMatcher {
 
     private Position getCodePosition(int index) {
         int lineNumber = 1;
+        logger.info("codelines: " + codeLines);
         for (String line : codeLines) {
-            if (index < line.length()) {
+            logger.info(String.format("search in line |%s|, index=%s, line length=%s", line, index, line.length()));
+            if (index <= line.length()) {
+                logger.info("found");
                 return new Position(lineNumber, index);
             }
             index = index - line.length() - 1;
@@ -114,6 +117,8 @@ public class PatternMatcher {
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 int startIndex = matcher.start(i);
                 int endIndex = matcher.end(i);
+                PatternVariable patternVariable = patternVariables.get(i - 1);
+                logger.info(String.format("variable %s", patternVariable.name()));
                 logger.info("startIndex: " + startIndex);
                 logger.info("endIndex: " + endIndex);
 
@@ -122,11 +127,10 @@ public class PatternMatcher {
                     getCodePosition(endIndex + 1),
                     startIndex,
                     endIndex);
-                PatternVariable patternVariable = patternVariables.get(i - 1);
                 variables.put(stripVariable(patternVariable.name()), patternPosition);
                 logger.info(matcher.group(i));
             }
-            logger.info("variables:" + variables);
+            logger.info(String.format("pattern"));
             patternObjects.add(new PatternObject(
                 getCodePosition(matcher.start(0) + 1),
                 getCodePosition(matcher.end(0) + 1),

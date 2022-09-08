@@ -16,6 +16,7 @@ import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.PatternSyntaxException;
 
 import static io.codiga.analyzer.ast.vm.VmUtils.formatVmErrorMessage;
 import static io.codiga.model.ErrorCode.*;
@@ -82,6 +83,11 @@ public abstract class AnalyzerCommon {
                         return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null);
                     }
 
+                    if (exception.getCause() != null && exception.getCause() instanceof PatternSyntaxException) {
+                        logger.error(String.format("reporting rule %s as invalid-pattern", rule.name()));
+                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_INVALID_PATTERN), null, null);
+                    }
+
                     if (exception.getCause() != null && exception.getCause() instanceof PolyglotException) {
                         String executionMessage = formatVmErrorMessage(exception.getMessage());
                         logger.error(String.format("reporting rule %s as execution error", rule.name()));
@@ -109,6 +115,9 @@ public abstract class AnalyzerCommon {
                     }
                     return false;
                 }).toList();
+                if (ruleResult.output() != null) {
+                    logger.debug(String.format("Output for rule %s: %s", ruleResult.identifier(), ruleResult.output()));
+                }
                 return new RuleResult(ruleResult.identifier(), filteredViolations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output());
             }).toList();
             return new AnalysisResult(fileteredList);
