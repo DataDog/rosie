@@ -38,6 +38,7 @@ public class VmUtils {
         context.getBindings("js").putMember("root", executionEnvironment.rootObject);
         context.getBindings("js").putMember("addError", executionEnvironment.errorReporting);
         context.getBindings("js").putMember("code", executionEnvironment.code);
+        context.getBindings("js").putMember("filename", executionEnvironment.filename);
         return context;
     }
 
@@ -57,7 +58,7 @@ public class VmUtils {
             "buildEditUpdate = addError.buildEditUpdate; " +
             "buildEditRemove = addError.buildEditRemove; " +
             "addError = addError.addViolation; " +
-            javaScriptCode + " visit(root, code);";
+            javaScriptCode + " visit(root, filename, code);";
         return finalCode;
     }
 }

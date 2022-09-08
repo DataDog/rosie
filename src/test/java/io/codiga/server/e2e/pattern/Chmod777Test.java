@@ -24,12 +24,16 @@ public class Chmod777Test extends E2EBase {
         os.chmod("/path/to/file", stat.S_IRUSR | stat.S_IROTH | stat.S_IXOTH)""";
 
     String ruleCodeUpdate = """
-        function visit(pattern) {
+        function visit(pattern, filename, code) {
             console.log("BLA");
-            const filename = pattern.variables.get("file").value;
             const mode = pattern.variables.get("mode");
             
             console.log(pattern);
+            console.log(filename);
+            
+            if(filename.includes("_test.py") || filename.startsWith("test_")) {
+                return;
+            }
             
             if (mode.value.includes("stat.S_IWOTH")) {
                    console.log(mode.start);
@@ -77,4 +81,27 @@ public class Chmod777Test extends E2EBase {
         assertEquals(fixedCode, applyFix(code, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
     }
 
+    @Test
+    @DisplayName("Ignore for test file")
+    public void testPythonRemoveWriteIgnoredForTests() throws Exception {
+        Response response = executeTestWithPattern("bla_test.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
+            RULE_TYPE_PATTERN, null, pattern, true);
+
+        logger.info("response: " + response);
+
+        assertEquals(1, response.ruleResponses.size());
+        assertEquals(0, response.ruleResponses.get(0).violations.size());
+    }
+
+    @Test
+    @DisplayName("Ignore for test file - second version")
+    public void testPythonRemoveWriteIgnoredForTestsSecondVersion() throws Exception {
+        Response response = executeTestWithPattern("test_bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
+            RULE_TYPE_PATTERN, null, pattern, true);
+
+        logger.info("response: " + response);
+
+        assertEquals(1, response.ruleResponses.size());
+        assertEquals(0, response.ruleResponses.get(0).violations.size());
+    }
 }

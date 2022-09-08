@@ -6,6 +6,7 @@ public class ExecutionEnvironmentBuilder {
     private Object rootObject;
     private ErrorReporting errorReporting;
     private String code;
+    private String filename;
     private boolean logOutput = false;
 
     public ExecutionEnvironmentBuilder setRootObject(Object rootObject) {
@@ -18,12 +19,18 @@ public class ExecutionEnvironmentBuilder {
         return this;
     }
 
+    public ExecutionEnvironmentBuilder setFilename(String filename) {
+        this.filename = filename;
+        return this;
+    }
+
+
     public ExecutionEnvironmentBuilder setLogOutput(boolean logOutput) {
         this.logOutput = logOutput;
         return this;
     }
 
     public ExecutionEnvironment createExecutionEnvironment() {
-        return new ExecutionEnvironment(rootObject, code, logOutput);
+        return new ExecutionEnvironment(rootObject, code, logOutput, filename);
     }
 }

@@ -40,6 +40,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
                 .setCode(code)
                 .setRootObject(patternObject)
                 .setLogOutput(logOutput)
+                .setFilename(filename)
                 .createExecutionEnvironment();
 
             Context context = createContextForJavaScriptExecution(executionEnvironment);

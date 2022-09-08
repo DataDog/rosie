@@ -13,14 +13,16 @@ public class ExecutionEnvironment {
     public Object rootObject;
     public ErrorReporting errorReporting;
     public String code;
+    public String filename = null;
     public boolean logOutput;
     private OutputStream outputStream;
     private InputStream inputStream;
 
-    public ExecutionEnvironment(Object rootObject, String code, boolean logOutput) {
+    public ExecutionEnvironment(Object rootObject, String code, boolean logOutput, String filename) {
         this.rootObject = rootObject;
         this.errorReporting = new ErrorReporting();
         this.logOutput = logOutput;
+        this.filename = filename;
         this.code = code;
 
         if (this.logOutput) {
@@ -48,7 +50,7 @@ public class ExecutionEnvironment {
         if (!this.logOutput) {
             return null;
         }
-        
+
         if (this.outputStream == null) {
             return null;
         }
