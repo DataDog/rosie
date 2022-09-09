@@ -82,6 +82,9 @@ public class ModelUtils {
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FUNCTION_CALL)) {
             return EntityChecked.FUNCTION_CALL;
         }
+        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FUNCTION_DEFINITION)) {
+            return EntityChecked.FUNCTION_DEFINITION;
+        }
         return EntityChecked.UNKNOWN;
     }
 }

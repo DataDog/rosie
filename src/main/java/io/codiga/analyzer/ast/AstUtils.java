@@ -1,9 +1,19 @@
 package io.codiga.analyzer.ast;
 
+import io.codiga.model.common.Position;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class AstUtils {
 
+
+    public static Position getStartPosition(ParserRuleContext context) {
+        return new Position(context.start.getLine(), context.start.getCharPositionInLine());
+    }
+
+    public static Position getEndPosition(ParserRuleContext context) {
+        return new Position(context.start.getLine(), context.start.getCharPositionInLine());
+    }
 
     public static void printTreeRec(ParseTree node, int nbSpaces) {
 

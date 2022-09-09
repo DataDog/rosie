@@ -12,4 +12,6 @@ public class Position {
     public String toString() {
         return String.format("Position [%s %s]", this.line, this.col);
     }
+
+
 }

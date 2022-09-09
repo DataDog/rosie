@@ -1,4 +1,4 @@
-package io.codiga.server.e2e.pattern;
+package io.codiga.server.e2e.python.pattern;
 
 import io.codiga.model.Language;
 import io.codiga.server.e2e.E2EBase;

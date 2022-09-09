@@ -3,7 +3,7 @@ package io.codiga.server.e2e;
 import io.codiga.model.Language;
 import io.codiga.server.ServerMainController;
 import io.codiga.server.configuration.ServerTestConfiguration;
-import io.codiga.server.e2e.python.RequestTimeoutTest;
+import io.codiga.server.e2e.python.ast.RequestTimeoutTest;
 import io.codiga.server.request.Request;
 import io.codiga.server.request.RequestBuilder;
 import io.codiga.server.request.RuleBuilder;

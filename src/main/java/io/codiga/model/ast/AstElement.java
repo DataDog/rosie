@@ -14,7 +14,9 @@ public class AstElement {
     private ParserRuleContext parserRuleContext;
     private ParserRuleContext root;
 
-    public AstElement(Position start, Position end, ParserRuleContext parserRuleContext, ParserRuleContext root) {
+    public AstElement(Position start, Position end,
+                      ParserRuleContext parserRuleContext,
+                      ParserRuleContext root) {
         this.start = start;
         this.end = end;
         this.parserRuleContext = parserRuleContext;
@@ -39,6 +41,10 @@ public class AstElement {
 
     public List<ParseTree> getNodes(Class classType) {
         return getNodesFromType(this.root, classType);
+    }
+
+    public String getText() {
+        return this.parserRuleContext.getText();
     }
 
 }
