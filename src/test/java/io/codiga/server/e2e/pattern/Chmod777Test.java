@@ -58,9 +58,6 @@ public class Chmod777Test extends E2EBase {
     public void testPythonRemoveWriteUsers() throws Exception {
         Response response = executeTestWithPattern("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
             RULE_TYPE_PATTERN, null, pattern, true);
-
-        logger.info("response: " + response);
-
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.line);
@@ -86,9 +83,6 @@ public class Chmod777Test extends E2EBase {
     public void testPythonRemoveWriteIgnoredForTests() throws Exception {
         Response response = executeTestWithPattern("bla_test.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
             RULE_TYPE_PATTERN, null, pattern, true);
-
-        logger.info("response: " + response);
-
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
     }
@@ -98,9 +92,6 @@ public class Chmod777Test extends E2EBase {
     public void testPythonRemoveWriteIgnoredForTestsSecondVersion() throws Exception {
         Response response = executeTestWithPattern("test_bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
             RULE_TYPE_PATTERN, null, pattern, true);
-
-        logger.info("response: " + response);
-
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
     }

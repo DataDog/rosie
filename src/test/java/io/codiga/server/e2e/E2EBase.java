@@ -111,6 +111,12 @@ public class E2EBase {
                 line = line.substring(0, violationFixEdit.start.col - 1) + violationFixEdit.content + line.substring(violationFixEdit.start.col - 1, line.length());
                 lines.set(lineIndex, line);
             }
+            if (violationFixEdit.editType.equalsIgnoreCase("remove")) {
+                int lineIndex = violationFixEdit.start.line - 1;
+                String line = lines.get(lineIndex);
+                line = line.substring(0, violationFixEdit.start.col - 1) + line.substring(violationFixEdit.end.col - 1, line.length());
+                lines.set(lineIndex, line);
+            }
         }
         String newCode = String.join("\n", lines);
         logger.info("====== START OF UPDATED CODE =======");
