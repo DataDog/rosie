@@ -48,10 +48,9 @@ public class PatternMatcher {
 
     private Position getCodePosition(int index) {
         int lineNumber = 1;
-        logger.info("codelines: " + codeLines);
         for (String line : codeLines) {
             logger.info(String.format("search in line |%s|, index=%s, line length=%s", line, index, line.length()));
-            if (index <= line.length()) {
+            if (index <= line.length() + 1) {
                 logger.info("found");
                 return new Position(lineNumber, index);
             }

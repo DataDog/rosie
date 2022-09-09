@@ -68,14 +68,60 @@ public class PatternMatcherTest extends PythonTestUtils {
     }
 
     @Test
-    @DisplayName("Correctly get the pattern object")
-    public void testPatternObject() {
+    @DisplayName("Correctly get the pattern object with one line")
+    public void testPatternObjectOneLine() {
         String pattern = "open(${file}, \"${mode}\")";
+        String localCode = "open(\"foo\", \"r\")";
         AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
-        PatternMatcher patternMatcher = new PatternMatcher(code, rule);
+        PatternMatcher patternMatcher = new PatternMatcher(localCode, rule);
         List<PatternObject> patternObjects = patternMatcher.getPatternObjects();
         assertEquals(patternObjects.size(), 1);
         assertFalse(patternObjects.get(0).javaVariables.isEmpty());
         assertEquals(patternObjects.get(0).javaVariables.size(), 2);
+        assertEquals(1, patternObjects.get(0).start.line);
+        assertEquals(1, patternObjects.get(0).start.col);
+        assertEquals(1, patternObjects.get(0).end.line);
+        assertEquals(17, patternObjects.get(0).end.col);
+        assertEquals(0, patternObjects.get(0).startIndex);
+        assertEquals(16, patternObjects.get(0).endIndex);
+
+        assertEquals(1, patternObjects.get(0).javaVariables.get("file").start.line);
+        assertEquals(6, patternObjects.get(0).javaVariables.get("file").start.col);
+        assertEquals(1, patternObjects.get(0).javaVariables.get("file").end.line);
+        assertEquals(11, patternObjects.get(0).javaVariables.get("file").end.col);
+
+        assertEquals(1, patternObjects.get(0).javaVariables.get("mode").start.line);
+        assertEquals(14, patternObjects.get(0).javaVariables.get("mode").start.col);
+        assertEquals(1, patternObjects.get(0).javaVariables.get("mode").end.line);
+        assertEquals(15, patternObjects.get(0).javaVariables.get("mode").end.col);
+    }
+
+    @Test
+    @DisplayName("Correctly get the pattern object with two lines")
+    public void testPatternObjectTwoLines() {
+        String pattern = "open(${file}, \"${mode}\")";
+        String localCode = "bla\nbli open(\"foo\", \"r\")";
+        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
+        PatternMatcher patternMatcher = new PatternMatcher(localCode, rule);
+        List<PatternObject> patternObjects = patternMatcher.getPatternObjects();
+        assertEquals(1, patternObjects.size());
+        assertFalse(patternObjects.get(0).javaVariables.isEmpty());
+        assertEquals(patternObjects.get(0).javaVariables.size(), 2);
+        assertEquals(2, patternObjects.get(0).start.line);
+        assertEquals(5, patternObjects.get(0).start.col);
+        assertEquals(2, patternObjects.get(0).end.line);
+        assertEquals(21, patternObjects.get(0).end.col);
+        assertEquals(8, patternObjects.get(0).startIndex);
+        assertEquals(24, patternObjects.get(0).endIndex);
+
+        assertEquals(2, patternObjects.get(0).javaVariables.get("file").start.line);
+        assertEquals(10, patternObjects.get(0).javaVariables.get("file").start.col);
+        assertEquals(2, patternObjects.get(0).javaVariables.get("file").end.line);
+        assertEquals(15, patternObjects.get(0).javaVariables.get("file").end.col);
+
+        assertEquals(2, patternObjects.get(0).javaVariables.get("mode").start.line);
+        assertEquals(18, patternObjects.get(0).javaVariables.get("mode").start.col);
+        assertEquals(2, patternObjects.get(0).javaVariables.get("mode").end.line);
+        assertEquals(19, patternObjects.get(0).javaVariables.get("mode").end.col);
     }
 }

@@ -11,6 +11,7 @@ public class PatternObject {
     public Position end;
     public int startIndex;
     public int endIndex;
+    
     public Map<String, PatternVariableValue> javaVariables;
     public ProxyHashMap variables;
 
