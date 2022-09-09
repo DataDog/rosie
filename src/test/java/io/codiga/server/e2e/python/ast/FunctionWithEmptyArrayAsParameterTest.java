@@ -24,7 +24,9 @@ public class FunctionWithEmptyArrayAsParameterTest extends E2EBase {
 
             for(var i = 0 ; i < parametersWithEmptyArray.length ; i++) {
                 const parameter = parametersWithEmptyArray[i];
-                const error = buildError(parameter.start.line, parameter.start.col, parameter.end.line, parameter.end.col, "cannot use default initializer [] in function", "CRITICAL", "SAFETY");
+                console.log(parameter.name.value);
+                console.log(parameter.start.col);
+                const error = buildError(parameter.defaultValue.start.line, parameter.defaultValue.start.col, parameter.defaultValue.end.line, parameter.defaultValue.end.col, "cannot use default initializer [] in function", "CRITICAL", "SAFETY");
                 addError(error);
             }
         }
@@ -37,11 +39,10 @@ public class FunctionWithEmptyArrayAsParameterTest extends E2EBase {
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).start.line);
-        assertEquals(16, response.ruleResponses.get(0).violations.get(0).start.col);
+        assertEquals(40, response.ruleResponses.get(0).violations.get(0).start.col);
 
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).end.line);
-        // TODO: end is not accurate.
-        assertEquals(16, response.ruleResponses.get(0).violations.get(0).end.col);
+        assertEquals(42, response.ruleResponses.get(0).violations.get(0).end.col);
     }
 
 

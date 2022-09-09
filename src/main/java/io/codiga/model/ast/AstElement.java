@@ -8,17 +8,19 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.codiga.analyzer.ast.AstUtils.getEndPosition;
+import static io.codiga.analyzer.ast.AstUtils.getStartPosition;
+
 public class AstElement {
     public Position start;
     public Position end;
     private ParserRuleContext parserRuleContext;
     private ParserRuleContext root;
 
-    public AstElement(Position start, Position end,
-                      ParserRuleContext parserRuleContext,
+    public AstElement(ParserRuleContext parserRuleContext,
                       ParserRuleContext root) {
-        this.start = start;
-        this.end = end;
+        this.start = getStartPosition(parserRuleContext);
+        this.end = getEndPosition(parserRuleContext);
         this.parserRuleContext = parserRuleContext;
         this.root = root;
     }

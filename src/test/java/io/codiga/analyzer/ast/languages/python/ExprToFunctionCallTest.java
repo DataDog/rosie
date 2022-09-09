@@ -43,15 +43,15 @@ public class ExprToFunctionCallTest extends PythonTestUtils {
                 Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();
-                assertEquals(functionCall.functionName, "get");
+                assertEquals(functionCall.functionName.value, "get");
                 assertNotNull(functionCall.moduleOrObject);
-                assertEquals(functionCall.moduleOrObject, "requests");
-                assertEquals(functionCall.arguments[0].value, "w");
-                assertNull(functionCall.arguments[0].name);
-                assertEquals(functionCall.arguments[1].name, "verify");
-                assertEquals(functionCall.arguments[1].value, "False");
-                assertEquals(functionCall.arguments[2].name, "timeout");
-                assertEquals(functionCall.arguments[2].value, "10");
+                assertEquals(functionCall.moduleOrObject.value, "requests");
+                assertEquals(functionCall.arguments.values[0].value.value, "w");
+                assertNull(functionCall.arguments.values[0].name);
+                assertEquals(functionCall.arguments.values[1].name.value, "verify");
+                assertEquals(functionCall.arguments.values[1].value.value, "False");
+                assertEquals(functionCall.arguments.values[2].name.value, "timeout");
+                assertEquals(functionCall.arguments.values[2].value.value, "10");
             }
         }
     }
@@ -70,14 +70,14 @@ public class ExprToFunctionCallTest extends PythonTestUtils {
                 Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();
-                assertEquals(functionCall.functionName, "get");
+                assertEquals(functionCall.functionName.value, "get");
                 assertNull(functionCall.moduleOrObject);
-                assertEquals(functionCall.arguments[0].value, "w");
-                assertNull(functionCall.arguments[0].name);
-                assertEquals(functionCall.arguments[1].name, "verify");
-                assertEquals(functionCall.arguments[1].value, "False");
-                assertEquals(functionCall.arguments[2].name, "timeout");
-                assertEquals(functionCall.arguments[2].value, "10");
+                assertEquals(functionCall.arguments.values[0].value.value, "w");
+                assertNull(functionCall.arguments.values[0].name);
+                assertEquals(functionCall.arguments.values[1].name.value, "verify");
+                assertEquals(functionCall.arguments.values[1].value.value, "False");
+                assertEquals(functionCall.arguments.values[2].name.value, "timeout");
+                assertEquals(functionCall.arguments.values[2].value.value, "10");
             }
 
         }

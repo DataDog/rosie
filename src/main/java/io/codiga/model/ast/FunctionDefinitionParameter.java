@@ -1,6 +1,5 @@
 package io.codiga.model.ast;
 
-import io.codiga.model.common.Position;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 
@@ -14,11 +13,9 @@ public class FunctionDefinitionParameter extends AstElement {
     public FunctionDefinitionParameter(AstString name,
                                        AstString type,
                                        AstString defaultValue,
-                                       Position start,
-                                       Position end,
                                        ParserRuleContext ruleContext,
                                        ParserRuleContext root) {
-        super(start, end, ruleContext, root);
+        super(ruleContext, root);
         this.name = name;
         this.defaultValue = defaultValue;
         this.type = type;

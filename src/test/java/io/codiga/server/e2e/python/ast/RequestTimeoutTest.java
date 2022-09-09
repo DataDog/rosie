@@ -30,12 +30,13 @@ public class RequestTimeoutTest extends E2EBase {
 
     String ruleCode = """
         function visit(node) {
-            const hasTimeout = node.arguments.filter(a => a.name && a.name == "timeout").length > 0;
-            const arguments = node.arguments;
-            const nbArguments = node.arguments.length;
+            node.arguments.values.filter(a => a.name).forEach(a => console.log(a.name.value));
+            const hasTimeout = node.arguments.values.filter(a => a.name && a.name.value == "timeout").length > 0;
+            const arguments = node.arguments.values;
+            const nbArguments = node.arguments.values.length;
             const useRequestsPackage = node.getImports().filter(i => i.packageName == "requests").length > 0;
-            if(!hasTimeout && useRequestsPackage && node.functionName === "get" && node.moduleOrObject === "requests"){
-            console.log("REPORT ISSUE");
+            console.log("HAS TIMEOUT:"+hasTimeout);
+            if(!hasTimeout && useRequestsPackage && node.functionName.value === "get" && node.moduleOrObject.value === "requests"){
                 const error = buildError(node.start.line, node.start.col, node.end.line, node.end.col, "timeout not defined", "CRITICAL", "SAFETY");
                 const lineToInsert = arguments[arguments.length - 1].end.line;
                 const colToInsert = arguments[arguments.length - 1].end.col + 1;

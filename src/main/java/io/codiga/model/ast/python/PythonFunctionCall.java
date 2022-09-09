@@ -1,7 +1,8 @@
 package io.codiga.model.ast.python;
 
+import io.codiga.model.ast.AstString;
 import io.codiga.model.ast.FunctionCall;
-import io.codiga.model.ast.FunctionCallArgument;
+import io.codiga.model.ast.FunctionCallArguments;
 import io.codiga.model.common.Position;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -17,14 +18,14 @@ public class PythonFunctionCall extends FunctionCall {
 
     private static final Logger logger = LoggerFactory.getLogger(PythonFunctionCall.class);
 
-    public PythonFunctionCall(String moduleOrObject,
-                              String functionName,
-                              List<FunctionCallArgument> argumentsList,
+    public PythonFunctionCall(AstString moduleOrObject,
+                              AstString functionName,
+                              FunctionCallArguments arguments,
                               Position start,
                               Position end,
                               ParserRuleContext parserRuleContext,
                               ParserRuleContext root) {
-        super(moduleOrObject, functionName, argumentsList, start, end, parserRuleContext, root);
+        super(moduleOrObject, functionName, arguments, parserRuleContext, root);
     }
 
     public ImportStatement[] getImports() {

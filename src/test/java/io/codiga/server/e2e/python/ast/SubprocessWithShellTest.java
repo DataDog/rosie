@@ -23,9 +23,9 @@ public class SubprocessWithShellTest extends E2EBase {
 
     String ruleCode = """
         function visit(node) {
-            const hasShellTrue = node.arguments.filter(a => a.name && a.name == "shell" && a.value && a.value == "True").length > 0;
+            const hasShellTrue = node.arguments.values.filter(a => a.name && a.name.value == "shell" && a.value && a.value.value == "True").length > 0;
             const useSubprocessPackage = node.getImports().filter(i => i.packageName == "subprocess").length > 0;
-            if(hasShellTrue && useSubprocessPackage && node.functionName === "Popen" && node.moduleOrObject === "subprocess"){
+            if(hasShellTrue && useSubprocessPackage && node.functionName.value === "Popen" && node.moduleOrObject.value === "subprocess"){
                 reportError(node.start.line, node.start.col, node.end.line, node.end.col, "shell defined with true", "CRITICAL", "SAFETY");
             }
         }

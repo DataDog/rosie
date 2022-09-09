@@ -3,8 +3,13 @@ package io.codiga.analyzer.ast;
 import io.codiga.model.common.Position;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AstUtils {
+
+
+    private static final Logger logger = LoggerFactory.getLogger(AstUtils.class);
 
 
     public static Position getStartPosition(ParserRuleContext context) {
@@ -12,7 +17,11 @@ public class AstUtils {
     }
 
     public static Position getEndPosition(ParserRuleContext context) {
-        return new Position(context.start.getLine(), context.start.getCharPositionInLine());
+        logger.info("end position text " + context.getText());
+        logger.info("end position in line " + context.start.getCharPositionInLine());
+        Position endPosition = new Position(context.start.getLine(), context.start.getCharPositionInLine() + context.getText().length());
+        logger.info("end position: " + endPosition);
+        return endPosition;
     }
 
     public static void printTreeRec(ParseTree node, int nbSpaces) {
