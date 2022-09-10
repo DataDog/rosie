@@ -102,7 +102,16 @@ public abstract class AnalyzerCommon {
                         return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage, null);
                     }
 
+                    logger.error("============ UNHANDLED ERROR ============");
                     logger.error(String.format("unhandled exception for rule %s: %s - %s", rule.name(), exception, exception.getMessage()));
+                    logger.error(String.format("rule: %s", rule));
+                    logger.error("------ CODE ------");
+                    logger.error(code);
+                    logger.error("-- END OF CODE --");
+                    logger.error("------ RULE CODE ------");
+                    logger.error(rule.code());
+                    logger.error("-- END OF RULE CODE --");
+                    logger.error("========= END OF UNHANDLED ERROR =========");
 
                     return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), null, null);
                 });

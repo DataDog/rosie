@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static io.codiga.analyzer.ast.languages.python.ImportStmtToImportStatement.transformImportStmtToImportStatement;
 
 
 public class PythonFunctionCall extends FunctionCall {
@@ -35,8 +38,8 @@ public class PythonFunctionCall extends FunctionCall {
 
         for (ParseTree element : importsStatement) {
             PythonParser.Import_stmtContext importStatement = (PythonParser.Import_stmtContext) element;
-            String packageName = importStatement.dotted_as_names().getText();
-            imports.add(new ImportStatement(packageName));
+            Optional<ImportStatement> importStatementOptional = transformImportStmtToImportStatement(importStatement, null);
+            importStatementOptional.ifPresent(imports::add);
         }
         importsArray = new ImportStatement[imports.size()];
         importsArray = imports.toArray(importsArray);

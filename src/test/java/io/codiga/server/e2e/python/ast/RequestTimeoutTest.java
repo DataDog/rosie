@@ -34,7 +34,8 @@ public class RequestTimeoutTest extends E2EBase {
             const hasTimeout = node.arguments.values.filter(a => a.name && a.name.value == "timeout").length > 0;
             const arguments = node.arguments.values;
             const nbArguments = node.arguments.values.length;
-            const useRequestsPackage = node.getImports().filter(i => i.packageName == "requests").length > 0;
+            const allPackages = node.getImports().flatMap(i => i.packages.map(p => p.name.str));
+            const useRequestsPackage = allPackages.filter(i => i === "requests").length > 0;
             console.log("HAS TIMEOUT:"+hasTimeout);
             if(!hasTimeout && useRequestsPackage && node.functionName.value === "get" && node.moduleOrObject.value === "requests"){
                 const error = buildError(node.start.line, node.start.col, node.end.line, node.end.col, "timeout not defined", "CRITICAL", "SAFETY");

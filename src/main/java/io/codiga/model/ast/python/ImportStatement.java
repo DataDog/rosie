@@ -1,9 +1,18 @@
 package io.codiga.model.ast.python;
 
-public class ImportStatement {
-    public String packageName;
+import io.codiga.model.ast.AstElement;
+import io.codiga.parser.python.gen.PythonParser;
+import org.antlr.v4.runtime.ParserRuleContext;
 
-    public ImportStatement(String packageName) {
-        this.packageName = packageName;
+import java.util.List;
+
+public class ImportStatement extends AstElement {
+    public ImportStatementPackage[] packages;
+
+    public ImportStatement(List<ImportStatementPackage> packageList,
+                           PythonParser.Import_stmtContext parserRuleContext, ParserRuleContext root) {
+        super(parserRuleContext, root);
+        this.packages = new ImportStatementPackage[packageList.size()];
+        this.packages = packageList.toArray(packages);
     }
 }

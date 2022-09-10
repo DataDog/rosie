@@ -86,6 +86,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
         return visitChildren(ctx);
     }
 
+
     @Override
     public List<Violation> visitExpr(PythonParser.ExprContext ctx) {
         if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.FUNCTION_CALL && isFunctionCall(ctx)) {
