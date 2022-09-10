@@ -15,6 +15,8 @@ public class FuncDefToFunctionDefinition {
 
 
     public static Optional<FunctionDefinition> transformFuncDefToFunctionDefinition(PythonParser.FuncdefContext ctx, PythonParser.RootContext root) {
+        boolean isAsync = ctx.ASYNC() != null;
+
         AstString name = new AstStringBuilder().setValue(ctx.name().getText()).setRuleContext(ctx).setRoot(root).createAstString();
         AstString returnType = null;
         FunctionDefinitionParameters parameters = null;
@@ -66,8 +68,6 @@ public class FuncDefToFunctionDefinition {
                         }
                     }
                     if (parameterName != null) {
-
-                        logger.info("create parameter");
                         FunctionDefinitionParameter functionDefinitionParameter = new FunctionDefinitionParameter(
                             parameterName,
                             parameterType,
@@ -87,7 +87,9 @@ public class FuncDefToFunctionDefinition {
                 root);
         }
 
-        FunctionDefinition functionDefinition = new FunctionDefinition(name,
+        FunctionDefinition functionDefinition = new FunctionDefinition(
+            isAsync,
+            name,
             parameters,
             returnType,
             ctx,

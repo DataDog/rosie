@@ -49,9 +49,7 @@ public class PatternMatcher {
     private Position getCodePosition(int index) {
         int lineNumber = 1;
         for (String line : codeLines) {
-            logger.info(String.format("search in line |%s|, index=%s, line length=%s", line, index, line.length()));
             if (index <= line.length() + 1) {
-                logger.info("found");
                 return new Position(lineNumber, index);
             }
             index = index - line.length() - 1;
@@ -73,7 +71,7 @@ public class PatternMatcher {
             int start = matcher.start(0);
             int end = matcher.end(0);
             String found = matcher.group(0);
-            logger.info("found: " + found);
+
             PatternVariable patternVariable = new PatternVariable(found, start, end);
             patternVariableArrayList.add(patternVariable);
         }
@@ -90,7 +88,7 @@ public class PatternMatcher {
                 return o2.start() - o1.start();
             }
         }).toList();
-        patternVariables.forEach(pv -> logger.info("start: " + pv.start()));
+
         String regularExpression = prepareStringForRegularExpression(this.analyzerRule.pattern());
         for (PatternVariable patternVariable : patternVariables) {
             regularExpression = regularExpression.substring(0, patternVariable.start()) + "(.+)" + regularExpression.substring(patternVariable.end(), regularExpression.length());
@@ -110,26 +108,19 @@ public class PatternMatcher {
 
 
         if (matcher.find()) {
-            logger.info("group count: " + matcher.groupCount());
-            logger.info("matcher: " + matcher.group());
 
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 int startIndex = matcher.start(i);
                 int endIndex = matcher.end(i);
                 PatternVariable patternVariable = patternVariables.get(i - 1);
-                logger.info(String.format("variable %s", patternVariable.name()));
-                logger.info("startIndex: " + startIndex);
-                logger.info("endIndex: " + endIndex);
-
                 PatternVariableValue patternPosition = new PatternVariableValue(matcher.group(i),
                     getCodePosition(startIndex + 1),
                     getCodePosition(endIndex + 1),
                     startIndex,
                     endIndex);
                 variables.put(stripVariable(patternVariable.name()), patternPosition);
-                logger.info(matcher.group(i));
             }
-            logger.info(String.format("pattern"));
+
             patternObjects.add(new PatternObject(
                 getCodePosition(matcher.start(0) + 1),
                 getCodePosition(matcher.end(0) + 1),
@@ -137,7 +128,6 @@ public class PatternMatcher {
                 matcher.end(0),
                 variables));
         }
-        logger.info("end");
         return List.copyOf(patternObjects);
     }
 

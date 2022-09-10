@@ -65,7 +65,6 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
     @Override
     public List<Violation> visitFuncdef(PythonParser.FuncdefContext ctx) {
         if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.FUNCTION_DEFINITION) {
-            logger.info("FUNCTION DEFINITION");
             Optional<FunctionDefinition> functionDefinitionOptional = transformFuncDefToFunctionDefinition(ctx, this.root);
             if (functionDefinitionOptional.isPresent()) {
                 ExecutionEnvironment executionEnvironment = new ExecutionEnvironmentBuilder()
@@ -79,7 +78,6 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
                 context.eval("js", finalCode);
                 violations.addAll(executionEnvironment.errorReporting.getErrors());
                 String executionOutput = executionEnvironment.getOutput();
-                logger.info("OUTPUT: " + executionOutput);
                 if (executionOutput != null) {
                     this.output.append(executionOutput);
                 }
@@ -104,7 +102,6 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
                 context.eval("js", finalCode);
                 violations.addAll(executionEnvironment.errorReporting.getErrors());
                 String executionOutput = executionEnvironment.getOutput();
-                logger.info("OUTPUT: " + executionOutput);
                 if (executionOutput != null) {
                     this.output.append(executionOutput);
                 }

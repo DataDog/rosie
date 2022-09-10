@@ -7,8 +7,7 @@ public class AstString extends AstElement {
 
     public String value;
     public String str;
-
-
+    
     public AstString(String value,
                      ParserRuleContext ruleContext,
                      ParserRuleContext root) {

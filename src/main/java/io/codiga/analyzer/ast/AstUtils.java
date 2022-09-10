@@ -17,10 +17,7 @@ public class AstUtils {
     }
 
     public static Position getEndPosition(ParserRuleContext context) {
-        logger.info("end position text " + context.getText());
-        logger.info("end position in line " + context.start.getCharPositionInLine());
         Position endPosition = new Position(context.start.getLine(), context.start.getCharPositionInLine() + context.getText().length());
-        logger.info("end position: " + endPosition);
         return endPosition;
     }
 

@@ -74,7 +74,14 @@ public abstract class AnalyzerCommon {
 
         List<CompletableFuture<RuleResult>> futures = rules.stream().map(rule -> {
             CompletableFuture<RuleResult> future = CompletableFuture
-                .supplyAsync(() -> execute(filename, code, rule, logOutput), pool.service)
+                .supplyAsync(() -> {
+                    long startTime = System.currentTimeMillis();
+                    RuleResult res = execute(filename, code, rule, logOutput);
+                    long endTime = System.currentTimeMillis();
+                    long executionTime = endTime - startTime;
+                    logger.info(String.format("rule %s took %s ms to execute", rule.name(), executionTime));
+                    return res;
+                }, pool.service)
                 .orTimeout(getTimeout(), TimeUnit.MILLISECONDS)
                 .exceptionally(exception -> {
                     logger.info("caught exception: " + exception.getMessage());
@@ -104,8 +111,6 @@ public abstract class AnalyzerCommon {
 
 
         return sequence(futures).thenApply(finalList -> {
-
-            logger.info("final list: " + finalList);
             // ignore the violations being ignored
             List<RuleResult> fileteredList = finalList.stream().map(ruleResult -> {
                 List<Violation> filteredViolations = ruleResult.violations().stream().filter(v -> {

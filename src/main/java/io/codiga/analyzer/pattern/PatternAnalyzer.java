@@ -32,7 +32,6 @@ public class PatternAnalyzer extends AnalyzerCommon {
         String output = null;
 
         for (PatternObject patternObject : patternObjects) {
-            logger.info("found pattern: " + patternObject);
 
             String finalCode = buildExecutableCode(rule.code());
 
@@ -45,7 +44,6 @@ public class PatternAnalyzer extends AnalyzerCommon {
 
             Context context = createContextForJavaScriptExecution(executionEnvironment);
             context.eval("js", finalCode);
-            logger.info("errors: " + executionEnvironment.errorReporting.getErrors());
             violations.addAll(executionEnvironment.errorReporting.getErrors());
             output = executionEnvironment.getOutput();
         }

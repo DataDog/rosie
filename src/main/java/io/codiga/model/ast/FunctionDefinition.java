@@ -9,13 +9,17 @@ public class FunctionDefinition extends AstElement {
     public AstString returnType;
     public FunctionDefinitionParameters parameters;
 
+    public boolean isAsync;
 
-    public FunctionDefinition(AstString name,
+
+    public FunctionDefinition(boolean isAsync,
+                              AstString name,
                               FunctionDefinitionParameters functionDefinitionParameters,
                               AstString returnType,
                               ParserRuleContext ruleContext,
                               ParserRuleContext root) {
         super(ruleContext, root);
+        this.isAsync = isAsync;
         this.parameters = functionDefinitionParameters;
         this.name = name;
         this.returnType = returnType;
