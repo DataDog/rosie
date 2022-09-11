@@ -26,7 +26,7 @@ public class Request {
     }
 
     public boolean isValid() {
-        return (this.fileEncoding == null ||
+        return !(this.fileEncoding == null ||
             this.filename == null ||
             this.language == null ||
             this.codeBase64 == null ||

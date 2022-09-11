@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import static io.codiga.model.ErrorCode.ERROR_RULE_INVALID_RULE_TYPE;
 import static io.codiga.model.ErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
 import static io.codiga.utils.CompletableFutureUtils.sequence;
 
@@ -52,13 +53,18 @@ public class Analyzer {
 
         // Return an error for the rule with an invalid language
         return allFutures.thenApply(result -> {
-            List<RuleResult> invalidLanguagesRuleResults = rulesWithInvalidLanguage.stream().map(r -> {
-                return new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null, null);
-            }).toList();
+            List<RuleResult> invalidLanguagesRuleResults = rulesWithInvalidLanguage.stream().map(r -> new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null, null)).toList();
+
+            List<RuleResult> invalidRuleTypeResults = rulesWithValidLanguage.stream()
+                .filter(r -> r.ruleType() == RuleType.UNKNOWN)
+                .map(r -> new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_INVALID_RULE_TYPE), null, null)).toList();
+
             List<RuleResult> allRuleResult = ImmutableList
                 .<RuleResult>builder()
                 .addAll(result.stream().flatMap(r -> r.ruleResults().stream()).toList())
-                .addAll(invalidLanguagesRuleResults).build();
+                .addAll(invalidLanguagesRuleResults)
+                .addAll(invalidRuleTypeResults)
+                .build();
             return new AnalysisResult(allRuleResult);
         });
     }

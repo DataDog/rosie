@@ -72,10 +72,9 @@ public class ServerMainController {
     @PostMapping("/analyze")
     @Async
     public CompletableFuture<Response> analyze(@RequestBody Request request) {
-        logger.info("receiving request: " + request);
         metrics.incrementMetric(METRIC_ANALYSIS_REQUEST);
 
-        if (request.isValid()) {
+        if (!request.isValid()) {
             return CompletableFuture.completedFuture(
                 new Response(List.of(), List.of(INVALID_REQUEST)));
         }
