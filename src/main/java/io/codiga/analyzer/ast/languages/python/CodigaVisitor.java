@@ -7,6 +7,7 @@ import io.codiga.model.EntityChecked;
 import io.codiga.model.RuleType;
 import io.codiga.model.ast.FunctionCall;
 import io.codiga.model.ast.FunctionDefinition;
+import io.codiga.model.ast.python.TryStatement;
 import io.codiga.model.error.Violation;
 import io.codiga.parser.python.gen.PythonParser;
 import io.codiga.parser.python.gen.PythonParserBaseVisitor;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import static io.codiga.analyzer.ast.languages.python.ExprToFunctionCall.transformExprToFunctionCall;
 import static io.codiga.analyzer.ast.languages.python.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
+import static io.codiga.analyzer.ast.languages.python.TryStmtToTryStatement.transformStmtToTryStatement;
 import static io.codiga.analyzer.ast.vm.VmUtils.buildExecutableCode;
 import static io.codiga.analyzer.ast.vm.VmUtils.createContextForJavaScriptExecution;
 
@@ -58,6 +60,32 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
     @Override
     public List<Violation> visitRoot(PythonParser.RootContext ctx) {
         this.root = ctx;
+        return visitChildren(ctx);
+    }
+
+
+    @Override
+    public List<Violation> visitTry_stmt(PythonParser.Try_stmtContext ctx) {
+        if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.TRY_BLOCK) {
+            Optional<TryStatement> tryStatementOptional = transformStmtToTryStatement(ctx, root);
+            if (tryStatementOptional.isPresent()) {
+                ExecutionEnvironment executionEnvironment = new ExecutionEnvironmentBuilder()
+                    .setCode(code)
+                    .setRootObject(tryStatementOptional.get())
+                    .setLogOutput(logOutput)
+                    .createExecutionEnvironment();
+
+                Context context = createContextForJavaScriptExecution(executionEnvironment);
+                String finalCode = buildExecutableCode(this.analyzerRule.code());
+                context.eval("js", finalCode);
+                violations.addAll(executionEnvironment.errorReporting.getErrors());
+                String executionOutput = executionEnvironment.getOutput();
+                if (executionOutput != null) {
+                    this.output.append(executionOutput);
+                }
+            }
+        }
+
         return visitChildren(ctx);
     }
 

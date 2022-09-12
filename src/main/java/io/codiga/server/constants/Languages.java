@@ -11,6 +11,7 @@ public class Languages {
     public final static String RULE_TYPE_PATTERN = "pattern";
     public final static String ENTITY_CHECKED_FUNCTION_CALL = "functioncall";
     public final static String ENTITY_CHECKED_FUNCTION_DEFINITION = "functiondefinition";
+    public final static String ENTITY_CHECKED_TRY_BLOCK = "tryblock";
 
     public final static List<String> SUPPORTED_LANGUAGES = List.of(LANGUAGE_PYTHON);
 
