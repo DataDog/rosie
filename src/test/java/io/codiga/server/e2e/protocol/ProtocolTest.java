@@ -17,6 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 
+import static io.codiga.model.ErrorCode.ERROR_RULE_INVALID_RULE_TYPE;
 import static io.codiga.model.ErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
 import static io.codiga.server.constants.Languages.*;
 import static io.codiga.server.response.ResponseErrors.*;
@@ -110,6 +111,51 @@ public class ProtocolTest {
         assertEquals(0, response.errors.size());
         assertEquals(ERROR_RULE_LANGUAGE_MISMATCH, response.ruleResponses.get(0).errors.get(0));
         assertEquals("python-timeout", response.ruleResponses.get(0).identifier);
+    }
+
+    @Test
+    public void testInvalidRuleType() throws Exception {
+        Request request = new RequestBuilder()
+            .setFilename("bla.py")
+            .setLanguage(LANGUAGE_PYTHON)
+            .setFileEncoding("utf-8")
+            .setCodeBase64(encodeBase64(pythonCode))
+            .setRules(
+                List.of(
+                    new RuleBuilder()
+                        .setId("python-timeout")
+                        .setContentBase64(encodeBase64(ruleCode))
+                        .setLanguage(LANGUAGE_PYTHON)
+                        .setType("foobar")
+                        .setEntityChecked(ENTITY_CHECKED_FUNCTION_CALL)
+                        .createRule()
+                )
+            ).createRequest();
+        Response response = this.restTemplate.postForObject(
+            "http://localhost:" + port + "/analyze", request,
+            Response.class);
+        logger.info("response: " + response.errors);
+        assertEquals(1, response.ruleResponses.size());
+        assertEquals(0, response.errors.size());
+        assertEquals(ERROR_RULE_INVALID_RULE_TYPE, response.ruleResponses.get(0).errors.get(0));
+        assertEquals("python-timeout", response.ruleResponses.get(0).identifier);
+    }
+
+    @Test
+    public void testNoRules() throws Exception {
+        Request request = new RequestBuilder()
+            .setFilename("bla.py")
+            .setLanguage(LANGUAGE_PYTHON)
+            .setFileEncoding("utf-8")
+            .setCodeBase64(encodeBase64(pythonCode))
+            .setRules(null)
+            .createRequest();
+        Response response = this.restTemplate.postForObject(
+            "http://localhost:" + port + "/analyze", request,
+            Response.class);
+        logger.info("response: " + response.errors);
+        assertEquals(1, response.errors.size());
+        assertEquals(INVALID_REQUEST, response.errors.get(0));
     }
 
     @Test
