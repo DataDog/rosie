@@ -68,7 +68,7 @@ public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
         assertEquals("bar", functionDefinition.name.str);
         assertTrue(functionDefinition.isAsync);
         assertEquals(1, functionDefinition.start.line);
-        assertEquals(0, functionDefinition.start.col);
+        assertEquals(1, functionDefinition.start.col);
 
         assertEquals("one", functionDefinition.parameters.values[0].name.str);
         assertNull(functionDefinition.parameters.values[0].type);

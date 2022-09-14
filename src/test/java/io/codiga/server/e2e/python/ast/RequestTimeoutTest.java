@@ -38,7 +38,7 @@ public class RequestTimeoutTest extends E2EBase {
             if(!hasTimeout && useRequestsPackage && node.functionName.value === "get" && node.moduleOrObject.value === "requests"){
                 const error = buildError(node.start.line, node.start.col, node.end.line, node.end.col, "timeout not defined", "CRITICAL", "SAFETY");
                 const lineToInsert = arguments[arguments.length - 1].end.line;
-                const colToInsert = arguments[arguments.length - 1].end.col + 1;
+                const colToInsert = arguments[arguments.length - 1].end.col;
                 const edit = buildEditAdd(lineToInsert, colToInsert, ", timeout=5")
                 const fix = buildFix("add timeout argument", [edit]);
                 addError(error.addFix(fix));

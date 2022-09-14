@@ -53,9 +53,9 @@ public class InsecureHashFunctionsTest extends E2EBase {
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(3, response.ruleResponses.get(0).violations.get(0).start.line);
-        assertEquals(0, response.ruleResponses.get(0).violations.get(0).start.col);
+        assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.col);
 
         assertEquals(3, response.ruleResponses.get(0).violations.get(0).end.line);
-        assertEquals(18, response.ruleResponses.get(0).violations.get(0).end.col);
+        assertEquals(19, response.ruleResponses.get(0).violations.get(0).end.col);
     }
 }

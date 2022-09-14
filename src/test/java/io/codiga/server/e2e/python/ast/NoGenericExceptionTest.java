@@ -52,8 +52,8 @@ public class NoGenericExceptionTest extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(5, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals(5, response.ruleResponses.get(0).violations.get(0).end.line);
-        assertEquals(7, response.ruleResponses.get(0).violations.get(0).start.col);
-        assertEquals(16, response.ruleResponses.get(0).violations.get(0).end.col);
+        assertEquals(8, response.ruleResponses.get(0).violations.get(0).start.col);
+        assertEquals(17, response.ruleResponses.get(0).violations.get(0).end.col);
         assertEquals("generic exception", response.ruleResponses.get(0).violations.get(0).message);
         assertEquals(0, response.ruleResponses.get(0).violations.get(0).fixes.size());
     }

@@ -33,16 +33,16 @@ public class FunctionWithEmptyArrayAsParameterTest extends E2EBase {
         """;
 
     @Test
-    public void testPythonRequestTimeout() throws Exception {
+    public void testfunctionWithEmptyArrrayAsParameter() throws Exception {
         Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-array-default-value", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, true);
         logger.info("response:" + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).start.line);
-        assertEquals(40, response.ruleResponses.get(0).violations.get(0).start.col);
+        assertEquals(41, response.ruleResponses.get(0).violations.get(0).start.col);
 
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).end.line);
-        assertEquals(42, response.ruleResponses.get(0).violations.get(0).end.col);
+        assertEquals(43, response.ruleResponses.get(0).violations.get(0).end.col);
     }
 
 

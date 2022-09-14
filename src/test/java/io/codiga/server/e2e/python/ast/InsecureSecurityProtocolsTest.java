@@ -70,9 +70,9 @@ public class InsecureSecurityProtocolsTest extends E2EBase {
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(6, response.ruleResponses.get(0).violations.get(0).start.line);
-        assertEquals(21, response.ruleResponses.get(0).violations.get(0).start.col);
+        assertEquals(22, response.ruleResponses.get(0).violations.get(0).start.col);
 
         assertEquals(6, response.ruleResponses.get(0).violations.get(0).end.line);
-        assertEquals(110, response.ruleResponses.get(0).violations.get(0).end.col);
+        assertEquals(111, response.ruleResponses.get(0).violations.get(0).end.col);
     }
 }

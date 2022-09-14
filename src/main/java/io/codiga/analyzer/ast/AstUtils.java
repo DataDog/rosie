@@ -13,11 +13,11 @@ public class AstUtils {
 
 
     public static Position getStartPosition(ParserRuleContext context) {
-        return new Position(context.start.getLine(), context.start.getCharPositionInLine());
+        return new Position(context.start.getLine(), context.start.getCharPositionInLine() + 1);
     }
 
     public static Position getEndPosition(ParserRuleContext context) {
-        Position endPosition = new Position(context.start.getLine(), context.start.getCharPositionInLine() + context.getText().length());
+        Position endPosition = new Position(context.start.getLine(), context.start.getCharPositionInLine() + context.getText().length() + 1);
         return endPosition;
     }
 
