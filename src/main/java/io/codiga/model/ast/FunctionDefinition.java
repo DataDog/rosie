@@ -18,7 +18,7 @@ public class FunctionDefinition extends AstElement {
                               AstString returnType,
                               ParserRuleContext ruleContext,
                               ParserRuleContext root) {
-        super(ruleContext, root);
+        super(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, ruleContext, root);
         this.isAsync = isAsync;
         this.parameters = functionDefinitionParameters;
         this.name = name;

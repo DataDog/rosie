@@ -11,7 +11,7 @@ import static io.codiga.server.constants.Languages.RULE_TYPE_AST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class NoGenericExceptionTest extends E2EBase {
+public class NoSilentExceptionTest extends E2EBase {
 
     String pythonCodeWithError = """
         a = 2
@@ -27,42 +27,41 @@ public class NoGenericExceptionTest extends E2EBase {
         try:
             c = a /b
         except ValueError as e:
+            print(e)
             pass""";
 
     String ruleCode = """
         function visit(node) {
-            const genericExceptions = node.exceptClause.exceptions.filter(e => e.str === "Exception");
-
-            for (var i = 0 ; i < genericExceptions.length ; i++) {
-                exception = genericExceptions[i];
-                const error = buildError(exception.start.line, exception.start.col, exception.end.line, exception.end.col, "generic exception", "WARNING", "BEST_PRACTICES");
+            const hasPass = node.exceptClause && node.exceptClause.getCodeBlock() && node.exceptClause.getCodeBlock() === "pass";
+            if(hasPass) {
+                const error = buildError(node.exceptClause.start.line, node.exceptClause.start.col, node.exceptClause.end.line, node.exceptClause.end.col, "silent exception", "WARNING", "BEST_PRACTICES");
                 addError(error);
             }
         }
         """;
 
     @Test
-    @DisplayName("Detect generic exceptions")
-    public void testGenericExceptionError() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-generic-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, false);
+    @DisplayName("Do not use pass to ignore exceptions")
+    public void testSilentExceptionFail() throws Exception {
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-no-silent-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(5, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals(5, response.ruleResponses.get(0).violations.get(0).end.line);
-        assertEquals(8, response.ruleResponses.get(0).violations.get(0).start.col);
-        assertEquals(17, response.ruleResponses.get(0).violations.get(0).end.col);
-        assertEquals("generic exception", response.ruleResponses.get(0).violations.get(0).message);
+        assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.col);
+        assertEquals(24, response.ruleResponses.get(0).violations.get(0).end.col);
+        assertEquals("silent exception", response.ruleResponses.get(0).violations.get(0).message);
         assertEquals(0, response.ruleResponses.get(0).violations.get(0).fixes.size());
     }
 
-
     @Test
-    @DisplayName("No issue when specific errors are used")
-    public void testGenericExceptionNoError() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "python-generic-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, false);
+    @DisplayName("Do not use pass to ignore exceptions - do not fail")
+    public void testSilentExceptionFailNoError() throws Exception {
+        Response response = executeTest("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "python-no-silent-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
     }
+
 }

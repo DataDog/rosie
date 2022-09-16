@@ -9,7 +9,7 @@ public class TryStatement extends AstElement {
     public FinallyClause finallyClause;
 
     public TryStatement(ExceptClause exceptClause, FinallyClause finallyClause, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(parserRuleContext, root);
+        super(AST_ELEMENT_TYPE_TRY_STATEMENT, parserRuleContext, root);
         this.exceptClause = exceptClause;
         this.finallyClause = finallyClause;
     }

@@ -15,4 +15,14 @@ public class ViolationFixEdit {
         this.content = content;
         this.editType = editType;
     }
+
+    @Override
+    public String toString() {
+        return "ViolationFixEdit{" +
+            "start=" + start +
+            ", end=" + end +
+            ", content='" + content + '\'' +
+            ", editType='" + editType + '\'' +
+            '}';
+    }
 }

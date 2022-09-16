@@ -17,8 +17,8 @@ public class RuleResponse {
         this.output = null;
     }
 
-    public RuleResponse(String identifier, List<Violation> violations, List<String> errors, String executionError, String output) {
-        this.identifier = identifier;
+    public RuleResponse(String id, List<Violation> violations, List<String> errors, String executionError, String output) {
+        this.identifier = id;
         this.violations = violations;
         this.errors = errors;
         this.executionError = executionError;

@@ -21,5 +21,17 @@ public class Violation {
         this.category = category;
         this.fixes = fixes;
     }
+
+    @Override
+    public String toString() {
+        return "Violation{" +
+            "message='" + message + '\'' +
+            ", start=" + start +
+            ", end=" + end +
+            ", severity='" + severity + '\'' +
+            ", category='" + category + '\'' +
+            ", fixes=" + fixes +
+            '}';
+    }
 }
 

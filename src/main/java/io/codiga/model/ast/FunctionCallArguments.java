@@ -15,7 +15,8 @@ public class FunctionCallArguments extends AstElement {
                                  ParserRuleContext parserRuleContext,
                                  ParserRuleContext root
     ) {
-        super(parserRuleContext, root);
+        super(AST_ELEMENT_TYPE_ARGUMENTS, parserRuleContext, root);
+
         this.values = new FunctionCallArgument[argumentsList.size()];
         this.values = argumentsList.toArray(values);
 

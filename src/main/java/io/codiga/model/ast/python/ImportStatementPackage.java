@@ -10,7 +10,7 @@ public class ImportStatementPackage extends AstElement {
 
 
     public ImportStatementPackage(AstString name, AstString as, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(parserRuleContext, root);
+        super(AST_ELEMENT_TYPE_IMPORT_PACKAGE, parserRuleContext, root);
         this.name = name;
         this.as = as;
     }

@@ -11,7 +11,7 @@ public class ImportStatement extends AstElement {
 
     public ImportStatement(List<ImportStatementPackage> packageList,
                            PythonParser.Import_stmtContext parserRuleContext, ParserRuleContext root) {
-        super(parserRuleContext, root);
+        super(AST_ELEMENT_TYPE_IMPORT_STATEMENT, parserRuleContext, root);
         this.packages = new ImportStatementPackage[packageList.size()];
         this.packages = packageList.toArray(packages);
     }

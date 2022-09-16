@@ -13,7 +13,7 @@ public class FunctionDefinitionParameters extends AstElement {
     public FunctionDefinitionParameters(List<FunctionDefinitionParameter> argumentsList,
                                         ParserRuleContext ruleContext,
                                         ParserRuleContext root) {
-        super(ruleContext, root);
+        super(AST_ELEMENT_TYPE_FUNCTION_DEFINITION_PARAMETERS, ruleContext, root);
         this.values = new FunctionDefinitionParameter[argumentsList.size()];
         this.values = argumentsList.toArray(this.values);
     }

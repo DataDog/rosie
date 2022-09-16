@@ -15,7 +15,7 @@ public class FunctionDefinitionParameter extends AstElement {
                                        AstString defaultValue,
                                        ParserRuleContext ruleContext,
                                        ParserRuleContext root) {
-        super(ruleContext, root);
+        super(AST_ELEMENT_TYPE_FUNCTION_DEFINITION_PARAMETER, ruleContext, root);
         this.name = name;
         this.defaultValue = defaultValue;
         this.type = type;

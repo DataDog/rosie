@@ -11,4 +11,12 @@ public class ViolationFix {
         this.description = description;
         this.edits = edits;
     }
+
+    @Override
+    public String toString() {
+        return "ViolationFix{" +
+            "description='" + description + '\'' +
+            ", edits=" + edits +
+            '}';
+    }
 }

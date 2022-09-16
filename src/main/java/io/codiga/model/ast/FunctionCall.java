@@ -17,7 +17,7 @@ public class FunctionCall extends AstElement {
                         ParserRuleContext parserRuleContext,
                         ParserRuleContext root
     ) {
-        super(parserRuleContext, root);
+        super(AST_ELEMENT_TYPE_FUNCTION_CALL, parserRuleContext, root);
         this.arguments = arguments;
         this.moduleOrObject = moduleOrObject;
         this.functionName = functionName;

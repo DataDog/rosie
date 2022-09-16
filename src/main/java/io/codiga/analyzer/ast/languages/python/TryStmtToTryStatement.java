@@ -70,7 +70,7 @@ public class TryStmtToTryStatement {
             if (ctx.except_clause().get(0).name() != null) {
                 astString = new AstString(ctx.except_clause().get(0).name().getText(), ctx.except_clause().get(0).name(), root);
             }
-            exceptClause = new ExceptClause(exceptionNames, astString, ctx, root);
+            exceptClause = new ExceptClause(exceptionNames, astString, ctx.except_clause().get(0), root);
 
         }
         if (ctx.finally_clause() != null) {

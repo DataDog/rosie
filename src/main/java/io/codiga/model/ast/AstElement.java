@@ -12,13 +12,30 @@ import static io.codiga.analyzer.ast.AstUtils.getEndPosition;
 import static io.codiga.analyzer.ast.AstUtils.getStartPosition;
 
 public class AstElement {
+    public static final String AST_ELEMENT_TYPE_STRING = "string";
+    public static final String AST_ELEMENT_TYPE_FUNCTION_CALL = "functioncall";
+    public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION_PARAMETERS = "functiondefinitionparameters";
+    public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION_PARAMETER = "functiondefinitionparameter";
+    public static final String AST_ELEMENT_TYPE_FUNCTION_EXCEPT_CLAUSE = "exceptclause";
+    public static final String AST_ELEMENT_TYPE_FUNCTION_FINALLY_CLAUSE = "finallyclause";
+    public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION = "functiondefinition";
+    public static final String AST_ELEMENT_TYPE_IMPORT_STATEMENT = "importstatement";
+    public static final String AST_ELEMENT_TYPE_FROM_STATEMENT = "fromstatement";
+    public static final String AST_ELEMENT_TYPE_TRY_STATEMENT = "trystatement";
+    public static final String AST_ELEMENT_TYPE_FROM_ELEMENT = "fromelement";
+    public static final String AST_ELEMENT_TYPE_IMPORT_PACKAGE = "importpackage";
+    public static final String AST_ELEMENT_TYPE_ARGUMENTS = "arguments";
+    public static final String AST_ELEMENT_TYPE_ARGUMENT = "argument";
     public Position start;
     public Position end;
+    public String astType;
     private ParserRuleContext parserRuleContext;
     private ParserRuleContext root;
 
-    public AstElement(ParserRuleContext parserRuleContext,
+    public AstElement(String astType,
+                      ParserRuleContext parserRuleContext,
                       ParserRuleContext root) {
+        this.astType = astType;
         this.start = getStartPosition(parserRuleContext);
         this.end = getEndPosition(parserRuleContext);
         this.parserRuleContext = parserRuleContext;

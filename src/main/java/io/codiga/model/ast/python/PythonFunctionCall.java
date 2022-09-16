@@ -1,5 +1,6 @@
 package io.codiga.model.ast.python;
 
+import io.codiga.model.ast.AstElement;
 import io.codiga.model.ast.AstString;
 import io.codiga.model.ast.FunctionCall;
 import io.codiga.model.ast.FunctionCallArguments;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.languages.python.ImportFromToFromStatement.transformFromStmtToFromStatement;
 import static io.codiga.analyzer.ast.languages.python.ImportStmtToImportStatement.transformImportStmtToImportStatement;
 
 
@@ -31,19 +33,29 @@ public class PythonFunctionCall extends FunctionCall {
         super(moduleOrObject, functionName, arguments, parserRuleContext, root);
     }
 
-    public ImportStatement[] getImports() {
-        ImportStatement[] importsArray;
-        List<ImportStatement> imports = new ArrayList<>();
+    public AstElement[] getImports() {
+        AstElement[] returnedElements;
+        List<AstElement> returnedElementsAsList = new ArrayList<>();
+
         List<ParseTree> importsStatement = getNodes(PythonParser.Import_stmtContext.class);
 
         for (ParseTree element : importsStatement) {
             PythonParser.Import_stmtContext importStatement = (PythonParser.Import_stmtContext) element;
             Optional<ImportStatement> importStatementOptional = transformImportStmtToImportStatement(importStatement, null);
-            importStatementOptional.ifPresent(imports::add);
+            importStatementOptional.ifPresent(returnedElementsAsList::add);
         }
-        importsArray = new ImportStatement[imports.size()];
-        importsArray = imports.toArray(importsArray);
-        return importsArray;
+
+        List<ParseTree> fromStatements = getNodes(PythonParser.From_stmtContext.class);
+
+        for (ParseTree element : fromStatements) {
+            PythonParser.From_stmtContext fromStatement = (PythonParser.From_stmtContext) element;
+            Optional<FromStatement> fromStatementOptional = transformFromStmtToFromStatement(fromStatement, null);
+            fromStatementOptional.ifPresent(returnedElementsAsList::add);
+        }
+
+        returnedElements = new AstElement[returnedElementsAsList.size()];
+        returnedElements = returnedElementsAsList.toArray(returnedElements);
+        return returnedElements;
     }
 
 }

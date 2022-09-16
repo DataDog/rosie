@@ -9,7 +9,7 @@ public class FinallyClause extends AstElement {
     public AstString as;
 
     public FinallyClause(ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(parserRuleContext, root);
+        super(AST_ELEMENT_TYPE_FUNCTION_FINALLY_CLAUSE, parserRuleContext, root);
     }
 
 }

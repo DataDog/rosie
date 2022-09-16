@@ -9,7 +9,7 @@ public class FromElement extends AstElement {
     public AstString as;
 
     public FromElement(AstString name, AstString as, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(parserRuleContext, root);
+        super(AST_ELEMENT_TYPE_FROM_ELEMENT, parserRuleContext, root);
         this.name = name;
         this.as = as;
     }

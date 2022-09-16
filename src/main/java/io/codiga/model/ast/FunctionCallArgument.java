@@ -8,7 +8,7 @@ public class FunctionCallArgument extends AstElement {
     public AstString value;
 
     public FunctionCallArgument(AstString n, AstString v, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(parserRuleContext, root);
+        super(AST_ELEMENT_TYPE_ARGUMENT, parserRuleContext, root);
         this.name = n;
         this.value = v;
     }
