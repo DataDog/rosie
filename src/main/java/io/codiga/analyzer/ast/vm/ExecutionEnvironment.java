@@ -1,10 +1,14 @@
 package io.codiga.analyzer.ast.vm;
 
 import io.codiga.analyzer.ast.common.ErrorReporting;
+import org.graalvm.polyglot.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+
+import static io.codiga.analyzer.ast.vm.VmUtils.buildExecutableCode;
+import static io.codiga.analyzer.ast.vm.VmUtils.createContextForJavaScriptExecution;
 
 
 public class ExecutionEnvironment {
@@ -13,17 +17,19 @@ public class ExecutionEnvironment {
     public Object rootObject;
     public ErrorReporting errorReporting;
     public String code;
+    public String ruleCode;
     public String filename = null;
     public boolean logOutput;
     private OutputStream outputStream;
     private InputStream inputStream;
 
-    public ExecutionEnvironment(Object rootObject, String code, boolean logOutput, String filename) {
+    public ExecutionEnvironment(Object rootObject, String code, String ruleCode, boolean logOutput, String filename) {
         this.rootObject = rootObject;
         this.errorReporting = new ErrorReporting();
         this.logOutput = logOutput;
         this.filename = filename;
         this.code = code;
+        this.ruleCode = ruleCode;
 
         if (this.logOutput) {
             PipedOutputStream pipedOutputStream = new PipedOutputStream();
@@ -66,5 +72,12 @@ public class ExecutionEnvironment {
             logger.error("impossible to read the data");
             return null;
         }
+    }
+
+    public ExecutionResult execute() {
+        Context context = createContextForJavaScriptExecution(this);
+        String finalCode = buildExecutableCode(this.ruleCode);
+        context.eval("js", finalCode);
+        return new ExecutionResult(this.errorReporting.getErrors(), this.getOutput());
     }
 }

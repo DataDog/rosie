@@ -20,6 +20,11 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_FUNCTION_FINALLY_CLAUSE = "finallyclause";
     public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION = "functiondefinition";
     public static final String AST_ELEMENT_TYPE_IMPORT_STATEMENT = "importstatement";
+    public static final String AST_ELEMENT_TYPE_COMPARISON = "comparison";
+    public static final String AST_ELEMENT_TYPE_EXPRESSION = "expression";
+    public static final String AST_ELEMENT_IF_STATEMENT = "ifstatement";
+    public static final String AST_ELEMENT_ELIF_STATEMENT = "elifstatement";
+    public static final String AST_ELEMENT_ELSE_STATEMENT = "elifstatement";
     public static final String AST_ELEMENT_TYPE_FROM_STATEMENT = "fromstatement";
     public static final String AST_ELEMENT_TYPE_TRY_STATEMENT = "trystatement";
     public static final String AST_ELEMENT_TYPE_FROM_ELEMENT = "fromelement";

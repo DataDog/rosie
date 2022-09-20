@@ -6,6 +6,8 @@ public class ExecutionEnvironmentBuilder {
     private Object rootObject;
     private ErrorReporting errorReporting;
     private String code;
+
+    private String ruleCode;
     private String filename;
     private boolean logOutput = false;
 
@@ -30,7 +32,12 @@ public class ExecutionEnvironmentBuilder {
         return this;
     }
 
+    public ExecutionEnvironmentBuilder setRuleCode(String ruleCode) {
+        this.ruleCode = ruleCode;
+        return this;
+    }
+
     public ExecutionEnvironment createExecutionEnvironment() {
-        return new ExecutionEnvironment(rootObject, code, logOutput, filename);
+        return new ExecutionEnvironment(rootObject, code, ruleCode, logOutput, filename);
     }
 }

@@ -85,6 +85,9 @@ public class ModelUtils {
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FUNCTION_DEFINITION)) {
             return EntityChecked.FUNCTION_DEFINITION;
         }
+        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_IF_CONDITION)) {
+            return EntityChecked.IF_STATEMENT;
+        }
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_TRY_BLOCK)) {
             return EntityChecked.TRY_BLOCK;
         }
