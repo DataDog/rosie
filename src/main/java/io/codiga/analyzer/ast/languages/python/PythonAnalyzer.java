@@ -2,6 +2,8 @@ package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.errorreporting.ErrorReportingInterface;
+import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.error.RuleResult;
 import io.codiga.parser.python.gen.PythonLexer;
 import io.codiga.parser.python.gen.PythonParser;
@@ -16,6 +18,10 @@ public class PythonAnalyzer extends AnalyzerCommon {
 
 
     private Logger logger = LoggerFactory.getLogger(PythonAnalyzer.class);
+
+    public PythonAnalyzer(MetricsInterface metrics, ErrorReportingInterface errorReporting) {
+        super(metrics, errorReporting);
+    }
 
     @Override
     public RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput) {

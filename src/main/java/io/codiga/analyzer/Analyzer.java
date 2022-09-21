@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import static io.codiga.metrics.MetricsName.METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_TOTAL;
 import static io.codiga.model.ErrorCode.ERROR_RULE_INVALID_RULE_TYPE;
 import static io.codiga.model.ErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
 import static io.codiga.utils.CompletableFutureUtils.sequence;
@@ -27,18 +28,20 @@ import static io.codiga.utils.CompletableFutureUtils.sequence;
 public class Analyzer {
 
     Logger logger = LoggerFactory.getLogger(Analyzer.class);
-    PythonAnalyzer pythonAnalyzer = new PythonAnalyzer();
-    PatternAnalyzer patternAnalyzer = new PatternAnalyzer();
-
+    PythonAnalyzer pythonAnalyzer;
+    PatternAnalyzer patternAnalyzer;
     private MetricsInterface metrics;
     private ErrorReportingInterface errorReporting;
 
     public Analyzer(ErrorReportingInterface errorReporting, MetricsInterface metrics) {
         this.errorReporting = errorReporting;
         this.metrics = metrics;
+        this.patternAnalyzer = new PatternAnalyzer(this.metrics, this.errorReporting);
+        this.pythonAnalyzer = new PythonAnalyzer(this.metrics, this.errorReporting);
     }
 
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
+        long startAnalysisTimestampMs = System.currentTimeMillis();
         // Distinguish between rules with valid languages and invalid ones.
         List<AnalyzerRule> rulesWithValidLanguage = rules.stream().filter(f -> f.language() == language).toList();
         List<AnalyzerRule> rulesWithValidLanguageForAst = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.AST_CHECK).toList();
@@ -75,6 +78,9 @@ public class Analyzer {
                 .addAll(invalidLanguagesRuleResults)
                 .addAll(invalidRuleTypeResults)
                 .build();
+            long endAnalysisTimestampMs = System.currentTimeMillis();
+            long analysisTimeMs = endAnalysisTimestampMs - startAnalysisTimestampMs;
+            metrics.histogramValue(METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_TOTAL, analysisTimeMs);
             return new AnalysisResult(allRuleResult);
         });
     }

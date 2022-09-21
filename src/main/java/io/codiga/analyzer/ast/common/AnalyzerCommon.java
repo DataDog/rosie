@@ -2,6 +2,8 @@ package io.codiga.analyzer.ast.common;
 
 import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.errorreporting.ErrorReportingInterface;
+import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.Language;
 import io.codiga.model.error.AnalysisResult;
 import io.codiga.model.error.RuleResult;
@@ -19,6 +21,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.regex.PatternSyntaxException;
 
 import static io.codiga.analyzer.ast.vm.VmUtils.formatVmErrorMessage;
+import static io.codiga.metrics.MetricsName.METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_PREFIX;
+import static io.codiga.metrics.MetricsName.METRIC_RULE_EXECUTION_UNKNOWN_ERROR;
 import static io.codiga.model.ErrorCode.*;
 import static io.codiga.utils.CompletableFutureUtils.sequence;
 import static io.codiga.utils.EnvironmentUtils.ANALYSIS_TIMEOUT;
@@ -31,6 +35,14 @@ public abstract class AnalyzerCommon {
 
     private Logger logger = LoggerFactory.getLogger(AnalyzerCommon.class);
     private AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
+
+    private MetricsInterface metrics;
+    private ErrorReportingInterface errorReporting;
+
+    public AnalyzerCommon(MetricsInterface metrics, ErrorReportingInterface errorReporting) {
+        this.metrics = metrics;
+        this.errorReporting = errorReporting;
+    }
 
 
     protected long getTimeout() {
@@ -79,6 +91,8 @@ public abstract class AnalyzerCommon {
                     RuleResult res = execute(filename, code, rule, logOutput);
                     long endTime = System.currentTimeMillis();
                     long executionTime = endTime - startTime;
+                    String metricName = String.format("%s-%s", METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_PREFIX, rule.name());
+                    metrics.histogramValue(metricName, (double) executionTime);
                     logger.info(String.format("rule %s took %s ms to execute", rule.name(), executionTime));
                     return res;
                 }, pool.service)
@@ -112,6 +126,9 @@ public abstract class AnalyzerCommon {
                     logger.error(rule.code());
                     logger.error("-- END OF RULE CODE --");
                     logger.error("========= END OF UNHANDLED ERROR =========");
+
+                    this.metrics.incrementMetric(METRIC_RULE_EXECUTION_UNKNOWN_ERROR);
+                    this.errorReporting.reportError(exception, "error unknown exception rule");
 
                     return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), null, null);
                 });

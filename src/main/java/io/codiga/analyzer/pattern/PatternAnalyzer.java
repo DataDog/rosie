@@ -5,6 +5,8 @@ import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.vm.ExecutionEnvironment;
 import io.codiga.analyzer.ast.vm.ExecutionEnvironmentBuilder;
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.errorreporting.ErrorReportingInterface;
+import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.error.RuleResult;
 import io.codiga.model.error.Violation;
 import io.codiga.model.pattern.PatternObject;
@@ -23,6 +25,11 @@ public class PatternAnalyzer extends AnalyzerCommon {
     private AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
 
     private Logger logger = LoggerFactory.getLogger(PatternAnalyzer.class);
+
+
+    public PatternAnalyzer(MetricsInterface metrics, ErrorReportingInterface errorReporting) {
+        super(metrics, errorReporting);
+    }
 
     @Override
     public RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput) {

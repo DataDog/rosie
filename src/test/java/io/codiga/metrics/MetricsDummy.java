@@ -15,4 +15,9 @@ public class MetricsDummy implements MetricsInterface {
     public void incrementMetric(String metricName) {
         logger.info(String.format("not incrementing metric %s", metricName));
     }
+
+    @Override
+    public void histogramValue(String metricName, double value) {
+        logger.info(String.format("not changing histogram %s", metricName));
+    }
 }

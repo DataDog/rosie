@@ -3,6 +3,8 @@ package io.codiga.analyzer.ast.languages;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.languages.python.PythonTestUtils;
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.errorreporting.ErrorReportingDummy;
+import io.codiga.metrics.MetricsDummy;
 import io.codiga.model.error.RuleResult;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +36,7 @@ public class AnalyzerCommonTest extends PythonTestUtils {
             # codiga-disable
             r = requests.get(w, verify=False, timeout=10)
             """;
-        AnalyzerCommon analyzerCommon = new AnalyzerCommon() {
+        AnalyzerCommon analyzerCommon = new AnalyzerCommon(new MetricsDummy(), new ErrorReportingDummy()) {
             @Override
             public RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput) {
                 return null;
