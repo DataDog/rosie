@@ -8,10 +8,9 @@ import static io.codiga.utils.EnvironmentUtils.ANALYSIS_THREADS;
 import static io.codiga.utils.EnvironmentUtils.getEnvironmentValueAsNumber;
 
 public class AnalyzerFuturePool {
+    private final static int DEFAULT_THREADS = Runtime.getRuntime().availableProcessors();
     private static AnalyzerFuturePool _INSTANCE;
     public ExecutorService service;
-
-    private final static int DEFAULT_THREADS = 20;
 
     private AnalyzerFuturePool() {
     }
