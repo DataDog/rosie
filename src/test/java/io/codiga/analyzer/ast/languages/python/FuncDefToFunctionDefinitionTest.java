@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.python;
 
-import io.codiga.model.ast.FunctionDefinition;
+import io.codiga.model.ast.common.FunctionDefinition;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;

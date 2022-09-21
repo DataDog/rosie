@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.python;
 
-import io.codiga.model.ast.*;
+import io.codiga.model.ast.common.*;
 import io.codiga.parser.python.gen.PythonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

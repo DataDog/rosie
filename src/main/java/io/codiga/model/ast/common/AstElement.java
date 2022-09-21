@@ -1,4 +1,4 @@
-package io.codiga.model.ast;
+package io.codiga.model.ast.common;
 
 
 import io.codiga.model.common.Position;
@@ -23,6 +23,7 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_COMPARISON = "comparison";
     public static final String AST_ELEMENT_TYPE_EXPRESSION = "expression";
     public static final String AST_ELEMENT_IF_STATEMENT = "ifstatement";
+    public static final String AST_ELEMENT_FOR_STATEMENT = "forstatement";
     public static final String AST_ELEMENT_ELIF_STATEMENT = "elifstatement";
     public static final String AST_ELEMENT_ELSE_STATEMENT = "elifstatement";
     public static final String AST_ELEMENT_TYPE_FROM_STATEMENT = "fromstatement";
@@ -33,6 +34,8 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_ARGUMENT = "argument";
     public Position start;
     public Position end;
+    public int startIndex;
+    public int endIndex;
     public String astType;
     private ParserRuleContext parserRuleContext;
     private ParserRuleContext root;
@@ -43,6 +46,8 @@ public class AstElement {
         this.astType = astType;
         this.start = getStartPosition(parserRuleContext);
         this.end = getEndPosition(parserRuleContext);
+        this.startIndex = parserRuleContext.start.getStartIndex();
+        this.endIndex = parserRuleContext.stop.getStopIndex();
         this.parserRuleContext = parserRuleContext;
         this.root = root;
     }

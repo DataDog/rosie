@@ -91,6 +91,10 @@ public class ModelUtils {
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_TRY_BLOCK)) {
             return EntityChecked.TRY_BLOCK;
         }
+        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FOR_LOOP)) {
+            return EntityChecked.FOR_LOOP;
+        }
+
         return EntityChecked.UNKNOWN;
     }
 }

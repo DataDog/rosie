@@ -5,8 +5,9 @@ import io.codiga.analyzer.ast.vm.ExecutionResult;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.RuleType;
-import io.codiga.model.ast.FunctionCall;
-import io.codiga.model.ast.FunctionDefinition;
+import io.codiga.model.ast.common.FunctionCall;
+import io.codiga.model.ast.common.FunctionDefinition;
+import io.codiga.model.ast.python.PythonForStatement;
 import io.codiga.model.ast.python.PythonIfStatement;
 import io.codiga.model.ast.python.TryStatement;
 import io.codiga.model.error.Violation;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.python.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.analyzer.ast.languages.python.ForStmtToForStatement.transformForStatement;
 import static io.codiga.analyzer.ast.languages.python.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
 import static io.codiga.analyzer.ast.languages.python.IfStmtToIfStatement.transformIfStatement;
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
@@ -31,17 +33,19 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
     private AnalyzerRule analyzerRule;
     private PythonParser.RootContext root;
     private StringBuffer output;
+    private String filename;
     private boolean logOutput;
     private String code;
     private Logger logger = LoggerFactory.getLogger(CodigaVisitor.class);
 
-    public CodigaVisitor(AnalyzerRule rule, String code, boolean logOutput) {
+    public CodigaVisitor(AnalyzerRule rule, String code, String filename, boolean logOutput) {
         this.analyzerRule = rule;
         this.root = null;
         this.logOutput = logOutput;
         this.code = code;
         this.violations = new ArrayList<>();
         this.output = new StringBuffer();
+        this.filename = filename;
     }
 
     public String getOutput() {
@@ -77,6 +81,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
             .setCode(code)
             .setRootObject(rootObject)
             .setLogOutput(logOutput)
+            .setFilename(filename)
             .setRuleCode(analyzerRule.code())
             .createExecutionEnvironment()
             .execute();
@@ -93,6 +98,17 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
         if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.TRY_BLOCK) {
             Optional<TryStatement> tryStatementOptional = transformStmtToTryStatement(ctx, root);
             tryStatementOptional.ifPresent(this::executeRule);
+        }
+
+        return visitChildren(ctx);
+    }
+
+
+    @Override
+    public List<Violation> visitFor_stmt(PythonParser.For_stmtContext ctx) {
+        if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.FOR_LOOP) {
+            Optional<PythonForStatement> forStatementOptional = transformForStatement(ctx, root);
+            forStatementOptional.ifPresent(this::executeRule);
         }
 
         return visitChildren(ctx);

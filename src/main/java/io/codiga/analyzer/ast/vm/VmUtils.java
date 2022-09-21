@@ -23,6 +23,8 @@ public class VmUtils {
 
 
     public static Context createContextForJavaScriptExecution(ExecutionEnvironment executionEnvironment) {
+        System.out.println("Add filename: " + executionEnvironment.filename);
+        System.out.println("Add code: " + executionEnvironment.code);
         Context.Builder contextBuilder = Context
             .newBuilder("js")
             .allowHostAccess(SANDBOX)

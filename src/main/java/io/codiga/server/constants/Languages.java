@@ -11,6 +11,7 @@ public class Languages {
     public final static String RULE_TYPE_PATTERN = "pattern";
     public final static String ENTITY_CHECKED_FUNCTION_CALL = "functioncall";
     public final static String ENTITY_CHECKED_IF_CONDITION = "ifcondition";
+    public final static String ENTITY_CHECKED_FOR_LOOP = "forloop";
     public final static String ENTITY_CHECKED_FUNCTION_DEFINITION = "functiondefinition";
     public final static String ENTITY_CHECKED_TRY_BLOCK = "tryblock";
 

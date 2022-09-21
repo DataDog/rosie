@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.python;
 
-import io.codiga.model.ast.AstString;
+import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.python.ExceptClause;
 import io.codiga.model.ast.python.FinallyClause;
 import io.codiga.model.ast.python.TryStatement;

@@ -6,5 +6,6 @@ public enum EntityChecked {
     FUNCTION_DEFINITION,
 
     IF_STATEMENT,
+    FOR_LOOP,
     UNKNOWN,
 }

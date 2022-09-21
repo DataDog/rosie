@@ -1,4 +1,4 @@
-package io.codiga.model.ast;
+package io.codiga.model.ast.common;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;

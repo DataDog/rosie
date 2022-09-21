@@ -1,9 +1,9 @@
 package io.codiga.analyzer.ast.languages.python;
 
-import io.codiga.model.ast.AstString;
-import io.codiga.model.ast.FunctionCall;
-import io.codiga.model.ast.FunctionCallArgument;
-import io.codiga.model.ast.FunctionCallArguments;
+import io.codiga.model.ast.common.AstString;
+import io.codiga.model.ast.common.FunctionCall;
+import io.codiga.model.ast.common.FunctionCallArgument;
+import io.codiga.model.ast.common.FunctionCallArguments;
 import io.codiga.model.ast.python.PythonFunctionCall;
 import io.codiga.model.common.Position;
 import io.codiga.parser.python.gen.PythonParser;

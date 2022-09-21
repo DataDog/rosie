@@ -24,7 +24,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
         PythonParser parser = new PythonParser(tokens);
         parser.setBuildParseTree(true);
 
-        CodigaVisitor codigaVisitor = new CodigaVisitor(rule, code, logOutput);
+        CodigaVisitor codigaVisitor = new CodigaVisitor(rule, code, filename, logOutput);
         codigaVisitor.visit(parser.root());
         return new RuleResult(rule.name(), codigaVisitor.getViolations(), List.of(), null, codigaVisitor.getOutput());
     }

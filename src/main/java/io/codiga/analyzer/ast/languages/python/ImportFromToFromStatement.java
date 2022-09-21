@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.python;
 
-import io.codiga.model.ast.AstString;
+import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.python.FromElement;
 import io.codiga.model.ast.python.FromStatement;
 import io.codiga.parser.python.gen.PythonParser;

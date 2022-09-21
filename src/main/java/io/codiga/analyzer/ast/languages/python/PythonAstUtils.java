@@ -1,7 +1,12 @@
 package io.codiga.analyzer.ast.languages.python;
 
+import io.codiga.model.ast.python.PythonComparison;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import java.util.Optional;
+
+import static io.codiga.analyzer.ast.languages.python.ComparisontoPythonComparison.transformComparisonToPythonComparison;
 
 public class PythonAstUtils {
 
@@ -17,4 +22,11 @@ public class PythonAstUtils {
         return false;
     }
 
+    public static Optional<PythonComparison> getPythonComparisonFromTestContext(PythonParser.TestContext testContext, PythonParser.RootContext root) {
+        if (testContext != null && testContext.logical_test() != null && testContext.logical_test().size() == 1) {
+            PythonParser.ComparisonContext comparisonContext = testContext.logical_test().get(0).comparison();
+            return transformComparisonToPythonComparison(comparisonContext, root);
+        }
+        return Optional.empty();
+    }
 }

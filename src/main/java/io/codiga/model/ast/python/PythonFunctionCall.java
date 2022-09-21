@@ -1,9 +1,9 @@
 package io.codiga.model.ast.python;
 
-import io.codiga.model.ast.AstElement;
-import io.codiga.model.ast.AstString;
-import io.codiga.model.ast.FunctionCall;
-import io.codiga.model.ast.FunctionCallArguments;
+import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstString;
+import io.codiga.model.ast.common.FunctionCall;
+import io.codiga.model.ast.common.FunctionCallArguments;
 import io.codiga.model.common.Position;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;

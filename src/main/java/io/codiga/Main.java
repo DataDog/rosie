@@ -33,7 +33,7 @@ public class Main {
             parser.setBuildParseTree(true);
             FileInputStream fileInputStream = new FileInputStream(file);
 
-            CodigaVisitor codigaVisitor = new CodigaVisitor(null, null, false);
+            CodigaVisitor codigaVisitor = new CodigaVisitor(null, null, null, false);
             codigaVisitor.visit(parser.root());
 
             fileInputStream.close();

@@ -9,20 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.python.ComparisontoPythonComparison.transformComparisonToPythonComparison;
+import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.getPythonComparisonFromTestContext;
 
 public class IfStmtToIfStatement {
 
     private static final Logger logger = LoggerFactory.getLogger(IfStmtToIfStatement.class);
-
-
-    private static Optional<PythonComparison> getPythonConditionFromTestContext(PythonParser.TestContext testContext, PythonParser.RootContext root) {
-        if (testContext != null && testContext.logical_test() != null && testContext.logical_test().size() == 1) {
-            PythonParser.ComparisonContext comparisonContext = testContext.logical_test().get(0).comparison();
-            return transformComparisonToPythonComparison(comparisonContext, root);
-        }
-        return Optional.empty();
-    }
 
 
     public static Optional<PythonIfStatement> transformIfStatement(PythonParser.If_stmtContext if_stmtContext,
@@ -30,14 +21,14 @@ public class IfStmtToIfStatement {
         List<PythonElifStatement> elifStatements = new ArrayList<>();
         PythonElseStatement elseStatement = null;
         PythonComparison ifComparison = null;
-        Optional<PythonComparison> ifComparisonOptional = getPythonConditionFromTestContext(if_stmtContext.test(), root);
+        Optional<PythonComparison> ifComparisonOptional = getPythonComparisonFromTestContext(if_stmtContext.test(), root);
 
         if (ifComparisonOptional.isPresent()) {
             ifComparison = ifComparisonOptional.get();
         }
 
         for (PythonParser.Elif_clauseContext elif_clauseContext : if_stmtContext.elif_clause()) {
-            Optional<PythonComparison> comparison = getPythonConditionFromTestContext(elif_clauseContext.test(), root);
+            Optional<PythonComparison> comparison = getPythonComparisonFromTestContext(elif_clauseContext.test(), root);
             if (comparison.isPresent()) {
                 PythonElifStatement pythonElifStatement = new PythonElifStatement(
                     comparison.get(),
