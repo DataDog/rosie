@@ -3,6 +3,7 @@ package io.codiga.analyzer.ast;
 import io.codiga.model.common.Position;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,25 @@ public class AstUtils {
     }
 
     public static Position getEndPosition(ParserRuleContext context) {
-        Position endPosition = new Position(context.start.getLine(), context.start.getCharPositionInLine() + context.getText().length() + 1);
+        // old code
+        // Position endPosition = new Position(context.start.getLine(), context.start.getCharPositionInLine() + context.getText().length() + 1);
+
+        ParseTree tmp = context;
+
+
+        while (tmp.getChildCount() > 0) {
+            tmp = tmp.getChild(tmp.getChildCount() - 1);
+        }
+
+        if (tmp instanceof TerminalNode) {
+            TerminalNode terminalNode = (TerminalNode) tmp;
+//            System.out.println("terminal node: " + terminalNode.getText() + ";size: " + terminalNode.getText() + " start: " + terminalNode.getSymbol().getStartIndex() + " stop: " + terminalNode.getSymbol().getStopIndex());
+
+
+            return new Position(terminalNode.getSymbol().getLine(), terminalNode.getSymbol().getCharPositionInLine() + terminalNode.getText().length() + 1);
+        }
+        ParserRuleContext parserRuleContext = (ParserRuleContext) tmp;
+        Position endPosition = new Position(parserRuleContext.start.getLine(), parserRuleContext.start.getCharPositionInLine() + context.getText().length() + 1);
         return endPosition;
     }
 

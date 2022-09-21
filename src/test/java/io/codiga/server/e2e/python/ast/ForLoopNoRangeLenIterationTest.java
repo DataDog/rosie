@@ -62,7 +62,7 @@ public class ForLoopNoRangeLenIterationTest extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).end.line);
         assertEquals(25, response.ruleResponses.get(0).violations.get(0).end.col);
         assertEquals("do not use range(len(tab))", response.ruleResponses.get(0).violations.get(0).message);
-//        assertEquals(pythonCodeFixed, applyFix(pythonCodeWithError, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
+        assertEquals(pythonCodeFixed, applyFix(pythonCodeWithError, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
     }
 
 

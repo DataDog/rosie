@@ -49,7 +49,7 @@ public class NoIfWithEqualTrueTest extends E2EBase {
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals(4, response.ruleResponses.get(0).violations.get(0).start.col);
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).end.line);
-        assertEquals(13, response.ruleResponses.get(0).violations.get(0).end.col);
+        assertEquals(15, response.ruleResponses.get(0).violations.get(0).end.col);
         assertEquals("do not make equal with true", response.ruleResponses.get(0).violations.get(0).message);
 
         assertEquals(pythonCodeFixed, applyFix(pythonCodeWithError, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
