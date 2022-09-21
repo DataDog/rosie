@@ -27,22 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ServerTestConfiguration.class})
 @TestPropertySource(locations = "classpath:test.properties")
 public class ProtocolTest {
-    @Autowired
-    private ServerMainController controller;
-
     Logger logger = LoggerFactory.getLogger(ProtocolTest.class);
-
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
     String pythonCode = """            
         r = requests.get(w, verify=False)
         r = requests.get(w, verify=False, timeout=10)
                             """;
-
     String ruleCode = """
         function visit(node) {
             var hasTimeout = false;
@@ -57,6 +46,12 @@ public class ProtocolTest {
             }
         }
         """;
+    @Autowired
+    private ServerMainController controller;
+    @LocalServerPort
+    private int port;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
     @Test
     public void testLanguageNotSupported() throws Exception {
@@ -82,7 +77,7 @@ public class ProtocolTest {
         logger.info("response: " + response.errors);
         assertEquals(0, response.ruleResponses.size());
         assertEquals(1, response.errors.size());
-        assertEquals(LANGUAGE_NOT_SUPPORTED, response.errors.get(0));
+        assertEquals(ERROR_LANGUAGE_NOT_SUPPORTED, response.errors.get(0));
     }
 
     @Test
@@ -155,7 +150,7 @@ public class ProtocolTest {
             Response.class);
         logger.info("response: " + response.errors);
         assertEquals(1, response.errors.size());
-        assertEquals(INVALID_REQUEST, response.errors.get(0));
+        assertEquals(ERROR_INVALID_REQUEST, response.errors.get(0));
     }
 
     @Test
@@ -182,7 +177,7 @@ public class ProtocolTest {
         logger.info("response: " + response.errors);
         assertEquals(0, response.ruleResponses.size());
         assertEquals(1, response.errors.size());
-        assertEquals(CODE_NOT_BASE64, response.errors.get(0));
+        assertEquals(ERROR_CODE_NOT_BASE64, response.errors.get(0));
     }
 
     @Test
@@ -209,6 +204,6 @@ public class ProtocolTest {
         logger.info("response: " + response.errors);
         assertEquals(0, response.ruleResponses.size());
         assertEquals(1, response.errors.size());
-        assertEquals(RULE_NOT_BASE64, response.errors.get(0));
+        assertEquals(ERROR_RULE_NOT_BASE64, response.errors.get(0));
     }
 }

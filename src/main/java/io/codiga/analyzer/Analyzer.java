@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import io.codiga.analyzer.ast.languages.python.PythonAnalyzer;
 import io.codiga.analyzer.pattern.PatternAnalyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.errorreporting.ErrorReportingInterface;
+import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.AnalysisResult;
@@ -27,6 +29,14 @@ public class Analyzer {
     Logger logger = LoggerFactory.getLogger(Analyzer.class);
     PythonAnalyzer pythonAnalyzer = new PythonAnalyzer();
     PatternAnalyzer patternAnalyzer = new PatternAnalyzer();
+
+    private MetricsInterface metrics;
+    private ErrorReportingInterface errorReporting;
+
+    public Analyzer(ErrorReportingInterface errorReporting, MetricsInterface metrics) {
+        this.errorReporting = errorReporting;
+        this.metrics = metrics;
+    }
 
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         // Distinguish between rules with valid languages and invalid ones.

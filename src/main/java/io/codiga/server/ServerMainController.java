@@ -33,7 +33,7 @@ public class ServerMainController {
 
     final InjectorService injectorService;
     Logger logger = LoggerFactory.getLogger(ServerMainController.class);
-    private Analyzer analyzer = new Analyzer();
+    private Analyzer analyzer = null;
 
     private MetricsInterface metrics;
 
@@ -42,6 +42,7 @@ public class ServerMainController {
     public ServerMainController(InjectorService injectorService) {
         metrics = injectorService.getInjector().getInstance(MetricsInterface.class);
         errorReporting = injectorService.getInjector().getInstance(ErrorReportingInterface.class);
+        this.analyzer = new Analyzer(errorReporting, metrics);
         this.injectorService = injectorService;
     }
 
@@ -81,14 +82,14 @@ public class ServerMainController {
 
         if (!request.isValid()) {
             return CompletableFuture.completedFuture(
-                new Response(List.of(), List.of(INVALID_REQUEST)));
+                new Response(List.of(), List.of(ERROR_INVALID_REQUEST)));
         }
 
         logger.info(String.format("request: %s", request));
 
         if (!SUPPORTED_LANGUAGES.contains(request.language)) {
             return CompletableFuture.completedFuture(
-                new Response(List.of(), List.of(LANGUAGE_NOT_SUPPORTED)));
+                new Response(List.of(), List.of(ERROR_LANGUAGE_NOT_SUPPORTED)));
         }
 
         List<AnalyzerRule> rules = null;
@@ -98,7 +99,7 @@ public class ServerMainController {
             decodedCode = new String(Base64.getDecoder().decode(request.codeBase64.getBytes()));
         } catch (IllegalArgumentException iae) {
             logger.info("code is not base64");
-            return CompletableFuture.completedFuture(new Response(List.of(), List.of(CODE_NOT_BASE64)));
+            return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_CODE_NOT_BASE64)));
         }
 
         try {
@@ -112,32 +113,38 @@ public class ServerMainController {
             }).toList();
         } catch (IllegalArgumentException iae) {
             logger.error("rule is not base64: " + rules);
-            return CompletableFuture.completedFuture(new Response(List.of(), List.of(RULE_NOT_BASE64)));
+            return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_RULE_NOT_BASE64)));
         }
-        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language),
-            request.filename, decodedCode, rules, request.logOutput);
+        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language), request.filename, decodedCode, rules, request.logOutput);
+
 
         return violationsFuture.thenApply(analysisResult -> {
-            List<io.codiga.server.response.RuleResponse> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
-                List<Violation> violations = ruleResult.violations().stream().map(ruleViolation -> {
-                    List<ViolationFix> fixes = ruleViolation.fixes.stream().map(fix -> {
-                        List<ViolationFixEdit> edits = fix.edits.stream().map(edit -> new ViolationFixEdit(
-                            edit.start,
-                            edit.end,
-                            editTypeToString(edit.editType),
-                            edit.content
-                        )).toList();
-                        return new ViolationFix(fix.description, edits);
+                List<io.codiga.server.response.RuleResponse> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
+                    List<Violation> violations = ruleResult.violations().stream().map(ruleViolation -> {
+                        List<ViolationFix> fixes = ruleViolation.fixes.stream().map(fix -> {
+                            List<ViolationFixEdit> edits = fix.edits.stream().map(edit -> new ViolationFixEdit(
+                                edit.start,
+                                edit.end,
+                                editTypeToString(edit.editType),
+                                edit.content
+                            )).toList();
+                            return new ViolationFix(fix.description, edits);
+
+                        }).toList();
+
+                        return new Violation(ruleViolation.start, ruleViolation.end, ruleViolation.message,
+                            ruleViolation.severity.toString(), ruleViolation.category.toString(), fixes);
 
                     }).toList();
-
-                    return new Violation(ruleViolation.start, ruleViolation.end, ruleViolation.message,
-                        ruleViolation.severity.toString(), ruleViolation.category.toString(), fixes);
-
+                    return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output());
                 }).toList();
-                return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output());
-            }).toList();
-            return new Response(rulesReponses, List.of());
-        });
+                return new Response(rulesReponses, List.of());
+            })
+            .exceptionally(ex -> {
+                metrics.incrementMetric(METRIC_ANALYSIS_EXCEPTION);
+                errorReporting.reportError(ex, "error when analyzing");
+                return new Response(List.of(), List.of(ERROR_ANALYSIS_ERROR));
+            });
+
     }
 }
