@@ -81,6 +81,7 @@ public class ServerMainController {
         metrics.incrementMetric(METRIC_ANALYSIS_REQUEST);
 
         if (!request.isValid()) {
+            metrics.incrementMetric(METRIC_INVALID_REQUEST);
             return CompletableFuture.completedFuture(
                 new Response(List.of(), List.of(ERROR_INVALID_REQUEST)));
         }
@@ -88,6 +89,7 @@ public class ServerMainController {
         logger.info(String.format("request: %s", request));
 
         if (!SUPPORTED_LANGUAGES.contains(request.language)) {
+            metrics.incrementMetric(METRIC_INVALID_LANGUAGE);
             return CompletableFuture.completedFuture(
                 new Response(List.of(), List.of(ERROR_LANGUAGE_NOT_SUPPORTED)));
         }
