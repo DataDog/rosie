@@ -42,11 +42,11 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
         List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Try_stmtContext.class);
         PythonParser.Try_stmtContext stmtContext = (PythonParser.Try_stmtContext) exprNodes.get(0);
         TryStatement tryStatement = transformStmtToTryStatement(stmtContext, null).get();
-        assertNotNull(tryStatement.exceptClause);
-        assertNull(tryStatement.exceptClause.as);
-        assertEquals("SocketTimeout", tryStatement.exceptClause.exceptions[0].str);
-        assertEquals("ValueError", tryStatement.exceptClause.exceptions[1].str);
-        assertEquals(2, tryStatement.exceptClause.exceptions.length);
+        assertNotNull(tryStatement.exceptClauses[0]);
+        assertNull(tryStatement.exceptClauses[0].as);
+        assertEquals("SocketTimeout", tryStatement.exceptClauses[0].exceptions[0].str);
+        assertEquals("ValueError", tryStatement.exceptClauses[0].exceptions[1].str);
+        assertEquals(2, tryStatement.exceptClauses[0].exceptions.length);
     }
 
     @Test
@@ -64,12 +64,12 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
         List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Try_stmtContext.class);
         PythonParser.Try_stmtContext stmtContext = (PythonParser.Try_stmtContext) exprNodes.get(0);
         TryStatement tryStatement = transformStmtToTryStatement(stmtContext, null).get();
-        assertNotNull(tryStatement.exceptClause);
-        assertNotNull(tryStatement.exceptClause.as);
-        assertEquals("e", tryStatement.exceptClause.as.str);
-        assertEquals("SocketTimeout", tryStatement.exceptClause.exceptions[0].str);
-        assertEquals("ValueError", tryStatement.exceptClause.exceptions[1].str);
-        assertEquals(2, tryStatement.exceptClause.exceptions.length);
+        assertNotNull(tryStatement.exceptClauses[0]);
+        assertNotNull(tryStatement.exceptClauses[0].as);
+        assertEquals("e", tryStatement.exceptClauses[0].as.str);
+        assertEquals("SocketTimeout", tryStatement.exceptClauses[0].exceptions[0].str);
+        assertEquals("ValueError", tryStatement.exceptClauses[0].exceptions[1].str);
+        assertEquals(2, tryStatement.exceptClauses[0].exceptions.length);
     }
 
     @Test
@@ -87,9 +87,34 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
         List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Try_stmtContext.class);
         PythonParser.Try_stmtContext stmtContext = (PythonParser.Try_stmtContext) exprNodes.get(0);
         TryStatement tryStatement = transformStmtToTryStatement(stmtContext, null).get();
-        assertNotNull(tryStatement.exceptClause);
-        assertNull(tryStatement.exceptClause.as);
-        assertEquals(0, tryStatement.exceptClause.exceptions.length);
+        assertNotNull(tryStatement.exceptClauses[0]);
+        assertNull(tryStatement.exceptClauses[0].as);
+        assertEquals(0, tryStatement.exceptClauses[0].exceptions.length);
     }
 
+    @Test
+    @DisplayName("Correctly transform a try statement with no exception")
+    public void testMultipleExceptions() {
+        String code = """
+            try:
+                client_obj.get_url(url)
+            except (URLError, ValueError):
+                client_obj.remove_url(url)
+            except SocketTimeout:
+                client_obj.handle_url_timeout(url)
+                        """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Try_stmtContext.class);
+        PythonParser.Try_stmtContext stmtContext = (PythonParser.Try_stmtContext) exprNodes.get(0);
+        TryStatement tryStatement = transformStmtToTryStatement(stmtContext, null).get();
+        assertNotNull(tryStatement.exceptClauses);
+        assertNull(tryStatement.exceptClauses[0].as);
+        assertEquals(2, tryStatement.exceptClauses[0].exceptions.length);
+        assertEquals("URLError", tryStatement.exceptClauses[0].exceptions[0].str);
+        assertEquals("ValueError", tryStatement.exceptClauses[0].exceptions[1].str);
+        assertEquals(1, tryStatement.exceptClauses[1].exceptions.length);
+        assertEquals("SocketTimeout", tryStatement.exceptClauses[1].exceptions[0].str);
+    }
 }

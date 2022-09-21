@@ -31,7 +31,7 @@ public class NoGenericExceptionTest extends E2EBase {
 
     String ruleCode = """
         function visit(node) {
-            const genericExceptions = node.exceptClause.exceptions.filter(e => e.str === "Exception");
+            const genericExceptions = node.exceptClauses.flatMap(e => e.exceptions.filter(e => e.str === "Exception"));
 
             for (var i = 0 ; i < genericExceptions.length ; i++) {
                 exception = genericExceptions[i];

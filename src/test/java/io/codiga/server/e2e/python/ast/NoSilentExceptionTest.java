@@ -31,12 +31,11 @@ public class NoSilentExceptionTest extends E2EBase {
             pass""";
     String ruleCode = """
         function visit(node, filename, code) {
-            const hasPass = node.exceptClause && node.exceptClause.getCodeBlock() && node.exceptClause.getCodeBlock() === "pass";
-            console.log(node.exceptClause.getCodeBlock());
-            if(hasPass) {
-                const error = buildError(node.exceptClause.start.line, node.exceptClause.start.col, node.exceptClause.end.line, node.exceptClause.end.col, "silent exception", "WARNING", "BEST_PRACTICES");
+            const allClausesWithPass = node.exceptClauses.filter(e => e.getCodeBlock() && e.getCodeBlock() === "pass");
+            allClausesWithPass.forEach(c => {
+                const error = buildError(c.start.line, c.start.col, c.end.line, c.end.col, "silent exception", "WARNING", "BEST_PRACTICES");
                 addError(error);
-            }
+            });
         }
         """;
     private Logger log = Logger.getLogger("Test");

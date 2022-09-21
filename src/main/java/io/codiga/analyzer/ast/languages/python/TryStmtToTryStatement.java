@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TryStmtToTryStatement {
 
@@ -63,21 +64,25 @@ public class TryStmtToTryStatement {
 
     public static Optional<TryStatement> transformStmtToTryStatement(PythonParser.Try_stmtContext ctx, PythonParser.RootContext root) {
         FinallyClause finallyClause = null;
-        ExceptClause exceptClause = null;
+        List<ExceptClause> exceptClauses = List.of();
         if (ctx.except_clause() != null && ctx.except_clause().size() > 0) {
-            List<AstString> exceptionNames = getAstStringFromTest(ctx.except_clause().get(0).test(), root);
-            AstString astString = null;
-            if (ctx.except_clause().get(0).name() != null) {
-                astString = new AstString(ctx.except_clause().get(0).name().getText(), ctx.except_clause().get(0).name(), root);
-            }
-            exceptClause = new ExceptClause(exceptionNames, astString, ctx.except_clause().get(0), root);
+
+            exceptClauses = ctx.except_clause().stream().map(exceptClause -> {
+                List<AstString> exceptionNames = getAstStringFromTest(exceptClause.test(), root);
+                AstString astString = null;
+                if (ctx.except_clause().get(0).name() != null) {
+                    astString = new AstString(ctx.except_clause().get(0).name().getText(), ctx.except_clause().get(0).name(), root);
+                }
+                return new ExceptClause(exceptionNames, astString, exceptClause, root);
+            }).collect(Collectors.toList());
+
 
         }
         if (ctx.finally_clause() != null) {
             finallyClause = new FinallyClause(ctx.finally_clause(), root);
         }
 
-        TryStatement tryStatement = new TryStatement(exceptClause, finallyClause, ctx, root);
+        TryStatement tryStatement = new TryStatement(exceptClauses, finallyClause, ctx, root);
         return Optional.of(tryStatement);
     }
 }
