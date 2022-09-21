@@ -2,6 +2,7 @@ package io.codiga.server;
 
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
@@ -36,8 +37,11 @@ public class ServerMainController {
 
     private MetricsInterface metrics;
 
+    private ErrorReportingInterface errorReporting;
+
     public ServerMainController(InjectorService injectorService) {
         metrics = injectorService.getInjector().getInstance(MetricsInterface.class);
+        errorReporting = injectorService.getInjector().getInstance(ErrorReportingInterface.class);
         this.injectorService = injectorService;
     }
 
@@ -54,6 +58,7 @@ public class ServerMainController {
         logger.error("got exception");
         logger.error(exception.getMessage());
         Arrays.stream(exception.getStackTrace()).forEach(st -> logger.error(st.toString()));
+        errorReporting.reportError(exception, "error in handleError");
         return "oh no no no!";
     }
 

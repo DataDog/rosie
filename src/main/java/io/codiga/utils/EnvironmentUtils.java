@@ -12,6 +12,8 @@ public class EnvironmentUtils {
     public final static String DATADOG_PORT = "8125";
 
     public final static String METRICS_PREFIX = "METRIX_PREFIX";
+    public final static String ROLLBAR_ENVIRONMENT = "ROLLBAR_ENVIRONMENT";
+    public final static String ROLLBAR_TOKEN = "ROLLBAR_TOKEN";
 
     /**
      * Get an environment variable. If it does not exits, returns Optional.empty()
