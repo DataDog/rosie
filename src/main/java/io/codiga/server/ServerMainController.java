@@ -1,5 +1,6 @@
 package io.codiga.server;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
@@ -55,6 +56,11 @@ public class ServerMainController {
      */
     @ExceptionHandler(Exception.class)
     public String handleError(HttpServletRequest req, Exception exception) {
+        if (exception instanceof JsonParseException) {
+            metrics.incrementMetric(METRIC_EXCEPTION_INVALID_INPUT_JSON);
+            return "invalid JSON input";
+        }
+        
         metrics.incrementMetric(METRIC_EXCEPTION_UNHANDLED);
         logger.error("got exception");
         logger.error(exception.getMessage());

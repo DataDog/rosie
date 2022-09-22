@@ -6,6 +6,7 @@ public final class MetricsName {
     public static String METRIC_ANALYSIS_REQUEST = "analysis-request";
     public static String METRIC_RULE_EXECUTION_UNKNOWN_ERROR = "analysis-rule-unknown-error";
     public static String METRIC_EXCEPTION_UNHANDLED = "exception-unhandled";
+    public static String METRIC_EXCEPTION_INVALID_INPUT_JSON = "exception-invalid-input-json";
     public static String METRIC_ANALYSIS_EXCEPTION = "exception-analysis-exception";
     public static String METRIC_INVALID_REQUEST = "invalid-request";
     public static String METRIC_INVALID_LANGUAGE = "invalid-language";
