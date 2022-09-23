@@ -60,7 +60,7 @@ public class ServerMainController {
             metrics.incrementMetric(METRIC_EXCEPTION_INVALID_INPUT_JSON);
             return "invalid JSON input";
         }
-        
+
         metrics.incrementMetric(METRIC_EXCEPTION_UNHANDLED);
         logger.error("got exception");
         logger.error(exception.getMessage());
@@ -70,6 +70,7 @@ public class ServerMainController {
     }
 
     @GetMapping("/ping")
+    @CrossOrigin(allowedHeaders = {"Authorization", "Origin"}, origins = "*")
     public String ping() {
         metrics.incrementMetric(METRIC_PING_REQUEST);
         return "pong";
@@ -82,6 +83,7 @@ public class ServerMainController {
     }
 
     @PostMapping("/analyze")
+    @CrossOrigin(origins = "*")
     @Async
     public CompletableFuture<Response> analyze(@RequestBody Request request) {
         metrics.incrementMetric(METRIC_ANALYSIS_REQUEST);
