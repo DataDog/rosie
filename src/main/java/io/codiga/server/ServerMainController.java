@@ -15,6 +15,7 @@ import io.codiga.server.services.InjectorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +60,10 @@ public class ServerMainController {
         if (exception instanceof JsonParseException) {
             metrics.incrementMetric(METRIC_EXCEPTION_INVALID_INPUT_JSON);
             return "invalid JSON input";
+        }
+
+        if (exception instanceof HttpMediaTypeNotSupportedException) {
+            return "invalid Content-Type";
         }
 
         metrics.incrementMetric(METRIC_EXCEPTION_UNHANDLED);
