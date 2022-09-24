@@ -25,6 +25,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
 
     @Override
     public RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput) {
+        long startTimestamp = System.currentTimeMillis();
         PythonLexer lexer = new PythonLexer(CharStreams.fromString(code));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         PythonParser parser = new PythonParser(tokens);
@@ -32,7 +33,9 @@ public class PythonAnalyzer extends AnalyzerCommon {
 
         CodigaVisitor codigaVisitor = new CodigaVisitor(rule, code, filename, logOutput);
         codigaVisitor.visit(parser.root());
-        return new RuleResult(rule.name(), codigaVisitor.getViolations(), List.of(), null, codigaVisitor.getOutput());
+        long endTimestamp = System.currentTimeMillis();
+        long executionTimeMs = endTimestamp - startTimestamp;
+        return new RuleResult(rule.name(), codigaVisitor.getViolations(), List.of(), null, codigaVisitor.getOutput(), executionTimeMs);
     }
 
 

@@ -33,6 +33,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
 
     @Override
     public RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput) {
+        long startTimestamp = System.currentTimeMillis();
         PatternMatcher patternMatcher = new PatternMatcher(code, rule);
         List<PatternObject> patternObjects = patternMatcher.getPatternObjects();
         List<Violation> violations = new ArrayList<>();
@@ -54,7 +55,10 @@ public class PatternAnalyzer extends AnalyzerCommon {
             violations.addAll(executionEnvironment.errorReporting.getErrors());
             output = executionEnvironment.getOutput();
         }
-        return new RuleResult(rule.name(), List.copyOf(violations), List.of(), null, output);
+
+        long endTimestamp = System.currentTimeMillis();
+        long executionTimeMs = endTimestamp - startTimestamp;
+        return new RuleResult(rule.name(), List.copyOf(violations), List.of(), null, output, executionTimeMs);
     }
 
 }

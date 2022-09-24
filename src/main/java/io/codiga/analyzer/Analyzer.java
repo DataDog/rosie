@@ -66,11 +66,11 @@ public class Analyzer {
 
         // Return an error for the rule with an invalid language
         return allFutures.thenApply(result -> {
-            List<RuleResult> invalidLanguagesRuleResults = rulesWithInvalidLanguage.stream().map(r -> new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null, null)).toList();
+            List<RuleResult> invalidLanguagesRuleResults = rulesWithInvalidLanguage.stream().map(r -> new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null, null, 0)).toList();
 
             List<RuleResult> invalidRuleTypeResults = rulesWithValidLanguage.stream()
                 .filter(r -> r.ruleType() == RuleType.UNKNOWN)
-                .map(r -> new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_INVALID_RULE_TYPE), null, null)).toList();
+                .map(r -> new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_INVALID_RULE_TYPE), null, null, 0)).toList();
 
             List<RuleResult> allRuleResult = ImmutableList
                 .<RuleResult>builder()

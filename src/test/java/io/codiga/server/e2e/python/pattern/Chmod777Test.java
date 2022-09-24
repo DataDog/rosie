@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import static io.codiga.server.constants.Languages.RULE_TYPE_PATTERN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class Chmod777Test extends E2EBase {
@@ -72,6 +73,7 @@ public class Chmod777Test extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.line);
         assertEquals(84, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.line);
+        assertTrue(response.ruleResponses.get(0).executionTimeMs > 0);
         assertEquals("stat.S_IRUSR | stat.S_IROTH | stat.S_IXOTH", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).content);
 
         // finally check the verified code

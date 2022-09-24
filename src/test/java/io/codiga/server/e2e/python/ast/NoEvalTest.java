@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static io.codiga.server.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
 import static io.codiga.server.constants.Languages.RULE_TYPE_AST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class NoEvalTest extends E2EBase {
@@ -49,6 +50,7 @@ public class NoEvalTest extends E2EBase {
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
+        assertTrue(response.ruleResponses.get(0).executionTimeMs > 0);
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals("do not use eval as this is unsafe", response.ruleResponses.get(0).violations.get(0).message);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.size());

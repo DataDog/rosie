@@ -101,19 +101,19 @@ public abstract class AnalyzerCommon {
                     logger.info("caught exception: " + exception.getMessage());
                     if (exception instanceof TimeoutException) {
                         logger.error(String.format("reporting rule %s as timeout", rule.name()));
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null);
+                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, 100);
                     }
 
                     if (exception.getCause() != null && exception.getCause() instanceof PatternSyntaxException) {
                         logger.error(String.format("reporting rule %s as invalid-pattern", rule.name()));
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_INVALID_PATTERN), null, null);
+                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_INVALID_PATTERN), null, null, 0);
                     }
 
                     if (exception.getCause() != null && exception.getCause() instanceof PolyglotException) {
                         String executionMessage = formatVmErrorMessage(exception.getMessage());
                         logger.error(String.format("reporting rule %s as execution error", rule.name()));
                         exception.printStackTrace();
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage, null);
+                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage, null, 0);
                     }
 
                     logger.error("============ UNHANDLED ERROR ============");
@@ -130,7 +130,7 @@ public abstract class AnalyzerCommon {
                     this.metrics.incrementMetric(METRIC_RULE_EXECUTION_UNKNOWN_ERROR);
                     this.errorReporting.reportError(exception, "error unknown exception rule");
 
-                    return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), null, null);
+                    return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), null, null, 0);
                 });
             return future;
         }).toList();
@@ -149,7 +149,7 @@ public abstract class AnalyzerCommon {
                 if (ruleResult.output() != null) {
                     logger.debug(String.format("Output for rule %s: %s", ruleResult.identifier(), ruleResult.output()));
                 }
-                return new RuleResult(ruleResult.identifier(), filteredViolations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output());
+                return new RuleResult(ruleResult.identifier(), filteredViolations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output(), ruleResult.executionTimeMs());
             }).toList();
             return new AnalysisResult(fileteredList);
         });

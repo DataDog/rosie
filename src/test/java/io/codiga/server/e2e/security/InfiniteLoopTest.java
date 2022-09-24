@@ -31,5 +31,6 @@ public class InfiniteLoopTest extends E2EBase {
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(ERROR_RULE_TIMEOUT, response.ruleResponses.get(0).errors.get(0));
+        assertEquals(100, response.ruleResponses.get(0).executionTimeMs);
     }
 }

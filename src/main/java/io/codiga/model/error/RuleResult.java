@@ -7,6 +7,7 @@ public record RuleResult(String identifier,
                          List<Violation> violations,
                          List<String> errors,
                          String executionError,
-                         String output) {
+                         String output,
+                         long executionTimeMs) {
 
 }

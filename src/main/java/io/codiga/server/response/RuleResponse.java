@@ -8,6 +8,7 @@ public class RuleResponse {
     public List<String> errors;
     public String executionError;
     public String output;
+    public long executionTimeMs;
 
     public RuleResponse() {
         this.identifier = null;
@@ -15,14 +16,16 @@ public class RuleResponse {
         this.errors = null;
         this.executionError = null;
         this.output = null;
+        this.executionTimeMs = 0;
     }
 
-    public RuleResponse(String id, List<Violation> violations, List<String> errors, String executionError, String output) {
+    public RuleResponse(String id, List<Violation> violations, List<String> errors, String executionError, String output, long executionTimeMs) {
         this.identifier = id;
         this.violations = violations;
         this.errors = errors;
         this.executionError = executionError;
         this.output = output;
+        this.executionTimeMs = executionTimeMs;
     }
 
     @Override
