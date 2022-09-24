@@ -1,6 +1,11 @@
 package io.codiga.analyzer.ast.languages.python;
 
-import io.codiga.model.ast.common.*;
+import io.codiga.model.ast.common.AstString;
+import io.codiga.model.ast.common.AstStringBuilder;
+import io.codiga.model.ast.common.FunctionDefinitionParameter;
+import io.codiga.model.ast.common.FunctionDefinitionParameters;
+import io.codiga.model.ast.python.PythonDecorator;
+import io.codiga.model.ast.python.PythonFunctionDefinition;
 import io.codiga.parser.python.gen.PythonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +19,21 @@ public class FuncDefToFunctionDefinition {
     private static final Logger logger = LoggerFactory.getLogger(FuncDefToFunctionDefinition.class);
 
 
-    public static Optional<FunctionDefinition> transformFuncDefToFunctionDefinition(PythonParser.FuncdefContext ctx, PythonParser.RootContext root) {
-        boolean isAsync = ctx.ASYNC() != null;
+    public static Optional<PythonFunctionDefinition> transformFuncDefToFunctionDefinition(PythonParser.Class_or_func_def_stmtContext ctx, PythonParser.RootContext root) {
+        if (ctx.funcdef() == null) {
+            return Optional.empty();
+        }
 
-        AstString name = new AstStringBuilder().setValue(ctx.name().getText()).setRuleContext(ctx).setRoot(root).createAstString();
+        PythonParser.FuncdefContext functionDefinition = ctx.funcdef();
+
+        boolean isAsync = functionDefinition.ASYNC() != null;
+
+        AstString name = new AstStringBuilder().setValue(functionDefinition.name().getText()).setRuleContext(ctx).setRoot(root).createAstString();
         AstString returnType = null;
         FunctionDefinitionParameters parameters = null;
         List<FunctionDefinitionParameter> parameterList = new ArrayList<>();
 
-        for (PythonParser.Def_parametersContext parameter : ctx.typedargslist().def_parameters()) {
+        for (PythonParser.Def_parametersContext parameter : functionDefinition.typedargslist().def_parameters()) {
 
             if (parameter.def_parameter() != null) {
 
@@ -80,21 +91,23 @@ public class FuncDefToFunctionDefinition {
             }
         }
 
-        if (ctx.typedargslist() != null) {
+        if (functionDefinition.typedargslist() != null) {
             parameters = new FunctionDefinitionParameters(
                 parameterList,
-                ctx.typedargslist(),
+                functionDefinition.typedargslist(),
                 root);
         }
 
-        FunctionDefinition functionDefinition = new FunctionDefinition(
+        List<PythonDecorator> decorators = ctx.decorator()
+            .stream().map(decoratorContext -> PythonDecorator.fromArgumentContext(decoratorContext, root).orElse(null)).toList();
+
+        return Optional.of(new PythonFunctionDefinition(
             isAsync,
+            decorators,
             name,
             parameters,
             returnType,
             ctx,
-            root);
-
-        return Optional.of(functionDefinition);
+            root));
     }
 }

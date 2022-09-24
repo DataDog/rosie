@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.python;
 
-import io.codiga.model.ast.common.FunctionDefinition;
+import io.codiga.model.ast.python.PythonFunctionDefinition;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
@@ -36,22 +36,22 @@ public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
 
         ParseTree root = parseCode(code);
 
-        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.FuncdefContext.class);
-        PythonParser.FuncdefContext funcdefContext = (PythonParser.FuncdefContext) exprNodes.get(0);
-        FunctionDefinition functionDefinition = transformFuncDefToFunctionDefinition(funcdefContext, null).get();
-        assertEquals("bla", functionDefinition.name.str);
-        assertFalse(functionDefinition.isAsync);
-        assertEquals("i", functionDefinition.parameters.values[0].name.str);
-        assertEquals("int", functionDefinition.parameters.values[0].type.str);
-        assertNull(functionDefinition.parameters.values[0].defaultValue);
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Class_or_func_def_stmtContext.class);
+        PythonParser.Class_or_func_def_stmtContext funcdefContext = (PythonParser.Class_or_func_def_stmtContext) exprNodes.get(0);
+        PythonFunctionDefinition pythonFunctionDefinition = transformFuncDefToFunctionDefinition(funcdefContext, null).get();
+        assertEquals("bla", pythonFunctionDefinition.name.str);
+        assertFalse(pythonFunctionDefinition.isAsync);
+        assertEquals("i", pythonFunctionDefinition.parameters.values[0].name.str);
+        assertEquals("int", pythonFunctionDefinition.parameters.values[0].type.str);
+        assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
 
-        assertEquals("a", functionDefinition.parameters.values[1].name.str);
-        assertEquals("typing.List[str]", functionDefinition.parameters.values[1].type.str);
-        assertEquals("[]", functionDefinition.parameters.values[1].defaultValue.value);
+        assertEquals("a", pythonFunctionDefinition.parameters.values[1].name.str);
+        assertEquals("typing.List[str]", pythonFunctionDefinition.parameters.values[1].type.str);
+        assertEquals("[]", pythonFunctionDefinition.parameters.values[1].defaultValue.value);
 
-        assertEquals("b", functionDefinition.parameters.values[2].name.value);
-        assertNull(functionDefinition.parameters.values[2].type);
-        assertNull(functionDefinition.parameters.values[2].defaultValue);
+        assertEquals("b", pythonFunctionDefinition.parameters.values[2].name.value);
+        assertNull(pythonFunctionDefinition.parameters.values[2].type);
+        assertNull(pythonFunctionDefinition.parameters.values[2].defaultValue);
     }
 
     @Test
@@ -61,18 +61,106 @@ public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
 
         ParseTree root = parseCode(code);
 
-        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.FuncdefContext.class);
-        PythonParser.FuncdefContext funcdefContext = (PythonParser.FuncdefContext) exprNodes.get(0);
-        FunctionDefinition functionDefinition = transformFuncDefToFunctionDefinition(funcdefContext, null).get();
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Class_or_func_def_stmtContext.class);
+        PythonParser.Class_or_func_def_stmtContext funcdefContext = (PythonParser.Class_or_func_def_stmtContext) exprNodes.get(0);
+        PythonFunctionDefinition pythonFunctionDefinition = transformFuncDefToFunctionDefinition(funcdefContext, null).get();
 
-        assertEquals("bar", functionDefinition.name.str);
-        assertTrue(functionDefinition.isAsync);
-        assertEquals(1, functionDefinition.start.line);
-        assertEquals(1, functionDefinition.start.col);
+        assertEquals("bar", pythonFunctionDefinition.name.str);
+        assertTrue(pythonFunctionDefinition.isAsync);
+        assertEquals(1, pythonFunctionDefinition.start.line);
+        assertEquals(1, pythonFunctionDefinition.start.col);
 
-        assertEquals("one", functionDefinition.parameters.values[0].name.str);
-        assertNull(functionDefinition.parameters.values[0].type);
-        assertNull(functionDefinition.parameters.values[0].defaultValue);
+        assertEquals("one", pythonFunctionDefinition.parameters.values[0].name.str);
+        assertNull(pythonFunctionDefinition.parameters.values[0].type);
+        assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
 
+    }
+
+    @Test
+    @DisplayName("Correctly map a function definition with a decorator")
+    public void testTransformFunctionWithDecorator() {
+        String code = """
+            @plop.bla.plip
+            def bar(one): pass
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Class_or_func_def_stmtContext.class);
+        PythonParser.Class_or_func_def_stmtContext funcdefContext = (PythonParser.Class_or_func_def_stmtContext) exprNodes.get(0);
+        PythonFunctionDefinition pythonFunctionDefinition = transformFuncDefToFunctionDefinition(funcdefContext, null).get();
+
+        assertEquals(1, pythonFunctionDefinition.decorators.length);
+        assertEquals(0, pythonFunctionDefinition.decorators[0].arguments.length);
+        assertEquals("plop.bla.plip", pythonFunctionDefinition.decorators[0].name.str);
+        assertEquals("bar", pythonFunctionDefinition.name.str);
+        assertEquals("bar", pythonFunctionDefinition.name.str);
+        assertFalse(pythonFunctionDefinition.isAsync);
+        assertEquals(1, pythonFunctionDefinition.start.line);
+        assertEquals(1, pythonFunctionDefinition.start.col);
+
+        assertEquals("one", pythonFunctionDefinition.parameters.values[0].name.str);
+        assertNull(pythonFunctionDefinition.parameters.values[0].type);
+        assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
+    }
+
+    @Test
+    @DisplayName("Correctly map a function definition with a decorator with arguments")
+    public void testTransformFunctionWithDecoratorAndArguments() {
+        String code = """
+            @plop.bla.plip(foo = bar)
+            def bar(one): pass
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Class_or_func_def_stmtContext.class);
+        PythonParser.Class_or_func_def_stmtContext funcdefContext = (PythonParser.Class_or_func_def_stmtContext) exprNodes.get(0);
+        PythonFunctionDefinition pythonFunctionDefinition = transformFuncDefToFunctionDefinition(funcdefContext, null).get();
+
+        assertEquals(1, pythonFunctionDefinition.decorators.length);
+        assertEquals(1, pythonFunctionDefinition.decorators[0].arguments.length);
+        assertEquals("foo", pythonFunctionDefinition.decorators[0].arguments[0].name.str);
+        assertEquals("bar", pythonFunctionDefinition.decorators[0].arguments[0].value.str);
+        assertEquals("plop.bla.plip", pythonFunctionDefinition.decorators[0].name.str);
+        assertEquals("bar", pythonFunctionDefinition.name.str);
+        assertEquals("bar", pythonFunctionDefinition.name.str);
+        assertFalse(pythonFunctionDefinition.isAsync);
+        assertEquals(1, pythonFunctionDefinition.start.line);
+        assertEquals(1, pythonFunctionDefinition.start.col);
+
+        assertEquals("one", pythonFunctionDefinition.parameters.values[0].name.str);
+        assertNull(pythonFunctionDefinition.parameters.values[0].type);
+        assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
+    }
+
+    @Test
+    @DisplayName("Correctly map a function definition with a decorator with arguments")
+    public void testTransformFunctionWithDecoratorAndArguments2() {
+        String code = """
+            @plop.bla.plip(foo)
+            def bar(one): pass
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Class_or_func_def_stmtContext.class);
+        PythonParser.Class_or_func_def_stmtContext funcdefContext = (PythonParser.Class_or_func_def_stmtContext) exprNodes.get(0);
+        PythonFunctionDefinition pythonFunctionDefinition = transformFuncDefToFunctionDefinition(funcdefContext, null).get();
+
+        assertEquals(1, pythonFunctionDefinition.decorators.length);
+        assertEquals(1, pythonFunctionDefinition.decorators[0].arguments.length);
+        assertNull(pythonFunctionDefinition.decorators[0].arguments[0].name);
+        assertEquals("foo", pythonFunctionDefinition.decorators[0].arguments[0].value.str);
+        assertEquals("plop.bla.plip", pythonFunctionDefinition.decorators[0].name.str);
+        assertEquals("bar", pythonFunctionDefinition.name.str);
+        assertEquals("bar", pythonFunctionDefinition.name.str);
+        assertFalse(pythonFunctionDefinition.isAsync);
+        assertEquals(1, pythonFunctionDefinition.start.line);
+        assertEquals(1, pythonFunctionDefinition.start.col);
+
+        assertEquals("one", pythonFunctionDefinition.parameters.values[0].name.str);
+        assertNull(pythonFunctionDefinition.parameters.values[0].type);
+        assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
     }
 }

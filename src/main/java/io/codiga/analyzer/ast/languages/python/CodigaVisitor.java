@@ -6,8 +6,8 @@ import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.RuleType;
 import io.codiga.model.ast.common.FunctionCall;
-import io.codiga.model.ast.common.FunctionDefinition;
 import io.codiga.model.ast.python.PythonForStatement;
+import io.codiga.model.ast.python.PythonFunctionDefinition;
 import io.codiga.model.ast.python.PythonIfStatement;
 import io.codiga.model.ast.python.TryStatement;
 import io.codiga.model.error.Violation;
@@ -116,9 +116,9 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
 
 
     @Override
-    public List<Violation> visitFuncdef(PythonParser.FuncdefContext ctx) {
-        if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.FUNCTION_DEFINITION) {
-            Optional<FunctionDefinition> functionDefinitionOptional = transformFuncDefToFunctionDefinition(ctx, this.root);
+    public List<Violation> visitClass_or_func_def_stmt(PythonParser.Class_or_func_def_stmtContext ctx) {
+        if (ctx.funcdef() != null && analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.FUNCTION_DEFINITION) {
+            Optional<PythonFunctionDefinition> functionDefinitionOptional = transformFuncDefToFunctionDefinition(ctx, this.root);
             functionDefinitionOptional.ifPresent(this::executeRule);
         }
         return visitChildren(ctx);

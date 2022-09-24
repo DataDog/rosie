@@ -22,6 +22,8 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_IMPORT_STATEMENT = "importstatement";
     public static final String AST_ELEMENT_TYPE_COMPARISON = "comparison";
     public static final String AST_ELEMENT_TYPE_EXPRESSION = "expression";
+    public static final String AST_ELEMENT_TYPE_ARGUMENT = "argument";
+    public static final String AST_ELEMENT_TYPE_DECORATOR = "decorator";
     public static final String AST_ELEMENT_IF_STATEMENT = "ifstatement";
     public static final String AST_ELEMENT_FOR_STATEMENT = "forstatement";
     public static final String AST_ELEMENT_ELIF_STATEMENT = "elifstatement";
@@ -31,7 +33,6 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_FROM_ELEMENT = "fromelement";
     public static final String AST_ELEMENT_TYPE_IMPORT_PACKAGE = "importpackage";
     public static final String AST_ELEMENT_TYPE_ARGUMENTS = "arguments";
-    public static final String AST_ELEMENT_TYPE_ARGUMENT = "argument";
     public Position start;
     public Position end;
     public int startIndex;
