@@ -40,21 +40,24 @@ public class ExprToFunctionCall {
             functionName = new AstString(atom.getText(), atom, root);
         }
 
-        for (PythonParser.ArgumentContext argumentContext : trailerContext.arguments().arglist().argument()) {
-            AstString argumentName = null;
-            AstString argumentValue = null;
+        if (trailerContext.arguments() != null && trailerContext.arguments().arglist() != null && trailerContext.arguments().arglist().argument() != null) {
+            for (PythonParser.ArgumentContext argumentContext : trailerContext.arguments().arglist().argument()) {
+                AstString argumentName = null;
+                AstString argumentValue = null;
 
-            if (argumentContext.ASSIGN() != null) {
-                argumentName = new AstString(argumentContext.test(0).getText(), argumentContext.test(0), root);
-                argumentValue = new AstString(argumentContext.test(1).getText(), argumentContext.test(1), root);
-            } else {
-                argumentValue = new AstString(argumentContext.test(0).getText(), argumentContext.test(0), root);
+                if (argumentContext.ASSIGN() != null) {
+                    argumentName = new AstString(argumentContext.test(0).getText(), argumentContext.test(0), root);
+                    argumentValue = new AstString(argumentContext.test(1).getText(), argumentContext.test(1), root);
+                } else {
+                    argumentValue = new AstString(argumentContext.test(0).getText(), argumentContext.test(0), root);
+                }
+
+                functionArguments.add(new FunctionCallArgument(
+                    argumentName,
+                    argumentValue, argumentContext, root));
             }
-
-            functionArguments.add(new FunctionCallArgument(
-                argumentName,
-                argumentValue, argumentContext, root));
         }
+
         Position start = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
         Position end = new Position(ctx.stop.getLine(), ctx.stop.getCharPositionInLine());
         FunctionCallArguments functionCallArguments = new FunctionCallArguments(functionArguments, trailerContext.arguments().arglist(), root);
