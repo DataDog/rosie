@@ -24,4 +24,4 @@ jobs:
         env:
           ANALYSIS_TIMEOUT: 10000
         with:
-          arguments: test
+          arguments: test --info
