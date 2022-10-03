@@ -6,6 +6,9 @@
 *~
 
 build/
+server/build/
+core/build/
+cli/build/
 
 # Log file
 *.log
