@@ -99,6 +99,7 @@ public abstract class AnalyzerCommon {
                 .orTimeout(getTimeout(), TimeUnit.MILLISECONDS)
                 .exceptionally(exception -> {
                     logger.info("caught exception: " + exception.getMessage());
+
                     if (exception instanceof TimeoutException) {
                         logger.error(String.format("reporting rule %s as timeout", rule.name()));
                         return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, 100);
@@ -126,6 +127,9 @@ public abstract class AnalyzerCommon {
                     logger.error(rule.code());
                     logger.error("-- END OF RULE CODE --");
                     logger.error("========= END OF UNHANDLED ERROR =========");
+                    logger.error("============ STACK TRACE ============");
+                    exception.printStackTrace();
+                    logger.error("======== END OF STACK TRACE =========");
 
                     this.metrics.incrementMetric(METRIC_RULE_EXECUTION_UNKNOWN_ERROR);
                     this.errorReporting.reportError(exception, "error unknown exception rule");

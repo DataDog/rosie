@@ -26,7 +26,13 @@ public class PythonArgument extends AstElement {
                 return Optional.empty();
             }
 
+
             PythonParser.NameContext nameValue = context.test().get(0).logical_test().get(0).comparison().expr().atom().name();
+
+            if (nameValue == null) {
+                return Optional.empty();
+            }
+
             PythonString value = new PythonString(nameValue.getText(), nameValue, root);
             return Optional.of(new PythonArgument(null, value, context, root));
         } else {

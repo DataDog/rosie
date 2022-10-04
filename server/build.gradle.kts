@@ -12,9 +12,7 @@ repositories {
     mavenLocal()
 }
 
-//application {
-//    mainClass.set("io.codiga.Main")
-//}
+
 
 java.sourceCompatibility = org.gradle.api.JavaVersion.VERSION_17
 java.targetCompatibility = org.gradle.api.JavaVersion.VERSION_17

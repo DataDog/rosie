@@ -33,70 +33,70 @@ public class FuncDefToFunctionDefinition {
         FunctionDefinitionParameters parameters = null;
         List<FunctionDefinitionParameter> parameterList = new ArrayList<>();
 
-        for (PythonParser.Def_parametersContext parameter : functionDefinition.typedargslist().def_parameters()) {
+        if (functionDefinition.typedargslist() != null && functionDefinition.typedargslist().def_parameters() != null) {
+            for (PythonParser.Def_parametersContext parameter : functionDefinition.typedargslist().def_parameters()) {
 
-            if (parameter.def_parameter() != null) {
+                if (parameter.def_parameter() != null) {
 
-                List<PythonParser.Def_parameterContext> parametersContext = parameter.def_parameter();
-                for (PythonParser.Def_parameterContext parameterContext : parametersContext) {
-                    AstString parameterName = null;
-                    AstString parameterType = null;
-                    AstString parameterDefaultValue = null;
-                    if (parameterContext.named_parameter() != null) {
-                        PythonParser.Named_parameterContext parameterNameAndType = parameterContext.named_parameter();
-                        if (parameterNameAndType.name() != null) {
-                            parameterName = new AstStringBuilder()
-                                .setValue(parameterContext.named_parameter().name().getText())
-                                .setRuleContext(parameterContext.named_parameter().name())
-                                .setRoot(root)
-                                .createAstString();
+                    List<PythonParser.Def_parameterContext> parametersContext = parameter.def_parameter();
+                    for (PythonParser.Def_parameterContext parameterContext : parametersContext) {
+                        AstString parameterName = null;
+                        AstString parameterType = null;
+                        AstString parameterDefaultValue = null;
+                        if (parameterContext.named_parameter() != null) {
+                            PythonParser.Named_parameterContext parameterNameAndType = parameterContext.named_parameter();
+                            if (parameterNameAndType.name() != null) {
+                                parameterName = new AstStringBuilder()
+                                    .setValue(parameterContext.named_parameter().name().getText())
+                                    .setRuleContext(parameterContext.named_parameter().name())
+                                    .setRoot(root)
+                                    .createAstString();
+                            }
+
+                            if (parameterNameAndType.test() != null) {
+
+                                PythonParser.TestContext test = parameterNameAndType.test();
+
+                                parameterType = new AstStringBuilder()
+                                    .setValue(test.getText())
+                                    .setRuleContext(test)
+                                    .setRoot(root)
+                                    .createAstString();
+                            }
                         }
 
-                        if (parameterNameAndType.test() != null) {
+                        /**
+                         * There is a default value
+                         */
+                        if (parameterContext.ASSIGN() != null) {
+                            PythonParser.TestContext testDefaultValue = parameterContext.test();
 
-                            PythonParser.TestContext test = parameterNameAndType.test();
-
-                            parameterType = new AstStringBuilder()
-                                .setValue(test.getText())
-                                .setRuleContext(test)
-                                .setRoot(root)
-                                .createAstString();
+                            if (testDefaultValue != null) {
+                                parameterDefaultValue = new AstStringBuilder()
+                                    .setValue(testDefaultValue.getText())
+                                    .setRuleContext(testDefaultValue)
+                                    .setRoot(root)
+                                    .createAstString();
+                            }
                         }
-                    }
-
-                    /**
-                     * There is a default value
-                     */
-                    if (parameterContext.ASSIGN() != null) {
-                        PythonParser.TestContext testDefaultValue = parameterContext.test();
-
-                        if (testDefaultValue != null) {
-                            parameterDefaultValue = new AstStringBuilder()
-                                .setValue(testDefaultValue.getText())
-                                .setRuleContext(testDefaultValue)
-                                .setRoot(root)
-                                .createAstString();
+                        if (parameterName != null) {
+                            FunctionDefinitionParameter functionDefinitionParameter = new FunctionDefinitionParameter(
+                                parameterName,
+                                parameterType,
+                                parameterDefaultValue,
+                                parameterContext,
+                                root);
+                            parameterList.add(functionDefinitionParameter);
                         }
-                    }
-                    if (parameterName != null) {
-                        FunctionDefinitionParameter functionDefinitionParameter = new FunctionDefinitionParameter(
-                            parameterName,
-                            parameterType,
-                            parameterDefaultValue,
-                            parameterContext,
-                            root);
-                        parameterList.add(functionDefinitionParameter);
                     }
                 }
             }
-        }
-
-        if (functionDefinition.typedargslist() != null) {
             parameters = new FunctionDefinitionParameters(
                 parameterList,
                 functionDefinition.typedargslist(),
                 root);
         }
+
 
         List<PythonDecorator> decorators = ctx.decorator()
             .stream().map(decoratorContext -> PythonDecorator.fromArgumentContext(decoratorContext, root).orElse(null)).toList();

@@ -60,7 +60,12 @@ public class ExprToFunctionCall {
 
         Position start = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
         Position end = new Position(ctx.stop.getLine(), ctx.stop.getCharPositionInLine());
-        FunctionCallArguments functionCallArguments = new FunctionCallArguments(functionArguments, trailerContext.arguments().arglist(), root);
+        FunctionCallArguments functionCallArguments = null;
+
+        if (trailerContext.arguments() != null && trailerContext.arguments().arglist() != null) {
+            functionCallArguments = new FunctionCallArguments(functionArguments, trailerContext.arguments().arglist(), root);
+        }
+
         return Optional.of(new PythonFunctionCall(objectOrModule, functionName, functionCallArguments, start, end, ctx, root));
     }
 }
