@@ -5,7 +5,7 @@ import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.errorreporting.ErrorReportingDummy;
 import io.codiga.cli.metrics.MetricsDummy;
 import io.codiga.cli.model.Result;
-import io.codiga.cli.model.Violation;
+import io.codiga.cli.model.ViolationWithFilename;
 import io.codiga.model.Language;
 import io.codiga.model.error.AnalysisResult;
 import org.apache.commons.cli.*;
@@ -108,7 +108,9 @@ public class Main {
         }
 
         Analyzer analyzer = new Analyzer(new ErrorReportingDummy(), new MetricsDummy());
-        List<Violation> allViolations = new ArrayList<>();
+        List<ViolationWithFilename> allViolations = new ArrayList<>();
+
+        long startTimeMs = System.currentTimeMillis();
 
         // For each language, we get the list of file for this language and get the violations
         for (Map.Entry<Language, List<String>> entry : LANGUAGE_EXTENSIONS.entrySet()) {
@@ -128,8 +130,8 @@ public class Main {
                     CompletableFuture<AnalysisResult> res = analyzer.analyze(entry.getKey(), relativePath, code, rulesForLanguage, false);
                     AnalysisResult analysisResult = res.get(1, TimeUnit.SECONDS);
 
-                    List<Violation> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> {
-                        return new Violation(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath);
+                    List<ViolationWithFilename> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> {
+                        return new ViolationWithFilename(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath);
                     })).toList();
                     analysisResult.ruleResults().forEach(ruleResult -> {
                         System.out.println(String.format("rule %s on file %s took %s ms", ruleResult.identifier(), relativePath, ruleResult.executionTimeMs()));
@@ -149,7 +151,9 @@ public class Main {
             System.err.println(String.format("Failed to write result into file %s", output));
             System.exit(1);
         }
+        long endTimeMs = System.currentTimeMillis();
 
+        System.out.println(String.format("Analysis took %sms", endTimeMs - startTimeMs));
 
         System.exit(0);
 

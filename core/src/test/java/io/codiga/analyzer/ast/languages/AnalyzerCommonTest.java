@@ -41,6 +41,11 @@ public class AnalyzerCommonTest extends PythonTestUtils {
             public RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput) {
                 return null;
             }
+
+            @Override
+            public void prepareExecution(String filename, String code, AnalyzerRule rule, boolean logOutput) {
+                
+            }
         };
         List<Long> commentsLine = analyzerCommon.getCommentsLine(code, "#");
         assertEquals(1, commentsLine.size());

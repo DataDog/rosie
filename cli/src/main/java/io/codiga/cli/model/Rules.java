@@ -4,6 +4,9 @@ import io.codiga.analyzer.rule.AnalyzerRule;
 
 import java.util.List;
 
+/**
+ * This class is used only to serialized/deserialized the JSON file being passed as an argument.
+ */
 public class Rules {
 
     public List<AnalyzerRule> rules;

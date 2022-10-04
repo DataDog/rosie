@@ -20,14 +20,17 @@ public class FunctionWithEmptyArrayAsParameterTest extends E2EBase {
 
     String ruleCode = """
         function visit(node) {
-            const parametersWithEmptyArray = node.parameters.values.filter(p => p && p.defaultValue && p.defaultValue.value === "[]");
-
-            for(var i = 0 ; i < parametersWithEmptyArray.length ; i++) {
-                const parameter = parametersWithEmptyArray[i];
-                console.log(parameter.name.value);
-                console.log(parameter.start.col);
-                const error = buildError(parameter.defaultValue.start.line, parameter.defaultValue.start.col, parameter.defaultValue.end.line, parameter.defaultValue.end.col, "cannot use default initializer [] in function", "CRITICAL", "SAFETY");
-                addError(error);
+                
+            if (node.parameters.values) {
+                const parametersWithEmptyArray = node.parameters.values.filter(p => p && p.defaultValue && p.defaultValue.value === "[]");
+            
+                for(var i = 0 ; i < parametersWithEmptyArray.length ; i++) {
+                    const parameter = parametersWithEmptyArray[i];
+                    console.log(parameter.name.value);
+                    console.log(parameter.start.col);
+                    const error = buildError(parameter.defaultValue.start.line, parameter.defaultValue.start.col, parameter.defaultValue.end.line, parameter.defaultValue.end.col, "cannot use default initializer [] in function", "CRITICAL", "SAFETY");
+                    addError(error);
+                }
             }
         }
         """;

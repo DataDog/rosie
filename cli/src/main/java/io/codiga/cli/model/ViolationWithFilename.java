@@ -4,7 +4,7 @@ import io.codiga.model.common.Position;
 import io.codiga.model.error.Category;
 import io.codiga.model.error.Severity;
 
-public class Violation {
+public class ViolationWithFilename {
 
     public Position start;
     public Position end;
@@ -14,7 +14,7 @@ public class Violation {
     public String filename;
 
 
-    public Violation(Position start, Position end, String message, Severity severity, Category category, String filename) {
+    public ViolationWithFilename(Position start, Position end, String message, Severity severity, Category category, String filename) {
         this.start = start;
         this.end = end;
         this.message = message;
@@ -23,5 +23,5 @@ public class Violation {
         this.filename = filename;
     }
 
-    
+
 }

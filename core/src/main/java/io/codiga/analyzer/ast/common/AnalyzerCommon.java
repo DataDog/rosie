@@ -79,6 +79,8 @@ public abstract class AnalyzerCommon {
 
     public abstract RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput);
 
+    public abstract void prepareExecution(String filename, String code, AnalyzerRule rule, boolean logOutput);
+
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         // Get the lines to ignore that have codiga-disable
         List<Long> linesToIgnore = getCommentsLine(code, getCommentsSymbol(language));
@@ -88,6 +90,7 @@ public abstract class AnalyzerCommon {
             CompletableFuture<RuleResult> future = CompletableFuture
                 .supplyAsync(() -> {
                     long startTime = System.currentTimeMillis();
+                    prepareExecution(filename, code, rule, logOutput);
                     RuleResult res = execute(filename, code, rule, logOutput);
                     long endTime = System.currentTimeMillis();
                     long executionTime = endTime - startTime;

@@ -38,5 +38,10 @@ public class PythonAnalyzer extends AnalyzerCommon {
         return new RuleResult(rule.name(), codigaVisitor.getViolations(), List.of(), null, codigaVisitor.getOutput(), executionTimeMs);
     }
 
+    @Override
+    public void prepareExecution(String filename, String code, AnalyzerRule rule, boolean logOutput) {
+        
+    }
+
 
 }

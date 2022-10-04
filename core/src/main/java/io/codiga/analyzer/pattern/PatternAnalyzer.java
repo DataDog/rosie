@@ -61,4 +61,9 @@ public class PatternAnalyzer extends AnalyzerCommon {
         return new RuleResult(rule.name(), List.copyOf(violations), List.of(), null, output, executionTimeMs);
     }
 
+    @Override
+    public void prepareExecution(String filename, String code, AnalyzerRule rule, boolean logOutput) {
+        
+    }
+
 }
