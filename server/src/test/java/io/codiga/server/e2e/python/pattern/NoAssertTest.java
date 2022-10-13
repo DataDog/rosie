@@ -24,12 +24,20 @@ public class NoAssertTest extends E2EBase {
         assert x == 1
         print(bar)""";
 
+    String codeWithTwoViolations = """
+        x = 1
+        print(foo)
+        assert x == 1
+        print(bar)
+        assert x == 3""";
+
 
     String fixedCode = """
         x = 1
         print(foo)
                 
         print(bar)""";
+
 
     String ruleCodeUpdate = """
         function visit(pattern, filename, code) {
@@ -54,6 +62,18 @@ public class NoAssertTest extends E2EBase {
             RULE_TYPE_PATTERN, null, pattern, true);
         // finally check the verified code
         assertEquals(fixedCode, applyFix(code, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
+        assertEquals(3, response.ruleResponses.get(0).violations.get(0).start.line);
+    }
+
+    @Test
+    @DisplayName("Report 2 issues with having 2 occurrences in the code")
+    public void testPythonAssertTwoViolations() throws Exception {
+        Response response = executeTestWithPattern("bla.py", codeWithTwoViolations, Language.PYTHON, ruleCodeUpdate, "no-assert",
+            RULE_TYPE_PATTERN, null, pattern, true);
+        // finally check the verified code
+        assertEquals(2, response.ruleResponses.get(0).violations.size());
+        assertEquals(3, response.ruleResponses.get(0).violations.get(0).start.line);
+        assertEquals(5, response.ruleResponses.get(0).violations.get(1).start.line);
     }
 
     @Test

@@ -107,7 +107,7 @@ public class PatternMatcher {
         Matcher matcher = pattern.matcher(this.code);
 
 
-        if (matcher.find()) {
+        while (matcher.find()) {
 
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 int startIndex = matcher.start(i);

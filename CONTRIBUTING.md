@@ -31,3 +31,9 @@ javac *.java
 ```bash
 grun Python root <python-file> -gui
 ```
+
+### Run the CLI version
+
+```bash
+./gradlew cli:run --args='--debug true --directory /Users/julien/git/ci-backend-executor/backend_lib/ --output /tmp/bla.json --rules /Users/julien/git/rosie/cli/src/test/resources/20rules.json'
+```
