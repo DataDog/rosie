@@ -130,9 +130,7 @@ public class Main {
                     CompletableFuture<AnalysisResult> res = analyzer.analyze(entry.getKey(), relativePath, code, rulesForLanguage, false);
                     AnalysisResult analysisResult = res.get(1, TimeUnit.SECONDS);
 
-                    List<ViolationWithFilename> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> {
-                        return new ViolationWithFilename(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath);
-                    })).toList();
+                    List<ViolationWithFilename> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> new ViolationWithFilename(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath, ruleResult.identifier()))).toList();
                     analysisResult.ruleResults().forEach(ruleResult -> {
                         System.out.println(String.format("rule %s on file %s took %s ms", ruleResult.identifier(), relativePath, ruleResult.executionTimeMs()));
                     });

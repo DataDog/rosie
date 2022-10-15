@@ -12,15 +12,17 @@ public class ViolationWithFilename {
     public Severity severity;
     public Category category;
     public String filename;
+    public String rule;
 
 
-    public ViolationWithFilename(Position start, Position end, String message, Severity severity, Category category, String filename) {
+    public ViolationWithFilename(Position start, Position end, String message, Severity severity, Category category, String filename, String rule) {
         this.start = start;
         this.end = end;
         this.message = message;
         this.severity = severity;
         this.category = category;
         this.filename = filename;
+        this.rule = rule;
     }
 
 
