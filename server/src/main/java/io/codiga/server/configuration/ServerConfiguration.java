@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ServerConfiguration {
 
+    public static final int WARMUP_LOOPS = 10;
     private Logger logger = LoggerFactory.getLogger(ServerConfiguration.class);
 
     @Bean

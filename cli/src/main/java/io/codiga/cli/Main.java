@@ -24,9 +24,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import static io.codiga.cli.CliConstants.WARMUP_LOOPS;
 import static io.codiga.cli.FileUtils.*;
 import static io.codiga.cli.RulesUtils.getRulesFromFile;
 import static io.codiga.constants.Languages.LANGUAGE_EXTENSIONS;
+import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 
 public class Main {
     public static void main(String[] args) {
@@ -113,6 +115,9 @@ public class Main {
 
         Analyzer analyzer = new Analyzer(new ErrorReportingDummy(), new MetricsDummy());
         List<ViolationWithFilename> allViolations = new ArrayList<>();
+
+        // Warmup the analyzer
+        warmupAnalyzer(analyzer, WARMUP_LOOPS);
 
         long startTimeMs = System.currentTimeMillis();
 
