@@ -8,6 +8,7 @@ import io.codiga.cli.model.Result;
 import io.codiga.cli.model.ViolationWithFilename;
 import io.codiga.model.Language;
 import io.codiga.model.error.AnalysisResult;
+import io.codiga.utils.Version;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
@@ -66,6 +67,7 @@ public class Main {
 
         System.out.println("Configuration");
         System.out.println("=============");
+        System.out.println(String.format("Version     : %s", Version.CURRENT_VERSION));
         System.out.println(String.format("Debug       : %s", debug));
         System.out.println(String.format("Directory   : %s", directory));
         System.out.println(String.format("Rules file  : %s", rulesFile));
@@ -88,7 +90,8 @@ public class Main {
         try {
             rules = getRulesFromFile(rulesFile);
         } catch (IOException e) {
-            System.err.println(String.format("Error when trying to read the rules from file %s", rulesFile));
+            System.err.println(String.format("Error when trying to read the rules from file %s: %s", rulesFile, e.getMessage()));
+            e.printStackTrace();
             System.exit(1);
         }
 
