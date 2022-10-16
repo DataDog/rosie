@@ -68,6 +68,7 @@ public class Main {
         System.out.println("Configuration");
         System.out.println("=============");
         System.out.println(String.format("Version     : %s", Version.CURRENT_VERSION));
+        System.out.println(String.format("# cores     : %s", Runtime.getRuntime().availableProcessors()));
         System.out.println(String.format("Debug       : %s", debug));
         System.out.println(String.format("Directory   : %s", directory));
         System.out.println(String.format("Rules file  : %s", rulesFile));
