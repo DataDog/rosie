@@ -53,12 +53,16 @@ public class ComparisontoPythonComparison {
     }
 
     public static Optional<PythonComparison> transformComparisonToPythonComparison(PythonParser.ComparisonContext comparisonContext, PythonParser.RootContext root) {
+        if (comparisonContext == null) {
+            return Optional.empty();
+        }
+
         if (comparisonContext.expr() != null) {
             return Optional.of(
                 new PythonComparison(null, null, null, transformExprToPythonExpression(comparisonContext.expr(), root).orElse(null), comparisonContext, root)
             );
         }
-        if (comparisonContext.comparison().size() == 2) {
+        if (comparisonContext.comparison() != null && comparisonContext.comparison().size() == 2) {
             PythonParser.ComparisonContext leftSide = comparisonContext.comparison(0);
             PythonParser.ComparisonContext rightSide = comparisonContext.comparison(1);
 

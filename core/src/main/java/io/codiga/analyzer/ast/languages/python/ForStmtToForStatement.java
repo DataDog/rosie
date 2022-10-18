@@ -43,7 +43,10 @@ public class ForStmtToForStatement {
         if (for_stmtContext.testlist() != null && for_stmtContext.testlist().test() != null && for_stmtContext.testlist().test().size() > 0) {
             list = Optional.of(new PythonString(for_stmtContext.testlist().getText(), for_stmtContext.testlist(), root));
         }
-        statements = new PythonString(for_stmtContext.suite().getText(), for_stmtContext.suite(), root);
+
+        if (for_stmtContext.suite() != null) {
+            statements = new PythonString(for_stmtContext.suite().getText(), for_stmtContext.suite(), root);
+        }
         if (for_stmtContext.else_clause() != null) {
 
             elseStatement = new PythonElseStatement(

@@ -122,14 +122,16 @@ public class ServerMainController {
         }
 
         try {
-            rules = request.rules.stream().map(r -> {
-                String decodedRuleCode = new String(Base64.getDecoder().decode(r.contentBase64.getBytes()));
-                Language language = languageFromString(r.language);
-                EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
-                RuleType ruleType = ruleTypeFromString(r.type);
-                AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern);
-                return analyzerRule;
-            }).toList();
+            rules = request.rules.stream()
+                .filter(r -> r.contentBase64 != null && r.language != null)
+                .map(r -> {
+                    String decodedRuleCode = new String(Base64.getDecoder().decode(r.contentBase64.getBytes()));
+                    Language language = languageFromString(r.language);
+                    EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
+                    RuleType ruleType = ruleTypeFromString(r.type);
+                    AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern);
+                    return analyzerRule;
+                }).toList();
         } catch (IllegalArgumentException iae) {
             logger.error("rule is not base64: " + rules);
             return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_RULE_NOT_BASE64)));
