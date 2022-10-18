@@ -28,7 +28,11 @@ public class PythonAnalyzer extends AnalyzerCommon {
     @Override
     public RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule) {
         long startTimestamp = System.currentTimeMillis();
-
+        PythonLexer lexer = new PythonLexer(CharStreams.fromString(analyzerContext.getCode()));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        PythonParser parser = new PythonParser(tokens);
+        parser.setBuildParseTree(true);
+        analyzerContext.setParser(parser);
         CodigaVisitor codigaVisitor = new CodigaVisitor(rule, analyzerContext.getCode(), analyzerContext.getFilename(), analyzerContext.isLogOutput());
         codigaVisitor.visit(((PythonParser) analyzerContext.getParser()).root());
         long endTimestamp = System.currentTimeMillis();
@@ -48,11 +52,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
          * Build the parser to execute all rules.
          */
         AnalyzerContext analyzerContext = new AnalyzerContext(language, filename, code, rules, logOutput);
-        PythonLexer lexer = new PythonLexer(CharStreams.fromString(code));
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        PythonParser parser = new PythonParser(tokens);
-        parser.setBuildParseTree(true);
-        analyzerContext.setParser(parser);
+
         return analyzerContext;
     }
 
