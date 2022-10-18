@@ -2,11 +2,13 @@ package io.codiga.analyzer.pattern;
 
 import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
+import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.ast.vm.ExecutionEnvironment;
 import io.codiga.analyzer.ast.vm.ExecutionEnvironmentBuilder;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
+import io.codiga.model.Language;
 import io.codiga.model.error.RuleResult;
 import io.codiga.model.error.Violation;
 import io.codiga.model.pattern.PatternObject;
@@ -31,10 +33,11 @@ public class PatternAnalyzer extends AnalyzerCommon {
         super(metrics, errorReporting);
     }
 
+
     @Override
-    public RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput) {
+    public RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule) {
         long startTimestamp = System.currentTimeMillis();
-        PatternMatcher patternMatcher = new PatternMatcher(code, rule);
+        PatternMatcher patternMatcher = new PatternMatcher(analyzerContext.getCode(), rule);
         List<PatternObject> patternObjects = patternMatcher.getPatternObjects();
         List<Violation> violations = new ArrayList<>();
         String output = null;
@@ -44,10 +47,10 @@ public class PatternAnalyzer extends AnalyzerCommon {
             String finalCode = buildExecutableCode(rule.code());
 
             ExecutionEnvironment executionEnvironment = new ExecutionEnvironmentBuilder()
-                .setCode(code)
+                .setCode(analyzerContext.getCode())
                 .setRootObject(patternObject)
-                .setLogOutput(logOutput)
-                .setFilename(filename)
+                .setLogOutput(analyzerContext.isLogOutput())
+                .setFilename(analyzerContext.getFilename())
                 .createExecutionEnvironment();
 
             Context context = createContextForJavaScriptExecution(executionEnvironment);
@@ -63,7 +66,12 @@ public class PatternAnalyzer extends AnalyzerCommon {
 
     @Override
     public void prepareExecution(String filename, String code, AnalyzerRule rule, boolean logOutput) {
-        
+
+    }
+
+    @Override
+    public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
+        return new AnalyzerContext(language, filename, code, rules, logOutput);
     }
 
 }

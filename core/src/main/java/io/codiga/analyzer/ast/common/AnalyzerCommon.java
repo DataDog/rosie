@@ -77,21 +77,25 @@ public abstract class AnalyzerCommon {
         }
     }
 
-    public abstract RuleResult execute(String filename, String code, AnalyzerRule rule, boolean logOutput);
+    public abstract RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule);
 
     public abstract void prepareExecution(String filename, String code, AnalyzerRule rule, boolean logOutput);
+
+    public abstract AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput);
 
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         // Get the lines to ignore that have codiga-disable
         List<Long> linesToIgnore = getCommentsLine(code, getCommentsSymbol(language));
 
+        // Build execution, get the parser if this is an AST rule.
+        AnalyzerContext analyzerContext = buildContext(language, filename, code, rules, logOutput);
 
         List<CompletableFuture<RuleResult>> futures = rules.stream().map(rule -> {
             CompletableFuture<RuleResult> future = CompletableFuture
                 .supplyAsync(() -> {
                     long startTime = System.currentTimeMillis();
                     prepareExecution(filename, code, rule, logOutput);
-                    RuleResult res = execute(filename, code, rule, logOutput);
+                    RuleResult res = execute(analyzerContext, rule);
                     long endTime = System.currentTimeMillis();
                     long executionTime = endTime - startTime;
                     String metricName = String.format("%s-%s", METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_PREFIX, rule.name());
