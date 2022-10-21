@@ -28,7 +28,10 @@ public class FuncDefToFunctionDefinition {
 
         boolean isAsync = functionDefinition.ASYNC() != null;
 
-        AstString name = new AstStringBuilder().setValue(functionDefinition.name().getText()).setRuleContext(ctx).setRoot(root).createAstString();
+        AstString name = new AstStringBuilder()
+            .setValue(functionDefinition.name().getText())
+            .setRuleContext(functionDefinition.name())
+            .setRoot(root).createAstString();
         AstString returnType = null;
         FunctionDefinitionParameters parameters = null;
         List<FunctionDefinitionParameter> parameterList = new ArrayList<>();
