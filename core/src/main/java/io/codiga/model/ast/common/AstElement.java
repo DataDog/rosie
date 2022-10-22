@@ -13,6 +13,8 @@ import static io.codiga.analyzer.ast.AstUtils.getStartPosition;
 
 public class AstElement {
     public static final String AST_ELEMENT_TYPE_STRING = "string";
+    public static final String AST_ELEMENT_TYPE_LIST = "list";
+    public static final String AST_ELEMENT_TYPE_ASSIGNMENT = "assignment";
     public static final String AST_ELEMENT_TYPE_FUNCTION_CALL = "functioncall";
     public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION_PARAMETERS = "functiondefinitionparameters";
     public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION_PARAMETER = "functiondefinitionparameter";

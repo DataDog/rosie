@@ -6,10 +6,7 @@ import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.RuleType;
 import io.codiga.model.ast.common.FunctionCall;
-import io.codiga.model.ast.python.PythonForStatement;
-import io.codiga.model.ast.python.PythonFunctionDefinition;
-import io.codiga.model.ast.python.PythonIfStatement;
-import io.codiga.model.ast.python.TryStatement;
+import io.codiga.model.ast.python.*;
 import io.codiga.model.error.Violation;
 import io.codiga.parser.python.gen.PythonParser;
 import io.codiga.parser.python.gen.PythonParserBaseVisitor;
@@ -24,7 +21,11 @@ import static io.codiga.analyzer.ast.languages.python.ExprToFunctionCall.transfo
 import static io.codiga.analyzer.ast.languages.python.ForStmtToForStatement.transformForStatement;
 import static io.codiga.analyzer.ast.languages.python.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
 import static io.codiga.analyzer.ast.languages.python.IfStmtToIfStatement.transformIfStatement;
+import static io.codiga.analyzer.ast.languages.python.ImportFromToFromStatement.transformFromStmtToFromStatement;
+import static io.codiga.analyzer.ast.languages.python.ImportStmtToImportStatement.transformImportStmtToImportStatement;
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
+import static io.codiga.analyzer.ast.languages.python.SimpleStmtToAssignment.isAssignment;
+import static io.codiga.analyzer.ast.languages.python.SimpleStmtToAssignment.transformSimpleStmtToPythonAssignment;
 import static io.codiga.analyzer.ast.languages.python.TryStmtToTryStatement.transformStmtToTryStatement;
 
 public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
@@ -67,6 +68,37 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
     }
 
     @Override
+    public List<Violation> visitFrom_stmt(PythonParser.From_stmtContext ctx) {
+        if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.IMPORT_STATEMENT) {
+            Optional<FromStatement> fromStatementOptional = transformFromStmtToFromStatement(ctx, this.root);
+            fromStatementOptional.ifPresent(this::executeRule);
+        }
+
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public List<Violation> visitSimple_stmt(PythonParser.Simple_stmtContext ctx) {
+
+        if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.ASSIGNMENT) {
+            if (isAssignment(ctx)) {
+                transformSimpleStmtToPythonAssignment(ctx, this.root).ifPresent(this::executeRule);
+            }
+        }
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public List<Violation> visitImport_stmt(PythonParser.Import_stmtContext ctx) {
+        if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.IMPORT_STATEMENT) {
+            Optional<ImportStatement> importStatementOptional = transformImportStmtToImportStatement(ctx, root);
+            importStatementOptional.ifPresent(this::executeRule);
+        }
+
+        return visitChildren(ctx);
+    }
+
+    @Override
     public List<Violation> visitIf_stmt(PythonParser.If_stmtContext ctx) {
         if (analyzerRule.ruleType() == RuleType.AST_CHECK && analyzerRule.entityChecked() == EntityChecked.IF_STATEMENT) {
             Optional<PythonIfStatement> ifStatementOptional = transformIfStatement(ctx, root);
@@ -75,6 +107,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
 
         return visitChildren(ctx);
     }
+
 
     private void executeRule(Object rootObject) {
         ExecutionResult executionResult = new ExecutionEnvironmentBuilder()

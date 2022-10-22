@@ -88,11 +88,20 @@ public class ModelUtils {
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_IF_CONDITION)) {
             return EntityChecked.IF_STATEMENT;
         }
+        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_IF_CONDITION)) {
+            return EntityChecked.IF_STATEMENT;
+        }
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_TRY_BLOCK)) {
             return EntityChecked.TRY_BLOCK;
         }
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FOR_LOOP)) {
             return EntityChecked.FOR_LOOP;
+        }
+        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_IMPORT)) {
+            return EntityChecked.IMPORT_STATEMENT;
+        }
+        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_ASSIGNMENT)) {
+            return EntityChecked.ASSIGNMENT;
         }
 
         return EntityChecked.UNKNOWN;

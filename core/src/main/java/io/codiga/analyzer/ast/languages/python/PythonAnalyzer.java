@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static io.codiga.model.ErrorCode.ERROR_RULE_PARSING;
+
 public class PythonAnalyzer extends AnalyzerCommon {
 
 
@@ -34,7 +36,15 @@ public class PythonAnalyzer extends AnalyzerCommon {
         parser.setBuildParseTree(true);
         analyzerContext.setParser(parser);
         CodigaVisitor codigaVisitor = new CodigaVisitor(rule, analyzerContext.getCode(), analyzerContext.getFilename(), analyzerContext.isLogOutput());
-        codigaVisitor.visit(((PythonParser) analyzerContext.getParser()).root());
+
+        try {
+            codigaVisitor.visit(((PythonParser) analyzerContext.getParser()).root());
+        } catch (StackOverflowError stackOverflowError) {
+            long endTimestamp = System.currentTimeMillis();
+            long executionTimeMs = endTimestamp - startTimestamp;
+            return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_PARSING), null, null, executionTimeMs);
+        }
+
         long endTimestamp = System.currentTimeMillis();
         long executionTimeMs = endTimestamp - startTimestamp;
         return new RuleResult(rule.name(), codigaVisitor.getViolations(), List.of(), null, codigaVisitor.getOutput(), executionTimeMs);
