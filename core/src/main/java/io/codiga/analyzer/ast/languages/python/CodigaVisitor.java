@@ -168,4 +168,10 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
         return visitChildren(ctx);
     }
 
+
+    // added to prevent exceptions
+    @Override
+    public List<Violation> visitTrailer(PythonParser.TrailerContext ctx) {
+        return List.of();
+    }
 }
