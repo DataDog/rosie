@@ -139,7 +139,7 @@ public abstract class AnalyzerCommon {
                     logger.error("======== END OF STACK TRACE =========");
 
                     this.metrics.incrementMetric(METRIC_RULE_EXECUTION_UNKNOWN_ERROR);
-                    this.errorReporting.reportError(exception, "error unknown exception rule");
+                    this.errorReporting.reportError(exception, String.format("error unknown exception rule %s", rule.name()));
 
                     return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), null, null, 0);
                 });
