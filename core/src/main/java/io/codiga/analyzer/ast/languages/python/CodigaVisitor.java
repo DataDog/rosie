@@ -169,9 +169,4 @@ public class CodigaVisitor extends PythonParserBaseVisitor<List<Violation>> {
     }
 
 
-    // added to prevent exceptions
-    @Override
-    public List<Violation> visitTrailer(PythonParser.TrailerContext ctx) {
-        return List.of();
-    }
 }
