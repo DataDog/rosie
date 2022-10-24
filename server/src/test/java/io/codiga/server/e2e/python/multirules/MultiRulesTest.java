@@ -24,45 +24,59 @@ public class MultiRulesTest extends E2EBase {
         RULE_NO_EMPTY_ARRAY_AS_PARAMETER,
         RULE_FILE_WRITE_OTHERS,
         RULE_JINJA2_AUTOESCAPE,
-        RULE_DESERIALIZA_UNTRUSTED_DATA,
+        RULE_DESERIALIZE_UNTRUSTED_DATA,
         RULE_INSECURE_SSL_PROTOCOLS
     );
 
     String code = """
-        import stat
-        import hashlib
+import stat
+import hashlib
+        
+import tempfile
+import requests
+import subprocess
+        
+import random
+
+import pickle
+
+import ssl
+
+
+remote = ssl.wrap_socket(s, ca_certs= CA, cert_reqs=ssl.CERT_REQUIRED, ssl_version = ssl.PROTOCOL_SSLv3)
+
+data = pickle.loads(data)
+
+from jinja2 import Environment, PackageLoader, select_autoescape
+
+
+env = Environment(loader=PackageLoader("yourapp"), autoescape=False)
+        
+n = random.random()
+        
+        
+subprocess.Popen('/bin/ls %s' % ('something',), shell=True)
+        
+        
+r = requests.get(w, verify=False)
+r = requests.get(w, verify=False, timeout=10)
+        
+        
+tempfile.mktemp(dir=self._tmp_dir)
+        
+hashlib.new('md5')
                 
-        import tempfile
-        import requests
-                
-        import subprocess
-        import random
-                
-        n = random.random()
-                
-                
-        subprocess.Popen('/bin/ls %s' % ('something',), shell=True)
-                
-                
-        r = requests.get(w, verify=False)
-        r = requests.get(w, verify=False, timeout=10)
-                
-                
-        tempfile.mktemp(dir=self._tmp_dir)
-                
-        hashlib.new('md5')
-                        
-        eval('[1, 2, 3]')
-                
-        def newFunction(arg1, arg2: int, arg3 = []):
-          print("bla")
-                
-        path = "/path/to/file"
-        os.chmod(path, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
-        """;
+eval('[1, 2, 3]')
+        
+def newFunction(arg1, arg2: int, arg3 = []):
+  print("bla")
+        
+path = "/path/to/file"
+os.chmod(path, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+                        """;
 
     @Test
-    public void testPythonSubprocessWithShell() throws Exception {
+    public void testMultiRules() throws Exception {
         Response response = executeTestWithRules("bla.py", code, Language.PYTHON, RULES, false);
 
         assertEquals(11, response.ruleResponses.size());
@@ -73,6 +87,8 @@ public class MultiRulesTest extends E2EBase {
             assertNull(ruleResponse.executionError);
 
             assertTrue(ruleResponse.errors.isEmpty());
+            assertEquals(1, ruleResponse.violations.size());
+
         });
 
     }
