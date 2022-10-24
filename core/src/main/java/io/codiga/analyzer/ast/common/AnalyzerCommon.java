@@ -31,7 +31,7 @@ import static io.codiga.utils.EnvironmentUtils.getEnvironmentValueAsLong;
 public abstract class AnalyzerCommon {
 
     public final static String COMMENT_SHARP = "#";
-    private final long DEFAULT_TIMEOUT_MS = 1000;
+    private final long DEFAULT_TIMEOUT_MS = 200;
 
     private Logger logger = LoggerFactory.getLogger(AnalyzerCommon.class);
     private AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();

@@ -5,6 +5,7 @@ import io.codiga.server.ServerMainController;
 import io.codiga.server.configuration.ServerTestConfiguration;
 import io.codiga.server.request.Request;
 import io.codiga.server.request.RequestBuilder;
+import io.codiga.server.request.Rule;
 import io.codiga.server.request.RuleBuilder;
 import io.codiga.server.response.Response;
 import io.codiga.server.response.ViolationFix;
@@ -81,6 +82,25 @@ public class E2EBase {
                                 String entityChecked,
                                 boolean logOutput) {
         return executeTestWithPattern(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, null, logOutput);
+    }
+
+    public Response executeTestWithRules(String filename,
+                                         String code,
+                                         Language language,
+                                         List<Rule> rules,
+                                         boolean logOutput) {
+        Request request = new RequestBuilder()
+            .setFilename(filename)
+            .setLanguage(stringFromLanguage(language))
+            .setFileEncoding("utf-8")
+            .setCodeBase64(encodeBase64(code))
+            .setLogOutput(logOutput)
+            .setRules(rules)
+            .createRequest();
+        Response response = this.restTemplate.postForObject(
+            "http://localhost:" + port + "/analyze", request,
+            Response.class);
+        return response;
     }
 
     protected String applyFix(String originalCode, ViolationFix violationFix) {

@@ -38,7 +38,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
         CodigaVisitor codigaVisitor = new CodigaVisitor(rule, analyzerContext.getCode(), analyzerContext.getFilename(), analyzerContext.isLogOutput());
 
         try {
-            codigaVisitor.visit(parser.root());
+            codigaVisitor.visit(((PythonParser) analyzerContext.getParser()).root());
         } catch (StackOverflowError stackOverflowError) {
             long endTimestamp = System.currentTimeMillis();
             long executionTimeMs = endTimestamp - startTimestamp;
