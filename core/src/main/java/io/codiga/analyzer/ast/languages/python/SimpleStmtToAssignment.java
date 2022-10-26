@@ -113,7 +113,7 @@ public class SimpleStmtToAssignment {
         if (rightElements.size() > 1) {
             rightElement = new PythonList(rightElements, assignPart, root);
         }
-        if (leftElements.size() == 1) {
+        if (rightElements.size() == 1) {
             rightElement = rightElements.get(0);
         }
 
