@@ -141,6 +141,12 @@ public class Main {
 
                     List<ViolationWithFilename> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> new ViolationWithFilename(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath, ruleResult.identifier()))).toList();
                     analysisResult.ruleResults().forEach(ruleResult -> {
+                        if (ruleResult.errors().size() > 0) {
+                            System.out.println(String.format("rule %s on file %s reported errors %s", ruleResult.identifier(), relativePath, String.join(",", ruleResult.errors())));
+                        }
+                        if (ruleResult.executionError() != null) {
+                            System.out.println(String.format("rule %s on file %s execution error: %s", ruleResult.identifier(), relativePath, ruleResult.executionError()));
+                        }
                         System.out.println(String.format("rule %s on file %s took %s ms", ruleResult.identifier(), relativePath, ruleResult.executionTimeMs()));
                     });
                     allViolations.addAll(violations);

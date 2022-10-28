@@ -22,18 +22,23 @@ public class ImportFromToFromStatement {
         }
 
         AstString packageName = new AstString(from_stmtContext.dotted_name().getText(), from_stmtContext.dotted_name(), root);
+        List<FromElement> elements = List.of();
 
-        List<FromElement> elements = from_stmtContext.import_as_names().import_as_name().stream().map(i -> {
-            AstString as = null;
-            AstString name = null;
-            if (i.AS() == null) {
-                name = new AstString(i.name(0).getText(), i.name(0), root);
-            } else {
-                name = new AstString(i.name(0).getText(), i.name(0), root);
-                as = new AstString(i.name(1).getText(), i.name(1), root);
-            }
-            return new FromElement(name, as, i, root);
-        }).toList();
+        if (from_stmtContext.import_as_names() != null && from_stmtContext.import_as_names().import_as_name() != null) {
+
+
+            elements = from_stmtContext.import_as_names().import_as_name().stream().map(i -> {
+                AstString as = null;
+                AstString name = null;
+                if (i.AS() == null) {
+                    name = new AstString(i.name(0).getText(), i.name(0), root);
+                } else {
+                    name = new AstString(i.name(0).getText(), i.name(0), root);
+                    as = new AstString(i.name(1).getText(), i.name(1), root);
+                }
+                return new FromElement(name, as, i, root);
+            }).toList();
+        }
 
         return Optional.of(new FromStatement(packageName, elements, from_stmtContext, root));
     }

@@ -33,9 +33,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
     implementation("com.google.inject:guice:5.1.0")
     implementation("commons-cli:commons-cli:1.5.0")
-    implementation("com.datadoghq:java-dogstatsd-client:4.0.0")
     implementation("com.rollbar:rollbar-java:1.8.1")
-
+    implementation("ch.qos.logback:logback-classic:1.3.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")

@@ -40,10 +40,26 @@ public class PythonArgument extends AstElement {
                 return Optional.empty();
             }
 
-            PythonParser.NameContext nameValue = context.test().get(0).logical_test().get(0).comparison().expr().atom().name();
+            PythonParser.TestContext nameContext = context.test().get(0);
+            if (nameContext.logical_test() == null || nameContext.logical_test().size() == 0) {
+                return Optional.empty();
+            }
+            if (nameContext.logical_test().get(0).comparison() == null || nameContext.logical_test().get(0).comparison().expr() == null ||
+                nameContext.logical_test().get(0).comparison().expr().atom() == null || nameContext.logical_test().get(0).comparison().expr().atom().name() == null) {
+                return Optional.empty();
+            }
+            PythonParser.NameContext nameValue = nameContext.logical_test().get(0).comparison().expr().atom().name();
             PythonString name = new PythonString(nameValue.getText(), nameValue, root);
 
-            PythonParser.NameContext valueValue = context.test().get(1).logical_test().get(0).comparison().expr().atom().name();
+            PythonParser.TestContext valueContext = context.test().get(1);
+            if (valueContext.logical_test() == null || valueContext.logical_test().size() == 0) {
+                return Optional.empty();
+            }
+            if (valueContext.logical_test().get(0).comparison() == null || valueContext.logical_test().get(0).comparison().expr() == null ||
+                valueContext.logical_test().get(0).comparison().expr().atom() == null || valueContext.logical_test().get(0).comparison().expr().atom().name() == null) {
+                return Optional.empty();
+            }
+            PythonParser.NameContext valueValue = valueContext.logical_test().get(0).comparison().expr().atom().name();
             PythonString value = new PythonString(valueValue.getText(), valueValue, root);
             return Optional.of(new PythonArgument(name, value, context, root));
         }
