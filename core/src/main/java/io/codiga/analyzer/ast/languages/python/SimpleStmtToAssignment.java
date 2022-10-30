@@ -38,7 +38,7 @@ public class SimpleStmtToAssignment {
 
         List<ParseTree> children = ctx.small_stmt().get(0).children;
 
-        if (children.size() != 2) {
+        if (children == null || children.size() != 2) {
             return false;
         }
 
