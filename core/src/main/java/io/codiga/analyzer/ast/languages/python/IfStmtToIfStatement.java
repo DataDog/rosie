@@ -46,6 +46,10 @@ public class IfStmtToIfStatement {
             );
         }
 
+        if (if_stmtContext.suite() == null) {
+            return Optional.empty();
+        }
+
         return Optional.of(new PythonIfStatement(
             ifComparison,
             new PythonString(if_stmtContext.suite().getText(), if_stmtContext.suite(), root),

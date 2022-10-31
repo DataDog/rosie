@@ -137,7 +137,7 @@ public class Main {
                     code = getFileContent(path);
 
                     CompletableFuture<AnalysisResult> res = analyzer.analyze(entry.getKey(), relativePath, code, rulesForLanguage, false);
-                    AnalysisResult analysisResult = res.get(1, TimeUnit.SECONDS);
+                    AnalysisResult analysisResult = res.get(10, TimeUnit.SECONDS);
 
                     List<ViolationWithFilename> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> new ViolationWithFilename(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath, ruleResult.identifier()))).toList();
                     analysisResult.ruleResults().forEach(ruleResult -> {

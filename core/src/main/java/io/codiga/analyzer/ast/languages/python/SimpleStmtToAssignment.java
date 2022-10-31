@@ -60,12 +60,13 @@ public class SimpleStmtToAssignment {
         if (logical_testContext.comparison().expr() == null) {
             return Optional.empty();
         }
-        if (logical_testContext.comparison().expr().atom() != null) {
-            return transformAtomToPythonString(logical_testContext.comparison().expr().atom(), root);
-        }
         if (isFunctionCall(logical_testContext.comparison().expr())) {
             return transformExprToFunctionCall(logical_testContext.comparison().expr(), root);
         }
+        if (logical_testContext.comparison().expr().atom() != null) {
+            return transformAtomToPythonString(logical_testContext.comparison().expr().atom(), root);
+        }
+
         return Optional.empty();
     }
 

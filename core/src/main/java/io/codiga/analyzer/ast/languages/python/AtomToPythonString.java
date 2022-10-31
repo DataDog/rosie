@@ -19,6 +19,9 @@ public class AtomToPythonString {
         if (atomContext.name() != null) {
             return Optional.of(new PythonString(atomContext.name().getText(), atomContext.name(), root));
         }
+        if (atomContext.STRING() != null && atomContext.STRING().size() == 1) {
+            return Optional.of(new PythonString(atomContext.STRING().get(0).getText(), atomContext, root));
+        }
         return Optional.empty();
     }
 

@@ -40,17 +40,31 @@ public class PythonFunctionCall extends FunctionCall {
         List<ParseTree> importsStatement = getNodes(PythonParser.Import_stmtContext.class);
 
         for (ParseTree element : importsStatement) {
-            PythonParser.Import_stmtContext importStatement = (PythonParser.Import_stmtContext) element;
-            Optional<ImportStatement> importStatementOptional = transformImportStmtToImportStatement(importStatement, null);
-            importStatementOptional.ifPresent(returnedElementsAsList::add);
+//            if (element instanceof PythonParser.Import_stmtContext) {
+            try {
+                PythonParser.Import_stmtContext importStatement = (PythonParser.Import_stmtContext) element;
+                Optional<ImportStatement> importStatementOptional = transformImportStmtToImportStatement(importStatement, null);
+                importStatementOptional.ifPresent(returnedElementsAsList::add);
+            } catch (ClassCastException e) {
+                logger.info("error while casting");
+            }
+
+//            }
         }
 
         List<ParseTree> fromStatements = getNodes(PythonParser.From_stmtContext.class);
 
         for (ParseTree element : fromStatements) {
-            PythonParser.From_stmtContext fromStatement = (PythonParser.From_stmtContext) element;
-            Optional<FromStatement> fromStatementOptional = transformFromStmtToFromStatement(fromStatement, null);
-            fromStatementOptional.ifPresent(returnedElementsAsList::add);
+//            if (fromStatements instanceof PythonParser.From_stmtContext) {
+            try {
+                PythonParser.From_stmtContext fromStatement = (PythonParser.From_stmtContext) element;
+                Optional<FromStatement> fromStatementOptional = transformFromStmtToFromStatement(fromStatement, null);
+                fromStatementOptional.ifPresent(returnedElementsAsList::add);
+//            }
+            } catch (ClassCastException e) {
+                logger.info("error while casting");
+            }
+
         }
 
         returnedElements = new AstElement[returnedElementsAsList.size()];
