@@ -21,6 +21,27 @@ public class ExprToFunctionCall {
     private static final Logger logger = LoggerFactory.getLogger(ExprToFunctionCall.class);
 
 
+    private static AstString getModuleOrObject(PythonParser.ExprContext ctx, PythonParser.RootContext root) {
+        /**
+         * There is only one trailer and this is the function call.
+         */
+        if (ctx.trailer().size() == 1) {
+            return new AstString(ctx.atom().getText(), ctx.atom(), root);
+        } else {
+            List<String> elements = new ArrayList<>();
+            if (ctx.atom() != null) {
+                elements.add(ctx.atom().getText());
+            }
+            for (int i = 0; i < ctx.trailer().size() - 1; i++) {
+                PythonParser.TrailerContext trailerContext = ctx.trailer().get(i);
+                if (trailerContext.name() != null) {
+                    elements.add(trailerContext.name().getText());
+                }
+            }
+            return new AstString(String.join(".", elements), ctx, root);
+        }
+    }
+
     public static Optional<FunctionCall> transformExprToFunctionCall(PythonParser.ExprContext ctx, PythonParser.RootContext root) {
         AstString objectOrModule = null;
         AstString functionName = null;
@@ -31,10 +52,11 @@ public class ExprToFunctionCall {
         }
 
         PythonParser.AtomContext atom = ctx.atom();
-        PythonParser.TrailerContext trailerContext = ctx.trailer().get(0);
+        // get the latest trailer to get the function name
+        PythonParser.TrailerContext trailerContext = ctx.trailer().get(ctx.trailer().size() - 1);
 
         if (trailerContext.name() != null) {
-            objectOrModule = new AstString(atom.getText(), atom, root);
+            objectOrModule = getModuleOrObject(ctx, root);
             functionName = new AstString(trailerContext.name().getText(), trailerContext.name(), root);
         } else {
             functionName = new AstString(atom.getText(), atom, root);

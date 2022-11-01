@@ -45,6 +45,6 @@ public class CodigaVisitorTest extends PythonTestUtils {
         assertEquals(5, codigaVisitor.tryStatements.size());
         assertEquals(8, codigaVisitor.forStatements.size());
         assertEquals(13, codigaVisitor.functionDefinitions.size());
-        assertEquals(212, codigaVisitor.functionCalls.size());
+        assertEquals(225, codigaVisitor.functionCalls.size());
     }
 }

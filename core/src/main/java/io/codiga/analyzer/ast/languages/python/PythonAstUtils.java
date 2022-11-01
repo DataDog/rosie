@@ -14,8 +14,9 @@ public class PythonAstUtils {
         if (parseTree instanceof PythonParser.ExprContext) {
             PythonParser.ExprContext expr = (PythonParser.ExprContext) parseTree;
             if (expr.atom() != null && expr.trailer() != null) {
-                if (expr.trailer().size() == 1) {
-                    return (expr.trailer().get(0).arguments() != null);
+                if (expr.trailer().size() > 0) {
+                    PythonParser.TrailerContext lastTrailer = expr.trailer().get(expr.trailer().size() - 1);
+                    return (lastTrailer.arguments() != null);
                 }
             }
         }
