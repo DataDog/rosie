@@ -24,8 +24,9 @@ dependencies {
     implementation("com.datadoghq:java-dogstatsd-client:4.1.0")
     implementation("org.antlr:antlr4-runtime:4.11.1")
     implementation("org.graalvm.js:js:22.2.0")
+    implementation("org.graalvm.truffle:truffle-api:22.2.0")
     implementation("com.rollbar:rollbar-java:1.8.1")
-    
+
     implementation("org.graalvm.js:js-scriptengine:22.2.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
