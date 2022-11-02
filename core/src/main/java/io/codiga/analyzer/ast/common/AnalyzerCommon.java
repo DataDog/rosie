@@ -94,8 +94,8 @@ public abstract class AnalyzerCommon {
 
         CompletableFuture<AnalysisResult> result = CompletableFuture.supplyAsync(() -> {
                 List<RuleResult> ruleResults = rules.stream().map(rule -> {
+                    long startTime = System.currentTimeMillis();
                     try {
-                        long startTime = System.currentTimeMillis();
                         RuleResult res = execute(analyzerContext, rule);
                         long endTime = System.currentTimeMillis();
                         long executionTime = endTime - startTime;
@@ -107,13 +107,22 @@ public abstract class AnalyzerCommon {
                         logger.error(String.format("reporting rule %s as invalid-pattern", rule.name()));
                         return new RuleResult(rule.name(), List.of(), List.of(ERROR_INVALID_PATTERN), null, null, 0);
                     } catch (PolyglotException polyglotException) {
+                        long endTime = System.currentTimeMillis();
+                        long executionTime = endTime - startTime;
+                        if (polyglotException.getMessage().contains("Statement count limit of") && polyglotException.getMessage().contains("Statements executed")) {
+                            return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, executionTime);
+                        }
+
                         String executionMessage = formatVmErrorMessage(polyglotException.getMessage());
                         logger.error(String.format("reporting rule %s as execution error", rule.name()));
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage, null, 0);
+                        polyglotException.printStackTrace();
+                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage, null, executionTime);
                     } catch (Exception unknownException) {
+                        long endTime = System.currentTimeMillis();
+                        long executionTime = endTime - startTime;
                         this.metrics.incrementMetric(METRIC_RULE_EXECUTION_UNKNOWN_ERROR);
                         this.errorReporting.reportError(unknownException, String.format("error unknown exception rule %s", rule.name()));
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), unknownException.getMessage(), null, 0);
+                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), unknownException.getMessage(), null, executionTime);
                     }
 
                 }).collect(Collectors.toList());

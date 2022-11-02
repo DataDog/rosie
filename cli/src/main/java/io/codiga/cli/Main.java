@@ -160,13 +160,15 @@ public class Main {
 
 
                     List<List<AnalyzerRule>> subList = separateRules(rulesForLanguage, cpus);
-                    System.out.println(String.format("Number of rules %s", rulesForLanguage.size()));
-                    System.out.println(String.format("List size %s", subList.size()));
-                    for (int i = 0; i < subList.size(); i++) {
-                        System.out.println(String.format("sublist %s, size %s", i, subList.get(i).size()));
-                        subList.get(i).forEach(r -> {
-                            System.out.println(String.format("   %s", r.name()));
-                        });
+                    if (debug) {
+                        System.out.println(String.format("Number of rules %s", rulesForLanguage.size()));
+                        System.out.println(String.format("List size %s", subList.size()));
+                        for (int i = 0; i < subList.size(); i++) {
+                            System.out.println(String.format("sublist %s, size %s", i, subList.get(i).size()));
+                            subList.get(i).forEach(r -> {
+                                System.out.println(String.format("   %s", r.name()));
+                            });
+                        }
                     }
 
                     List<CompletableFuture<AnalysisResult>> futures = subList.stream().map(ruleList -> {

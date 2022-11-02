@@ -6,6 +6,7 @@ import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.error.Violation;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.ResourceLimits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,17 +19,18 @@ import java.util.List;
 public class VmContext {
     private static final Logger logger = LoggerFactory.getLogger(VmContext.class);
     private final static int MAX_OUTPUT_SIZE = 1024 * 1024;
-    private static final HostAccess SANDBOX = HostAccess.newBuilder().
-        allowPublicAccess(true).
-        allowArrayAccess(true).
-        allowListAccess(true).
-        allowAllImplementations(true).
-        denyAccess(Class.class).
-        denyAccess(Method.class).
-        denyAccess(Field.class).
-        denyAccess(Proxy.class).
-        denyAccess(Object.class, false).
-        build();
+    private static final HostAccess SANDBOX = HostAccess.newBuilder()
+        .allowPublicAccess(true)
+        .allowArrayAccess(true)
+        .allowListAccess(true)
+        .allowAllImplementations(true)
+        .denyAccess(Class.class)
+        .denyAccess(Method.class)
+        .denyAccess(Field.class)
+        .denyAccess(Proxy.class)
+        .denyAccess(Object.class, false)
+        .build();
+    private static int MAX_STATEMENTS = 20000;
     private OutputStream outputStream;
     private InputStream inputStream;
     private Context context = null;
@@ -58,6 +60,7 @@ public class VmContext {
             .allowExperimentalOptions(false)
             .allowValueSharing(true)
             .allowIO(false)
+            .resourceLimits(ResourceLimits.newBuilder().statementLimit(MAX_STATEMENTS, null).build())
             .logHandler(OutputStream.nullOutputStream());
 
         if (outputStream != null) {
@@ -96,7 +99,7 @@ public class VmContext {
 
 
     public void prepareForExecution(AnalyzerContext analyzerContext, Object rootObject) {
-
+        context.resetLimits();
         context.getBindings("js").putMember("root", rootObject);
         context.getBindings("js").putMember("addError", this.errorReporting);
         context.getBindings("js").putMember("code", analyzerContext.getCode());
