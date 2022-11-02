@@ -109,7 +109,7 @@ public abstract class AnalyzerCommon {
                         long endTime = System.currentTimeMillis();
                         long executionTime = endTime - startTime;
                         if (polyglotException.getMessage().contains("Statement count limit of") && polyglotException.getMessage().contains("Statements executed")) {
-                            logger.info("rule %s timedout");
+                            logger.info(String.format("rule %s timedout", rule.name()));
                             return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, executionTime);
                         }
 
