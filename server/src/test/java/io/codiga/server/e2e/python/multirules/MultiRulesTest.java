@@ -85,7 +85,7 @@ os.chmod(path, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
 //            logger.info(ruleResponse.executionError);
 //            logger.info(String.join(",", ruleResponse.errors));
             assertNull(ruleResponse.executionError);
-
+            logger.info(String.join(",", ruleResponse.errors));
             assertTrue(ruleResponse.errors.isEmpty());
             assertEquals(1, ruleResponse.violations.size());
 

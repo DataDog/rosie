@@ -12,6 +12,7 @@ import org.graalvm.polyglot.PolyglotException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -83,6 +84,63 @@ public abstract class AnalyzerCommon {
 
     public abstract AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput);
 
+    private CompletableFuture<RuleResult> analyzeRule(AnalyzerContext analyzerContext, AnalyzerRule rule) {
+        CompletableFuture<RuleResult> future = CompletableFuture
+            .supplyAsync(() -> {
+                long startTime = System.currentTimeMillis();
+                prepareExecution(analyzerContext.getFilename(), analyzerContext.getCode(), rule, analyzerContext.isLogOutput());
+                RuleResult res = execute(analyzerContext, rule);
+                long endTime = System.currentTimeMillis();
+                long executionTime = endTime - startTime;
+                String metricName = String.format("%s-%s", METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_PREFIX, rule.name());
+                metrics.histogramValue(metricName, (double) executionTime);
+                logger.info(String.format("rule %s took %s ms to execute", rule.name(), executionTime));
+                return res;
+            }, pool.service)
+            .orTimeout(getTimeout(), TimeUnit.MILLISECONDS)
+            .exceptionally(exception -> {
+                logger.info("caught exception: " + exception.getMessage());
+
+                if (exception instanceof TimeoutException) {
+                    logger.error(String.format("reporting rule %s as timeout", rule.name()));
+                    return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, 100);
+                }
+
+                if (exception.getCause() != null && exception.getCause() instanceof PatternSyntaxException) {
+                    logger.error(String.format("reporting rule %s as invalid-pattern", rule.name()));
+                    return new RuleResult(rule.name(), List.of(), List.of(ERROR_INVALID_PATTERN), null, null, 0);
+                }
+
+                if (exception.getCause() != null && exception.getCause() instanceof PolyglotException) {
+                    String executionMessage = formatVmErrorMessage(exception.getMessage());
+                    logger.error(String.format("reporting rule %s as execution error", rule.name()));
+                    exception.printStackTrace();
+                    return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage, null, 0);
+                }
+
+                logger.error("============ UNHANDLED ERROR ============");
+                logger.error(String.format("unhandled exception for rule %s: %s - %s", rule.name(), exception, exception.getMessage()));
+                logger.error(String.format("rule: %s", rule));
+                logger.error("------ CODE ------");
+                logger.error(analyzerContext.getCode());
+                logger.error("-- END OF CODE --");
+                logger.error("------ RULE CODE ------");
+                logger.error(rule.code());
+                logger.error("-- END OF RULE CODE --");
+                logger.error("========= END OF UNHANDLED ERROR =========");
+                logger.error("============ STACK TRACE ============");
+                exception.printStackTrace();
+                logger.error("======== END OF STACK TRACE =========");
+
+                this.metrics.incrementMetric(METRIC_RULE_EXECUTION_UNKNOWN_ERROR);
+                this.errorReporting.reportError(exception, String.format("error unknown exception rule %s", rule.name()));
+
+                return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), null, null, 0);
+            });
+        return future;
+    }
+
+
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         // Get the lines to ignore that have codiga-disable
         List<Long> linesToIgnore = getCommentsLine(code, getCommentsSymbol(language));
@@ -91,63 +149,16 @@ public abstract class AnalyzerCommon {
         AnalyzerContext analyzerContext = buildContext(language, filename, code, rules, logOutput);
 
         List<CompletableFuture<RuleResult>> futures = rules.stream().map(rule -> {
-            CompletableFuture<RuleResult> future = CompletableFuture
-                .supplyAsync(() -> {
-                    long startTime = System.currentTimeMillis();
-                    prepareExecution(filename, code, rule, logOutput);
-                    RuleResult res = execute(analyzerContext, rule);
-                    long endTime = System.currentTimeMillis();
-                    long executionTime = endTime - startTime;
-                    String metricName = String.format("%s-%s", METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_PREFIX, rule.name());
-                    metrics.histogramValue(metricName, (double) executionTime);
-                    logger.info(String.format("rule %s took %s ms to execute", rule.name(), executionTime));
-                    return res;
-                }, pool.service)
-                .orTimeout(getTimeout(), TimeUnit.MILLISECONDS)
-                .exceptionally(exception -> {
-                    logger.info("caught exception: " + exception.getMessage());
-
-                    if (exception instanceof TimeoutException) {
-                        logger.error(String.format("reporting rule %s as timeout", rule.name()));
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, 100);
-                    }
-
-                    if (exception.getCause() != null && exception.getCause() instanceof PatternSyntaxException) {
-                        logger.error(String.format("reporting rule %s as invalid-pattern", rule.name()));
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_INVALID_PATTERN), null, null, 0);
-                    }
-
-                    if (exception.getCause() != null && exception.getCause() instanceof PolyglotException) {
-                        String executionMessage = formatVmErrorMessage(exception.getMessage());
-                        logger.error(String.format("reporting rule %s as execution error", rule.name()));
-                        exception.printStackTrace();
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage, null, 0);
-                    }
-
-                    logger.error("============ UNHANDLED ERROR ============");
-                    logger.error(String.format("unhandled exception for rule %s: %s - %s", rule.name(), exception, exception.getMessage()));
-                    logger.error(String.format("rule: %s", rule));
-                    logger.error("------ CODE ------");
-                    logger.error(code);
-                    logger.error("-- END OF CODE --");
-                    logger.error("------ RULE CODE ------");
-                    logger.error(rule.code());
-                    logger.error("-- END OF RULE CODE --");
-                    logger.error("========= END OF UNHANDLED ERROR =========");
-                    logger.error("============ STACK TRACE ============");
-                    exception.printStackTrace();
-                    logger.error("======== END OF STACK TRACE =========");
-
-                    this.metrics.incrementMetric(METRIC_RULE_EXECUTION_UNKNOWN_ERROR);
-                    this.errorReporting.reportError(exception, String.format("error unknown exception rule %s", rule.name()));
-
-                    return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), null, null, 0);
-                });
-            return future;
+            return analyzeRule(analyzerContext, rule);
         }).toList();
 
 
         return sequence(futures).thenApply(finalList -> {
+            try {
+                analyzerContext.releaseResources();
+            } catch (IOException ioException) {
+                logger.error("cannot release resources from the context");
+            }
             // ignore the violations being ignored
             List<RuleResult> fileteredList = finalList.stream().map(ruleResult -> {
                 List<Violation> filteredViolations = ruleResult.violations().stream().filter(v -> {

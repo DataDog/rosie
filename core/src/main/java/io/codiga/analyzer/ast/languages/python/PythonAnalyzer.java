@@ -47,7 +47,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
                 .setFilename(context.getFilename())
                 .setRuleCode(rule.code())
                 .createExecutionEnvironment()
-                .execute();
+                .execute(context, rule);
 
             if (executionResult.getOutput() != null) {
                 buffer.append(executionResult.getOutput());

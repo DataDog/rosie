@@ -3,8 +3,8 @@ package io.codiga.analyzer.pattern;
 import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
-import io.codiga.analyzer.ast.vm.ExecutionEnvironment;
 import io.codiga.analyzer.ast.vm.ExecutionEnvironmentBuilder;
+import io.codiga.analyzer.ast.vm.ExecutionResult;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
@@ -12,7 +12,6 @@ import io.codiga.model.Language;
 import io.codiga.model.error.RuleResult;
 import io.codiga.model.error.Violation;
 import io.codiga.model.pattern.PatternObject;
-import org.graalvm.polyglot.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.codiga.analyzer.ast.vm.VmUtils.buildExecutableCode;
-import static io.codiga.analyzer.ast.vm.VmUtils.createContextForJavaScriptExecution;
 
 public class PatternAnalyzer extends AnalyzerCommon {
 
@@ -46,17 +44,17 @@ public class PatternAnalyzer extends AnalyzerCommon {
 
             String finalCode = buildExecutableCode(rule.code());
 
-            ExecutionEnvironment executionEnvironment = new ExecutionEnvironmentBuilder()
+            ExecutionResult executionResult = new ExecutionEnvironmentBuilder()
                 .setCode(analyzerContext.getCode())
                 .setRootObject(patternObject)
                 .setLogOutput(analyzerContext.isLogOutput())
                 .setFilename(analyzerContext.getFilename())
-                .createExecutionEnvironment();
+                .createExecutionEnvironment()
+                .execute(analyzerContext, rule);
 
-            Context context = createContextForJavaScriptExecution(executionEnvironment);
-            context.eval("js", finalCode);
-            violations.addAll(executionEnvironment.errorReporting.getErrors());
-            output = executionEnvironment.getOutput();
+
+            violations.addAll(executionResult.getViolations());
+            output = analyzerContext.getOutput();
         }
 
         long endTimestamp = System.currentTimeMillis();

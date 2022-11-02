@@ -1,10 +1,7 @@
 package io.codiga.analyzer.ast.vm;
 
-import io.codiga.analyzer.ast.common.ErrorReporting;
-
 public class ExecutionEnvironmentBuilder {
     private Object rootObject;
-    private ErrorReporting errorReporting;
     private String code;
 
     private String ruleCode;
