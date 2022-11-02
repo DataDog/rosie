@@ -2,6 +2,7 @@ package io.codiga.analyzer;
 
 import com.google.common.collect.ImmutableList;
 import io.codiga.analyzer.ast.languages.python.PythonAnalyzer;
+import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.pattern.PatternAnalyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
@@ -17,8 +18,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static io.codiga.metrics.MetricsName.METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_TOTAL;
-import static io.codiga.model.ErrorCode.ERROR_RULE_INVALID_RULE_TYPE;
-import static io.codiga.model.ErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
+import static io.codiga.model.RuleErrorCode.ERROR_RULE_INVALID_RULE_TYPE;
+import static io.codiga.model.RuleErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
 import static io.codiga.utils.CompletableFutureUtils.sequence;
 
 /**
@@ -33,11 +34,11 @@ public class Analyzer {
     private MetricsInterface metrics;
     private ErrorReportingInterface errorReporting;
 
-    public Analyzer(ErrorReportingInterface errorReporting, MetricsInterface metrics) {
+    public Analyzer(ErrorReportingInterface errorReporting, MetricsInterface metrics, AnalyzerConfiguration configuration) {
         this.errorReporting = errorReporting;
         this.metrics = metrics;
-        this.patternAnalyzer = new PatternAnalyzer(this.metrics, this.errorReporting);
-        this.pythonAnalyzer = new PythonAnalyzer(this.metrics, this.errorReporting);
+        this.patternAnalyzer = new PatternAnalyzer(this.metrics, this.errorReporting, configuration);
+        this.pythonAnalyzer = new PythonAnalyzer(this.metrics, this.errorReporting, configuration);
     }
 
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {

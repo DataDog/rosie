@@ -4,6 +4,7 @@ import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.ast.vm.VmContext;
+import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
@@ -22,8 +23,8 @@ public class PatternAnalyzer extends AnalyzerCommon {
     private Logger logger = LoggerFactory.getLogger(PatternAnalyzer.class);
 
 
-    public PatternAnalyzer(MetricsInterface metrics, ErrorReportingInterface errorReporting) {
-        super(metrics, errorReporting);
+    public PatternAnalyzer(MetricsInterface metrics, ErrorReportingInterface errorReporting, AnalyzerConfiguration configuration) {
+        super(metrics, errorReporting, configuration);
     }
 
 
@@ -54,10 +55,6 @@ public class PatternAnalyzer extends AnalyzerCommon {
         return new RuleResult(rule.name(), vmContext.getViolations(), List.of(), null, output, executionTimeMs);
     }
 
-    @Override
-    public void prepareExecution(String filename, String code, AnalyzerRule rule, boolean logOutput) {
-
-    }
 
     @Override
     public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {

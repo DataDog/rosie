@@ -18,8 +18,8 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.List;
 
 import static io.codiga.constants.Languages.*;
-import static io.codiga.model.ErrorCode.ERROR_RULE_INVALID_RULE_TYPE;
-import static io.codiga.model.ErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
+import static io.codiga.model.RuleErrorCode.ERROR_RULE_INVALID_RULE_TYPE;
+import static io.codiga.model.RuleErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
 import static io.codiga.server.response.ResponseErrors.*;
 import static io.codiga.utils.Base64Utils.encodeBase64;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -2,6 +2,7 @@ package io.codiga.server;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import io.codiga.analyzer.Analyzer;
+import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
@@ -44,9 +45,10 @@ public class ServerMainController {
     private ErrorReportingInterface errorReporting;
 
     public ServerMainController(InjectorService injectorService) {
+        AnalyzerConfiguration configuration = new AnalyzerConfiguration(5000);
         metrics = injectorService.getInjector().getInstance(MetricsInterface.class);
         errorReporting = injectorService.getInjector().getInstance(ErrorReportingInterface.class);
-        this.analyzer = new Analyzer(errorReporting, metrics);
+        this.analyzer = new Analyzer(errorReporting, metrics, configuration);
         this.injectorService = injectorService;
         warmupAnalyzer(this.analyzer, WARMUP_LOOPS);
 

@@ -3,6 +3,7 @@ package io.codiga.analyzer.ast.languages;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.ast.languages.python.PythonTestUtils;
+import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingDummy;
 import io.codiga.metrics.MetricsDummy;
@@ -38,7 +39,9 @@ public class AnalyzerCommonTest extends PythonTestUtils {
             # codiga-disable
             r = requests.get(w, verify=False, timeout=10)
             """;
-        AnalyzerCommon analyzerCommon = new AnalyzerCommon(new MetricsDummy(), new ErrorReportingDummy()) {
+
+        AnalyzerConfiguration configuration = new AnalyzerConfiguration(2000);
+        AnalyzerCommon analyzerCommon = new AnalyzerCommon(new MetricsDummy(), new ErrorReportingDummy(), configuration) {
             @Override
             public RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule) {
                 return null;

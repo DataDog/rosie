@@ -1,6 +1,7 @@
 package io.codiga.cli;
 
 import io.codiga.analyzer.Analyzer;
+import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.errorreporting.ErrorReportingDummy;
 import io.codiga.cli.metrics.MetricsDummy;
@@ -8,6 +9,7 @@ import io.codiga.cli.model.Result;
 import io.codiga.cli.model.ViolationWithFilename;
 import io.codiga.model.Language;
 import io.codiga.model.error.AnalysisResult;
+import io.codiga.model.error.RuleResult;
 import io.codiga.utils.Version;
 import org.apache.commons.cli.*;
 
@@ -41,6 +43,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
+        AnalyzerConfiguration configuration = new AnalyzerConfiguration(10000);
 
         Options options = new Options();
 
@@ -124,8 +128,9 @@ public class Main {
             filesToAnalyze.stream().forEach(System.out::println);
         }
 
-        Analyzer analyzer = new Analyzer(new ErrorReportingDummy(), new MetricsDummy());
+        Analyzer analyzer = new Analyzer(new ErrorReportingDummy(), new MetricsDummy(), configuration);
         List<ViolationWithFilename> allViolations = new ArrayList<>();
+        List<RuleResult> ruleResultsWithError = new ArrayList<>();
 
         // Warmup the analyzer
         warmupAnalyzer(analyzer, WARMUP_LOOPS);
@@ -162,9 +167,9 @@ public class Main {
                         if (ruleResult.executionError() != null) {
                             System.out.println(String.format("rule %s on file %s execution error: %s", ruleResult.identifier(), relativePath, ruleResult.executionError()));
                         }
-                        System.out.println(String.format("rule %s on file %s took %s ms", ruleResult.identifier(), relativePath, ruleResult.executionTimeMs()));
                     });
                     allViolations.addAll(violations);
+                    ruleResultsWithError.addAll(analysisResult.ruleResults().stream().filter(r -> r.errors().size() > 0).collect(Collectors.toList()));
 
                 } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
                     System.err.println(String.format("Error while reading file %s", fullPath));
@@ -174,7 +179,7 @@ public class Main {
         }
 
         try {
-            writeViolationsToFile(Paths.get(output), new Result(allViolations));
+            writeViolationsToFile(Paths.get(output), new Result(allViolations, ruleResultsWithError));
         } catch (IOException e) {
             System.err.println(String.format("Failed to write result into file %s", output));
             System.exit(1);

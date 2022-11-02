@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.common;
 
 import io.codiga.analyzer.AnalyzerFuturePool;
+import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
@@ -19,34 +20,36 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 import static io.codiga.analyzer.ast.vm.VmUtils.formatVmErrorMessage;
 import static io.codiga.metrics.MetricsName.METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_PREFIX;
 import static io.codiga.metrics.MetricsName.METRIC_RULE_EXECUTION_UNKNOWN_ERROR;
-import static io.codiga.model.ErrorCode.*;
-import static io.codiga.utils.CompletableFutureUtils.sequence;
+import static io.codiga.model.RuleErrorCode.*;
 import static io.codiga.utils.EnvironmentUtils.ANALYSIS_TIMEOUT;
 import static io.codiga.utils.EnvironmentUtils.getEnvironmentValueAsLong;
 
 public abstract class AnalyzerCommon {
 
     public final static String COMMENT_SHARP = "#";
-    private final long DEFAULT_TIMEOUT_MS = 2000;
+    private final long DEFAULT_TIMEOUT_MS = 5000;
 
     private Logger logger = LoggerFactory.getLogger(AnalyzerCommon.class);
     private AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
 
     private MetricsInterface metrics;
     private ErrorReportingInterface errorReporting;
+    private AnalyzerConfiguration analyzerConfiguration;
 
-    public AnalyzerCommon(MetricsInterface metrics, ErrorReportingInterface errorReporting) {
+    public AnalyzerCommon(MetricsInterface metrics, ErrorReportingInterface errorReporting, AnalyzerConfiguration configuration) {
         this.metrics = metrics;
         this.errorReporting = errorReporting;
+        this.analyzerConfiguration = configuration;
     }
 
 
-    protected long getTimeout() {
-        return getEnvironmentValueAsLong(ANALYSIS_TIMEOUT).orElse(DEFAULT_TIMEOUT_MS);
+    protected long getTimeoutMs() {
+        return getEnvironmentValueAsLong(ANALYSIS_TIMEOUT).orElse(this.analyzerConfiguration.analysisTimeoutMs);
     }
 
     public List<Long> getCommentsLine(String code, String commentStart) {
@@ -79,90 +82,74 @@ public abstract class AnalyzerCommon {
 
     public abstract RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule);
 
-    public abstract void prepareExecution(String filename, String code, AnalyzerRule rule, boolean logOutput);
-
     public abstract AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput);
 
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
+        long timeoutMs = getTimeoutMs();
         // Get the lines to ignore that have codiga-disable
         List<Long> linesToIgnore = getCommentsLine(code, getCommentsSymbol(language));
 
         // Build execution, get the parser if this is an AST rule.
         AnalyzerContext analyzerContext = buildContext(language, filename, code, rules, logOutput);
 
-        List<CompletableFuture<RuleResult>> futures = rules.stream().map(rule -> {
-            CompletableFuture<RuleResult> future = CompletableFuture
-                .supplyAsync(() -> {
-                    long startTime = System.currentTimeMillis();
-                    prepareExecution(filename, code, rule, logOutput);
-                    RuleResult res = execute(analyzerContext, rule);
-                    long endTime = System.currentTimeMillis();
-                    long executionTime = endTime - startTime;
-                    String metricName = String.format("%s-%s", METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_PREFIX, rule.name());
-                    metrics.histogramValue(metricName, (double) executionTime);
-                    logger.info(String.format("rule %s took %s ms to execute", rule.name(), executionTime));
-                    return res;
-                }, pool.service)
-                .orTimeout(getTimeout(), TimeUnit.MILLISECONDS)
-                .exceptionally(exception -> {
-                    logger.info("caught exception: " + exception.getMessage());
-
-                    if (exception instanceof TimeoutException) {
-                        logger.error(String.format("reporting rule %s as timeout", rule.name()));
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, 100);
-                    }
-
-                    if (exception.getCause() != null && exception.getCause() instanceof PatternSyntaxException) {
+        CompletableFuture<AnalysisResult> result = CompletableFuture.supplyAsync(() -> {
+                List<RuleResult> ruleResults = rules.stream().map(rule -> {
+                    try {
+                        long startTime = System.currentTimeMillis();
+                        RuleResult res = execute(analyzerContext, rule);
+                        long endTime = System.currentTimeMillis();
+                        long executionTime = endTime - startTime;
+                        String metricName = String.format("%s-%s", METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_PREFIX, rule.name());
+                        metrics.histogramValue(metricName, (double) executionTime);
+                        logger.info(String.format("rule %s took %s ms to execute", rule.name(), executionTime));
+                        return res;
+                    } catch (PatternSyntaxException patternSyntaxException) {
                         logger.error(String.format("reporting rule %s as invalid-pattern", rule.name()));
                         return new RuleResult(rule.name(), List.of(), List.of(ERROR_INVALID_PATTERN), null, null, 0);
-                    }
-
-                    if (exception.getCause() != null && exception.getCause() instanceof PolyglotException) {
-                        String executionMessage = formatVmErrorMessage(exception.getMessage());
+                    } catch (PolyglotException polyglotException) {
+                        String executionMessage = formatVmErrorMessage(polyglotException.getMessage());
                         logger.error(String.format("reporting rule %s as execution error", rule.name()));
-                        exception.printStackTrace();
                         return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage, null, 0);
+                    } catch (Exception unknownException) {
+                        this.metrics.incrementMetric(METRIC_RULE_EXECUTION_UNKNOWN_ERROR);
+                        this.errorReporting.reportError(unknownException, String.format("error unknown exception rule %s", rule.name()));
+                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), unknownException.getMessage(), null, 0);
                     }
 
-                    logger.error("============ UNHANDLED ERROR ============");
-                    logger.error(String.format("unhandled exception for rule %s: %s - %s", rule.name(), exception, exception.getMessage()));
-                    logger.error(String.format("rule: %s", rule));
-                    logger.error("------ CODE ------");
-                    logger.error(code);
-                    logger.error("-- END OF CODE --");
-                    logger.error("------ RULE CODE ------");
-                    logger.error(rule.code());
-                    logger.error("-- END OF RULE CODE --");
-                    logger.error("========= END OF UNHANDLED ERROR =========");
-                    logger.error("============ STACK TRACE ============");
-                    exception.printStackTrace();
-                    logger.error("======== END OF STACK TRACE =========");
-
-                    this.metrics.incrementMetric(METRIC_RULE_EXECUTION_UNKNOWN_ERROR);
-                    this.errorReporting.reportError(exception, String.format("error unknown exception rule %s", rule.name()));
-
-                    return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), null, null, 0);
-                });
-            return future;
-        }).toList();
-
-
-        return sequence(futures).thenApply(finalList -> {
-            // ignore the violations being ignored
-            List<RuleResult> fileteredList = finalList.stream().map(ruleResult -> {
-                List<Violation> filteredViolations = ruleResult.violations().stream().filter(v -> {
-                    if (v.start != null) {
-                        long previousLine = v.start.line - 1;
-                        return !linesToIgnore.contains(previousLine);
+                }).collect(Collectors.toList());
+                return ruleResults;
+            }, pool.service)
+            .thenApply(finalList -> {
+                // ignore the violations being ignored
+                List<RuleResult> fileteredList = finalList.stream().map(ruleResult -> {
+                    List<Violation> filteredViolations = ruleResult.violations().stream().filter(v -> {
+                        if (v.start != null) {
+                            long previousLine = v.start.line - 1;
+                            return !linesToIgnore.contains(previousLine);
+                        }
+                        return false;
+                    }).toList();
+                    if (ruleResult.output() != null) {
+                        logger.debug(String.format("Output for rule %s: %s", ruleResult.identifier(), ruleResult.output()));
                     }
-                    return false;
+                    return new RuleResult(ruleResult.identifier(), filteredViolations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output(), ruleResult.executionTimeMs());
                 }).toList();
-                if (ruleResult.output() != null) {
-                    logger.debug(String.format("Output for rule %s: %s", ruleResult.identifier(), ruleResult.output()));
+                return new AnalysisResult(fileteredList);
+            })
+            .orTimeout(timeoutMs, TimeUnit.MILLISECONDS)
+            .exceptionally(exception -> {
+                if (exception instanceof TimeoutException) {
+                    logger.error(String.format("analysis for rules %s timeout", String.join(",", rules.stream().map(r -> r.name()).toList())));
+                    List<RuleResult> timedoutRuleResults = rules.stream().map(r -> {
+                        return new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, timeoutMs);
+                    }).collect(Collectors.toList());
+                    return new AnalysisResult(timedoutRuleResults);
                 }
-                return new RuleResult(ruleResult.identifier(), filteredViolations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output(), ruleResult.executionTimeMs());
-            }).toList();
-            return new AnalysisResult(fileteredList);
-        });
+                List<RuleResult> erroredRules = rules.stream().map(r -> {
+                    return new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), exception.getCause() != null ? exception.getCause().getMessage() : exception.getMessage(), null, timeoutMs);
+                }).collect(Collectors.toList());
+                return new AnalysisResult(erroredRules);
+            });
+        return result;
     }
 }
