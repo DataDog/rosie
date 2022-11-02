@@ -96,6 +96,7 @@ public class VmContext {
 
 
     public void prepareForExecution(AnalyzerContext analyzerContext, Object rootObject) {
+
         context.getBindings("js").putMember("root", rootObject);
         context.getBindings("js").putMember("addError", this.errorReporting);
         context.getBindings("js").putMember("code", analyzerContext.getCode());

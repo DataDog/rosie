@@ -4,6 +4,7 @@ package io.codiga.analyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,8 +30,13 @@ public class AnalyzerFuturePool {
     }
 
     private void initialize() {
-        int nbThreads = getEnvironmentValueAsNumber(ANALYSIS_THREADS).orElse(DEFAULT_THREADS);
+        Optional<Integer> nbThreads = getEnvironmentValueAsNumber(ANALYSIS_THREADS);
         LOGGER.info(String.format("[AnalyzerFuturePool] creating a thread pool with %s threads", nbThreads));
-        service = Executors.newFixedThreadPool(nbThreads);
+        if (nbThreads.isPresent()) {
+            service = Executors.newWorkStealingPool(nbThreads.get());
+        } else {
+            service = Executors.newWorkStealingPool();
+        }
+
     }
 }
