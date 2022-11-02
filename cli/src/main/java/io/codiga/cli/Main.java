@@ -29,7 +29,9 @@ import java.util.stream.Collectors;
 import static io.codiga.cli.CliConstants.WARMUP_LOOPS;
 import static io.codiga.cli.FileUtils.*;
 import static io.codiga.cli.RulesUtils.getRulesFromFile;
+import static io.codiga.cli.RulesUtils.separateRules;
 import static io.codiga.constants.Languages.LANGUAGE_EXTENSIONS;
+import static io.codiga.utils.CompletableFutureUtils.sequence;
 import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 
 public class Main {
@@ -136,6 +138,7 @@ public class Main {
         warmupAnalyzer(analyzer, WARMUP_LOOPS);
 
         long startTimeMs = System.currentTimeMillis();
+        int cpus = Runtime.getRuntime().availableProcessors();
 
         // For each language, we get the list of file for this language and get the violations
         for (Map.Entry<Language, List<String>> entry : LANGUAGE_EXTENSIONS.entrySet()) {
@@ -152,24 +155,40 @@ public class Main {
             for (Path path : filesForLanguage) {
                 String fullPath = path.toString();
                 String relativePath = fullPath.replace(directory, "");
-                String code = null;
                 try {
-                    code = getFileContent(path);
+                    final String code = getFileContent(path);
 
-                    CompletableFuture<AnalysisResult> res = analyzer.analyze(entry.getKey(), relativePath, code, rulesForLanguage, false);
-                    AnalysisResult analysisResult = res.get(10, TimeUnit.SECONDS);
 
-                    List<ViolationWithFilename> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> new ViolationWithFilename(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath, ruleResult.identifier()))).toList();
-                    analysisResult.ruleResults().forEach(ruleResult -> {
-                        if (ruleResult.errors().size() > 0) {
-                            System.out.println(String.format("rule %s on file %s reported errors %s", ruleResult.identifier(), relativePath, String.join(",", ruleResult.errors())));
-                        }
-                        if (ruleResult.executionError() != null) {
-                            System.out.println(String.format("rule %s on file %s execution error: %s", ruleResult.identifier(), relativePath, ruleResult.executionError()));
-                        }
+                    List<List<AnalyzerRule>> subList = separateRules(rulesForLanguage, cpus);
+                    System.out.println(String.format("Number of rules %s", rulesForLanguage.size()));
+                    System.out.println(String.format("List size %s", subList.size()));
+                    for (int i = 0; i < subList.size(); i++) {
+                        System.out.println(String.format("sublist %s, size %s", i, subList.get(i).size()));
+                        subList.get(i).forEach(r -> {
+                            System.out.println(String.format("   %s", r.name()));
+                        });
+                    }
+
+                    List<CompletableFuture<AnalysisResult>> futures = subList.stream().map(ruleList -> {
+                        return analyzer.analyze(entry.getKey(), relativePath, code, ruleList, false);
+                    }).toList();
+
+
+                    List<AnalysisResult> analysisResultList = sequence(futures).get(configuration.analysisTimeoutMs, TimeUnit.MILLISECONDS);
+
+                    analysisResultList.forEach(analysisResult -> {
+                        List<ViolationWithFilename> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> new ViolationWithFilename(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath, ruleResult.identifier()))).toList();
+                        analysisResult.ruleResults().forEach(ruleResult -> {
+                            if (ruleResult.errors().size() > 0) {
+                                System.out.println(String.format("rule %s on file %s reported errors %s", ruleResult.identifier(), relativePath, String.join(",", ruleResult.errors())));
+                            }
+                            if (ruleResult.executionError() != null) {
+                                System.out.println(String.format("rule %s on file %s execution error: %s", ruleResult.identifier(), relativePath, ruleResult.executionError()));
+                            }
+                        });
+                        allViolations.addAll(violations);
+                        ruleResultsWithError.addAll(analysisResult.ruleResults().stream().filter(r -> r.errors().size() > 0).collect(Collectors.toList()));
                     });
-                    allViolations.addAll(violations);
-                    ruleResultsWithError.addAll(analysisResult.ruleResults().stream().filter(r -> r.errors().size() > 0).collect(Collectors.toList()));
 
                 } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
                     System.err.println(String.format("Error while reading file %s", fullPath));

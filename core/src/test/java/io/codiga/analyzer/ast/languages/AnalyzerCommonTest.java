@@ -47,10 +47,6 @@ public class AnalyzerCommonTest extends PythonTestUtils {
                 return null;
             }
 
-            @Override
-            public void prepareExecution(String filename, String code, AnalyzerRule rule, boolean logOutput) {
-
-            }
 
             @Override
             public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
