@@ -139,6 +139,8 @@ public class Main {
 
         long startTimeMs = System.currentTimeMillis();
         int cpus = Runtime.getRuntime().availableProcessors();
+        // we are defining parallemism: if we have more than 2 CPUs, we take the number of CPU - 1
+        int parallelism = cpus > 2 ? cpus - 1 : cpus;
 
         // For each language, we get the list of file for this language and get the violations
         for (Map.Entry<Language, List<String>> entry : LANGUAGE_EXTENSIONS.entrySet()) {
@@ -158,8 +160,8 @@ public class Main {
                 try {
                     final String code = getFileContent(path);
 
-
-                    List<List<AnalyzerRule>> subList = separateRules(rulesForLanguage, cpus);
+                    // put the rule to execute for each core
+                    List<List<AnalyzerRule>> subList = separateRules(rulesForLanguage, parallelism);
                     if (debug) {
                         System.out.println(String.format("Number of rules %s", rulesForLanguage.size()));
                         System.out.println(String.format("List size %s", subList.size()));
