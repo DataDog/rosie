@@ -32,7 +32,6 @@ import static io.codiga.utils.EnvironmentUtils.getEnvironmentValueAsLong;
 public abstract class AnalyzerCommon {
 
     public final static String COMMENT_SHARP = "#";
-    private final long DEFAULT_TIMEOUT_MS = 5000;
 
     private Logger logger = LoggerFactory.getLogger(AnalyzerCommon.class);
     private AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
@@ -110,6 +109,7 @@ public abstract class AnalyzerCommon {
                         long endTime = System.currentTimeMillis();
                         long executionTime = endTime - startTime;
                         if (polyglotException.getMessage().contains("Statement count limit of") && polyglotException.getMessage().contains("Statements executed")) {
+                            logger.info("rule %s timedout");
                             return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, executionTime);
                         }
 

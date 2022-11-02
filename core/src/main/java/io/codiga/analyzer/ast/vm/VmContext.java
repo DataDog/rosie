@@ -117,7 +117,7 @@ public class VmContext {
     }
 
     public void execute(AnalyzerRule analyzerRule) {
-        String toExecute = "visit(root, filename, code);";
+        String toExecute = "root.forEach(r => {visit(r, filename, code)});";
         context.eval("js", toExecute);
     }
 

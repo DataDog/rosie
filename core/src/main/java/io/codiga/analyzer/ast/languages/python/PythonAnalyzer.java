@@ -56,10 +56,9 @@ public class PythonAnalyzer extends AnalyzerCommon {
             return new RuleResult(rule.name(), List.of(), List.of(), null, null, 0);
         }
 
-        astElements.forEach(astElement -> {
-            vmContext.prepareForExecution(analyzerContext, astElement);
-            vmContext.execute(rule);
-        });
+        vmContext.prepareForExecution(analyzerContext, astElements);
+        vmContext.execute(rule);
+
 
         // Get the output BEFORE we shutdown the VM
         String finalOutput = vmContext.getOutput();

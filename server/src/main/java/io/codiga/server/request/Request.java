@@ -35,6 +35,6 @@ public class Request {
     }
 
     public String toString() {
-        return String.format("%s %s %s %s %s", filename, language, filename, fileEncoding, String.join(", ", rules.stream().map(r -> r.toString()).toList()));
+        return String.format("%s %s %s %s", filename, language, fileEncoding, String.join(", ", rules.stream().map(r -> r.id).toList()));
     }
 }

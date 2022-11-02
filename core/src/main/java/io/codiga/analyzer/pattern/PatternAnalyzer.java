@@ -42,10 +42,10 @@ public class PatternAnalyzer extends AnalyzerCommon {
         VmContext vmContext = new VmContext(analyzerContext);
         vmContext.initializeRule(rule);
 
-        for (PatternObject patternObject : patternObjects) {
-            vmContext.prepareForExecution(analyzerContext, patternObject);
-            vmContext.execute(rule);
-        }
+
+        vmContext.prepareForExecution(analyzerContext, patternObjects);
+        vmContext.execute(rule);
+
 
         String output = vmContext.getOutput();
         vmContext.shutdown();
