@@ -18,6 +18,12 @@ public class NoEvalTest extends E2EBase {
         print("bla")
         eval('[1, 2, 3]')""";
 
+
+    String pythonCodeWithTwoErrors = """
+        print("bla")
+        eval('[1, 2, 3]')
+        eval('[1, 2, 3]')""";
+
     String pythonCodeFixed = """
         from ast import literal_eval
         print("bla")
@@ -46,7 +52,7 @@ public class NoEvalTest extends E2EBase {
     @Test
     @DisplayName("Do not use eval()")
     public void testPythonNoEval() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "subprocess-with-shell", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, false);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-eval", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -73,4 +79,52 @@ public class NoEvalTest extends E2EBase {
     }
 
 
+    @Test
+    @DisplayName("Make sure we catch multiple instances of the issue")
+    public void testPythonNoEvalMultiple() throws Exception {
+        Response response = executeTest("bla.py", pythonCodeWithTwoErrors, Language.PYTHON, ruleCode, "no-eval", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, false);
+
+        assertEquals(1, response.ruleResponses.size());
+        assertEquals(2, response.ruleResponses.get(0).violations.size());
+        assertTrue(response.ruleResponses.get(0).executionTimeMs > 0);
+
+        // first issue
+        assertEquals(2, response.ruleResponses.get(0).violations.get(0).start.line);
+        assertEquals("do not use eval as this is unsafe", response.ruleResponses.get(0).violations.get(0).message);
+        assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.size());
+        assertEquals(2, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.size());
+
+        assertEquals("update", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
+        assertEquals("literal_eval('[1, 2, 3]')", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).content);
+        assertEquals(2, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.line);
+        assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.col);
+        assertEquals(2, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.line);
+        assertEquals(18, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);
+
+
+        assertEquals("add", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).editType);
+        assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).start.line);
+        assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).start.col);
+        assertEquals("from ast import literal_eval\n", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).content);
+
+        // second issue
+        assertEquals(3, response.ruleResponses.get(0).violations.get(1).start.line);
+        assertEquals("do not use eval as this is unsafe", response.ruleResponses.get(0).violations.get(1).message);
+        assertEquals(1, response.ruleResponses.get(0).violations.get(1).fixes.size());
+        assertEquals(2, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.size());
+
+        assertEquals("update", response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).editType);
+        assertEquals("literal_eval('[1, 2, 3]')", response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).content);
+        assertEquals(3, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).start.line);
+        assertEquals(1, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).start.col);
+        assertEquals(3, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).end.line);
+        assertEquals(18, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).end.col);
+
+
+        assertEquals("add", response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(1).editType);
+        assertEquals(1, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(1).start.line);
+        assertEquals(1, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(1).start.col);
+        assertEquals("from ast import literal_eval\n", response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(1).content);
+
+    }
 }

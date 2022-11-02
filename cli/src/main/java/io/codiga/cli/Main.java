@@ -31,6 +31,15 @@ import static io.codiga.constants.Languages.LANGUAGE_EXTENSIONS;
 import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 
 public class Main {
+
+    static void showRules(List<AnalyzerRule> rules) {
+        System.out.println("Loaded rules");
+        System.out.println("============");
+        rules.forEach(r -> {
+            System.out.println(r.name());
+        });
+    }
+
     public static void main(String[] args) {
 
         Options options = new Options();
@@ -98,6 +107,8 @@ public class Main {
             System.exit(1);
         }
 
+        showRules(rules);
+
         // get the list of files to analyze
         List<Path> filesToAnalyze = List.of();
         try {
@@ -126,7 +137,11 @@ public class Main {
             if (debug) {
                 System.out.println(String.format("Processing %s", entry.getKey()));
             }
+
+            // Get the list of files to analyze
             List<Path> filesForLanguage = filterFilesByExtensions(filesToAnalyze, entry.getValue());
+
+            // Get the list of rules for this language
             List<AnalyzerRule> rulesForLanguage = rules.stream().filter(r -> r.language() == entry.getKey()).toList();
 
             for (Path path : filesForLanguage) {
