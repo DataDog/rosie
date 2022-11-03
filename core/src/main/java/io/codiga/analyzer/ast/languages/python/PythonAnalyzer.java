@@ -10,6 +10,7 @@ import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.Language;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.error.RuleResult;
+import org.graalvm.polyglot.Engine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
 
 
     private Logger logger = LoggerFactory.getLogger(PythonAnalyzer.class);
+    private Engine engine = Engine.create("js");
 
 
     public PythonAnalyzer(MetricsInterface metrics, ErrorReportingInterface errorReporting, AnalyzerConfiguration configuration) {
@@ -45,7 +47,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
         long startTimestamp = System.currentTimeMillis();
 
         PythonAnalyzerContext context = (PythonAnalyzerContext) analyzerContext;
-        VmContext vmContext = new VmContext(analyzerContext);
+        VmContext vmContext = new VmContext(analyzerContext, engine);
 
         vmContext.initializeRule(rule);
 

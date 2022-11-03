@@ -11,6 +11,7 @@ import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.Language;
 import io.codiga.model.error.RuleResult;
 import io.codiga.model.pattern.PatternObject;
+import org.graalvm.polyglot.Engine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
 
     private Logger logger = LoggerFactory.getLogger(PatternAnalyzer.class);
 
+    private Engine engine = Engine.create("js");
 
     public PatternAnalyzer(MetricsInterface metrics, ErrorReportingInterface errorReporting, AnalyzerConfiguration configuration) {
         super(metrics, errorReporting, configuration);
@@ -39,7 +41,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
             return new RuleResult(rule.name(), List.of(), List.of(), null, null, 0);
         }
 
-        VmContext vmContext = new VmContext(analyzerContext);
+        VmContext vmContext = new VmContext(analyzerContext, engine);
         vmContext.initializeRule(rule);
 
 

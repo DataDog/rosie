@@ -5,6 +5,7 @@ import io.codiga.analyzer.ast.common.ErrorReporting;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.error.Violation;
 import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.ResourceLimits;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class VmContext {
     private Context context = null;
     private ErrorReporting errorReporting;
 
-    public VmContext(AnalyzerContext analyzerContext) {
+    public VmContext(AnalyzerContext analyzerContext, Engine engine) {
         this.errorReporting = new ErrorReporting();
 
         if (analyzerContext.isLogOutput()) {
@@ -60,6 +61,7 @@ public class VmContext {
             .allowExperimentalOptions(false)
             .allowValueSharing(true)
             .allowIO(false)
+            .engine(engine)
             .resourceLimits(ResourceLimits.newBuilder().statementLimit(MAX_STATEMENTS, null).build())
             .logHandler(OutputStream.nullOutputStream());
 
