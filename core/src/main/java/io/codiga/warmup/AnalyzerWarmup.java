@@ -22,13 +22,13 @@ public class AnalyzerWarmup {
         LOGGER.info("Warmup starting");
 
         IntStream.range(1, nbLoops).forEach(i -> {
-            LOGGER.info(String.format("Warmup: loop %s of %s", i, nbLoops));
+//            LOGGER.info(String.format("Warmup: loop %s of %s", i, nbLoops));
             WARMUP_CODE.forEach(analyzerWarmupCodeData -> {
                 boolean passed = false;
 
                 while (!passed) {
                     String rules = analyzerWarmupCodeData.analyzerRuleList.stream().map(AnalyzerRule::name).collect(Collectors.joining(","));
-                    LOGGER.info(String.format("Warming up rules: %s", rules));
+//                    LOGGER.info(String.format("Warming up rules: %s", rules));
 
                     String decodedCode = new String(Base64.getDecoder().decode(analyzerWarmupCodeData.codeBase64.getBytes()));
                     CompletableFuture<AnalysisResult> futureResult = analyzer.analyze(analyzerWarmupCodeData.language, analyzerWarmupCodeData.filename,
@@ -38,7 +38,7 @@ public class AnalyzerWarmup {
                     int nbErrors = analysisResult.ruleResults().stream().flatMap(r -> r.errors().stream()).toList().size();
 
                     if (nbViolations > 0) {
-                        LOGGER.info(String.format("Warmup for rules: %s completed, returned %s violations and %s errors", rules, nbViolations, nbErrors));
+//                        LOGGER.info(String.format("Warmup for rules: %s completed, returned %s violations and %s errors", rules, nbViolations, nbErrors));
                         passed = true;
                     }
                 }

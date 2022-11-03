@@ -36,6 +36,8 @@ import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 
 public class Main {
 
+    private static final int DEFAULT_TIMEOUT_MS = 50000;
+
     static void showRules(List<AnalyzerRule> rules) {
         System.out.println("Loaded rules");
         System.out.println("============");
@@ -46,7 +48,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        AnalyzerConfiguration configuration = new AnalyzerConfiguration(10000);
+        AnalyzerConfiguration configuration = new AnalyzerConfiguration(DEFAULT_TIMEOUT_MS);
 
         Options options = new Options();
 

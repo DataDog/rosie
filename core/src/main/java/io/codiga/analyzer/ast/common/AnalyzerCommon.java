@@ -100,7 +100,7 @@ public abstract class AnalyzerCommon {
                         long executionTime = endTime - startTime;
                         String metricName = String.format("%s-%s", METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_PREFIX, rule.name());
                         metrics.histogramValue(metricName, (double) executionTime);
-                        logger.info(String.format("rule %s took %s ms to execute", rule.name(), executionTime));
+//                        logger.info(String.format("rule %s took %s ms to execute", rule.name(), executionTime));
                         return res;
                     } catch (PatternSyntaxException patternSyntaxException) {
                         logger.error(String.format("reporting rule %s as invalid-pattern", rule.name()));
@@ -109,7 +109,7 @@ public abstract class AnalyzerCommon {
                         long endTime = System.currentTimeMillis();
                         long executionTime = endTime - startTime;
                         if (polyglotException.getMessage().contains("Statement count limit of") && polyglotException.getMessage().contains("Statements executed")) {
-                            logger.info(String.format("rule %s timedout", rule.name()));
+                            logger.info(String.format("rule %s timedout because of instructions", rule.name()));
                             return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, executionTime);
                         }
 
