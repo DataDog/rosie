@@ -33,7 +33,7 @@ public class RulesUtilsTest {
     @Test
     @DisplayName("Parse all rules from a file")
     public void testRulesParsing() throws IOException {
-        String file = "src/test/resources/rules.json";
+        String file = "src/test/resources/1rule.json";
         List<AnalyzerRule> rules = getRulesFromFile(file);
         assert (rules.size() == 1);
         AnalyzerRule rule = rules.stream().findFirst().get();

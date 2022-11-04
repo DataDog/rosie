@@ -29,54 +29,55 @@ public class MultiRulesTest extends E2EBase {
     );
 
     String code = """
-import stat
-import hashlib
-        
-import tempfile
-import requests
-import subprocess
-        
-import random
-
-import pickle
-
-import ssl
-
-
-remote = ssl.wrap_socket(s, ca_certs= CA, cert_reqs=ssl.CERT_REQUIRED, ssl_version = ssl.PROTOCOL_SSLv3)
-
-data = pickle.loads(data)
-
-from jinja2 import Environment, PackageLoader, select_autoescape
-
-
-env = Environment(loader=PackageLoader("yourapp"), autoescape=False)
-        
-n = random.random()
-        
-        
-subprocess.Popen('/bin/ls %s' % ('something',), shell=True)
-        
-        
-r = requests.get(w, verify=False)
-r = requests.get(w, verify=False, timeout=10)
-        
-        
-tempfile.mktemp(dir=self._tmp_dir)
-        
-hashlib.new('md5')
+        import stat
+        import hashlib
                 
-eval('[1, 2, 3]')
-        
-def newFunction(arg1, arg2: int, arg3 = []):
-  print("bla")
-        
-path = "/path/to/file"
-os.chmod(path, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
-                        """;
+        import tempfile
+        import requests
+        import subprocess
+                
+        import random
+
+        import pickle
+
+        import ssl
+
+
+        remote = ssl.wrap_socket(s, ca_certs= CA, cert_reqs=ssl.CERT_REQUIRED, ssl_version = ssl.PROTOCOL_SSLv3)
+
+        data = pickle.loads(data)
+
+        from jinja2 import Environment, PackageLoader, select_autoescape
+
+
+        env = Environment(loader=PackageLoader("yourapp"), autoescape=False)
+                
+        n = random.random()
+                
+                
+        subprocess.Popen('/bin/ls %s' % ('something',), shell=True)
+                
+                
+        r = requests.get(w, verify=False)
+        r = requests.get(w, verify=False, timeout=10)
+                
+                
+        tempfile.mktemp(dir=self._tmp_dir)
+                
+        hashlib.new('md5')
+                        
+        eval('[1, 2, 3]')
+                
+        def newFunction(arg1, arg2: int, arg3 = []):
+          print("bla")
+                
+        path = "/path/to/file"
+        os.chmod(path, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+                                """;
 
     @Test
     public void testMultiRules() throws Exception {
+        long start = System.currentTimeMillis();
         Response response = executeTestWithRules("bla.py", code, Language.PYTHON, RULES, false);
 
         assertEquals(11, response.ruleResponses.size());
@@ -90,6 +91,10 @@ os.chmod(path, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
             assertEquals(1, ruleResponse.violations.size());
 
         });
+
+        long end = System.currentTimeMillis();
+        long duration = end - start;
+        logger.info(String.format("Test duration: %s", duration));
 
     }
 

@@ -156,6 +156,7 @@ public class Main {
             // Get the list of rules for this language
             List<AnalyzerRule> rulesForLanguage = rules.stream().filter(r -> r.language() == entry.getKey()).toList();
 
+            // For each file
             for (Path path : filesForLanguage) {
                 String fullPath = path.toString();
                 String relativePath = fullPath.replace(directory, "");
@@ -175,6 +176,7 @@ public class Main {
                         }
                     }
 
+                    // Analyze the file with one thread that is sharing
                     List<CompletableFuture<AnalysisResult>> futures = subList.stream().map(ruleList -> {
                         return analyzer.analyze(entry.getKey(), relativePath, code, ruleList, false);
                     }).toList();
@@ -185,6 +187,9 @@ public class Main {
                     analysisResultList.forEach(analysisResult -> {
                         List<ViolationWithFilename> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> new ViolationWithFilename(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath, ruleResult.identifier()))).toList();
                         analysisResult.ruleResults().forEach(ruleResult -> {
+                            if (debug) {
+                                System.out.println(String.format("rule %s on file %s took %s ms", ruleResult.identifier(), relativePath, ruleResult.executionTimeMs()));
+                            }
                             if (ruleResult.errors().size() > 0) {
                                 System.out.println(String.format("rule %s on file %s reported errors %s", ruleResult.identifier(), relativePath, String.join(",", ruleResult.errors())));
                             }

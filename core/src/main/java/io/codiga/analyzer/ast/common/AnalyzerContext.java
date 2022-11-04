@@ -3,6 +3,7 @@ package io.codiga.analyzer.ast.common;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.Language;
 import org.antlr.v4.runtime.Parser;
+import org.graalvm.polyglot.Engine;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class AnalyzerContext {
     String code = null;
     List<AnalyzerRule> rules = null;
     boolean logOutput = false;
+    Engine engine;
 
 
     public AnalyzerContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
@@ -26,6 +28,16 @@ public class AnalyzerContext {
         this.code = code;
         this.rules = rules;
         this.logOutput = logOutput;
+        this.engine = Engine.newBuilder("js")
+            .allowExperimentalOptions(true)
+            .option("engine.WarnInterpreterOnly", "false") // no warning when we are attempting to run the engine
+
+            .build();
+
+    }
+
+    public Engine getEngine() {
+        return this.engine;
     }
 
     public Parser getParser() {

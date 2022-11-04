@@ -5,9 +5,9 @@ import io.codiga.analyzer.ast.common.ErrorReporting;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.error.Violation;
 import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.ResourceLimits;
+import org.graalvm.polyglot.Source;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,12 +32,13 @@ public class VmContext {
         .denyAccess(Object.class, false)
         .build();
     private static int MAX_STATEMENTS = 1000000;
+    Source executeSource;
     private OutputStream outputStream;
     private InputStream inputStream;
     private Context context = null;
     private ErrorReporting errorReporting;
 
-    public VmContext(AnalyzerContext analyzerContext, Engine engine) {
+    public VmContext(AnalyzerContext analyzerContext) {
         this.errorReporting = new ErrorReporting();
 
         if (analyzerContext.isLogOutput()) {
@@ -61,7 +62,7 @@ public class VmContext {
             .allowExperimentalOptions(false)
             .allowValueSharing(true)
             .allowIO(false)
-            .engine(engine)
+            .engine(analyzerContext.getEngine())
             .resourceLimits(ResourceLimits.newBuilder().statementLimit(MAX_STATEMENTS, null).build())
             .logHandler(OutputStream.nullOutputStream());
 
@@ -69,6 +70,10 @@ public class VmContext {
             contextBuilder.out(outputStream);
         }
         context = contextBuilder.build();
+
+        // the main source used for each invocation
+        String toExecute = "root.forEach(r => {visit(r, filename, code)});";
+        executeSource = Source.create("js", toExecute);
     }
 
     public String getOutput() {
@@ -105,6 +110,7 @@ public class VmContext {
         context.getBindings("js").putMember("root", rootObject);
         context.getBindings("js").putMember("addError", this.errorReporting);
         context.getBindings("js").putMember("code", analyzerContext.getCode());
+
         context.getBindings("js").putMember("filename", analyzerContext.getFilename());
         String initializationCode =
             "reportError = addError.addError; " +
@@ -115,12 +121,12 @@ public class VmContext {
                 "buildEditUpdate = addError.buildEditUpdate; " +
                 "buildEditRemove = addError.buildEditRemove; " +
                 "addError = addError.addViolation; ";
-        context.eval("js", initializationCode);
+        Source source = Source.create("js", initializationCode);
+        context.eval(source);
     }
 
     public void execute(AnalyzerRule analyzerRule) {
-        String toExecute = "root.forEach(r => {visit(r, filename, code)});";
-        context.eval("js", toExecute);
+        context.eval(executeSource);
     }
 
     public List<Violation> getViolations() {

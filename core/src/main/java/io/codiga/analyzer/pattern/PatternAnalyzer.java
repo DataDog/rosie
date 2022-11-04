@@ -41,7 +41,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
             return new RuleResult(rule.name(), List.of(), List.of(), null, null, 0);
         }
 
-        VmContext vmContext = new VmContext(analyzerContext, engine);
+        VmContext vmContext = new VmContext(analyzerContext);
         vmContext.initializeRule(rule);
 
 

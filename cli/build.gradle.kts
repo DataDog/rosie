@@ -1,16 +1,19 @@
 plugins {
     id("java")
     id("application")
-
+    // Disabled for now, see https://github.com/graalvm/graal-js-jdk11-gradle-demo
+    // id("org.graalvm.plugin.compiler") version "0.1.0-alpha2"
 }
 
 group = "io.codiga"
 version = "1.0-SNAPSHOT"
 
+
 repositories {
     mavenCentral()
     mavenLocal()
 }
+
 
 application {
     mainClass.set("io.codiga.cli.Main")

@@ -23,11 +23,13 @@ public class MetricsDatadog implements MetricsInterface {
 
     public MetricsDatadog() {
         Optional<String> metrixPrefix = getEnvironmentValue(METRICS_PREFIX);
-        logger.info(String.format("Initializing metrics with prefix %s", metrixPrefix));
         NonBlockingStatsDClientBuilder builder = new NonBlockingStatsDClientBuilder();
 
         if (metrixPrefix.isPresent()) {
+            logger.info(String.format("Initializing metrics with prefix %s", metrixPrefix.get()));
             builder = builder.prefix(metrixPrefix.get());
+        } else {
+            logger.info(String.format("No prefix to set for datadog metrics"));
         }
         builder = builder
             .hostname(getEnvironmentValue(DATADOG_HOSTNAME).orElse(DEFAULT_HOST))
