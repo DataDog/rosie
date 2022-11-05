@@ -27,7 +27,7 @@ public class PythonAnalyzerContext extends AnalyzerContext {
         PythonParser parser = new PythonParser(tokens);
         parser.setBuildParseTree(true);
 
-        CodigaVisitor codigaVisitor = new CodigaVisitor();
+        CodigaVisitor codigaVisitor = new CodigaVisitor(code);
         codigaVisitor.visit(parser.root());
 
 

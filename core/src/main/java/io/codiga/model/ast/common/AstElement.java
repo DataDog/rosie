@@ -2,6 +2,7 @@ package io.codiga.model.ast.common;
 
 
 import io.codiga.model.common.Position;
+import io.codiga.model.context.Context;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -42,6 +43,7 @@ public class AstElement {
     public String astType;
     private ParserRuleContext parserRuleContext;
     private ParserRuleContext root;
+    public Context context;
 
     public AstElement(String astType,
                       ParserRuleContext parserRuleContext,
@@ -53,6 +55,7 @@ public class AstElement {
         this.endIndex = parserRuleContext.stop.getStopIndex();
         this.parserRuleContext = parserRuleContext;
         this.root = root;
+        this.context = null;
     }
 
     private List<ParseTree> getNodesFromType(ParseTree parseTree, Class classType) {
@@ -79,4 +82,8 @@ public class AstElement {
         return this.parserRuleContext.getText();
     }
 
+
+    public void setContext(Context c) {
+        this.context = c;
+    }
 }

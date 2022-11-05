@@ -48,8 +48,7 @@ public class NoFlaskAppInDebugTest extends E2EBase {
         }
                 
         function visit(node) {
-
-            const useFlask = node.getImports().filter(i => {
+            const useFlask = node.context.imports.filter(i => {
                 const useFlaskAsImport = i.astType === "importpackage" && i.name.str === "flask";
                  const useFlaskAsFrom = i.astType === "fromstatement" && i.pkg.str === "flask";
                  return useFlaskAsImport || useFlaskAsFrom;

@@ -40,7 +40,7 @@ public class MetricsDatadog implements MetricsInterface {
 
     @Override
     public void incrementMetric(String metricName) {
-        logger.info(String.format("incrementing metric %s", metricName));
+//        logger.info(String.format("incrementing metric %s", metricName));
         this.datadogClient.increment(metricName);
     }
 

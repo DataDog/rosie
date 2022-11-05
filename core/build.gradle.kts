@@ -2,6 +2,7 @@ plugins {
     id("java")
     // Disabled for now, see https://github.com/graalvm/graal-js-jdk11-gradle-demo
     // id("org.graalvm.plugin.compiler") version "0.1.0-alpha2"
+    id("io.freefair.lombok") version "6.5.1"
 }
 
 group = "io.codiga"

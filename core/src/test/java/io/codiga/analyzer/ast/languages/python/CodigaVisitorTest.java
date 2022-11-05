@@ -36,7 +36,7 @@ public class CodigaVisitorTest extends PythonTestUtils {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         PythonParser parser = new PythonParser(tokens);
         parser.setBuildParseTree(true);
-        CodigaVisitor codigaVisitor = new CodigaVisitor();
+        CodigaVisitor codigaVisitor = new CodigaVisitor(decoded);
         codigaVisitor.visit(parser.root());
         assertEquals(64, codigaVisitor.assignments.size());
         assertEquals(22, codigaVisitor.fromStatements.size());
