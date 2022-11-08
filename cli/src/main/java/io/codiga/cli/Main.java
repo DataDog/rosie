@@ -160,6 +160,7 @@ public class Main {
             for (Path path : filesForLanguage) {
                 String fullPath = path.toString();
                 String relativePath = fullPath.replace(directory, "");
+                String basename = path.getFileName().toString();
                 try {
                     final String code = getFileContent(path);
 
@@ -177,9 +178,7 @@ public class Main {
                     }
 
                     // Analyze the file with one thread that is sharing
-                    List<CompletableFuture<AnalysisResult>> futures = subList.stream().map(ruleList -> {
-                        return analyzer.analyze(entry.getKey(), relativePath, code, ruleList, false);
-                    }).toList();
+                    List<CompletableFuture<AnalysisResult>> futures = subList.stream().map(ruleList -> analyzer.analyze(entry.getKey(), basename, code, ruleList, false)).toList();
 
 
                     List<AnalysisResult> analysisResultList = sequence(futures).get(configuration.analysisTimeoutMs, TimeUnit.MILLISECONDS);

@@ -15,6 +15,7 @@ public class CategoryUtils {
         "design", Category.DESIGN,
         "deployment", Category.DEPLOYMENT
     );
+    
 
     public static Category categoryFromString(String categoryString) {
         return STRING_TO_CATEGORY.getOrDefault(categoryString.toLowerCase(), Category.UNKNOWN);
