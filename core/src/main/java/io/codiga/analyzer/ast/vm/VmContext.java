@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.vm;
 
+import datadog.trace.api.Trace;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.ast.common.ErrorReporting;
 import io.codiga.analyzer.rule.AnalyzerRule;
@@ -125,6 +126,7 @@ public class VmContext {
         context.eval(source);
     }
 
+    @Trace
     public void execute(AnalyzerRule analyzerRule) {
         context.eval(executeSource);
     }

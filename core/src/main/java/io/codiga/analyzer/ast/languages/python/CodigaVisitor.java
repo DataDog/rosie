@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.python;
 
+import datadog.trace.api.Trace;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.FunctionCall;
 import io.codiga.model.ast.python.*;
@@ -79,6 +80,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
     }
 
 
+    @Trace
     @Override
     public Object visitRoot(PythonParser.RootContext ctx) {
         this.root = ctx;

@@ -1,5 +1,6 @@
 package io.codiga.analyzer.pattern;
 
+import datadog.trace.api.Trace;
 import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
@@ -29,7 +30,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
         super(metrics, errorReporting, configuration);
     }
 
-
+    @Trace
     @Override
     public RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule) {
         long startTimestamp = System.currentTimeMillis();
@@ -58,6 +59,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
     }
 
 
+    @Trace
     @Override
     public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         return new AnalyzerContext(language, filename, code, rules, logOutput);

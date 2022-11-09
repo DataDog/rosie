@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.python;
 
+import datadog.trace.api.Trace;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.ast.vm.VmContext;
@@ -40,6 +41,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
      * @param rule
      * @return
      */
+    @Trace
     @Override
     public RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule) {
         long startTimestamp = System.currentTimeMillis();
@@ -71,6 +73,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
     }
 
 
+    @Trace
     @Override
     public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
 

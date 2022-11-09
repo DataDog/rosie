@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.common;
 
+import datadog.trace.api.Trace;
 import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
@@ -83,6 +84,7 @@ public abstract class AnalyzerCommon {
 
     public abstract AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput);
 
+    @Trace
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         long timeoutMs = getTimeoutMs();
         // Get the lines to ignore that have codiga-disable

@@ -26,6 +26,7 @@ dependencies {
 
     implementation("com.google.inject:guice:5.1.0")
     implementation("com.datadoghq:java-dogstatsd-client:4.1.0")
+    implementation("com.datadoghq:dd-trace-api:0.114.0")
     implementation("org.antlr:antlr4-runtime:4.11.1")
     implementation("com.rollbar:rollbar-java:1.8.1")
 
