@@ -105,7 +105,7 @@ public class VmContext {
         context.eval("js", analyzerRule.code());
     }
 
-
+    @Trace
     public void prepareForExecution(AnalyzerContext analyzerContext, Object rootObject) {
         context.resetLimits();
         context.getBindings("js").putMember("root", rootObject);
