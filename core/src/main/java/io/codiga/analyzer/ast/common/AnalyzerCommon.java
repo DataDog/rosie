@@ -84,7 +84,7 @@ public abstract class AnalyzerCommon {
 
     public abstract AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput);
 
-    @Trace
+    @Trace(operationName = "AnalyzerCommon.analyze")
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         long timeoutMs = getTimeoutMs();
         // Get the lines to ignore that have codiga-disable

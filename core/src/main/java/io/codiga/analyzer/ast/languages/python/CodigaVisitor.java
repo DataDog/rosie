@@ -80,7 +80,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
     }
 
 
-    @Trace
+    @Trace(operationName = "CodigaVisitor.visitRoot")
     @Override
     public Object visitRoot(PythonParser.RootContext ctx) {
         this.root = ctx;

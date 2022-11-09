@@ -30,7 +30,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
         super(metrics, errorReporting, configuration);
     }
 
-    @Trace
+    @Trace(operationName = "PatternAnalyzer.execute")
     @Override
     public RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule) {
         long startTimestamp = System.currentTimeMillis();
@@ -59,7 +59,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
     }
 
 
-    @Trace
+    @Trace(operationName = "PatternAnalyzer.buildContext")
     @Override
     public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         return new AnalyzerContext(language, filename, code, rules, logOutput);

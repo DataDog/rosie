@@ -41,7 +41,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
      * @param rule
      * @return
      */
-    @Trace
+    @Trace(operationName = "PythonAnalyzer.execute")
     @Override
     public RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule) {
         long startTimestamp = System.currentTimeMillis();
@@ -73,7 +73,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
     }
 
 
-    @Trace
+    @Trace(operationName = "PythonAnalyzer.buildContext")
     @Override
     public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
 
