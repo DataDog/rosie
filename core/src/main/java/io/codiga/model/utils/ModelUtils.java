@@ -97,6 +97,9 @@ public class ModelUtils {
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FOR_LOOP)) {
             return EntityChecked.FOR_LOOP;
         }
+        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_CLASS_DEFINITION)) {
+            return EntityChecked.CLASS_DEFINITION;
+        }
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_IMPORT)) {
             return EntityChecked.IMPORT_STATEMENT;
         }

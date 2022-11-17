@@ -14,9 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.getDecoratorsForClassOrFunctionDefinition;
+
 public class FuncDefToFunctionDefinition {
 
     private static final Logger logger = LoggerFactory.getLogger(FuncDefToFunctionDefinition.class);
+
+    public static boolean isFunctionDefinition(PythonParser.Class_or_func_def_stmtContext ctx) {
+        return ctx.funcdef() != null;
+    }
 
 
     public static Optional<PythonFunctionDefinition> transformFuncDefToFunctionDefinition(PythonParser.Class_or_func_def_stmtContext ctx, PythonParser.RootContext root) {
@@ -101,8 +107,7 @@ public class FuncDefToFunctionDefinition {
         }
 
 
-        List<PythonDecorator> decorators = ctx.decorator()
-            .stream().map(decoratorContext -> PythonDecorator.fromArgumentContext(decoratorContext, root).orElse(null)).toList();
+        List<PythonDecorator> decorators = getDecoratorsForClassOrFunctionDefinition(ctx, root);
 
         return Optional.of(new PythonFunctionDefinition(
             isAsync,

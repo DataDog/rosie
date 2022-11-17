@@ -15,8 +15,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
+import static io.codiga.analyzer.ast.languages.python.ClassOrFuncDefToClassDefinition.isClassDefinition;
+import static io.codiga.analyzer.ast.languages.python.ClassOrFuncDefToClassDefinition.transformClassOrFuncDefToClassDefinition;
 import static io.codiga.analyzer.ast.languages.python.ExprToFunctionCall.transformExprToFunctionCall;
 import static io.codiga.analyzer.ast.languages.python.ForStmtToForStatement.transformForStatement;
+import static io.codiga.analyzer.ast.languages.python.FuncDefToFunctionDefinition.isFunctionDefinition;
 import static io.codiga.analyzer.ast.languages.python.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
 import static io.codiga.analyzer.ast.languages.python.IfStmtToIfStatement.transformIfStatement;
 import static io.codiga.analyzer.ast.languages.python.ImportFromToFromStatement.transformFromStmtToFromStatement;
@@ -35,6 +38,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
     private final Logger logger = LoggerFactory.getLogger(CodigaVisitor.class);
     // To build the context
     Stack<PythonFunctionDefinition> visitedFunctionDefinitions;
+    Stack<PythonClassDefinition> visitedClassDefinitions;
     Stack<PythonIfStatement> visitedIfStatements;
     Stack<TryStatement> visitedTryStatements;
     List<AstElement> visitedImportStatements;
@@ -47,6 +51,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
     List<PythonForStatement> forStatements;
     List<PythonFunctionDefinition> functionDefinitions;
     List<FunctionCall> functionCalls;
+    List<PythonClassDefinition> classDefinitions;
     private PythonParser.RootContext root;
 
     public CodigaVisitor(String code) {
@@ -61,18 +66,21 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
         forStatements = new ArrayList<>();
         functionDefinitions = new ArrayList<>();
         functionCalls = new ArrayList<>();
+        classDefinitions = new ArrayList<>();
 
         // Initialize the visited elements
         visitedFunctionDefinitions = new Stack();
         visitedIfStatements = new Stack<>();
         visitedTryStatements = new Stack<>();
         visitedImportStatements = new ArrayList<>();
+        visitedClassDefinitions = new Stack();
     }
 
     private PythonNodeContext buildContext() {
         PythonNodeContext res = PythonNodeContext.buildPythonNodeContext()
             .currentFunction(visitedFunctionDefinitions.size() > 0 ? visitedFunctionDefinitions.lastElement() : null)
             .currentTryBlock(visitedTryStatements.size() > 0 ? visitedTryStatements.lastElement() : null)
+            .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
             .code(this.code)
             .importsList(visitedImportStatements)
             .build();
@@ -169,19 +177,36 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
 
     @Override
     public Object visitClass_or_func_def_stmt(PythonParser.Class_or_func_def_stmtContext ctx) {
-        Optional<PythonFunctionDefinition> functionDefinitionOptional = transformFuncDefToFunctionDefinition(ctx, this.root);
+        if (isFunctionDefinition(ctx)) {
 
-        if (functionDefinitionOptional.isPresent()) {
-            PythonFunctionDefinition functionDefinition = functionDefinitionOptional.get();
-            functionDefinition.setContext(buildContext());
-            functionDefinitions.add(functionDefinition);
-            visitedFunctionDefinitions.push(functionDefinition);
-            Object res = visitChildren(ctx);
-            visitedFunctionDefinitions.pop();
-            return res;
-        } else {
-            return visitChildren(ctx);
+            Optional<PythonFunctionDefinition> functionDefinitionOptional = transformFuncDefToFunctionDefinition(ctx, this.root);
+
+            if (functionDefinitionOptional.isPresent()) {
+                PythonFunctionDefinition functionDefinition = functionDefinitionOptional.get();
+                functionDefinition.setContext(buildContext());
+                functionDefinitions.add(functionDefinition);
+                visitedFunctionDefinitions.push(functionDefinition);
+                Object res = visitChildren(ctx);
+                visitedFunctionDefinitions.pop();
+                return res;
+            }
         }
+
+        if (isClassDefinition(ctx)) {
+            Optional<PythonClassDefinition> classDefinitionOptional = transformClassOrFuncDefToClassDefinition(ctx, this.root);
+
+            if (classDefinitionOptional.isPresent()) {
+                PythonClassDefinition classDefinition = classDefinitionOptional.get();
+                classDefinition.setContext(buildContext());
+                classDefinitions.add(classDefinition);
+                visitedClassDefinitions.push(classDefinition);
+                Object res = visitChildren(ctx);
+                visitedClassDefinitions.pop();
+                return res;
+            }
+        }
+
+        return visitChildren(ctx);
     }
 
 

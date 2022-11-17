@@ -1,9 +1,11 @@
 package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.model.ast.python.PythonComparison;
+import io.codiga.model.ast.python.PythonDecorator;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.python.ComparisontoPythonComparison.transformComparisonToPythonComparison;
@@ -29,5 +31,13 @@ public class PythonAstUtils {
             return transformComparisonToPythonComparison(comparisonContext, root);
         }
         return Optional.empty();
+    }
+
+    public static List<PythonDecorator> getDecoratorsForClassOrFunctionDefinition(PythonParser.Class_or_func_def_stmtContext ctx, PythonParser.RootContext root) {
+        if (ctx.decorator() != null) {
+            return ctx.decorator()
+                .stream().map(decoratorContext -> PythonDecorator.fromArgumentContext(decoratorContext, root).orElse(null)).toList();
+        }
+        return List.of();
     }
 }

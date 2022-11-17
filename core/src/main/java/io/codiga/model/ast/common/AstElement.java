@@ -22,6 +22,7 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_FUNCTION_EXCEPT_CLAUSE = "exceptclause";
     public static final String AST_ELEMENT_TYPE_FUNCTION_FINALLY_CLAUSE = "finallyclause";
     public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION = "functiondefinition";
+    public static final String AST_ELEMENT_TYPE_CLASS_DEFINITION = "classdefinition";
     public static final String AST_ELEMENT_TYPE_IMPORT_STATEMENT = "importstatement";
     public static final String AST_ELEMENT_TYPE_COMPARISON = "comparison";
     public static final String AST_ELEMENT_TYPE_EXPRESSION = "expression";
@@ -41,9 +42,9 @@ public class AstElement {
     public int startIndex;
     public int endIndex;
     public String astType;
+    public Context context;
     private ParserRuleContext parserRuleContext;
     private ParserRuleContext root;
-    public Context context;
 
     public AstElement(String astType,
                       ParserRuleContext parserRuleContext,
