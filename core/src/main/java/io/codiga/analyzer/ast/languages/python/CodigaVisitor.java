@@ -78,7 +78,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
 
     private PythonNodeContext buildContext() {
         PythonNodeContext res = PythonNodeContext.buildPythonNodeContext()
-            .currentFunction(visitedFunctionDefinitions.size() > 0 ? visitedFunctionDefinitions.lastElement() : null)
+            .currentFunction(visitedFunctionDefinitions.isEmpty() ? null : visitedFunctionDefinitions.lastElement())
             .currentTryBlock(visitedTryStatements.size() > 0 ? visitedTryStatements.lastElement() : null)
             .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
             .code(this.code)
@@ -112,8 +112,15 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
     public Object visitSimple_stmt(PythonParser.Simple_stmtContext ctx) {
         if (isAssignment(ctx)) {
             transformSimpleStmtToPythonAssignment(ctx, this.root).ifPresent(v -> {
+                // Set the context of the AST Element
                 v.setContext(buildContext());
                 assignments.add(v);
+
+                Optional<PythonFunctionDefinition> functionDefinition = visitedFunctionDefinitions.empty() ? Optional.empty() : Optional.of(visitedFunctionDefinitions.lastElement());
+                if (functionDefinition.isPresent()) {
+
+                    functionDefinition.get().addAssignment(v);
+                }
             });
         }
         return visitChildren(ctx);
@@ -123,9 +130,11 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
     public Object visitImport_stmt(PythonParser.Import_stmtContext ctx) {
         Optional<ImportStatement> importStatementOptional = transformImportStmtToImportStatement(ctx, root);
         importStatementOptional.ifPresent(v -> {
+
             v.setContext(buildContext());
             importStatements.add(v);
             visitedImportStatements.add(v);
+
         });
         return visitChildren(ctx);
     }
