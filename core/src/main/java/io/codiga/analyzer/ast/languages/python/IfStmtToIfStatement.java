@@ -29,7 +29,7 @@ public class IfStmtToIfStatement {
 
         for (PythonParser.Elif_clauseContext elif_clauseContext : if_stmtContext.elif_clause()) {
             Optional<PythonComparison> comparison = getPythonComparisonFromTestContext(elif_clauseContext.test(), root);
-            if (comparison.isPresent()) {
+            if (comparison.isPresent() && elif_clauseContext.suite() != null) {
                 PythonElifStatement pythonElifStatement = new PythonElifStatement(
                     comparison.get(),
                     new PythonString(elif_clauseContext.suite().getText(), elif_clauseContext, root),

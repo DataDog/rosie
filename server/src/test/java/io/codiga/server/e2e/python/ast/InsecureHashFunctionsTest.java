@@ -28,7 +28,7 @@ public class InsecureHashFunctionsTest extends E2EBase {
 
             const useOutdatedHashMethod = node.arguments.values.filter(a => a.value && a.value.str.toLowerCase() == `'${hashMethod}'`).length > 0;
             
-            const allPackages = node.getImports().flatMap(i => i.packages.map(p => p.name.str));
+            const allPackages = node.context.imports.filter(i => i.packages).flatMap(i => i.packages.map(p => p.name.str));
             const useHashlib = allPackages.filter(i => i === "hashlib").length > 0;
 
             if(useOutdatedHashMethod && useHashlib){

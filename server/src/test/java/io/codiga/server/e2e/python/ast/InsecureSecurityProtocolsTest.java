@@ -44,7 +44,7 @@ public class InsecureSecurityProtocolsTest extends E2EBase {
 
             const useOutdatedProtocol = node.arguments.values.filter(a => a.value && a.value.str == `ssl.${protocol}`).length > 0;
             
-            const allPackages = node.getImports().flatMap(i => i.packages.map(p => p.name.str));
+            const allPackages = node.context.imports.filter(i => i.packages).flatMap(i => i.packages.map(p => p.name.str));
             const useSslPackage = allPackages.filter(i => i === "ssl").length > 0;
 
             if(useOutdatedProtocol && useSslPackage){

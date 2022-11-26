@@ -32,12 +32,12 @@ public class VmContext {
         .denyAccess(Proxy.class)
         .denyAccess(Object.class, false)
         .build();
-    private static int MAX_STATEMENTS = 1000000;
+    private static final int MAX_STATEMENTS = 1000000;
     Source executeSource;
     private OutputStream outputStream;
     private InputStream inputStream;
     private Context context = null;
-    private ErrorReporting errorReporting;
+    private final ErrorReporting errorReporting;
 
     public VmContext(AnalyzerContext analyzerContext) {
         this.errorReporting = new ErrorReporting();
@@ -60,7 +60,7 @@ public class VmContext {
         Context.Builder contextBuilder = Context
             .newBuilder("js")
             .allowHostAccess(SANDBOX)
-            .allowExperimentalOptions(false)
+            .allowExperimentalOptions(true)
             .allowValueSharing(true)
             .allowIO(false)
             .engine(analyzerContext.getEngine())

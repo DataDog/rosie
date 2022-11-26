@@ -1,7 +1,13 @@
 package io.codiga.model.common;
 
+import org.graalvm.polyglot.HostAccess;
+
 public class Position {
+
+    @HostAccess.Export
     public int line;
+
+    @HostAccess.Export
     public int col;
 
     public Position() {

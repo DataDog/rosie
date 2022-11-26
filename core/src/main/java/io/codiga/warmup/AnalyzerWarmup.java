@@ -27,7 +27,7 @@ public class AnalyzerWarmup {
                 boolean passed = false;
 
                 while (!passed) {
-                    String rules = analyzerWarmupCodeData.analyzerRuleList.stream().map(AnalyzerRule::name).collect(Collectors.joining(","));
+//                    String rules = analyzerWarmupCodeData.analyzerRuleList.stream().map(AnalyzerRule::name).collect(Collectors.joining(","));
 //                    LOGGER.info(String.format("Warming up rules: %s", rules));
 
                     String decodedCode = new String(Base64.getDecoder().decode(analyzerWarmupCodeData.codeBase64.getBytes()));
@@ -35,7 +35,7 @@ public class AnalyzerWarmup {
                         decodedCode, analyzerWarmupCodeData.analyzerRuleList.stream().map(analyzerRule -> new AnalyzerRule(analyzerRule.name(), analyzerRule.language(), analyzerRule.ruleType(), analyzerRule.entityChecked(), new String(Base64.getDecoder().decode(analyzerRule.code())), analyzerRule.pattern())).collect(Collectors.toList()), false);
                     AnalysisResult analysisResult = futureResult.join();
                     int nbViolations = analysisResult.ruleResults().stream().flatMap(r -> r.violations().stream()).toList().size();
-                    int nbErrors = analysisResult.ruleResults().stream().flatMap(r -> r.errors().stream()).toList().size();
+//                    int nbErrors = analysisResult.ruleResults().stream().flatMap(r -> r.errors().stream()).toList().size();
 
                     if (nbViolations > 0) {
 //                        LOGGER.info(String.format("Warmup for rules: %s completed, returned %s violations and %s errors", rules, nbViolations, nbErrors));
