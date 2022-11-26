@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 public class PatternMatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(PatternMatcher.class);
-    private String code;
-    private AnalyzerRule analyzerRule;
-    private List<String> codeLines;
+    private final String code;
+    private final AnalyzerRule analyzerRule;
+    private final List<String> codeLines;
 
     public PatternMatcher(String code, AnalyzerRule rule) {
         this.code = code;
@@ -33,6 +33,7 @@ public class PatternMatcher {
         scanner.close();
     }
 
+    // Escape parenthesis and other special characters from the string
     public static String prepareStringForRegularExpression(String originalString) {
         return originalString
             .replace("(", "\\(")
@@ -58,11 +59,21 @@ public class PatternMatcher {
         return null;
     }
 
+    /**
+     * Get the list of variables from the pattern.
+     * For example, of the pattern is "bla ${foo}", we will detect
+     * a variable with the name foo.
+     *
+     * @param rulePattern
+     * @return
+     */
     @VisibleForTesting
-    public List<PatternVariable> getVariables() {
+    public List<PatternVariable> getVariablesFromPattern(String rulePattern) {
         ArrayList<PatternVariable> patternVariableArrayList = new ArrayList<>();
+
+        // Catch variables in the pattern
         Pattern pattern = Pattern.compile("(\\$\\{[^\\}]*\\})", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(prepareStringForRegularExpression(analyzerRule.pattern()));
+        Matcher matcher = pattern.matcher(prepareStringForRegularExpression(rulePattern));
 
         while (matcher.find()) {
             if (matcher.groupCount() != 1) {
@@ -80,9 +91,18 @@ public class PatternMatcher {
         return List.copyOf(patternVariableArrayList);
     }
 
+
+    /**
+     * Get the regular expression to match for. We replace the variables
+     * by a regular expression we can match against.
+     *
+     * @param patternVariables
+     * @return
+     */
     @VisibleForTesting
-    public String getRegularExpression() {
-        List<PatternVariable> patternVariables = this.getVariables().stream().sorted(new Comparator<PatternVariable>() {
+    public String getRegularExpression(List<PatternVariable> patternVariables) {
+        // Sort the pattern variables in the inverse order they appear in the pattern
+        List<PatternVariable> orderedPatternVariables = patternVariables.stream().sorted(new Comparator<PatternVariable>() {
             @Override
             public int compare(PatternVariable o1, PatternVariable o2) {
                 return o2.start() - o1.start();
@@ -90,17 +110,23 @@ public class PatternMatcher {
         }).toList();
 
         String regularExpression = prepareStringForRegularExpression(this.analyzerRule.pattern());
-        for (PatternVariable patternVariable : patternVariables) {
-            regularExpression = regularExpression.substring(0, patternVariable.start()) + "(.+)" + regularExpression.substring(patternVariable.end(), regularExpression.length());
+        for (PatternVariable patternVariable : orderedPatternVariables) {
+            regularExpression = regularExpression.substring(0, patternVariable.start()) + "(.+)" + regularExpression.substring(patternVariable.end());
         }
         return regularExpression;
 
     }
 
+    /**
+     * Get the list of pattern objects. We just get all the pattern objects
+     * that match the code with their variables.
+     *
+     * @return
+     */
     public List<PatternObject> getPatternObjects() {
         List<PatternObject> patternObjects = new ArrayList<>();
-        String regularExpression = this.getRegularExpression();
-        List<PatternVariable> patternVariables = this.getVariables();
+        List<PatternVariable> patternVariables = this.getVariablesFromPattern(analyzerRule.pattern());
+        String regularExpression = this.getRegularExpression(patternVariables);
         HashMap<String, PatternVariableValue> variables = new HashMap<>();
 
         Pattern pattern = Pattern.compile(regularExpression);
@@ -108,7 +134,6 @@ public class PatternMatcher {
 
 
         while (matcher.find()) {
-
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 int startIndex = matcher.start(i);
                 int endIndex = matcher.end(i);

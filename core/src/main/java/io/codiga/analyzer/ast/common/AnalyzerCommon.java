@@ -34,12 +34,12 @@ public abstract class AnalyzerCommon {
 
     public final static String COMMENT_SHARP = "#";
 
-    private Logger logger = LoggerFactory.getLogger(AnalyzerCommon.class);
-    private AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
+    private final Logger logger = LoggerFactory.getLogger(AnalyzerCommon.class);
+    private final AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
 
-    private MetricsInterface metrics;
-    private ErrorReportingInterface errorReporting;
-    private AnalyzerConfiguration analyzerConfiguration;
+    private final MetricsInterface metrics;
+    private final ErrorReportingInterface errorReporting;
+    private final AnalyzerConfiguration analyzerConfiguration;
 
     public AnalyzerCommon(MetricsInterface metrics, ErrorReportingInterface errorReporting, AnalyzerConfiguration configuration) {
         this.metrics = metrics;
@@ -72,12 +72,10 @@ public abstract class AnalyzerCommon {
     }
 
     public String getCommentsSymbol(Language language) {
-        switch (language) {
-            case PYTHON:
-                return COMMENT_SHARP;
-            default:
-                return COMMENT_SHARP;
+        if (language == Language.PYTHON) {
+            return COMMENT_SHARP;
         }
+        return COMMENT_SHARP;
     }
 
     public abstract RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule);
@@ -156,6 +154,8 @@ public abstract class AnalyzerCommon {
                     }).collect(Collectors.toList());
                     return new AnalysisResult(timedoutRuleResults);
                 }
+                logger.error(String.format("analysis for rules %s report an error", String.join(",", rules.stream().map(r -> r.name()).toList())));
+
                 List<RuleResult> erroredRules = rules.stream().map(r -> {
                     return new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_UNKNOWN), exception.getCause() != null ? exception.getCause().getMessage() : exception.getMessage(), null, timeoutMs);
                 }).collect(Collectors.toList());

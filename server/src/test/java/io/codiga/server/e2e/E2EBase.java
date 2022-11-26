@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import static io.codiga.utils.Base64Utils.encodeBase64;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ServerTestConfiguration.class})
 @TestPropertySource(locations = "classpath:test.properties")
+@ContextConfiguration
 public class E2EBase {
 
     protected final Logger logger = LoggerFactory.getLogger(E2EBase.class);
@@ -40,6 +42,7 @@ public class E2EBase {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    
     public Response executeTestWithPattern(String filename,
                                            String code,
                                            Language language,
@@ -120,20 +123,20 @@ public class E2EBase {
                     int lineIndex = violationFixEdit.start.line - 1;
                     String line = lines.get(lineIndex);
                     logger.info(String.format("updating line %s:%s-%s:%s -> %s", violationFixEdit.start.line, violationFixEdit.start.col, violationFixEdit.end.line, violationFixEdit.end.col, line));
-                    line = line.substring(0, violationFixEdit.start.col - 1) + violationFixEdit.content + line.substring(violationFixEdit.end.col - 1, line.length());
+                    line = line.substring(0, violationFixEdit.start.col - 1) + violationFixEdit.content + line.substring(violationFixEdit.end.col - 1);
                     lines.set(lineIndex, line);
                 }
             }
             if (violationFixEdit.editType.equalsIgnoreCase("add")) {
                 int lineIndex = violationFixEdit.start.line - 1;
                 String line = lines.get(lineIndex);
-                line = line.substring(0, violationFixEdit.start.col - 1) + violationFixEdit.content + line.substring(violationFixEdit.start.col - 1, line.length());
+                line = line.substring(0, violationFixEdit.start.col - 1) + violationFixEdit.content + line.substring(violationFixEdit.start.col - 1);
                 lines.set(lineIndex, line);
             }
             if (violationFixEdit.editType.equalsIgnoreCase("remove")) {
                 int lineIndex = violationFixEdit.start.line - 1;
                 String line = lines.get(lineIndex);
-                line = line.substring(0, violationFixEdit.start.col - 1) + line.substring(violationFixEdit.end.col - 1, line.length());
+                line = line.substring(0, violationFixEdit.start.col - 1) + line.substring(violationFixEdit.end.col - 1);
                 lines.set(lineIndex, line);
             }
         }

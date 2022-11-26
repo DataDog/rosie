@@ -27,7 +27,7 @@ public class IgnoreRuleTest extends E2EBase {
     String ruleCode = """
         function visit(node) {
             const hasTimeout = node.arguments.filter(a => a.name && a.name == "timeout").length > 0;
-            const useRequestsPackage = node.getImports().filter(i => i.packageName == "requests").length > 0;
+            const useRequestsPackage = node.context.imports.filter(i => i.packageNames).filter(i => i.packageName == "requests").length > 0;
             if(!hasTimeout && useRequestsPackage && node.functionName === "get" && node.moduleOrObject === "requests"){
                 reportError(node.start.line, node.start.col, node.end.line, node.end.col, "timeout not defined", "CRITICAL", "SAFETY");
             }

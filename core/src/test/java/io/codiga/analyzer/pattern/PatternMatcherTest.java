@@ -49,7 +49,7 @@ public class PatternMatcherTest extends PythonTestUtils {
         AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
         PatternMatcher patternMatcher = new PatternMatcher(code, rule);
 
-        List<PatternVariable> variables = patternMatcher.getVariables();
+        List<PatternVariable> variables = patternMatcher.getVariablesFromPattern(pattern);
         assertEquals(variables.size(), 1);
         assertEquals(variables.get(0).name(), "${file}");
         assertEquals(variables.get(0).start(), 6);
@@ -63,8 +63,8 @@ public class PatternMatcherTest extends PythonTestUtils {
         AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
         PatternMatcher patternMatcher = new PatternMatcher(code, rule);
 
-        List<PatternVariable> variables = patternMatcher.getVariables();
-        assertEquals("open\\((.+), \"(.+)\"\\)", patternMatcher.getRegularExpression());
+        List<PatternVariable> variables = patternMatcher.getVariablesFromPattern(pattern);
+        assertEquals("open\\((.+), \"(.+)\"\\)", patternMatcher.getRegularExpression(variables));
     }
 
     @Test

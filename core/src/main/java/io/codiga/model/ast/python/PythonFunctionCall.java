@@ -1,22 +1,12 @@
 package io.codiga.model.ast.python;
 
-import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionCall;
 import io.codiga.model.ast.common.FunctionCallArguments;
 import io.codiga.model.common.Position;
-import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static io.codiga.analyzer.ast.languages.python.ImportFromToFromStatement.transformFromStmtToFromStatement;
-import static io.codiga.analyzer.ast.languages.python.ImportStmtToImportStatement.transformImportStmtToImportStatement;
 
 
 public class PythonFunctionCall extends FunctionCall {
@@ -31,45 +21,6 @@ public class PythonFunctionCall extends FunctionCall {
                               ParserRuleContext parserRuleContext,
                               ParserRuleContext root) {
         super(moduleOrObject, functionName, arguments, parserRuleContext, root);
-    }
-
-    public AstElement[] getImports() {
-        AstElement[] returnedElements;
-        List<AstElement> returnedElementsAsList = new ArrayList<>();
-
-        List<ParseTree> importsStatement = getNodes(PythonParser.Import_stmtContext.class);
-
-        for (ParseTree element : importsStatement) {
-//            if (element instanceof PythonParser.Import_stmtContext) {
-            try {
-                PythonParser.Import_stmtContext importStatement = (PythonParser.Import_stmtContext) element;
-                Optional<ImportStatement> importStatementOptional = transformImportStmtToImportStatement(importStatement, null);
-                importStatementOptional.ifPresent(returnedElementsAsList::add);
-            } catch (ClassCastException e) {
-                logger.info("error while casting");
-            }
-
-//            }
-        }
-
-        List<ParseTree> fromStatements = getNodes(PythonParser.From_stmtContext.class);
-
-        for (ParseTree element : fromStatements) {
-//            if (fromStatements instanceof PythonParser.From_stmtContext) {
-            try {
-                PythonParser.From_stmtContext fromStatement = (PythonParser.From_stmtContext) element;
-                Optional<FromStatement> fromStatementOptional = transformFromStmtToFromStatement(fromStatement, null);
-                fromStatementOptional.ifPresent(returnedElementsAsList::add);
-//            }
-            } catch (ClassCastException e) {
-                logger.info("error while casting");
-            }
-
-        }
-
-        returnedElements = new AstElement[returnedElementsAsList.size()];
-        returnedElements = returnedElementsAsList.toArray(returnedElements);
-        return returnedElements;
     }
 
 }
