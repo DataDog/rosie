@@ -38,7 +38,7 @@ public class IfStmtToIfStatement {
                 elifStatements.add(pythonElifStatement);
             }
         }
-        if (if_stmtContext.else_clause() != null) {
+        if (if_stmtContext.else_clause() != null && if_stmtContext.else_clause().suite() != null) {
             elseStatement = new PythonElseStatement(
                 new PythonString(if_stmtContext.else_clause().suite().getText(), if_stmtContext.else_clause().suite(), root),
                 if_stmtContext.else_clause(),
