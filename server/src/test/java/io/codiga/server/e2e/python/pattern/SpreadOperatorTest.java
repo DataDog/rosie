@@ -25,13 +25,21 @@ public class SpreadOperatorTest extends E2EBase {
             request2 = requests.get("https://www.api.com/endpoint", verify=False)
         """;
 
-    String codeWithTwoErrorsFirstErrorFixes = """
+    String codeWithTwoErrorsFirstErrorFixed = """
         import requests
                 
                 
         def my_function(arg1):     
             request1 = requests.get("https://www.api.com/endpoint", verify=True)
             request2 = requests.get("https://www.api.com/endpoint", verify=False)""";
+
+    String codeWithTwoErrorsSecondErrorFixed = """
+        import requests
+                
+                
+        def my_function(arg1):     
+            request1 = requests.get("https://www.api.com/endpoint", verify=False)
+            request2 = requests.get("https://www.api.com/endpoint", verify=True)""";
 
 
     String ruleCodeUpdate = """
@@ -68,7 +76,9 @@ public class SpreadOperatorTest extends E2EBase {
         assertEquals(2, response.ruleResponses.get(0).violations.size());
         assertEquals(5, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals(6, response.ruleResponses.get(0).violations.get(1).start.line);
-        assertEquals(codeWithTwoErrorsFirstErrorFixes, applyFix(codeWithTwoErrors, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
+        assertEquals(codeWithTwoErrorsFirstErrorFixed, applyFix(codeWithTwoErrors, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
+        assertEquals(codeWithTwoErrorsSecondErrorFixed, applyFix(codeWithTwoErrors, response.ruleResponses.get(0).violations.get(1).fixes.get(0)));
+
 
     }
 
