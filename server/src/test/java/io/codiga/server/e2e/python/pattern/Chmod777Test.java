@@ -26,11 +26,7 @@ public class Chmod777Test extends E2EBase {
 
     String ruleCodeUpdate = """
         function visit(pattern, filename, code) {
-            console.log("BLA");
             const mode = pattern.variables.get("mode");
-            
-            console.log(pattern);
-            console.log(filename);
             
             if(filename.includes("_test.py") || filename.startsWith("test_")) {
                 return;

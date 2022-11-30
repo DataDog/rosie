@@ -50,13 +50,18 @@ public class ModelUtils {
         if (language.equalsIgnoreCase(LANGUAGE_PYTHON)) {
             return Language.PYTHON;
         }
+        if (language.equalsIgnoreCase(LANGUAGE_JAVASCRIPT)) {
+            return Language.JAVASCRIPT;
+        }
         return Language.UNKNOWN;
     }
 
     public static String stringFromLanguage(Language language) {
         switch (language) {
             case PYTHON:
-                return "python";
+                return LANGUAGE_PYTHON;
+            case JAVASCRIPT:
+                return LANGUAGE_JAVASCRIPT;
             default:
                 return "unknown";
         }

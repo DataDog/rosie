@@ -38,12 +38,10 @@ import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 public class ServerMainController {
 
     final InjectorService injectorService;
+    private final MetricsInterface metrics;
+    private final ErrorReportingInterface errorReporting;
     Logger logger = LoggerFactory.getLogger(ServerMainController.class);
     private Analyzer analyzer = null;
-
-    private final MetricsInterface metrics;
-
-    private final ErrorReportingInterface errorReporting;
 
     public ServerMainController(InjectorService injectorService) {
         AnalyzerConfiguration configuration = new AnalyzerConfiguration(5000);
@@ -109,6 +107,7 @@ public class ServerMainController {
         logger.info(String.format("request: %s", request));
 
         if (!SUPPORTED_LANGUAGES.contains(request.language)) {
+            logger.info(String.format("langauge not supported %s", request.language));
             metrics.incrementMetric(METRIC_INVALID_LANGUAGE);
             return CompletableFuture.completedFuture(
                 new Response(List.of(), List.of(ERROR_LANGUAGE_NOT_SUPPORTED)));
