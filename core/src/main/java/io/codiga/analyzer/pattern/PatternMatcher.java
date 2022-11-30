@@ -113,7 +113,8 @@ public class PatternMatcher {
         for (PatternVariable patternVariable : orderedPatternVariables) {
             regularExpression = regularExpression.substring(0, patternVariable.start()) + "(.+)" + regularExpression.substring(patternVariable.end());
         }
-        return regularExpression;
+        return regularExpression.replaceAll("\\.\\.\\.", ".*");
+
 
     }
 
@@ -127,16 +128,20 @@ public class PatternMatcher {
         List<PatternObject> patternObjects = new ArrayList<>();
         List<PatternVariable> patternVariables = this.getVariablesFromPattern(analyzerRule.pattern());
         String regularExpression = this.getRegularExpression(patternVariables);
-        HashMap<String, PatternVariableValue> variables = new HashMap<>();
+
+//        logger.info(String.format("regular expression: %s", regularExpression));
 
         Pattern pattern = Pattern.compile(regularExpression);
         Matcher matcher = pattern.matcher(this.code);
 
 
         while (matcher.find()) {
+            HashMap<String, PatternVariableValue> variables = new HashMap<>();
+
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 int startIndex = matcher.start(i);
                 int endIndex = matcher.end(i);
+//                logger.info(String.format("start %s, end %s", startIndex, endIndex));
                 PatternVariable patternVariable = patternVariables.get(i - 1);
                 PatternVariableValue patternPosition = new PatternVariableValue(matcher.group(i),
                     getCodePosition(startIndex + 1),
