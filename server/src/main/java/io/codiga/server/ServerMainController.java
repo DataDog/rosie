@@ -15,6 +15,7 @@ import io.codiga.server.response.*;
 import io.codiga.server.services.InjectorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +41,9 @@ public class ServerMainController {
     Logger logger = LoggerFactory.getLogger(ServerMainController.class);
     private Analyzer analyzer = null;
 
-    private MetricsInterface metrics;
+    private final MetricsInterface metrics;
 
-    private ErrorReportingInterface errorReporting;
+    private final ErrorReportingInterface errorReporting;
 
     public ServerMainController(InjectorService injectorService) {
         AnalyzerConfiguration configuration = new AnalyzerConfiguration(5000);
@@ -63,7 +64,7 @@ public class ServerMainController {
      */
     @ExceptionHandler(Exception.class)
     public String handleError(HttpServletRequest req, Exception exception) {
-        if (exception instanceof JsonParseException) {
+        if (exception instanceof JsonParseException || exception instanceof HttpMessageNotReadableException) {
             metrics.incrementMetric(METRIC_EXCEPTION_INVALID_INPUT_JSON);
             return "invalid JSON input";
         }
