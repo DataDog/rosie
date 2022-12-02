@@ -1,8 +1,8 @@
 package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.model.ast.common.AstString;
-import io.codiga.model.ast.common.FunctionCall;
 import io.codiga.model.ast.python.Assignment;
+import io.codiga.model.ast.python.PythonFunctionCall;
 import io.codiga.model.ast.python.PythonList;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.python.SimpleStmtToAssignment.isAssignment;
-import static io.codiga.analyzer.ast.languages.python.SimpleStmtToAssignment.transformSimpleStmtToPythonAssignment;
+import static io.codiga.analyzer.ast.languages.python.transformations.SimpleStmtToAssignment.isAssignment;
+import static io.codiga.analyzer.ast.languages.python.transformations.SimpleStmtToAssignment.transformSimpleStmtToPythonAssignment;
 import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_FUNCTION_CALL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -111,10 +111,10 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
             Assignment assignment = assignmentOptional.get();
             assertEquals("v", ((AstString) assignment.left).str);
             assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, assignment.right.astType);
-            FunctionCall functionCall = (FunctionCall) assignment.right;
+            PythonFunctionCall functionCall = (PythonFunctionCall) assignment.right;
             assertEquals("format", functionCall.functionName.value);
             assertEquals("\"SELECT foo FROM bar WHERE plop={0}\"", functionCall.moduleOrObject.str);
-            
+
         }
     }
 }

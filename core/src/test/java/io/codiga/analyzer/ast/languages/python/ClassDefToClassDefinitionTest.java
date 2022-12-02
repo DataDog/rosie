@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.python.ClassOrFuncDefToClassDefinition.isClassDefinition;
-import static io.codiga.analyzer.ast.languages.python.ClassOrFuncDefToClassDefinition.transformClassOrFuncDefToClassDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition.isClassDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition.transformClassOrFuncDefToClassDefinition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

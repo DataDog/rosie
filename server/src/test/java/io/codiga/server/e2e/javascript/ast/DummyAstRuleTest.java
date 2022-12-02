@@ -32,7 +32,7 @@ public class DummyAstRuleTest extends E2EBase {
     public void testDummyRule() throws Exception {
         Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "visit-code", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, true);
         logger.info(response.toString());
-        assertEquals(0, response.ruleResponses.size());
+        assertEquals(1, response.ruleResponses.size());
     }
 
 

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.python.ForStmtToForStatement.transformForStatement;
+import static io.codiga.analyzer.ast.languages.python.transformations.ForStmtToForStatement.transformForStatement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

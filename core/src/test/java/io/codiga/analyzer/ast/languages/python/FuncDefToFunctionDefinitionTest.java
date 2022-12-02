@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.python.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {

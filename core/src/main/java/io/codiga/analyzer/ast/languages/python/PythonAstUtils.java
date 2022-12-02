@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.python.ComparisontoPythonComparison.transformComparisonToPythonComparison;
+import static io.codiga.analyzer.ast.languages.python.transformations.ComparisontoPythonComparison.transformComparisonToPythonComparison;
 
 public class PythonAstUtils {
 

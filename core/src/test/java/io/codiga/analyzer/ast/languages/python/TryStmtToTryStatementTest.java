@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.python.TryStmtToTryStatement.transformStmtToTryStatement;
+import static io.codiga.analyzer.ast.languages.python.transformations.TryStmtToTryStatement.transformStmtToTryStatement;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TryStmtToTryStatementTest extends PythonTestUtils {

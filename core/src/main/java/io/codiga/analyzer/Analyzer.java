@@ -1,6 +1,7 @@
 package io.codiga.analyzer;
 
 import com.google.common.collect.ImmutableList;
+import io.codiga.analyzer.ast.languages.javascript.JavaScriptAnalyzer;
 import io.codiga.analyzer.ast.languages.python.PythonAnalyzer;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.pattern.PatternAnalyzer;
@@ -30,6 +31,7 @@ public class Analyzer {
 
     Logger logger = LoggerFactory.getLogger(Analyzer.class);
     PythonAnalyzer pythonAnalyzer;
+    JavaScriptAnalyzer javaScriptAnalyzer;
     PatternAnalyzer patternAnalyzer;
     private MetricsInterface metrics;
     private ErrorReportingInterface errorReporting;
@@ -39,6 +41,7 @@ public class Analyzer {
         this.metrics = metrics;
         this.patternAnalyzer = new PatternAnalyzer(this.metrics, this.errorReporting, configuration);
         this.pythonAnalyzer = new PythonAnalyzer(this.metrics, this.errorReporting, configuration);
+        this.javaScriptAnalyzer = new JavaScriptAnalyzer(this.metrics, this.errorReporting, configuration);
     }
 
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
@@ -54,6 +57,9 @@ public class Analyzer {
         switch (language) {
             case PYTHON:
                 completedResultForAst = pythonAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
+                break;
+            case JAVASCRIPT:
+                completedResultForAst = javaScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
                 break;
             default:
                 completedResultForAst = CompletableFuture.completedFuture(new AnalysisResult(List.of()));

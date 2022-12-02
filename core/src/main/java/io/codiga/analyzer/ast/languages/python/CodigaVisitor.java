@@ -15,18 +15,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
-import static io.codiga.analyzer.ast.languages.python.ClassOrFuncDefToClassDefinition.isClassDefinition;
-import static io.codiga.analyzer.ast.languages.python.ClassOrFuncDefToClassDefinition.transformClassOrFuncDefToClassDefinition;
-import static io.codiga.analyzer.ast.languages.python.ExprToFunctionCall.transformExprToFunctionCall;
-import static io.codiga.analyzer.ast.languages.python.ForStmtToForStatement.transformForStatement;
-import static io.codiga.analyzer.ast.languages.python.FuncDefToFunctionDefinition.isFunctionDefinition;
-import static io.codiga.analyzer.ast.languages.python.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
-import static io.codiga.analyzer.ast.languages.python.IfStmtToIfStatement.transformIfStatement;
-import static io.codiga.analyzer.ast.languages.python.ImportFromToFromStatement.transformFromStmtToFromStatement;
-import static io.codiga.analyzer.ast.languages.python.ImportStmtToImportStatement.transformImportStmtToImportStatement;
-import static io.codiga.analyzer.ast.languages.python.SimpleStmtToAssignment.isAssignment;
-import static io.codiga.analyzer.ast.languages.python.SimpleStmtToAssignment.transformSimpleStmtToPythonAssignment;
-import static io.codiga.analyzer.ast.languages.python.TryStmtToTryStatement.transformStmtToTryStatement;
+import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition.isClassDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition.transformClassOrFuncDefToClassDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.analyzer.ast.languages.python.transformations.ForStmtToForStatement.transformForStatement;
+import static io.codiga.analyzer.ast.languages.python.transformations.FuncDefToFunctionDefinition.isFunctionDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.IfStmtToIfStatement.transformIfStatement;
+import static io.codiga.analyzer.ast.languages.python.transformations.ImportFromToFromStatement.transformFromStmtToFromStatement;
+import static io.codiga.analyzer.ast.languages.python.transformations.ImportStmtToImportStatement.transformImportStmtToImportStatement;
+import static io.codiga.analyzer.ast.languages.python.transformations.SimpleStmtToAssignment.isAssignment;
+import static io.codiga.analyzer.ast.languages.python.transformations.SimpleStmtToAssignment.transformSimpleStmtToPythonAssignment;
+import static io.codiga.analyzer.ast.languages.python.transformations.TryStmtToTryStatement.transformStmtToTryStatement;
 
 
 /**
@@ -221,7 +221,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
 
     @Override
     public Object visitExpr(PythonParser.ExprContext ctx) {
-        Optional<FunctionCall> functionCallOptional = transformExprToFunctionCall(ctx, this.root);
+        Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall(ctx, this.root);
         functionCallOptional.ifPresent(v -> {
             v.setContext(buildContext());
             functionCalls.add(v);

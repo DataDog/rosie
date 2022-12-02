@@ -13,6 +13,8 @@ public class PythonFunctionCall extends FunctionCall {
 
     private static final Logger logger = LoggerFactory.getLogger(PythonFunctionCall.class);
 
+    public AstString moduleOrObject;
+
     public PythonFunctionCall(AstString moduleOrObject,
                               AstString functionName,
                               FunctionCallArguments arguments,
@@ -20,7 +22,9 @@ public class PythonFunctionCall extends FunctionCall {
                               Position end,
                               ParserRuleContext parserRuleContext,
                               ParserRuleContext root) {
-        super(moduleOrObject, functionName, arguments, parserRuleContext, root);
+        super(functionName, arguments, parserRuleContext, root);
+        this.moduleOrObject = moduleOrObject;
+
     }
 
 }
