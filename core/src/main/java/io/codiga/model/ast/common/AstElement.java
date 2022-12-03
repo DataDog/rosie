@@ -24,6 +24,7 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION = "functiondefinition";
     public static final String AST_ELEMENT_TYPE_CLASS_DEFINITION = "classdefinition";
     public static final String AST_ELEMENT_TYPE_IMPORT_STATEMENT = "importstatement";
+    public static final String AST_ELEMENT_TYPE_IMPORTED_NAME = "importedname";
     public static final String AST_ELEMENT_TYPE_COMPARISON = "comparison";
     public static final String AST_ELEMENT_TYPE_EXPRESSION = "expression";
     public static final String AST_ELEMENT_TYPE_ARGUMENT = "argument";

@@ -3,6 +3,7 @@ package io.codiga.analyzer.ast.languages.javascript;
 import datadog.trace.api.Trace;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.FunctionCall;
+import io.codiga.model.ast.javascript.JavaScriptImport;
 import io.codiga.model.context.JavaScriptNodeContext;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
 import io.codiga.parser.javascript.gen.JavaScriptParserBaseVisitor;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.isFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptImportStatementToImport.transformImportStatementToImport;
 
 
 /**
@@ -33,8 +35,8 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     // List of all AST elements
 //    List<Assignment> assignments;
 //    List<FromStatement> fromStatements;
-//    List<ImportStatement> importStatements;
-//    List<PythonIfStatement> ifStatements;
+    List<JavaScriptImport> importStatements;
+    //    List<PythonIfStatement> ifStatements;
 //    List<TryStatement> tryStatements;
 //    List<PythonForStatement> forStatements;
 //    List<PythonFunctionDefinition> functionDefinitions;
@@ -47,6 +49,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
 
         // Initialize the list of all elements being visited
         functionCalls = new ArrayList<>();
+        importStatements = new ArrayList<>();
 
         // Initialize the visited elements
         visitedImportStatements = new ArrayList<>();
@@ -65,6 +68,16 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
             if (functionCallOptional.isPresent()) {
                 this.functionCalls.add(functionCallOptional.get());
             }
+        }
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public Object visitImportStatement(JavaScriptParser.ImportStatementContext ctx) {
+        Optional<JavaScriptImport> javaScriptImport = transformImportStatementToImport(ctx, root);
+        if (javaScriptImport.isPresent()) {
+            this.visitedImportStatements.add(javaScriptImport.get());
+            this.importStatements.add(javaScriptImport.get());
         }
         return visitChildren(ctx);
     }
