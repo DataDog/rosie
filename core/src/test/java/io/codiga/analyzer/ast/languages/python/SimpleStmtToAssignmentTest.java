@@ -1,7 +1,7 @@
 package io.codiga.analyzer.ast.languages.python;
 
+import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstString;
-import io.codiga.model.ast.python.Assignment;
 import io.codiga.model.ast.python.PythonFunctionCall;
 import io.codiga.model.ast.python.PythonList;
 import io.codiga.parser.python.gen.PythonParser;

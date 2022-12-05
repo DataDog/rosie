@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.javascript;
 
 import datadog.trace.api.Trace;
+import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.FunctionCall;
 import io.codiga.model.ast.javascript.JavaScriptImport;
@@ -17,6 +18,8 @@ import java.util.Optional;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.isFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptImportStatementToImport.transformImportStatementToImport;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformJavaScriptAssignmentExpressionToAssignment;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclartionToAssignment;
 
 
 /**
@@ -32,9 +35,11 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
 //    Stack<PythonIfStatement> visitedIfStatements;
 //    Stack<TryStatement> visitedTryStatements;
     List<AstElement> visitedImportStatements;
+
+
     // List of all AST elements
-//    List<Assignment> assignments;
-//    List<FromStatement> fromStatements;
+    List<Assignment> assignments;
+    //    List<FromStatement> fromStatements;
     List<JavaScriptImport> importStatements;
     //    List<PythonIfStatement> ifStatements;
 //    List<TryStatement> tryStatements;
@@ -78,6 +83,25 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         if (javaScriptImport.isPresent()) {
             this.visitedImportStatements.add(javaScriptImport.get());
             this.importStatements.add(javaScriptImport.get());
+        }
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public Object visitVariableDeclaration(JavaScriptParser.VariableDeclarationContext ctx) {
+        Optional<Assignment> assignmentOptional = transformVariableDeclartionToAssignment(ctx, root);
+        if (assignmentOptional.isPresent()) {
+            this.assignments.add(assignmentOptional.get());
+        }
+        return visitChildren(ctx);
+    }
+
+
+    @Override
+    public Object visitAssignmentExpression(JavaScriptParser.AssignmentExpressionContext ctx) {
+        Optional<Assignment> assignmentOptional = transformJavaScriptAssignmentExpressionToAssignment(ctx, root);
+        if (assignmentOptional.isPresent()) {
+            this.assignments.add(assignmentOptional.get());
         }
         return visitChildren(ctx);
     }

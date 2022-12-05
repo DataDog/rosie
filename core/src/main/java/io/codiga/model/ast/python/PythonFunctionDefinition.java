@@ -1,5 +1,6 @@
 package io.codiga.model.ast.python;
 
+import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionDefinitionParameters;

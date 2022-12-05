@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.javascript.transformations;
 
+import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
@@ -8,9 +9,20 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptArrayLiteralToArray.transformArrayLiteralToArray;
-import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptObjectLiteralToObject.transformJavaScriptObjectToObject;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptObjectLiteralToObject.transformJavaScriptObjectLiteralToObject;
 
 public class JavaScriptSingleExpressionTransformation {
+
+    public static Optional<Assignment> transformJavaScriptAssignmentExpressionToAssignment(JavaScriptParser.AssignmentExpressionContext ctx, ParserRuleContext root) {
+        if (ctx.singleExpression().size() == 2) {
+            Optional<AstElement> left = transformSingleExpressionToAstElement(ctx.singleExpression(0), root);
+            Optional<AstElement> right = transformSingleExpressionToAstElement(ctx.singleExpression(1), root);
+            if (left.isPresent() && right.isPresent()) {
+                return Optional.of(new Assignment(left.get(), right.get(), ctx, root));
+            }
+        }
+        return Optional.empty();
+    }
 
 
     public static Optional<AstElement> transformSingleExpressionToAstElement(JavaScriptParser.SingleExpressionContext ctx, ParserRuleContext root) {
@@ -47,7 +59,7 @@ public class JavaScriptSingleExpressionTransformation {
             JavaScriptParser.ObjectLiteralExpressionContext objectLiteralExpressionContext = (JavaScriptParser.ObjectLiteralExpressionContext) ctx;
 
             if (objectLiteralExpressionContext.objectLiteral() != null) {
-                return transformJavaScriptObjectToObject(objectLiteralExpressionContext.objectLiteral(), root);
+                return transformJavaScriptObjectLiteralToObject(objectLiteralExpressionContext.objectLiteral(), root);
 
             }
 

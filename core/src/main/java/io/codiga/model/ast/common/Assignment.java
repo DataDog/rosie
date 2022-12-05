@@ -1,6 +1,5 @@
-package io.codiga.model.ast.python;
+package io.codiga.model.ast.common;
 
-import io.codiga.model.ast.common.AstElement;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class Assignment extends AstElement {

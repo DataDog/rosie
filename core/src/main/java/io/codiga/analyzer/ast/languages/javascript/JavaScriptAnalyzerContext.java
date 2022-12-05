@@ -36,8 +36,9 @@ public class JavaScriptAnalyzerContext extends AnalyzerContext {
         Arrays.stream(EntityChecked.values()).toList().forEach(entityChecked -> {
             entityCheckedToAstElements.put(entityChecked, new ArrayList<>());
         });
-        
+
         entityCheckedToAstElements.get(EntityChecked.FUNCTION_CALL).addAll(codigaVisitor.functionCalls);
         entityCheckedToAstElements.get(EntityChecked.IMPORT_STATEMENT).addAll(codigaVisitor.importStatements);
+        entityCheckedToAstElements.get(EntityChecked.ASSIGNMENT).addAll(codigaVisitor.assignments);
     }
 }

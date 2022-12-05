@@ -30,7 +30,7 @@ public class JavaScriptObjectLiteralToObject {
     }
 
 
-    public static Optional<AstElement> transformJavaScriptObjectToObject(JavaScriptParser.ObjectLiteralContext ctx, ParserRuleContext root) {
+    public static Optional<AstElement> transformJavaScriptObjectLiteralToObject(JavaScriptParser.ObjectLiteralContext ctx, ParserRuleContext root) {
         ArrayList<JavaScriptObjectElement> objectElements = new ArrayList<>();
 
         for (JavaScriptParser.PropertyAssignmentContext property : ctx.propertyAssignment()) {

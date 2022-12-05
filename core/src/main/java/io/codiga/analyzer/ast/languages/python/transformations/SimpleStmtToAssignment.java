@@ -1,7 +1,7 @@
 package io.codiga.analyzer.ast.languages.python.transformations;
 
+import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
-import io.codiga.model.ast.python.Assignment;
 import io.codiga.model.ast.python.PythonList;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
 import static io.codiga.analyzer.ast.languages.python.transformations.AtomToPythonString.transformAtomToPythonString;
 import static io.codiga.analyzer.ast.languages.python.transformations.ExprToFunctionCall.transformExprToFunctionCall;
-import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
 
 public class SimpleStmtToAssignment {
 

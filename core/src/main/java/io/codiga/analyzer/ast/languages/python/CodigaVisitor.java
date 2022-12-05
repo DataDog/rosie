@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.python;
 
 import datadog.trace.api.Trace;
+import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.FunctionCall;
 import io.codiga.model.ast.python.*;
