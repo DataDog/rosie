@@ -31,8 +31,8 @@ public class FunctionDefinitionTest extends JavaScriptTestUtils {
     }
 
     @Test
-    @DisplayName("Get the function definition")
-    public void testFunctionCallValue() {
+    @DisplayName("Get the function definition with the function keyword")
+    public void testFunctionDefinition() {
         String code = """
             function foo(bar, baz) {
               var bli = 1;
@@ -52,4 +52,6 @@ public class FunctionDefinitionTest extends JavaScriptTestUtils {
             assertEquals(((AstString) functionDefinition.parameters.values[1].name).value, "baz");
         }
     }
+
+
 }
