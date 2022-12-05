@@ -4,6 +4,7 @@ import datadog.trace.api.Trace;
 import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.FunctionCall;
+import io.codiga.model.ast.common.FunctionDefinition;
 import io.codiga.model.ast.javascript.JavaScriptImport;
 import io.codiga.model.context.JavaScriptNodeContext;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
@@ -14,9 +15,11 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Stack;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.isFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptImportStatementToImport.transformImportStatementToImport;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformJavaScriptAssignmentExpressionToAssignment;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclartionToAssignment;
@@ -30,8 +33,8 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     private final String code;
     private final Logger logger = LoggerFactory.getLogger(CodigaVisitor.class);
     // To build the context
-//    Stack<PythonFunctionDefinition> visitedFunctionDefinitions;
-//    Stack<PythonClassDefinition> visitedClassDefinitions;
+    Stack<FunctionDefinition> visitedFunctionDefinitions;
+    //    Stack<PythonClassDefinition> visitedClassDefinitions;
 //    Stack<PythonIfStatement> visitedIfStatements;
 //    Stack<TryStatement> visitedTryStatements;
     List<AstElement> visitedImportStatements;
@@ -44,7 +47,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     //    List<PythonIfStatement> ifStatements;
 //    List<TryStatement> tryStatements;
 //    List<PythonForStatement> forStatements;
-//    List<PythonFunctionDefinition> functionDefinitions;
+    List<FunctionDefinition> functionDefinitions;
     List<FunctionCall> functionCalls;
     //    List<PythonClassDefinition> classDefinitions;
     private JavaScriptParser.ProgramContext root;
@@ -55,9 +58,12 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         // Initialize the list of all elements being visited
         functionCalls = new ArrayList<>();
         importStatements = new ArrayList<>();
+        assignments = new ArrayList<>();
+        functionDefinitions = new ArrayList<>();
 
         // Initialize the visited elements
         visitedImportStatements = new ArrayList<>();
+        visitedFunctionDefinitions = new Stack<>();
     }
 
     @Override
@@ -107,10 +113,26 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     }
 
 
+    @Override
+    public Object visitFunctionDeclaration(JavaScriptParser.FunctionDeclarationContext ctx) {
+        Optional<FunctionDefinition> functionDefinitionOptional = transformFunctionDeclarationToFunctionDefinition(ctx, root);
+        if (functionDefinitionOptional.isPresent()) {
+            this.functionDefinitions.add(functionDefinitionOptional.get());
+            this.visitedFunctionDefinitions.push(functionDefinitionOptional.get());
+            Object res = visitChildren(ctx);
+            this.visitedFunctionDefinitions.pop();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
+
+    }
+
+
     @Trace(operationName = "CodigaJavaScriptVisitor.buildContext")
     private JavaScriptNodeContext buildContext() {
         JavaScriptNodeContext res = JavaScriptNodeContext.buildJavaScriptNodeContext()
-//            .currentFunction(visitedFunctionDefinitions.isEmpty() ? null : visitedFunctionDefinitions.lastElement())
+            .currentFunction(visitedFunctionDefinitions.isEmpty() ? null : visitedFunctionDefinitions.lastElement())
 //            .currentTryBlock(visitedTryStatements.size() > 0 ? visitedTryStatements.lastElement() : null)
 //            .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
             .code(this.code)

@@ -18,5 +18,11 @@ public class JavaScriptIdentifierToAstElement {
 
     }
 
+    public static Optional<AstString> transformIdentifierToAstString(JavaScriptParser.IdentifierContext ctx, ParserRuleContext root) {
+        if (ctx != null) {
+            return Optional.of(new AstString(ctx.getText(), ctx, root));
+        }
+        return Optional.empty();
 
+    }
 }
