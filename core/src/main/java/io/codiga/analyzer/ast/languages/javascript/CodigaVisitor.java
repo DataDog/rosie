@@ -1,10 +1,7 @@
 package io.codiga.analyzer.ast.languages.javascript;
 
 import datadog.trace.api.Trace;
-import io.codiga.model.ast.common.Assignment;
-import io.codiga.model.ast.common.AstElement;
-import io.codiga.model.ast.common.FunctionCall;
-import io.codiga.model.ast.common.FunctionDefinition;
+import io.codiga.model.ast.common.*;
 import io.codiga.model.ast.javascript.JavaScriptImport;
 import io.codiga.model.context.JavaScriptNodeContext;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
@@ -17,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptClassDeclarationToClass.transformClassDeclaration;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.isFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
@@ -34,22 +32,22 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     private final Logger logger = LoggerFactory.getLogger(CodigaVisitor.class);
     // To build the context
     Stack<FunctionDefinition> visitedFunctionDefinitions;
-    //    Stack<PythonClassDefinition> visitedClassDefinitions;
-//    Stack<PythonIfStatement> visitedIfStatements;
+    Stack<AstElement> visitedClassDefinitions;
+    //    Stack<PythonIfStatement> visitedIfStatements;
 //    Stack<TryStatement> visitedTryStatements;
     List<AstElement> visitedImportStatements;
 
 
     // List of all AST elements
     List<Assignment> assignments;
-    //    List<FromStatement> fromStatements;
+
     List<JavaScriptImport> importStatements;
     //    List<PythonIfStatement> ifStatements;
 //    List<TryStatement> tryStatements;
 //    List<PythonForStatement> forStatements;
     List<FunctionDefinition> functionDefinitions;
     List<FunctionCall> functionCalls;
-    //    List<PythonClassDefinition> classDefinitions;
+    List<AstElement> classDefinitions;
     private JavaScriptParser.ProgramContext root;
 
     public CodigaVisitor(String code) {
@@ -60,10 +58,13 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         importStatements = new ArrayList<>();
         assignments = new ArrayList<>();
         functionDefinitions = new ArrayList<>();
+        classDefinitions = new ArrayList<>();
 
         // Initialize the visited elements
         visitedImportStatements = new ArrayList<>();
         visitedFunctionDefinitions = new Stack<>();
+        visitedClassDefinitions = new Stack<>();
+
     }
 
     @Override
@@ -127,6 +128,19 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         }
     }
 
+    @Override
+    public Object visitClassDeclaration(JavaScriptParser.ClassDeclarationContext ctx) {
+        Optional<ClassDeclarationOneParent> classDeclarationOptional = transformClassDeclaration(ctx, root);
+        if (classDeclarationOptional.isPresent()) {
+            this.classDefinitions.add(classDeclarationOptional.get());
+            this.visitedClassDefinitions.push(classDeclarationOptional.get());
+            Object res = visitChildren(ctx);
+            this.visitedClassDefinitions.pop();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
+    }
 
     @Override
     public Object visitArrowFunction(JavaScriptParser.ArrowFunctionContext ctx) {
@@ -139,7 +153,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         JavaScriptNodeContext res = JavaScriptNodeContext.buildJavaScriptNodeContext()
             .currentFunction(visitedFunctionDefinitions.isEmpty() ? null : visitedFunctionDefinitions.lastElement())
 //            .currentTryBlock(visitedTryStatements.size() > 0 ? visitedTryStatements.lastElement() : null)
-//            .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
+            .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
             .code(this.code)
             .importsList(visitedImportStatements)
             .build();

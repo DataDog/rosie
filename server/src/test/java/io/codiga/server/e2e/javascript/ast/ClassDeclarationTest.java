@@ -8,31 +8,37 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_DEFINITION;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_CLASS_DEFINITION;
 import static io.codiga.constants.Languages.RULE_TYPE_AST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class FunctionDefinitionTest extends E2EBase {
+public class ClassDeclarationTest extends E2EBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(FunctionDefinitionTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassDeclarationTest.class);
 
 
     String code = """
-        function foo(bla, bli) {
-            console.log("foobar");
+        class Rabbit extends Animal {
+          // generated for extending classes without own constructors
+          constructor(...args) {
+            super(...args);
+          }
         }""";
 
     String fixedCode = """
-        function bar(bla, bli) {
-            console.log("foobar");
+        class Cow extends Animal {
+          // generated for extending classes without own constructors
+          constructor(...args) {
+            super(...args);
+          }
         }""";
 
     String ruleCode = """
         function visit(node) {
-            if(node.name && node.name.value && node.name.value === "foo"){
+            if(node.name && node.name.value && node.name.value === "Rabbit"){
                 
-                const editChangeFunctionName = buildEditUpdate(node.name.start.line, node.name.start.col, node.name.end.line, node.name.end.col, "bar");
+                const editChangeFunctionName = buildEditUpdate(node.name.start.line, node.name.start.col, node.name.end.line, node.name.end.col, "Cow");
                 const fix = buildFix("use bar", [editChangeFunctionName]);
 
                 const error = buildError(node.name.start.line, node.name.start.col, node.name.end.line, node.name.end.col, "do not use function foo", "CRITICAL", "SAFETY");
@@ -42,14 +48,14 @@ public class FunctionDefinitionTest extends E2EBase {
         """;
 
     @Test
-    @DisplayName("change call to bar into call to baz")
-    public void testFunctionCallRule() throws Exception {
-        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "replace-foo-bar", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, true);
+    @DisplayName("change Rabbit to Cow")
+    public void testClassDeclarationRule() throws Exception {
+        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "replace-foo-bar", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.line);
-        assertEquals(10, response.ruleResponses.get(0).violations.get(0).start.col);
+        assertEquals(7, response.ruleResponses.get(0).violations.get(0).start.col);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).end.line);
         assertEquals(13, response.ruleResponses.get(0).violations.get(0).end.col);
 
