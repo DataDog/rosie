@@ -43,7 +43,6 @@ public class AnonymousFunctionTest extends JavaScriptTestUtils {
         ParseTree root = parseCode(code);
 
         List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.FunctionExpressionContext.class);
-        log.info("result: " + nodes.size());
         for (ParseTree node : nodes) {
             Optional<FunctionDefinition> functionCallOptional = transformAnonymousFunction(((JavaScriptParser.FunctionExpressionContext) node).anoymousFunction(), null);
             assertTrue(functionCallOptional.isPresent());

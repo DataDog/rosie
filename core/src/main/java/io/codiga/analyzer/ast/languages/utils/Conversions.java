@@ -1,4 +1,4 @@
-package io.codiga.analyzer.ast.languages;
+package io.codiga.analyzer.ast.languages.utils;
 
 import io.codiga.model.ast.common.AstElement;
 

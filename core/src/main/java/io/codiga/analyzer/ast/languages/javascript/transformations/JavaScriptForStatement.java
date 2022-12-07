@@ -7,9 +7,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.Conversions.convertToAstElement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptExpressionSequence.transformExpressionSequenceToSequence;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationList.transformVariableDeclarationListToAssignmentList;
+import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
 public class JavaScriptForStatement {
 
