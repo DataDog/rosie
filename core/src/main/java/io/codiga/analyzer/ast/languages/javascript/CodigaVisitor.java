@@ -18,6 +18,7 @@ import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaSc
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.isFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptImportStatementToImport.transformImportStatementToImport;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformJavaScriptAssignmentExpressionToAssignment;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclartionToAssignment;
@@ -33,8 +34,8 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     // To build the context
     Stack<FunctionDefinition> visitedFunctionDefinitions;
     Stack<AstElement> visitedClassDefinitions;
-    //    Stack<PythonIfStatement> visitedIfStatements;
-//    Stack<TryStatement> visitedTryStatements;
+    Stack<IfStatement> visitedIfStatements;
+    //    Stack<TryStatement> visitedTryStatements;
     List<AstElement> visitedImportStatements;
 
 
@@ -42,8 +43,8 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     List<Assignment> assignments;
 
     List<JavaScriptImport> importStatements;
-    //    List<PythonIfStatement> ifStatements;
-//    List<TryStatement> tryStatements;
+    List<IfStatement> ifStatements;
+    //    List<TryStatement> tryStatements;
 //    List<PythonForStatement> forStatements;
     List<FunctionDefinition> functionDefinitions;
     List<FunctionCall> functionCalls;
@@ -59,11 +60,13 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         assignments = new ArrayList<>();
         functionDefinitions = new ArrayList<>();
         classDefinitions = new ArrayList<>();
+        ifStatements = new ArrayList<>();
 
         // Initialize the visited elements
         visitedImportStatements = new ArrayList<>();
         visitedFunctionDefinitions = new Stack<>();
         visitedClassDefinitions = new Stack<>();
+        visitedIfStatements = new Stack<>();
 
     }
 
@@ -145,6 +148,22 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     @Override
     public Object visitArrowFunction(JavaScriptParser.ArrowFunctionContext ctx) {
         return visitChildren(ctx);
+    }
+
+
+    @Override
+    public Object visitIfStatement(JavaScriptParser.IfStatementContext ctx) {
+        Optional<IfStatement> ifStatementOptional = transformIfStatementToIfStatement(ctx, root);
+        if (ifStatementOptional.isPresent()) {
+            this.ifStatements.add(ifStatementOptional.get());
+            this.visitedIfStatements.push(ifStatementOptional.get());
+            Object res = visitChildren(ctx);
+            this.visitedIfStatements.pop();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
+
     }
 
 

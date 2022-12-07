@@ -1,9 +1,6 @@
 package io.codiga.analyzer.ast.languages.javascript.transformations;
 
-import io.codiga.model.ast.common.Assignment;
-import io.codiga.model.ast.common.AstElement;
-import io.codiga.model.ast.common.AstString;
-import io.codiga.model.ast.common.FunctionDefinition;
+import io.codiga.model.ast.common.*;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -64,6 +61,51 @@ public class JavaScriptSingleExpressionTransformation {
                 return transformJavaScriptObjectLiteralToObject(objectLiteralExpressionContext.objectLiteral(), root);
 
             }
+        }
+
+        // equality
+        if (ctx instanceof JavaScriptParser.EqualityExpressionContext) {
+            JavaScriptParser.EqualityExpressionContext equalityExpressionContext = (JavaScriptParser.EqualityExpressionContext) ctx;
+            Optional<AstString> operator = Optional.empty();
+            Optional<AstElement> left = Optional.empty();
+            Optional<AstElement> right = Optional.empty();
+
+            if (equalityExpressionContext.Equals_() != null) {
+                operator = Optional.of(new AstString("==", equalityExpressionContext.Equals_().getSymbol(), root));
+            }
+            if (equalityExpressionContext.NotEquals() != null) {
+                operator = Optional.of(new AstString("!==", equalityExpressionContext.NotEquals().getSymbol(), root));
+            }
+            if (equalityExpressionContext.IdentityEquals() != null) {
+                operator = Optional.of(new AstString("===", equalityExpressionContext.IdentityEquals().getSymbol(), root));
+            }
+            if (equalityExpressionContext.IdentityNotEquals() != null) {
+                operator = Optional.of(new AstString("!===", equalityExpressionContext.IdentityNotEquals().getSymbol(), root));
+            }
+
+            if (((JavaScriptParser.EqualityExpressionContext) ctx).singleExpression().size() == 2) {
+                left = transformSingleExpressionToAstElement(((JavaScriptParser.EqualityExpressionContext) ctx).singleExpression().get(0), root);
+                right = transformSingleExpressionToAstElement(((JavaScriptParser.EqualityExpressionContext) ctx).singleExpression().get(1), root);
+            }
+
+            if (operator.isPresent()) {
+                return Optional.of(new Operation(left.orElse(null), operator.get(), right.orElse(null), ctx, root));
+            }
+            return Optional.empty();
+        }
+
+        // assignment
+        if (ctx instanceof JavaScriptParser.AssignmentExpressionContext) {
+            JavaScriptParser.AssignmentExpressionContext assignmentExpressionContext = (JavaScriptParser.AssignmentExpressionContext) ctx;
+            Optional<AstElement> left = Optional.empty();
+            Optional<AstElement> right = Optional.empty();
+
+            if (assignmentExpressionContext.singleExpression().size() == 2) {
+                left = transformSingleExpressionToAstElement(assignmentExpressionContext.singleExpression().get(0), root);
+                right = transformSingleExpressionToAstElement(assignmentExpressionContext.singleExpression().get(1), root);
+            }
+
+            return Optional.of(new Operation(left.orElse(null), new AstString("=", assignmentExpressionContext.Assign().getSymbol(), root), right.orElse(null), ctx, root));
         }
 
         // functions (including arrow function)

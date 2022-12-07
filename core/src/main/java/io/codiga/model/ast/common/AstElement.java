@@ -4,6 +4,7 @@ package io.codiga.model.ast.common;
 import io.codiga.model.common.Position;
 import io.codiga.model.context.Context;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.graalvm.polyglot.HostAccess;
 
 import static io.codiga.analyzer.ast.AstUtils.getEndPosition;
@@ -16,6 +17,7 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_OBJECT = "object";
     public static final String AST_ELEMENT_TYPE_OBJECT_ELEMENT = "object_element";
     public static final String AST_ELEMENT_TYPE_ASSIGNMENT = "assignment";
+    public static final String AST_ELEMENT_TYPE_OPERATION = "operation";
     public static final String AST_ELEMENT_TYPE_FUNCTION_CALL = "functioncall";
     public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION_PARAMETERS = "functiondefinitionparameters";
     public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION_PARAMETER = "functiondefinitionparameter";
@@ -63,6 +65,19 @@ public class AstElement {
         this.startIndex = parserRuleContext.start.getStartIndex();
         this.endIndex = parserRuleContext.stop.getStopIndex();
         this.parserRuleContext = parserRuleContext;
+        this.root = root;
+        this.context = null;
+    }
+
+    public AstElement(String astType,
+                      Token token,
+                      ParserRuleContext root) {
+        this.astType = astType;
+        this.startIndex = token.getStartIndex();
+        this.endIndex = token.getStopIndex();
+        this.start = getStartPosition(token);
+        this.end = getEndPosition(token);
+        this.parserRuleContext = null;
         this.root = root;
         this.context = null;
     }

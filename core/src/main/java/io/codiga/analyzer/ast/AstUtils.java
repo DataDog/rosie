@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast;
 
 import io.codiga.model.common.Position;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.slf4j.Logger;
@@ -15,6 +16,14 @@ public class AstUtils {
 
     public static Position getStartPosition(ParserRuleContext context) {
         return new Position(context.start.getLine(), context.start.getCharPositionInLine() + 1);
+    }
+
+    public static Position getStartPosition(Token token) {
+        return new Position(token.getLine(), token.getCharPositionInLine() + 1);
+    }
+
+    public static Position getEndPosition(Token token) {
+        return new Position(token.getLine(), token.getCharPositionInLine() + 1 + token.getText().length());
     }
 
     public static Position getEndPosition(ParserRuleContext context) {
