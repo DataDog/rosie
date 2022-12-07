@@ -18,6 +18,7 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_OBJECT_ELEMENT = "object_element";
     public static final String AST_ELEMENT_TYPE_ASSIGNMENT = "assignment";
     public static final String AST_ELEMENT_TYPE_ASSIGNMENTS = "assignments";
+    public static final String AST_ELEMENT_TYPE_CONTAINER = "container";
     public static final String AST_ELEMENT_TYPE_SEQUENCE = "sequence";
     public static final String AST_ELEMENT_TYPE_OPERATION = "operation";
     public static final String AST_ELEMENT_TYPE_FUNCTION_CALL = "functioncall";
