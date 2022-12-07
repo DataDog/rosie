@@ -112,7 +112,7 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
             assertEquals("v", ((AstString) assignment.left).str);
             assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, assignment.right.astType);
             PythonFunctionCall functionCall = (PythonFunctionCall) assignment.right;
-            assertEquals("format", functionCall.functionName.value);
+            assertEquals("format", ((AstString) functionCall.functionName).value);
             assertEquals("\"SELECT foo FROM bar WHERE plop={0}\"", functionCall.moduleOrObject.str);
 
         }

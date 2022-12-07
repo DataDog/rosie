@@ -87,7 +87,7 @@ public class FunctionCallTest extends JavaScriptTestUtils {
                 Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall((JavaScriptParser.ArgumentsExpressionContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();
-                assertEquals(functionCall.functionName.value, "myFunc");
+                assertEquals(((AstString) functionCall.functionName).value, "myFunc");
                 assertEquals(((AstString) functionCall.arguments.values[0].value).value, "1");
                 assertEquals(((AstString) functionCall.arguments.values[1].value).value, "\"bar\"");
                 assertEquals(((AstString) functionCall.arguments.values[2].value).value, "myVariable");
@@ -112,7 +112,7 @@ public class FunctionCallTest extends JavaScriptTestUtils {
                 Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall((JavaScriptParser.ArgumentsExpressionContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();
-                assertEquals(functionCall.functionName.value, "myFunc");
+                assertEquals(((AstString) functionCall.functionName).value, "myFunc");
             }
         }
     }
@@ -134,7 +134,7 @@ public class FunctionCallTest extends JavaScriptTestUtils {
                 Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall((JavaScriptParser.ArgumentsExpressionContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();
-                assertEquals(functionCall.functionName.value, "myFunc");
+                assertEquals(((AstString) functionCall.functionName).value, "myFunc");
                 assertEquals(1, functionCall.arguments.values.length);
                 AstElement firstArgument = functionCall.arguments.values[0].value;
                 JavaScriptObject jsObject = (JavaScriptObject) firstArgument;

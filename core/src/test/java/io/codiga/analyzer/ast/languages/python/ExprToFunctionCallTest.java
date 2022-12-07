@@ -52,7 +52,7 @@ public class ExprToFunctionCallTest extends PythonTestUtils {
                 Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 PythonFunctionCall functionCall = functionCallOptional.get();
-                assertEquals(functionCall.functionName.value, "connect");
+                assertEquals(((AstString) functionCall.functionName).value, "connect");
                 assertNotNull(functionCall.moduleOrObject);
                 assertEquals(functionCall.moduleOrObject.value, "mysql.connector");
                 assertEquals("host", ((AstString) functionCall.arguments.values[0].value).value);
@@ -88,7 +88,7 @@ public class ExprToFunctionCallTest extends PythonTestUtils {
                 Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 PythonFunctionCall functionCall = functionCallOptional.get();
-                assertEquals(functionCall.functionName.value, "get");
+                assertEquals(((AstString) functionCall.functionName).value, "get");
                 assertNotNull(functionCall.moduleOrObject);
                 assertEquals(((AstString) functionCall.moduleOrObject).value, "requests");
                 assertEquals(((AstString) functionCall.arguments.values[0].value).value, "w");
@@ -115,7 +115,7 @@ public class ExprToFunctionCallTest extends PythonTestUtils {
                 Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 PythonFunctionCall functionCall = functionCallOptional.get();
-                assertEquals(functionCall.functionName.value, "get");
+                assertEquals(((AstString) functionCall.functionName).value, "get");
                 assertNull(functionCall.moduleOrObject);
                 assertEquals(((AstString) functionCall.arguments.values[0].value).value, "w");
                 assertNull(functionCall.arguments.values[0].name);

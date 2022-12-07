@@ -40,6 +40,7 @@ public class AstElement {
     public static final String AST_ELEMENT_ELSE_STATEMENT = "elifstatement";
     public static final String AST_ELEMENT_TYPE_FROM_STATEMENT = "fromstatement";
     public static final String AST_ELEMENT_TYPE_TRY_STATEMENT = "trystatement";
+    public static final String AST_ELEMENT_TYPE_MEMBER = "member";
     public static final String AST_ELEMENT_TYPE_HTML_ELEMENT = "htmlelement";
     public static final String AST_ELEMENT_TYPE_HTML_ATTRIBUTE = "htmlattribute";
     public static final String AST_ELEMENT_TYPE_FROM_ELEMENT = "fromelement";

@@ -7,6 +7,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptIdentifierReservedWordTransformation.transformReservedWordToAstString;
+
 public class JavaScriptIdentifierToAstElement {
 
 
@@ -23,6 +25,15 @@ public class JavaScriptIdentifierToAstElement {
             return Optional.of(new AstString(ctx.getText(), ctx, root));
         }
         return Optional.empty();
+    }
 
+    public static Optional<AstString> transformIdentifierNameToAstString(JavaScriptParser.IdentifierNameContext ctx, ParserRuleContext root) {
+        if (ctx != null && ctx.identifier() != null) {
+            return transformIdentifierToAstString(ctx.identifier(), root);
+        }
+        if (ctx != null && ctx.reservedWord() != null) {
+            return transformReservedWordToAstString(ctx.reservedWord(), root);
+        }
+        return Optional.empty();
     }
 }

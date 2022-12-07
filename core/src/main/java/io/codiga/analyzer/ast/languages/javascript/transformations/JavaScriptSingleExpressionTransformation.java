@@ -8,7 +8,10 @@ import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptAnonymousFunction.transformAnonymousFunction;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptArrayLiteralToArray.transformArrayLiteralToArray;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptObjectLiteralToObject.transformJavaScriptObjectLiteralToObject;
+import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
 public class JavaScriptSingleExpressionTransformation {
 
@@ -25,6 +28,10 @@ public class JavaScriptSingleExpressionTransformation {
 
 
     public static Optional<AstElement> transformSingleExpressionToAstElement(JavaScriptParser.SingleExpressionContext ctx, ParserRuleContext root) {
+        if (ctx == null) {
+            return Optional.empty();
+        }
+
         // literal
         if (ctx instanceof JavaScriptParser.LiteralExpressionContext) {
             JavaScriptParser.LiteralExpressionContext literalExpressionContext = (JavaScriptParser.LiteralExpressionContext) ctx;
@@ -33,6 +40,13 @@ public class JavaScriptSingleExpressionTransformation {
             }
         }
 
+        // function call
+        if (ctx instanceof JavaScriptParser.ArgumentsExpressionContext) {
+            JavaScriptParser.ArgumentsExpressionContext argumentsExpressionContext = (JavaScriptParser.ArgumentsExpressionContext) ctx;
+            if (argumentsExpressionContext != null) {
+                return convertToAstElement(transformArgumentsExpressionToFunctionCall(argumentsExpressionContext, root));
+            }
+        }
 
         // identifier
         if (ctx instanceof JavaScriptParser.IdentifierExpressionContext) {
@@ -61,6 +75,13 @@ public class JavaScriptSingleExpressionTransformation {
                 return transformJavaScriptObjectLiteralToObject(objectLiteralExpressionContext.objectLiteral(), root);
 
             }
+        }
+
+        // member dot
+        if (ctx instanceof JavaScriptParser.MemberDotExpressionContext) {
+            JavaScriptParser.MemberDotExpressionContext memberDotExpressionContext = (JavaScriptParser.MemberDotExpressionContext) ctx;
+
+            return transformMemberDotToJavaScriptMember(memberDotExpressionContext, root);
         }
 
         // equality

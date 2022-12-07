@@ -1,5 +1,6 @@
 package io.codiga.model.context;
 
+import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
 import lombok.Builder;
 
@@ -11,13 +12,14 @@ public class JavaScriptNodeContext extends Context {
 
     public AstElement currentClass;
     public AstElement[] imports;
-    private List<AstElement> importsList;
+    public Assignment[] assignments;
 
     @Builder(builderMethodName = "buildJavaScriptNodeContext")
     public JavaScriptNodeContext(AstElement currentFunction,
                                  AstElement currentTryBlock,
                                  AstElement currentClass,
                                  List<AstElement> importsList,
+                                 List<Assignment> assignmentsList,
                                  String code) {
         super(code);
         this.currentFunction = currentFunction;
@@ -25,6 +27,8 @@ public class JavaScriptNodeContext extends Context {
         this.currentClass = currentClass;
         this.imports = new AstElement[importsList.size()];
         imports = importsList.toArray(this.imports);
+        this.assignments = new Assignment[assignmentsList.size()];
+        assignments = assignmentsList.toArray(this.assignments);
     }
 
 }

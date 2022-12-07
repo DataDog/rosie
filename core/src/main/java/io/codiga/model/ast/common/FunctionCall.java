@@ -5,12 +5,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class FunctionCall extends AstElement {
 
-    public AstString functionName;
+    public AstElement functionName;
 
     public FunctionCallArguments arguments;
 
 
-    public FunctionCall(AstString functionName,
+    public FunctionCall(AstElement functionName,
                         FunctionCallArguments arguments,
                         ParserRuleContext parserRuleContext,
                         ParserRuleContext root

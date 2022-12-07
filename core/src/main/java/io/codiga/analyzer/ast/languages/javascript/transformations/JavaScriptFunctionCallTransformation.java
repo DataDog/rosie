@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.javascript.transformations;
 
-import io.codiga.model.ast.common.AstString;
+import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.FunctionCall;
 import io.codiga.model.ast.common.FunctionCallArgument;
 import io.codiga.model.ast.common.FunctionCallArguments;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptArgumentsTransformation.transformArgumentsContextToFunctionArguments;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformSingleExpressionToAstElement;
 
 public class JavaScriptFunctionCallTransformation {
 
@@ -20,14 +21,13 @@ public class JavaScriptFunctionCallTransformation {
         if (!(node instanceof JavaScriptParser.ArgumentsExpressionContext)) {
             return false;
         }
+
         JavaScriptParser.ArgumentsExpressionContext ctx = (JavaScriptParser.ArgumentsExpressionContext) node;
 
         if (ctx.arguments() == null || ctx.singleExpression() == null) {
             return false;
         }
-        if (!(ctx.singleExpression() instanceof JavaScriptParser.IdentifierExpressionContext)) {
-            return false;
-        }
+
         return true;
     }
 
@@ -37,16 +37,11 @@ public class JavaScriptFunctionCallTransformation {
             return Optional.empty();
         }
 
-        JavaScriptParser.IdentifierExpressionContext functionName = (JavaScriptParser.IdentifierExpressionContext) ctx.singleExpression();
 
-        if (functionName.identifier() == null) {
-            return Optional.empty();
-        }
-
-        AstString functionNameNode = new AstString(functionName.identifier().getText(), functionName.identifier(), root);
+        Optional<AstElement> functionNameNode = transformSingleExpressionToAstElement(ctx.singleExpression(), root);
         List<FunctionCallArgument> arguments = transformArgumentsContextToFunctionArguments(ctx.arguments(), root);
 
 
-        return Optional.of(new FunctionCall(functionNameNode, new FunctionCallArguments(arguments, ctx.arguments(), root), ctx, root));
+        return Optional.of(new FunctionCall(functionNameNode.orElse(null), new FunctionCallArguments(arguments, ctx.arguments(), root), ctx, root));
     }
 }

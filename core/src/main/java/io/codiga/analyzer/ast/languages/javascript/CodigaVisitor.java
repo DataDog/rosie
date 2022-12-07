@@ -18,7 +18,6 @@ import java.util.Stack;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptClassDeclarationToClass.transformClassDeclaration;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptForStatement.transformForStatementToForStatement;
-import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.isFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
@@ -88,12 +87,14 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
 
     @Override
     public Object visitArgumentsExpression(JavaScriptParser.ArgumentsExpressionContext ctx) {
-        if (isFunctionCall(ctx)) {
-            Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall(ctx, root);
-            if (functionCallOptional.isPresent()) {
-                this.functionCalls.add(functionCallOptional.get());
-            }
+
+        Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall(ctx, root);
+        if (functionCallOptional.isPresent()) {
+            FunctionCall functionCall = functionCallOptional.get();
+            functionCall.setContext(buildContext());
+            this.functionCalls.add(functionCall);
         }
+
         return visitChildren(ctx);
     }
 
@@ -101,8 +102,10 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     public Object visitImportStatement(JavaScriptParser.ImportStatementContext ctx) {
         Optional<JavaScriptImport> javaScriptImport = transformImportStatementToImport(ctx, root);
         if (javaScriptImport.isPresent()) {
-            this.visitedImportStatements.add(javaScriptImport.get());
-            this.importStatements.add(javaScriptImport.get());
+            JavaScriptImport jsImport = javaScriptImport.get();
+            jsImport.setContext(buildContext());
+            this.visitedImportStatements.add(jsImport);
+            this.importStatements.add(jsImport);
         }
         return visitChildren(ctx);
     }
@@ -111,7 +114,9 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     public Object visitVariableDeclaration(JavaScriptParser.VariableDeclarationContext ctx) {
         Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment(ctx, root);
         if (assignmentOptional.isPresent()) {
-            this.assignments.add(assignmentOptional.get());
+            Assignment assignment = assignmentOptional.get();
+            assignment.setContext(buildContext());
+            this.assignments.add(assignment);
         }
         return visitChildren(ctx);
     }
@@ -121,7 +126,9 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     public Object visitAssignmentExpression(JavaScriptParser.AssignmentExpressionContext ctx) {
         Optional<Assignment> assignmentOptional = transformJavaScriptAssignmentExpressionToAssignment(ctx, root);
         if (assignmentOptional.isPresent()) {
-            this.assignments.add(assignmentOptional.get());
+            Assignment assignment = assignmentOptional.get();
+            assignment.setContext(buildContext());
+            this.assignments.add(assignment);
         }
         return visitChildren(ctx);
     }
@@ -131,8 +138,10 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     public Object visitFunctionDeclaration(JavaScriptParser.FunctionDeclarationContext ctx) {
         Optional<FunctionDefinition> functionDefinitionOptional = transformFunctionDeclarationToFunctionDefinition(ctx, root);
         if (functionDefinitionOptional.isPresent()) {
-            this.functionDefinitions.add(functionDefinitionOptional.get());
-            this.visitedFunctionDefinitions.push(functionDefinitionOptional.get());
+            FunctionDefinition functionDefinition = functionDefinitionOptional.get();
+            functionDefinition.setContext(buildContext());
+            this.functionDefinitions.add(functionDefinition);
+            this.visitedFunctionDefinitions.push(functionDefinition);
             Object res = visitChildren(ctx);
             this.visitedFunctionDefinitions.pop();
             return res;
@@ -165,7 +174,9 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     public Object visitTryStatement(JavaScriptParser.TryStatementContext ctx) {
         Optional<JavaScriptTryCatchStatement> tryCatchStatementOptional = transformTryStatementToTryCatchStatement(ctx, root);
         if (tryCatchStatementOptional.isPresent()) {
-            this.tryStatements.add(tryCatchStatementOptional.get());
+            JavaScriptTryCatchStatement javaScriptTryCatchStatement = tryCatchStatementOptional.get();
+            javaScriptTryCatchStatement.setContext(buildContext());
+            this.tryStatements.add(javaScriptTryCatchStatement);
         }
         return visitChildren(ctx);
     }
@@ -175,8 +186,10 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     public Object visitForStatement(JavaScriptParser.ForStatementContext ctx) {
         Optional<ForStatement> forStatementOptional = transformForStatementToForStatement(ctx, root);
         if (forStatementOptional.isPresent()) {
-            this.forStatements.add((forStatementOptional.get()));
-            this.visitedForStatements.push(forStatementOptional.get());
+            ForStatement forStatement = forStatementOptional.get();
+            forStatement.setContext(buildContext());
+            this.forStatements.add((forStatement));
+            this.visitedForStatements.push(forStatement);
             Object res = visitChildren(ctx);
             this.visitedForStatements.pop();
             return res;
@@ -189,9 +202,12 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     @Override
     public Object visitIfStatement(JavaScriptParser.IfStatementContext ctx) {
         Optional<IfStatement> ifStatementOptional = transformIfStatementToIfStatement(ctx, root);
+
         if (ifStatementOptional.isPresent()) {
-            this.ifStatements.add(ifStatementOptional.get());
-            this.visitedIfStatements.push(ifStatementOptional.get());
+            IfStatement ifStatement = ifStatementOptional.get();
+            ifStatement.setContext(buildContext());
+            this.ifStatements.add(ifStatement);
+            this.visitedIfStatements.push(ifStatement);
             Object res = visitChildren(ctx);
             this.visitedIfStatements.pop();
             return res;
@@ -204,9 +220,12 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     @Override
     public Object visitHtmlElement(JavaScriptParser.HtmlElementContext ctx) {
         Optional<JavaScriptHtmlElement> htmlElementOptional = transformJavaScriptHtmlElement(ctx, root);
-        if (htmlElementOptional.isPresent()) {
+
+        htmlElementOptional.ifPresent(v -> {
+            v.setContext(buildContext());
             this.htmlElements.add(htmlElementOptional.get());
-        }
+        });
+
         return visitChildren(ctx);
     }
 
@@ -219,6 +238,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
             .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
             .code(this.code)
             .importsList(visitedImportStatements)
+            .assignmentsList(this.assignments)
             .build();
         return res;
     }
