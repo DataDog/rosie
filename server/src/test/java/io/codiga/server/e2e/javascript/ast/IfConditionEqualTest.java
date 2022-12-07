@@ -39,8 +39,6 @@ public class IfConditionEqualTest extends E2EBase {
 
     String ruleCode = """
         function visit(node) {
-        console.log("PLOP");
-        console.log(node.condition.operator);
             if(node.condition.operator && (node.condition.operator.value === "=" | node.condition.operator.value === "==")){
                 
                 const editChangeFunctionName = buildEditUpdate(node.condition.operator.start.line, node.condition.operator.start.col, node.condition.operator.end.line, node.condition.operator.end.col, "===");

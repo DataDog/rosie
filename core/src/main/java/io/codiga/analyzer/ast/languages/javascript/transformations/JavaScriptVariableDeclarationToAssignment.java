@@ -13,7 +13,7 @@ import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaSc
 public class JavaScriptVariableDeclarationToAssignment {
 
 
-    public static Optional<Assignment> transformVariableDeclartionToAssignment(JavaScriptParser.VariableDeclarationContext ctx, ParserRuleContext root) {
+    public static Optional<Assignment> transformVariableDeclarationToAssignment(JavaScriptParser.VariableDeclarationContext ctx, ParserRuleContext root) {
         if (ctx.assignable() == null || ctx.singleExpression() == null) {
             return Optional.empty();
         }

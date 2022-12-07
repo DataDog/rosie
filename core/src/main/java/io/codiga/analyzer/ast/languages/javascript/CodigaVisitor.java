@@ -15,13 +15,14 @@ import java.util.Optional;
 import java.util.Stack;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptClassDeclarationToClass.transformClassDeclaration;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptForStatement.transformForStatementToForStatement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.isFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptImportStatementToImport.transformImportStatementToImport;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformJavaScriptAssignmentExpressionToAssignment;
-import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclartionToAssignment;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
 
 
 /**
@@ -35,7 +36,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     Stack<FunctionDefinition> visitedFunctionDefinitions;
     Stack<AstElement> visitedClassDefinitions;
     Stack<IfStatement> visitedIfStatements;
-    //    Stack<TryStatement> visitedTryStatements;
+    Stack<ForStatement> visitedForStatements;
     List<AstElement> visitedImportStatements;
 
 
@@ -45,7 +46,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     List<JavaScriptImport> importStatements;
     List<IfStatement> ifStatements;
     //    List<TryStatement> tryStatements;
-//    List<PythonForStatement> forStatements;
+    List<ForStatement> forStatements;
     List<FunctionDefinition> functionDefinitions;
     List<FunctionCall> functionCalls;
     List<AstElement> classDefinitions;
@@ -61,13 +62,14 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         functionDefinitions = new ArrayList<>();
         classDefinitions = new ArrayList<>();
         ifStatements = new ArrayList<>();
+        forStatements = new ArrayList<>();
 
         // Initialize the visited elements
         visitedImportStatements = new ArrayList<>();
         visitedFunctionDefinitions = new Stack<>();
         visitedClassDefinitions = new Stack<>();
         visitedIfStatements = new Stack<>();
-
+        visitedForStatements = new Stack<>();
     }
 
     @Override
@@ -99,7 +101,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
 
     @Override
     public Object visitVariableDeclaration(JavaScriptParser.VariableDeclarationContext ctx) {
-        Optional<Assignment> assignmentOptional = transformVariableDeclartionToAssignment(ctx, root);
+        Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment(ctx, root);
         if (assignmentOptional.isPresent()) {
             this.assignments.add(assignmentOptional.get());
         }
@@ -148,6 +150,21 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     @Override
     public Object visitArrowFunction(JavaScriptParser.ArrowFunctionContext ctx) {
         return visitChildren(ctx);
+    }
+
+
+    @Override
+    public Object visitForStatement(JavaScriptParser.ForStatementContext ctx) {
+        Optional<ForStatement> forStatementOptional = transformForStatementToForStatement(ctx, root);
+        if (forStatementOptional.isPresent()) {
+            this.forStatements.add((forStatementOptional.get()));
+            this.visitedForStatements.push(forStatementOptional.get());
+            Object res = visitChildren(ctx);
+            this.visitedForStatements.pop();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
     }
 
 

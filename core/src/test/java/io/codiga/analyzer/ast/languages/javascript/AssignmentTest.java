@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformJavaScriptAssignmentExpressionToAssignment;
-import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclartionToAssignment;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -44,7 +44,7 @@ public class AssignmentTest extends JavaScriptTestUtils {
         List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.VariableDeclarationContext.class);
 
         for (ParseTree node : nodes) {
-            Optional<Assignment> assignmentOptional = transformVariableDeclartionToAssignment((JavaScriptParser.VariableDeclarationContext) node, null);
+            Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment((JavaScriptParser.VariableDeclarationContext) node, null);
             assertTrue(assignmentOptional.isPresent());
             assertEquals("bla", ((AstString) assignmentOptional.get().left).value);
             assertEquals("1", ((AstString) assignmentOptional.get().right).value);
