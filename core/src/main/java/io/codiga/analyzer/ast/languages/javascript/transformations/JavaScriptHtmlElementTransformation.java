@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlAttribute.transformJavaScriptHtmlAttribute;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlAttributeTransformation.transformJavaScriptHtmlAttribute;
 
 public class JavaScriptHtmlElementTransformation {
 

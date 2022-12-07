@@ -10,7 +10,7 @@ import java.util.Optional;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptExpressionSequence.transformExpressionSequenceToSequence;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
-public class JavaScriptHtmlAttribute {
+public class JavaScriptHtmlAttributeTransformation {
 
     public static Optional<AstString> transformAttributeNameToAstString(JavaScriptParser.HtmlAttributeNameContext name, ParserRuleContext root) {
         if (name.TagName() != null) {
@@ -56,7 +56,7 @@ public class JavaScriptHtmlAttribute {
         if (name.isPresent()) {
             return Optional.of(new io.codiga.model.ast.javascript.JavaScriptHtmlAttribute(name.orElse(null), value.orElse(null), ctx, root));
         }
-        
+
         return Optional.empty();
     }
 }

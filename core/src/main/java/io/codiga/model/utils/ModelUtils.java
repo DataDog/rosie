@@ -105,6 +105,9 @@ public class ModelUtils {
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_CLASS_DEFINITION)) {
             return EntityChecked.CLASS_DEFINITION;
         }
+        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_HTML_ELEMENT)) {
+            return EntityChecked.HTML_ELEMENT;
+        }
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_IMPORT)) {
             return EntityChecked.IMPORT_STATEMENT;
         }

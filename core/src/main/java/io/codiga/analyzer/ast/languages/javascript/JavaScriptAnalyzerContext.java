@@ -45,5 +45,6 @@ public class JavaScriptAnalyzerContext extends AnalyzerContext {
         entityCheckedToAstElements.get(EntityChecked.IMPORT_STATEMENT).addAll(codigaVisitor.importStatements);
         entityCheckedToAstElements.get(EntityChecked.ASSIGNMENT).addAll(codigaVisitor.assignments);
         entityCheckedToAstElements.get(EntityChecked.TRY_BLOCK).addAll(codigaVisitor.tryStatements);
+        entityCheckedToAstElements.get(EntityChecked.HTML_ELEMENT).addAll(codigaVisitor.htmlElements);
     }
 }

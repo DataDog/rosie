@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.languages.javascript;
 
 import datadog.trace.api.Trace;
 import io.codiga.model.ast.common.*;
+import io.codiga.model.ast.javascript.JavaScriptHtmlElement;
 import io.codiga.model.ast.javascript.JavaScriptImport;
 import io.codiga.model.ast.javascript.JavaScriptTryCatchStatement;
 import io.codiga.model.context.JavaScriptNodeContext;
@@ -20,6 +21,7 @@ import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaSc
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.isFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptImportStatementToImport.transformImportStatementToImport;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformJavaScriptAssignmentExpressionToAssignment;
@@ -52,6 +54,8 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     List<FunctionDefinition> functionDefinitions;
     List<FunctionCall> functionCalls;
     List<AstElement> classDefinitions;
+    List<JavaScriptHtmlElement> htmlElements;
+
     private JavaScriptParser.ProgramContext root;
 
     public CodigaVisitor(String code) {
@@ -66,6 +70,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         ifStatements = new ArrayList<>();
         forStatements = new ArrayList<>();
         tryStatements = new ArrayList<>();
+        htmlElements = new ArrayList<>();
 
         // Initialize the visited elements
         visitedImportStatements = new ArrayList<>();
@@ -194,6 +199,15 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
             return visitChildren(ctx);
         }
 
+    }
+
+    @Override
+    public Object visitHtmlElement(JavaScriptParser.HtmlElementContext ctx) {
+        Optional<JavaScriptHtmlElement> htmlElementOptional = transformJavaScriptHtmlElement(ctx, root);
+        if (htmlElementOptional.isPresent()) {
+            this.htmlElements.add(htmlElementOptional.get());
+        }
+        return visitChildren(ctx);
     }
 
 
