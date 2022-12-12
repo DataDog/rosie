@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FunctionCallTest extends JavaScriptTestUtils {
 
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {
@@ -150,4 +150,33 @@ public class FunctionCallTest extends JavaScriptTestUtils {
         }
     }
 
+
+    @Test
+    @DisplayName("a function call over a function call")
+    public void testFunctionCallNested() {
+        String code = """
+                const pg = require('knex')({
+                  client: 'pg',
+                  connection: process.env.PG_CONNECTION_STRING,
+                  searchPath: ['knex', 'public'],
+                });      
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.ArgumentsExpressionContext.class);
+
+        ParseTree node = nodes.get(0);
+
+        if (isFunctionCall(node)) {
+            Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall((JavaScriptParser.ArgumentsExpressionContext) node, null);
+            assertTrue(functionCallOptional.isPresent());
+            FunctionCall functionCall = functionCallOptional.get();
+            assertTrue(functionCall.functionName instanceof FunctionCall);
+            FunctionCall firstFunctionCall = (FunctionCall) functionCall.functionName;
+            assertEquals("require", ((AstString) firstFunctionCall.functionName).value);
+            assertEquals(1, firstFunctionCall.arguments.values.length);
+            assertEquals("'knex'", ((AstString) firstFunctionCall.arguments.values[0].value).value);
+        }
+    }
 }
