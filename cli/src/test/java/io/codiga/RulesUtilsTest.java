@@ -51,4 +51,21 @@ public class RulesUtilsTest {
         assertEquals(rule.entityChecked(), EntityChecked.FUNCTION_CALL);
         assertEquals(rule.language(), Language.PYTHON);
     }
+
+    @Test
+    @DisplayName("Parse all with new elements checked")
+    public void testJavascriptRules() throws IOException {
+        String file = "src/test/resources/jsrules.json";
+        List<AnalyzerRule> rules = getRulesFromFile(file);
+        assert (rules.size() == 4);
+        assertEquals(rules.get(0).entityChecked(), EntityChecked.HTML_ELEMENT);
+        assertEquals(rules.get(0).language(), Language.JAVASCRIPT);
+        assertEquals(rules.get(1).entityChecked(), EntityChecked.CLASS_DEFINITION);
+        assertEquals(rules.get(1).language(), Language.JAVASCRIPT);
+        assertEquals(rules.get(2).entityChecked(), EntityChecked.INTERFACE);
+        assertEquals(rules.get(2).language(), Language.JAVASCRIPT);
+        assertEquals(rules.get(3).entityChecked(), EntityChecked.FUNCTION_EXPRESSION);
+        assertEquals(rules.get(3).language(), Language.JAVASCRIPT);
+
+    }
 }
