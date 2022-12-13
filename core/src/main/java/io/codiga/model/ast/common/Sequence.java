@@ -10,7 +10,7 @@ public class Sequence extends AstElement {
 
     public Sequence(List<AstElement> elementsList, ParserRuleContext parserRuleContext, ParserRuleContext root) {
         super(AST_ELEMENT_TYPE_SEQUENCE, parserRuleContext, root);
-        this.elements = new Assignment[elementsList.size()];
+        this.elements = new AstElement[elementsList.size()];
         this.elements = elementsList.toArray(elements);
     }
 }
