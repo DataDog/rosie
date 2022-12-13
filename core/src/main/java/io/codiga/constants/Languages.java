@@ -5,6 +5,7 @@ import io.codiga.model.Language;
 import java.util.List;
 import java.util.Map;
 
+import static io.codiga.model.Language.JAVASCRIPT;
 import static io.codiga.model.Language.PYTHON;
 
 public class Languages {
@@ -25,7 +26,8 @@ public class Languages {
     public final static String ENTITY_CHECKED_TRY_BLOCK = "tryblock";
     public final static List<String> SUPPORTED_LANGUAGES = List.of(LANGUAGE_PYTHON, LANGUAGE_JAVASCRIPT);
     public final static Map<Language, List<String>> LANGUAGE_EXTENSIONS = Map.of(
-        PYTHON, List.of("py", "py3")
+        PYTHON, List.of("py", "py3"),
+        JAVASCRIPT, List.of("js", "jsx")
     );
     public List<Language> allLanguages = List.of(PYTHON);
 
