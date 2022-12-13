@@ -2,13 +2,16 @@ package io.codiga.model;
 
 public enum EntityChecked {
     ASSIGNMENT,
-    FOR_LOOP,
     CLASS_DEFINITION,
+    FOR_LOOP,
     FUNCTION_CALL,
     FUNCTION_DEFINITION,
+    FUNCTION_EXPRESSION,
     HTML_ELEMENT,
     IF_STATEMENT,
+    INTERFACE,
     IMPORT_STATEMENT,
     TRY_BLOCK,
+    TYPE,
     UNKNOWN,
 }
