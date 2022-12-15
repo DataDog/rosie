@@ -73,7 +73,6 @@ public abstract class TypeScriptLexerBase extends Lexer {
     @Override
     public Token nextToken() {
         Token next = super.nextToken();
-        System.out.println(next.getText());
 
         if (next.getChannel() == Token.DEFAULT_CHANNEL) {
             // Keep track of the last token on the default channel.

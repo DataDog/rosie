@@ -52,6 +52,7 @@ public class TypeScriptHtmlAttributeTransformation {
         if (ctx.htmlAttributeValue() != null) {
             value = transformAttributeValue(ctx.htmlAttributeValue(), root);
         }
+        System.out.println(name);
 
         if (name.isPresent()) {
             return Optional.of(new io.codiga.model.ast.javascript.JavaScriptHtmlAttribute(name.orElse(null), value.orElse(null), ctx, root));
