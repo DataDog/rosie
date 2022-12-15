@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
 
 
@@ -84,6 +85,19 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
             v.setContext(buildContext());
             this.htmlElements.add(htmlElementOptional.get());
         });
+
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public Object visitArgumentsExpression(TypeScriptParser.ArgumentsExpressionContext ctx) {
+
+        Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall(ctx, root);
+        if (functionCallOptional.isPresent()) {
+            FunctionCall functionCall = functionCallOptional.get();
+            functionCall.setContext(buildContext());
+            this.functionCalls.add(functionCall);
+        }
 
         return visitChildren(ctx);
     }

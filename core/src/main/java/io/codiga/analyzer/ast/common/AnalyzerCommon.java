@@ -108,12 +108,14 @@ public abstract class AnalyzerCommon {
                     } catch (PolyglotException polyglotException) {
                         long endTime = System.currentTimeMillis();
                         long executionTime = endTime - startTime;
-                        if (polyglotException.getMessage().contains("Statement count limit of") && polyglotException.getMessage().contains("Statements executed")) {
+                        if (polyglotException.getMessage() != null && polyglotException.getMessage().contains("Statement count limit of") && polyglotException.getMessage().contains("Statements executed")) {
                             logger.info(String.format("rule %s timedout because of instructions", rule.name()));
                             return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_TIMEOUT), null, null, executionTime);
                         }
-
-                        String executionMessage = formatVmErrorMessage(polyglotException.getMessage());
+                        String executionMessage = "unknown error";
+                        if (polyglotException.getMessage() != null) {
+                            executionMessage = formatVmErrorMessage(polyglotException.getMessage());
+                        }
                         logger.error(String.format("reporting rule %s as execution error", rule.name()));
                         polyglotException.printStackTrace();
                         return new RuleResult(rule.name(), List.of(), List.of(ERROR_RULE_EXECUTION), executionMessage, null, executionTime);

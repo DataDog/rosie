@@ -6,6 +6,7 @@ import org.graalvm.polyglot.HostAccess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Violation {
     public Position start;
@@ -31,7 +32,7 @@ public class Violation {
 
     @HostAccess.Export
     public Violation addFix(Fix fix) {
-        this.fixes.add(fix);
+        this.fixes = Stream.concat(this.fixes.stream(), Stream.of(fix)).toList();
         return new Violation(this.start, this.end, this.message, this.severity, this.category, this.fixes);
     }
 }
