@@ -42,16 +42,16 @@ public class E2EBase {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    
-    public Response executeTestWithPattern(String filename,
-                                           String code,
-                                           Language language,
-                                           String ruleCode,
-                                           String ruleName,
-                                           String ruleType,
-                                           String entityChecked,
-                                           String pattern,
-                                           boolean logOutput) {
+
+    public Response executeTest(String filename,
+                                String code,
+                                Language language,
+                                String ruleCode,
+                                String ruleName,
+                                String ruleType,
+                                String entityChecked,
+                                String pattern,
+                                boolean logOutput) {
         Request request = new RequestBuilder()
             .setFilename(filename)
             .setLanguage(stringFromLanguage(language))
@@ -78,14 +78,38 @@ public class E2EBase {
 
     public Response executeTest(String filename,
                                 String code,
-                                Language language,
+                                Language codeLanguage,
+                                Language ruleLanguage,
                                 String ruleCode,
                                 String ruleName,
                                 String ruleType,
                                 String entityChecked,
+                                String pattern,
                                 boolean logOutput) {
-        return executeTestWithPattern(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, null, logOutput);
+        Request request = new RequestBuilder()
+            .setFilename(filename)
+            .setLanguage(stringFromLanguage(codeLanguage))
+            .setFileEncoding("utf-8")
+            .setCodeBase64(encodeBase64(code))
+            .setLogOutput(logOutput)
+            .setRules(
+                List.of(
+                    new RuleBuilder()
+                        .setId(ruleName)
+                        .setContentBase64(encodeBase64(ruleCode))
+                        .setLanguage(stringFromLanguage(ruleLanguage))
+                        .setType(ruleType)
+                        .setEntityChecked(entityChecked)
+                        .setPattern(pattern)
+                        .createRule()
+                )
+            ).createRequest();
+        Response response = this.restTemplate.postForObject(
+            "http://localhost:" + port + "/analyze", request,
+            Response.class);
+        return response;
     }
+
 
     public Response executeTestWithRules(String filename,
                                          String code,

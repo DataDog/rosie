@@ -44,7 +44,7 @@ public class NoExitTest extends E2EBase {
     @Test
     @DisplayName("Do not use exit()")
     public void testPythonNoExit() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "subprocess-with-shell", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, false);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "subprocess-with-shell", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

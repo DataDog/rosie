@@ -77,7 +77,7 @@ public class NoFlaskAppInDebugTest extends E2EBase {
     @Test
     @DisplayName("Do not use debug=True in flask")
     public void testPythonNoDebugTrueInFlask() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "flask-no-debug", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, true);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "flask-no-debug", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
         logger.info(String.format("response: %s", response));
 
         assertEquals(1, response.ruleResponses.size());

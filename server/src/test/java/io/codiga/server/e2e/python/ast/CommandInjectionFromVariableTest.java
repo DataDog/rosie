@@ -47,7 +47,7 @@ public class CommandInjectionFromVariableTest extends E2EBase {
     @Test
     @DisplayName("Detect injection with a variable")
     public void testInjectionThroughVariable() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "shell-injection", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, true);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "shell-injection", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
         logger.info("response:" + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

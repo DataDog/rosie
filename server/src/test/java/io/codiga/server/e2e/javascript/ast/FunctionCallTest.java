@@ -42,7 +42,7 @@ public class FunctionCallTest extends E2EBase {
     @Test
     @DisplayName("change call to bar into call to baz")
     public void testFunctionCallRule() throws Exception {
-        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "replace-bar-baz", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, true);
+        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "replace-bar-baz", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

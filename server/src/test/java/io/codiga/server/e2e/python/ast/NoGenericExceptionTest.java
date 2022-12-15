@@ -44,7 +44,7 @@ public class NoGenericExceptionTest extends E2EBase {
     @Test
     @DisplayName("Detect generic exceptions")
     public void testGenericExceptionError() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-generic-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, false);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-generic-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -60,7 +60,7 @@ public class NoGenericExceptionTest extends E2EBase {
     @Test
     @DisplayName("No issue when specific errors are used")
     public void testGenericExceptionNoError() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "python-generic-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, false);
+        Response response = executeTest("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "python-generic-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());

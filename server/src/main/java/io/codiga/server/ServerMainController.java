@@ -107,7 +107,7 @@ public class ServerMainController {
         logger.info(String.format("request: %s", request));
 
         if (!SUPPORTED_LANGUAGES.contains(request.language)) {
-            logger.info(String.format("langauge not supported %s", request.language));
+            logger.info(String.format("language not supported %s", request.language));
             metrics.incrementMetric(METRIC_INVALID_LANGUAGE);
             return CompletableFuture.completedFuture(
                 new Response(List.of(), List.of(ERROR_LANGUAGE_NOT_SUPPORTED)));

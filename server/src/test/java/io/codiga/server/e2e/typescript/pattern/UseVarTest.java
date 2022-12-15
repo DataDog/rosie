@@ -1,4 +1,4 @@
-package io.codiga.server.e2e.javascript.pattern;
+package io.codiga.server.e2e.typescript.pattern;
 
 import io.codiga.model.Language;
 import io.codiga.server.e2e.E2EBase;
@@ -36,9 +36,24 @@ public class UseVarTest extends E2EBase {
     String pattern = "...var ${name} = ...";
 
     @Test
-    @DisplayName("Do not use var in javascript using a pattern")
-    public void testDoNotUseVar() throws Exception {
-        Response response = executeTest("myfile.js", code, Language.JAVASCRIPT, rule, "do-not-use-var",
+    @DisplayName("Do not use var in typescript using a pattern, language typescript and rule javascript")
+    public void testDoNotUseVarJavaScriptRule() throws Exception {
+        Response response = executeTest("myfile.ts", code, Language.TYPESCRIPT, Language.JAVASCRIPT, rule, "do-not-use-var",
+            RULE_TYPE_PATTERN, null, pattern, true);
+        logger.info(response.toString());
+        assertEquals(1, response.ruleResponses.size());
+        assertEquals(1, response.ruleResponses.get(0).violations.size());
+        assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.line);
+        assertEquals("should be a const", response.ruleResponses.get(0).violations.get(0).message);
+        assertEquals("CODE_STYLE", response.ruleResponses.get(0).violations.get(0).category);
+        assertEquals("INFORMATIONAL", response.ruleResponses.get(0).violations.get(0).severity);
+    }
+
+
+    @Test
+    @DisplayName("Do not use var in typescript using a pattern, language typescript and rule typescript")
+    public void testDoNotUseVarTypeScriptRule() throws Exception {
+        Response response = executeTest("myfile.ts", code, Language.TYPESCRIPT, Language.TYPESCRIPT, rule, "do-not-use-var",
             RULE_TYPE_PATTERN, null, pattern, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());

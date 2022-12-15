@@ -50,7 +50,7 @@ public class ClassDeclarationTest extends E2EBase {
     @Test
     @DisplayName("change Rabbit to Cow")
     public void testClassDeclarationRule() throws Exception {
-        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "replace-foo-bar", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, true);
+        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "replace-foo-bar", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

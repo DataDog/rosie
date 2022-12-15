@@ -46,7 +46,7 @@ public class ForLoopTest extends E2EBase {
     @Test
     @DisplayName("test loop detection")
     public void testConditionEquality() throws Exception {
-        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RULE_TYPE_AST, ENTITY_CHECKED_FOR_LOOP, true);
+        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RULE_TYPE_AST, ENTITY_CHECKED_FOR_LOOP, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

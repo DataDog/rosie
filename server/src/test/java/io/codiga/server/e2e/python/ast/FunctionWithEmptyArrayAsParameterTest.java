@@ -37,7 +37,7 @@ public class FunctionWithEmptyArrayAsParameterTest extends E2EBase {
 
     @Test
     public void testfunctionWithEmptyArrrayAsParameter() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-array-default-value", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, true);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-array-default-value", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, null, true);
         logger.info("response:" + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

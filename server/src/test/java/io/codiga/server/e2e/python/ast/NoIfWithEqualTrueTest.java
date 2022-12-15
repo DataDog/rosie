@@ -36,12 +36,12 @@ public class NoIfWithEqualTrueTest extends E2EBase {
             }
         }
         """;
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @Test
     @DisplayName("Do not use eval()")
     public void testPythonNoEval() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-if-with-equal-true", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, true);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-if-with-equal-true", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, null, true);
 
         log.info("response: " + response);
         assertEquals(1, response.ruleResponses.size());

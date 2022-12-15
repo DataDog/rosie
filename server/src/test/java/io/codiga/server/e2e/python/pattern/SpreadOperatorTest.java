@@ -69,7 +69,7 @@ public class SpreadOperatorTest extends E2EBase {
     @Test
     @DisplayName("Report two issues")
     public void testPythonAssertTwoViolations() throws Exception {
-        Response response = executeTestWithPattern("bla.py", codeWithTwoErrors, Language.PYTHON, ruleCodeUpdate, "requests",
+        Response response = executeTest("bla.py", codeWithTwoErrors, Language.PYTHON, ruleCodeUpdate, "requests",
             RULE_TYPE_PATTERN, null, pattern, true);
         // finally check the verified code
         logger.info("" + response);

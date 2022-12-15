@@ -48,7 +48,7 @@ public class InsecureHashFunctionsTest extends E2EBase {
     @Test
     @DisplayName("Detect insecure protocol for hashing")
     public void testInsecureProtocol() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "insecure-hashing-protocol", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, true);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "insecure-hashing-protocol", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
         logger.info("response:" + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

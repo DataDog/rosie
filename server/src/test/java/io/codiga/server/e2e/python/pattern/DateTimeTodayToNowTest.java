@@ -42,7 +42,7 @@ public class DateTimeTodayToNowTest extends E2EBase {
     @Test
     @DisplayName("Replace datetime.today() with datetime.now()")
     public void testNotImplementedError() throws Exception {
-        Response response = executeTestWithPattern("bla.py", code, Language.PYTHON, ruleCodeUpdate, "no-datetime-today()",
+        Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "no-datetime-today()",
             RULE_TYPE_PATTERN, null, pattern, true);
         logger.info(String.format("response: %s", response));
         assertEquals(1, response.ruleResponses.size());

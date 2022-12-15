@@ -38,12 +38,12 @@ public class NoSilentExceptionTest extends E2EBase {
             });
         }
         """;
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @Test
     @DisplayName("Do not use pass to ignore exceptions")
     public void testSilentExceptionFail() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-no-silent-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, true);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-no-silent-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, null, true);
         log.info("response: " + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -58,7 +58,7 @@ public class NoSilentExceptionTest extends E2EBase {
     @Test
     @DisplayName("Do not use pass to ignore exceptions - do not fail")
     public void testSilentExceptionFailNoError() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "python-no-silent-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, true);
+        Response response = executeTest("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "python-no-silent-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, null, true);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());

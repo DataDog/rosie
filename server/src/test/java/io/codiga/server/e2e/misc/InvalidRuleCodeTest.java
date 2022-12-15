@@ -32,7 +32,7 @@ public class InvalidRuleCodeTest extends E2EBase {
 
     @Test
     public void testInvalidRuleCode() throws Exception {
-        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "invalid-rule", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, false);
+        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "invalid-rule", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());

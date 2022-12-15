@@ -53,7 +53,7 @@ public class IfConditionEqualTest extends E2EBase {
     @Test
     @DisplayName("make sure we use === instead of ==")
     public void testConditionEquality() throws Exception {
-        Response response = executeTest("bla.js", code1, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, true);
+        Response response = executeTest("bla.js", code1, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -69,7 +69,7 @@ public class IfConditionEqualTest extends E2EBase {
     @Test
     @DisplayName("make sure we use === instead of =")
     public void testConditionAssign() throws Exception {
-        Response response = executeTest("bla.js", code2, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, true);
+        Response response = executeTest("bla.js", code2, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

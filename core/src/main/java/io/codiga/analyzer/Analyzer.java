@@ -3,6 +3,7 @@ package io.codiga.analyzer;
 import com.google.common.collect.ImmutableList;
 import io.codiga.analyzer.ast.languages.javascript.JavaScriptAnalyzer;
 import io.codiga.analyzer.ast.languages.python.PythonAnalyzer;
+import io.codiga.analyzer.ast.languages.typescript.TypeScriptAnalyzer;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.pattern.PatternAnalyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
@@ -29,12 +30,13 @@ import static io.codiga.utils.CompletableFutureUtils.sequence;
  */
 public class Analyzer {
 
+    private final MetricsInterface metrics;
+    private final ErrorReportingInterface errorReporting;
     Logger logger = LoggerFactory.getLogger(Analyzer.class);
     PythonAnalyzer pythonAnalyzer;
     JavaScriptAnalyzer javaScriptAnalyzer;
+    TypeScriptAnalyzer typeScriptAnalyzer;
     PatternAnalyzer patternAnalyzer;
-    private MetricsInterface metrics;
-    private ErrorReportingInterface errorReporting;
 
     public Analyzer(ErrorReportingInterface errorReporting, MetricsInterface metrics, AnalyzerConfiguration configuration) {
         this.errorReporting = errorReporting;
@@ -42,15 +44,16 @@ public class Analyzer {
         this.patternAnalyzer = new PatternAnalyzer(this.metrics, this.errorReporting, configuration);
         this.pythonAnalyzer = new PythonAnalyzer(this.metrics, this.errorReporting, configuration);
         this.javaScriptAnalyzer = new JavaScriptAnalyzer(this.metrics, this.errorReporting, configuration);
+        this.typeScriptAnalyzer = new TypeScriptAnalyzer(this.metrics, this.errorReporting, configuration);
     }
 
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         long startAnalysisTimestampMs = System.currentTimeMillis();
         // Distinguish between rules with valid languages and invalid ones.
-        List<AnalyzerRule> rulesWithValidLanguage = rules.stream().filter(f -> f.language() == language).toList();
+        List<AnalyzerRule> rulesWithValidLanguage = rules.stream().filter(f -> f.validForLanguage(language)).toList();
         List<AnalyzerRule> rulesWithValidLanguageForAst = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.AST_CHECK).toList();
         List<AnalyzerRule> rulesWithValidLanguageForPattern = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.PATTERN && r.pattern() != null).toList();
-        List<AnalyzerRule> rulesWithInvalidLanguage = rules.stream().filter(f -> f.language() != language).toList();
+        List<AnalyzerRule> rulesWithInvalidLanguage = rules.stream().filter(f -> !f.validForLanguage(language)).toList();
         CompletableFuture<AnalysisResult> completedResultForAst;
 
         // First, AST analysis
@@ -60,6 +63,9 @@ public class Analyzer {
                 break;
             case JAVASCRIPT:
                 completedResultForAst = javaScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
+                break;
+            case TYPESCRIPT:
+                completedResultForAst = typeScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
                 break;
             default:
                 completedResultForAst = CompletableFuture.completedFuture(new AnalysisResult(List.of()));

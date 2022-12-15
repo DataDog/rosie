@@ -47,7 +47,7 @@ public class ImportTest extends E2EBase {
     @Test
     @DisplayName("do not import export1, always import export2")
     public void testImportRule() throws Exception {
-        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "import-rule", RULE_TYPE_AST, ENTITY_CHECKED_IMPORT, true);
+        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "import-rule", RULE_TYPE_AST, ENTITY_CHECKED_IMPORT, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

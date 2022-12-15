@@ -30,7 +30,7 @@ public class DummyAstRuleTest extends E2EBase {
     @Test
     @DisplayName("never return anything for an AST rule")
     public void testDummyRule() throws Exception {
-        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "visit-code", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, true);
+        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "visit-code", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
     }

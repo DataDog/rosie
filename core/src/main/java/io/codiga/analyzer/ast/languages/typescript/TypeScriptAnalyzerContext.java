@@ -1,12 +1,12 @@
-package io.codiga.analyzer.ast.languages.javascript;
+package io.codiga.analyzer.ast.languages.typescript;
 
 import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.ast.common.AstElement;
-import io.codiga.parser.javascript.gen.JavaScriptLexer;
-import io.codiga.parser.javascript.gen.JavaScriptParser;
+import io.codiga.parser.typescript.gen.TypeScriptLexer;
+import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.slf4j.Logger;
@@ -14,20 +14,20 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class JavaScriptAnalyzerContext extends AnalyzerContext {
+public class TypeScriptAnalyzerContext extends AnalyzerContext {
 
 
-    private final Logger logger = LoggerFactory.getLogger(JavaScriptAnalyzerContext.class);
+    private final Logger logger = LoggerFactory.getLogger(TypeScriptAnalyzerContext.class);
     Map<EntityChecked, List<AstElement>> entityCheckedToAstElements;
 
-    public JavaScriptAnalyzerContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
+    public TypeScriptAnalyzerContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         super(language, filename, code, rules, logOutput);
-        JavaScriptLexer lexer = new JavaScriptLexer(CharStreams.fromString(code));
+        TypeScriptLexer lexer = new TypeScriptLexer(CharStreams.fromString(code));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        JavaScriptParser parser = new JavaScriptParser(tokens);
+        TypeScriptParser parser = new TypeScriptParser(tokens);
 
 
-        CodigaVisitor codigaVisitor = new CodigaVisitor(code);
+        io.codiga.analyzer.ast.languages.typescript.CodigaVisitor codigaVisitor = new CodigaVisitor(code);
         codigaVisitor.visit(parser.program());
 
 

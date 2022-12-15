@@ -42,7 +42,7 @@ public class PatternPythonReadOnlyFileTest extends E2EBase {
     @DisplayName("Remove the read-only flag when opening a file - update version")
     public void testPythonPatternReadOnlyFlagUpdate() throws Exception {
         String pattern = "open(\"${file}\", \"r\")";
-        Response response = executeTestWithPattern("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-file-read-only", RULE_TYPE_PATTERN, null, pattern, false);
+        Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-file-read-only", RULE_TYPE_PATTERN, null, pattern, false);
 
         logger.info("response: " + response);
 

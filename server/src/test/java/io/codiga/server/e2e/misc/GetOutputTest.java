@@ -31,7 +31,7 @@ public class GetOutputTest extends E2EBase {
     @Test
     @DisplayName("Get the script output when the request specifies it")
     public void testGetOutputWhenRequested() throws Exception {
-        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "get-output", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, true);
+        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "get-output", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals("bla\nbla\n", response.ruleResponses.get(0).output);
@@ -40,7 +40,7 @@ public class GetOutputTest extends E2EBase {
     @Test
     @DisplayName("Get <null> from output if output logging is disabled")
     public void testGetOutputWhenNotRequested() throws Exception {
-        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "get-output", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, false);
+        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "get-output", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertNull(response.ruleResponses.get(0).output);

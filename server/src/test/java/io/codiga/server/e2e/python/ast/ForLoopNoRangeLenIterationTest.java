@@ -53,7 +53,7 @@ public class ForLoopNoRangeLenIterationTest extends E2EBase {
 
     @Test
     public void testPythonNoForWithRangeAndLen() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-for-range-len", RULE_TYPE_AST, ENTITY_CHECKED_FOR_LOOP, true);
+        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-for-range-len", RULE_TYPE_AST, ENTITY_CHECKED_FOR_LOOP, null, true);
         logger.info("response:" + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

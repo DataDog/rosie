@@ -53,7 +53,7 @@ public class Chmod777Test extends E2EBase {
     @Test
     @DisplayName("Remove other permissions for write")
     public void testPythonRemoveWriteUsers() throws Exception {
-        Response response = executeTestWithPattern("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
+        Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
             RULE_TYPE_PATTERN, null, pattern, true);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -79,7 +79,7 @@ public class Chmod777Test extends E2EBase {
     @Test
     @DisplayName("Ignore for test file")
     public void testPythonRemoveWriteIgnoredForTests() throws Exception {
-        Response response = executeTestWithPattern("bla_test.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
+        Response response = executeTest("bla_test.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
             RULE_TYPE_PATTERN, null, pattern, true);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
@@ -88,7 +88,7 @@ public class Chmod777Test extends E2EBase {
     @Test
     @DisplayName("Ignore for test file - second version")
     public void testPythonRemoveWriteIgnoredForTestsSecondVersion() throws Exception {
-        Response response = executeTestWithPattern("test_bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
+        Response response = executeTest("test_bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
             RULE_TYPE_PATTERN, null, pattern, true);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());

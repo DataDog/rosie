@@ -38,7 +38,7 @@ public class InvalidPatternTest extends E2EBase {
     @Test
     @DisplayName("Test Invalid Pattern")
     public void testInvalidPattern() throws Exception {
-        Response response = executeTestWithPattern("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
+        Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-write-flag-others",
             RULE_TYPE_PATTERN, null, pattern, true);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(ERROR_INVALID_PATTERN, response.ruleResponses.get(0).errors.get(0));

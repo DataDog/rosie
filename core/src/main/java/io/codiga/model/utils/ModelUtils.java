@@ -53,6 +53,9 @@ public class ModelUtils {
         if (language.equalsIgnoreCase(LANGUAGE_JAVASCRIPT)) {
             return Language.JAVASCRIPT;
         }
+        if (language.equalsIgnoreCase(LANGUAGE_TYPESCRIPT)) {
+            return Language.TYPESCRIPT;
+        }
         return Language.UNKNOWN;
     }
 
@@ -62,6 +65,8 @@ public class ModelUtils {
                 return LANGUAGE_PYTHON;
             case JAVASCRIPT:
                 return LANGUAGE_JAVASCRIPT;
+            case TYPESCRIPT:
+                return LANGUAGE_TYPESCRIPT;
             default:
                 return "unknown";
         }

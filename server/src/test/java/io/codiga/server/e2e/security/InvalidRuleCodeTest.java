@@ -31,7 +31,7 @@ public class InvalidRuleCodeTest extends E2EBase {
     @Test
     @DisplayName("Report execution error when javascript code is invalid")
     public void testInvalidCode() throws Exception {
-        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "python-infinite", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, false);
+        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "python-infinite", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(ERROR_RULE_EXECUTION, response.ruleResponses.get(0).errors.get(0));

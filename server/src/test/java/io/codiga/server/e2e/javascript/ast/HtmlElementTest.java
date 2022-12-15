@@ -81,7 +81,7 @@ public class HtmlElementTest extends E2EBase {
     @Test
     @DisplayName("check aria-label, report error")
     public void testHtmlElementNoError() throws Exception {
-        Response response = executeTest("bla.js", codeWithError, Language.JAVASCRIPT, ruleCode, "check-aria-element", RULE_TYPE_AST, ENTITY_CHECKED_HTML_ELEMENT, true);
+        Response response = executeTest("bla.js", codeWithError, Language.JAVASCRIPT, ruleCode, "check-aria-element", RULE_TYPE_AST, ENTITY_CHECKED_HTML_ELEMENT, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -94,7 +94,7 @@ public class HtmlElementTest extends E2EBase {
     @Test
     @DisplayName("check aria-label, no error")
     public void testHtmlElementError() throws Exception {
-        Response response = executeTest("bla.js", codeWithoutError, Language.JAVASCRIPT, ruleCode, "check-aria-element", RULE_TYPE_AST, ENTITY_CHECKED_HTML_ELEMENT, true);
+        Response response = executeTest("bla.js", codeWithoutError, Language.JAVASCRIPT, ruleCode, "check-aria-element", RULE_TYPE_AST, ENTITY_CHECKED_HTML_ELEMENT, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
