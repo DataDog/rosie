@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JsxTest extends JavaScriptTestUtils {
 
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {
@@ -72,7 +72,7 @@ public class JsxTest extends JavaScriptTestUtils {
             Optional<JavaScriptHtmlElement> elementOptional = transformJavaScriptHtmlElement(((JavaScriptParser.HtmlElementContext) node), null);
             assertTrue(elementOptional.isPresent());
             JavaScriptHtmlElement element = elementOptional.get();
-            assertEquals("ul", element.tag.value);
+            assertEquals("ul", ((AstString) element.tag).value);
             assertEquals(6, element.attributes.length);
             assertEquals("id", element.attributes[0].name.value);
             assertEquals("\"js-outcome-summary-container-{$objectType}-{$objectId}\"", ((AstString) element.attributes[0].value).value);
@@ -88,4 +88,5 @@ public class JsxTest extends JavaScriptTestUtils {
             assertEquals("\"group\"", ((AstString) element.attributes[5].value).value);
         }
     }
+
 }

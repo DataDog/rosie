@@ -36,6 +36,8 @@ public class PatternMatcher {
     // Escape parenthesis and other special characters from the string
     public static String prepareStringForRegularExpression(String originalString) {
         return originalString
+            .replace("[", "\\[")
+            .replace("]", "\\]")
             .replace("(", "\\(")
             .replace(")", "\\)");
     }
@@ -130,12 +132,13 @@ public class PatternMatcher {
         String regularExpression = this.getRegularExpression(patternVariables);
 
 //        logger.info(String.format("regular expression: %s", regularExpression));
-
+//        logger.info(String.format("code: %s", this.code));
         Pattern pattern = Pattern.compile(regularExpression);
         Matcher matcher = pattern.matcher(this.code);
 
 
         while (matcher.find()) {
+            logger.info("Regular Expression matches");
             HashMap<String, PatternVariableValue> variables = new HashMap<>();
 
             for (int i = 1; i <= matcher.groupCount(); i++) {

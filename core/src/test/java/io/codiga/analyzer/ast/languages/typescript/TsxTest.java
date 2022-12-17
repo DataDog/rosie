@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript;
 
+import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.javascript.JavaScriptHtmlElement;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -71,7 +72,7 @@ public class TsxTest extends TypeScriptTestUtils {
             Optional<JavaScriptHtmlElement> elementOptional = transformTypeScriptHtmlElement(((TypeScriptParser.HtmlElementContext) node), null);
             assertTrue(elementOptional.isPresent());
             JavaScriptHtmlElement element = elementOptional.get();
-            assertEquals("ul", element.tag.value);
+            assertEquals("ul", ((AstString)element.tag).value);
 //            assertEquals(6, element.attributes.length);
 //            assertEquals("id", element.attributes[0].name.value);
 //            assertEquals("\"js-outcome-summary-container-{$objectType}-{$objectId}\"", ((AstString) element.attributes[0].value).value);
