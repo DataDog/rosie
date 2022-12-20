@@ -90,38 +90,4 @@ public class JsxTest extends JavaScriptTestUtils {
     }
 
 
-    @Test
-    @DisplayName("Get nested HTML elements")
-    public void testNestedElements() {
-        String code = """
-            class SummaryContainer extends React.Component {
-              render() {
-                return (
-                  <div attr1="value1">
-                    <ul>
-                        <li>item1</li>
-                    </ul> 
-                  </div>
-                  
-                );
-              }
-            }
-
-            export default SummaryContainer;
-                        """;
-
-        ParseTree root = parseCode(code);
-
-        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.HtmlElementContext.class);
-        JavaScriptParser.HtmlElementContext node = (JavaScriptParser.HtmlElementContext) nodes.get(0);
-        Optional<JavaScriptHtmlElement> elementOptional = transformJavaScriptHtmlElement(node, null);
-        assertTrue(elementOptional.isPresent());
-        JavaScriptHtmlElement element = elementOptional.get();
-        assertEquals("div", ((AstString) element.tag).value);
-        assertEquals(1, element.children.length);
-        assertEquals("ul", ((AstString) element.children[0].tag).value);
-        assertEquals(1, element.children[0].children.length);
-        assertEquals("li", ((AstString) element.children[0].children[0].tag).value);
-    }
-
 }
