@@ -42,6 +42,8 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     Stack<ForStatement> visitedForStatements;
     List<AstElement> visitedImportStatements;
 
+    Stack<JavaScriptHtmlElement> visitedHtmlElements;
+
 
     // List of all AST elements
     List<Assignment> assignments;
@@ -77,6 +79,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         visitedClassDefinitions = new Stack<>();
         visitedIfStatements = new Stack<>();
         visitedForStatements = new Stack<>();
+        visitedHtmlElements = new Stack<>();
     }
 
     @Override
@@ -221,12 +224,25 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     public Object visitHtmlElement(JavaScriptParser.HtmlElementContext ctx) {
         Optional<JavaScriptHtmlElement> htmlElementOptional = transformJavaScriptHtmlElement(ctx, root);
 
-        htmlElementOptional.ifPresent(v -> {
-            v.setContext(buildContext());
+        if (htmlElementOptional.isPresent()) {
+            JavaScriptHtmlElement htmlElement = htmlElementOptional.get();
+            htmlElement.setContext(buildContext());
             this.htmlElements.add(htmlElementOptional.get());
-        });
 
-        return visitChildren(ctx);
+            // If there is one visited html elements, add it to the list
+            if (visitedHtmlElements.size() > 0) {
+                JavaScriptHtmlElement parent = visitedHtmlElements.peek();
+                parent.addChild(htmlElement);
+            }
+            visitedHtmlElements.push(htmlElement);
+            Object res = visitChildren(ctx);
+            visitedHtmlElements.pop();
+            // We visited all the children, build the list of children as an array
+            htmlElement.updateChildren();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
     }
 
 

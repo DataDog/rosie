@@ -99,6 +99,4 @@ public class HtmlElementTest extends E2EBase {
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
     }
-
-
 }
