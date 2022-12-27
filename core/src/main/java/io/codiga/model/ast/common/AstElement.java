@@ -43,6 +43,8 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_MEMBER = "member";
     public static final String AST_ELEMENT_TYPE_HTML_ELEMENT = "htmlelement";
     public static final String AST_ELEMENT_TYPE_HTML_ATTRIBUTE = "htmlattribute";
+    public static final String AST_ELEMENT_TYPE_HTML_DATA = "htmldata";
+
     public static final String AST_ELEMENT_TYPE_FROM_ELEMENT = "fromelement";
     public static final String AST_ELEMENT_TYPE_IMPORT_PACKAGE = "importpackage";
     public static final String AST_ELEMENT_TYPE_ARGUMENTS = "arguments";

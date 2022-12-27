@@ -8,10 +8,10 @@ import java.util.List;
 
 public class JavaScriptHtmlElement extends AstElement {
 
-    private final List<JavaScriptHtmlElement> childrenList = new ArrayList<>();
+    private final List<AstElement> childrenList = new ArrayList<>();
     public AstElement tag;
     public JavaScriptHtmlAttribute[] attributes;
-    public JavaScriptHtmlElement[] htmlChildren;
+    public AstElement[] htmlChildren;
 
 
     /**
@@ -30,7 +30,7 @@ public class JavaScriptHtmlElement extends AstElement {
         super(AST_ELEMENT_TYPE_HTML_ELEMENT, parserRuleContext, root);
         this.tag = tag;
         this.attributes = attributeList.stream().toArray(JavaScriptHtmlAttribute[]::new);
-        this.htmlChildren = new JavaScriptHtmlElement[0];
+        this.htmlChildren = new AstElement[0];
     }
 
     /**
@@ -38,10 +38,10 @@ public class JavaScriptHtmlElement extends AstElement {
      * This is used to avoid rebuilding the array constantly when adding a child
      */
     public void updateChildren() {
-        this.htmlChildren = childrenList.stream().toArray(JavaScriptHtmlElement[]::new);
+        this.htmlChildren = childrenList.stream().toArray(AstElement[]::new);
     }
 
-    public void addChild(JavaScriptHtmlElement element) {
+    public void addChild(AstElement element) {
         this.childrenList.add(element);
     }
 }

@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.languages.javascript;
 
 import datadog.trace.api.Trace;
 import io.codiga.model.ast.common.*;
+import io.codiga.model.ast.javascript.JavaScriptHtmlData;
 import io.codiga.model.ast.javascript.JavaScriptHtmlElement;
 import io.codiga.model.ast.javascript.JavaScriptImport;
 import io.codiga.model.ast.javascript.JavaScriptTryCatchStatement;
@@ -20,6 +21,7 @@ import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaSc
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptForStatement.transformForStatementToForStatement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlCharDataTransformation.transformJavaScriptHtmlCharData;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptImportStatementToImport.transformImportStatementToImport;
@@ -239,6 +241,27 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
             visitedHtmlElements.pop();
             // We visited all the children, build the list of children as an array
             htmlElement.updateChildren();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
+    }
+
+    @Override
+    public Object visitHtmlChardata(JavaScriptParser.HtmlChardataContext ctx) {
+
+        Optional<JavaScriptHtmlData> htmlDataOptional = transformJavaScriptHtmlCharData(ctx, root);
+
+        if (htmlDataOptional.isPresent()) {
+            JavaScriptHtmlData htmlData = htmlDataOptional.get();
+            htmlData.setContext(buildContext());
+
+            // If there is one visited html elements, add it to the list
+            if (visitedHtmlElements.size() > 0) {
+                JavaScriptHtmlElement parent = visitedHtmlElements.peek();
+                parent.addChild(htmlData);
+            }
+            Object res = visitChildren(ctx);
             return res;
         } else {
             return visitChildren(ctx);
