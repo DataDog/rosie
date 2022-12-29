@@ -38,14 +38,11 @@ public class JavaScriptHtmlElementTransformation {
             });
         }
 
-        if (tag.isPresent()) {
-            return Optional.of(
-                new io.codiga.model.ast.javascript.JavaScriptHtmlElement(tag.get(), attributes, ctx, root)
-            );
-        }
+        return Optional.of(
+            new io.codiga.model.ast.javascript.JavaScriptHtmlElement(tag.orElse(null), attributes, ctx, root)
+        );
 
 
-        return Optional.empty();
     }
 
     public static Optional<AstElement> mapTagName(JavaScriptParser.HtmlTagNameContext context, ParserRuleContext root) {

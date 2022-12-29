@@ -17,7 +17,7 @@
 ### Generate Python AST
 
 ```bash
-antlr4 PythonParser.g4 PythonLexer.g4
+antlr4 -o gen -no-listener -visitor -package io.codiga.parser.javascript.gen JavaScriptLexer.g4 JavaScriptParser.g4
 ```
 
 Make sure you copy the `Java/*` file with the `.g4` file

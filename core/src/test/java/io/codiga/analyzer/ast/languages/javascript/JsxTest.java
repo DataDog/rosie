@@ -14,8 +14,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JsxTest extends JavaScriptTestUtils {
 
@@ -89,5 +88,44 @@ public class JsxTest extends JavaScriptTestUtils {
         }
     }
 
+    @Test
+    @DisplayName("Get the HTML elements")
+    public void testEmptyTag() {
+        String code = """
+            import React from 'react';
 
+            /**
+             * jive.outcomes.summary.summaryContainer
+             */
+            class SummaryContainer extends React.Component {
+              constructor(props) {
+                super(props);
+
+                this.state = {
+                  subject: 'Summary Container!!'
+                };
+              }
+
+              render() {
+                return (
+                  <>
+                    <div>
+                    </div>
+                    <div />
+                  </>
+                );
+              }
+            }
+
+            export default SummaryContainer;
+                        """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.HtmlElementContext.class);
+        Optional<JavaScriptHtmlElement> elementOptional = transformJavaScriptHtmlElement(((JavaScriptParser.HtmlElementContext) nodes.get(0)), null);
+        assertTrue(elementOptional.isPresent());
+        JavaScriptHtmlElement element = elementOptional.get();
+        assertNull(element.tag);
+    }
 }
