@@ -33,11 +33,30 @@ public class VmContext {
         .denyAccess(Object.class, false)
         .build();
     private static final int MAX_STATEMENTS = 1000000;
+    private final ErrorReporting errorReporting;
+
+    private final String[] helperFunctions = new String[]{
+        "function debugObject(object) {\n" +
+            "  for (const property in object) {\n" +
+            "    console.log(`${property}: ${JSON.stringify(object[property])}`);\n" +
+            "  }\n" +
+            "}"
+    };
+
+    private final String initializationCode =
+        "reportError = addError.addError; " +
+            "buildFix = addError.buildFix; " +
+            "buildError = addError.buildViolation; " +
+            "buildEdit = addError.buildEdit; " +
+            "buildEditAdd = addError.buildEditAdd; " +
+            "buildEditUpdate = addError.buildEditUpdate; " +
+            "buildEditRemove = addError.buildEditRemove; " +
+            "addError = addError.addViolation; " +
+            String.join(",", helperFunctions) + ";";
     Source executeSource;
     private OutputStream outputStream;
     private InputStream inputStream;
     private Context context = null;
-    private final ErrorReporting errorReporting;
 
     public VmContext(AnalyzerContext analyzerContext) {
         this.errorReporting = new ErrorReporting();
@@ -113,15 +132,7 @@ public class VmContext {
         context.getBindings("js").putMember("code", analyzerContext.getCode());
 
         context.getBindings("js").putMember("filename", analyzerContext.getFilename());
-        String initializationCode =
-            "reportError = addError.addError; " +
-                "buildFix = addError.buildFix; " +
-                "buildError = addError.buildViolation; " +
-                "buildEdit = addError.buildEdit; " +
-                "buildEditAdd = addError.buildEditAdd; " +
-                "buildEditUpdate = addError.buildEditUpdate; " +
-                "buildEditRemove = addError.buildEditRemove; " +
-                "addError = addError.addViolation; ";
+
         Source source = Source.create("js", initializationCode);
         context.eval(source);
     }
