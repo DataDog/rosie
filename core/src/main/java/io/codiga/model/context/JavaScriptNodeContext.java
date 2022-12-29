@@ -8,6 +8,7 @@ import java.util.List;
 
 public class JavaScriptNodeContext extends Context {
     public AstElement currentFunction;
+    public AstElement currentFunctionCall;
     public AstElement currentTryBlock;
 
     public AstElement currentClass;
@@ -16,6 +17,7 @@ public class JavaScriptNodeContext extends Context {
 
     @Builder(builderMethodName = "buildJavaScriptNodeContext")
     public JavaScriptNodeContext(AstElement currentFunction,
+                                 AstElement currentFunctionCall,
                                  AstElement currentTryBlock,
                                  AstElement currentClass,
                                  List<AstElement> importsList,
@@ -25,6 +27,7 @@ public class JavaScriptNodeContext extends Context {
         this.currentFunction = currentFunction;
         this.currentTryBlock = currentTryBlock;
         this.currentClass = currentClass;
+        this.currentFunctionCall = currentFunctionCall;
         this.imports = new AstElement[importsList.size()];
         imports = importsList.toArray(this.imports);
         this.assignments = new Assignment[assignmentsList.size()];

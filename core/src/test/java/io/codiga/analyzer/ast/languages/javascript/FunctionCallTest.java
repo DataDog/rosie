@@ -3,7 +3,9 @@ package io.codiga.analyzer.ast.languages.javascript;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionCall;
+import io.codiga.model.ast.common.FunctionDefinition;
 import io.codiga.model.ast.javascript.AstStringWithSpreadOperator;
+import io.codiga.model.ast.javascript.JavaScriptMember;
 import io.codiga.model.ast.javascript.JavaScriptObject;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -204,6 +206,33 @@ public class FunctionCallTest extends JavaScriptTestUtils {
             assertEquals("require", ((AstString) firstFunctionCall.functionName).value);
             assertEquals(1, firstFunctionCall.arguments.values.length);
             assertEquals("'knex'", ((AstString) firstFunctionCall.arguments.values[0].value).value);
+        }
+    }
+
+
+    @Test
+    @DisplayName("Map with anonymous function")
+    public void testMapAnonymousFunction() {
+        String code = """
+            things.map((thing, index) => (
+              <Hello key={index} />
+            ));
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.ArgumentsExpressionContext.class);
+        for (ParseTree node : nodes) {
+            Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall(((JavaScriptParser.ArgumentsExpressionContext) node), null);
+            assertTrue(functionCallOptional.isPresent());
+            FunctionCall functionCall = functionCallOptional.get();
+            JavaScriptMember left = (JavaScriptMember) functionCall.functionName;
+            assertEquals("map", ((AstString) left.name).value);
+            assertEquals(1, functionCall.arguments.values.length);
+            FunctionDefinition functionDefinition = (FunctionDefinition) functionCall.arguments.values[0].value;
+            assertEquals(2, functionDefinition.parameters.values.length);
+            assertEquals("thing", functionDefinition.parameters.values[0].name.value);
+            assertEquals("index", functionDefinition.parameters.values[1].name.value);
         }
     }
 }

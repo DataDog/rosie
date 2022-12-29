@@ -39,6 +39,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     private final Logger logger = LoggerFactory.getLogger(CodigaVisitor.class);
     // To build the context
     Stack<FunctionDefinition> visitedFunctionDefinitions;
+    Stack<AstElement> visitedFunctionCalls;
     Stack<AstElement> visitedClassDefinitions;
     Stack<IfStatement> visitedIfStatements;
     Stack<ForStatement> visitedForStatements;
@@ -76,6 +77,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         htmlElements = new ArrayList<>();
 
         // Initialize the visited elements
+        visitedFunctionCalls = new Stack<>();
         visitedImportStatements = new ArrayList<>();
         visitedFunctionDefinitions = new Stack<>();
         visitedClassDefinitions = new Stack<>();
@@ -98,9 +100,13 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
             FunctionCall functionCall = functionCallOptional.get();
             functionCall.setContext(buildContext());
             this.functionCalls.add(functionCall);
+            visitedFunctionCalls.push(functionCall);
+            Object obj = visitChildren(ctx);
+            visitedFunctionCalls.pop();
+            return obj;
+        } else {
+            return visitChildren(ctx);
         }
-
-        return visitChildren(ctx);
     }
 
     @Override
@@ -273,6 +279,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     private JavaScriptNodeContext buildContext() {
         JavaScriptNodeContext res = JavaScriptNodeContext.buildJavaScriptNodeContext()
             .currentFunction(visitedFunctionDefinitions.isEmpty() ? null : visitedFunctionDefinitions.lastElement())
+            .currentFunctionCall(visitedFunctionCalls.isEmpty() ? null : visitedFunctionCalls.lastElement())
 //            .currentTryBlock(visitedTryStatements.size() > 0 ? visitedTryStatements.lastElement() : null)
             .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
             .code(this.code)

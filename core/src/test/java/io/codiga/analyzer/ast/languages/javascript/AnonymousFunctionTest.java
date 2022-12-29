@@ -52,4 +52,6 @@ public class AnonymousFunctionTest extends JavaScriptTestUtils {
             assertEquals(((AstString) functionDefinition.parameters.values[1].name).value, "b");
         }
     }
+
+
 }

@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.javascript;
 
 import io.codiga.model.ast.common.AstString;
+import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.javascript.JavaScriptHtmlElement;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -127,5 +128,38 @@ public class JsxTest extends JavaScriptTestUtils {
         assertTrue(elementOptional.isPresent());
         JavaScriptHtmlElement element = elementOptional.get();
         assertNull(element.tag);
+    }
+
+    @Test
+    @DisplayName("Get JSX with code")
+    public void testJsxWithCode() {
+        String code = """
+            class SummaryContainer extends React.Component {
+              constructor(props) {
+                super(props);
+
+                this.state = {
+                  subject: 'Summary Container!!'
+                };
+              }
+
+              render() {
+                things.map((thing, index) => (
+                  <Hello key={index} />
+                ));
+              }
+            }""";
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.HtmlElementContext.class);
+        Optional<JavaScriptHtmlElement> elementOptional = transformJavaScriptHtmlElement(((JavaScriptParser.HtmlElementContext) nodes.get(0)), null);
+        assertTrue(elementOptional.isPresent());
+        JavaScriptHtmlElement element = elementOptional.get();
+        assertEquals("Hello", ((AstString) element.tag).value);
+        assertEquals(1, element.attributes.length);
+        log.info(element.attributes[0].value.getClass().toString());
+        Sequence sequence = (Sequence) element.attributes[0].value;
+        assertEquals("index", ((AstString) sequence.elements[0]).value);
     }
 }
