@@ -14,7 +14,7 @@ import java.util.Stack;
  */
 public abstract class TypeScriptParserBase extends Parser {
 
-    private final Stack<String> _tagNames = new Stack<String>();
+    private Stack<String> _tagNames = new Stack<String>();
 
     public TypeScriptParserBase(TokenStream input) {
         super(input);

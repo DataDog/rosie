@@ -16,7 +16,7 @@ public abstract class TypeScriptLexerBase extends Lexer {
      * Stores values of nested modes. By default mode is strict or
      * defined externally (useStrictDefault)
      */
-    private final Stack<Boolean> scopeStrictModes = new Stack<Boolean>();
+    private Stack<Boolean> scopeStrictModes = new Stack<Boolean>();
 
     private Token lastToken = null;
     /**
@@ -83,7 +83,7 @@ public abstract class TypeScriptLexerBase extends Lexer {
     }
 
     protected void ProcessOpenBrace() {
-        useStrictCurrent = scopeStrictModes.size() > 0 && scopeStrictModes.peek() || useStrictDefault;
+        useStrictCurrent = scopeStrictModes.size() > 0 && scopeStrictModes.peek() ? true : useStrictDefault;
         scopeStrictModes.push(useStrictCurrent);
     }
 

@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.languages.typescript;
 
 import datadog.trace.api.Trace;
 import io.codiga.model.ast.common.*;
+import io.codiga.model.ast.javascript.JavaScriptHtmlData;
 import io.codiga.model.ast.javascript.JavaScriptHtmlElement;
 import io.codiga.model.ast.javascript.JavaScriptImport;
 import io.codiga.model.ast.javascript.JavaScriptTryCatchStatement;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.Stack;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlCharDataTransformation.transformTypescriptHtmlCharData;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
 
 
@@ -29,10 +31,12 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
     private final Logger logger = LoggerFactory.getLogger(CodigaVisitor.class);
     // To build the context
     Stack<FunctionDefinition> visitedFunctionDefinitions;
+    Stack<AstElement> visitedFunctionCalls;
     Stack<AstElement> visitedClassDefinitions;
     Stack<IfStatement> visitedIfStatements;
     Stack<ForStatement> visitedForStatements;
     List<AstElement> visitedImportStatements;
+    Stack<JavaScriptHtmlElement> visitedHtmlElements;
 
 
     // List of all AST elements
@@ -69,6 +73,8 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
         visitedClassDefinitions = new Stack<>();
         visitedIfStatements = new Stack<>();
         visitedForStatements = new Stack<>();
+        visitedHtmlElements = new Stack<>();
+        visitedFunctionCalls = new Stack<>();
     }
 
     @Override
@@ -81,12 +87,47 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
     public Object visitHtmlElement(TypeScriptParser.HtmlElementContext ctx) {
         Optional<JavaScriptHtmlElement> htmlElementOptional = transformTypeScriptHtmlElement(ctx, root);
 
-        htmlElementOptional.ifPresent(v -> {
-            v.setContext(buildContext());
+        if (htmlElementOptional.isPresent()) {
+            JavaScriptHtmlElement htmlElement = htmlElementOptional.get();
+            htmlElement.setContext(buildContext());
             this.htmlElements.add(htmlElementOptional.get());
-        });
 
-        return visitChildren(ctx);
+            // If there is one visited html elements, add it to the list
+            if (visitedHtmlElements.size() > 0) {
+                JavaScriptHtmlElement parent = visitedHtmlElements.peek();
+                parent.addChild(htmlElement);
+            }
+            visitedHtmlElements.push(htmlElement);
+            Object res = visitChildren(ctx);
+            visitedHtmlElements.pop();
+            // We visited all the children, build the list of children as an array
+            htmlElement.updateChildren();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
+    }
+
+
+    @Override
+    public Object visitHtmlChardata(TypeScriptParser.HtmlChardataContext ctx) {
+
+        Optional<JavaScriptHtmlData> htmlDataOptional = transformTypescriptHtmlCharData(ctx, root);
+
+        if (htmlDataOptional.isPresent()) {
+            JavaScriptHtmlData htmlData = htmlDataOptional.get();
+            htmlData.setContext(buildContext());
+
+            // If there is one visited html elements, add it to the list
+            if (visitedHtmlElements.size() > 0) {
+                JavaScriptHtmlElement parent = visitedHtmlElements.peek();
+                parent.addChild(htmlData);
+            }
+            Object res = visitChildren(ctx);
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
     }
 
     @Override
@@ -107,6 +148,7 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
     private JavaScriptNodeContext buildContext() {
         JavaScriptNodeContext res = JavaScriptNodeContext.buildJavaScriptNodeContext()
             .currentFunction(visitedFunctionDefinitions.isEmpty() ? null : visitedFunctionDefinitions.lastElement())
+            .currentFunctionCall(visitedFunctionCalls.isEmpty() ? null : visitedFunctionCalls.lastElement())
 //            .currentTryBlock(visitedTryStatements.size() > 0 ? visitedTryStatements.lastElement() : null)
             .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
             .code(this.code)
