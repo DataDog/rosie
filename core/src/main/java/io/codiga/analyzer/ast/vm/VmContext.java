@@ -36,7 +36,7 @@ public class VmContext {
     private final ErrorReporting errorReporting;
 
     private final String[] helperFunctions = new String[]{
-        "function debugObject(object) {\n" +
+        "function printObject(object) {\n" +
             "  for (const property in object) {\n" +
             "    console.log(`${property}: ${JSON.stringify(object[property])}`);\n" +
             "  }\n" +
