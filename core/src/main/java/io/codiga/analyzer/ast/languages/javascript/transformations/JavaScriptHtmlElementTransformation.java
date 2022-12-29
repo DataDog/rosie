@@ -61,15 +61,16 @@ public class JavaScriptHtmlElementTransformation {
 //            logger.info("tag");
 //            logger.info(context.TagName().getText());
 //        }
-        if (context.TagName() != null) {
-            return Optional.of(new AstString(context.TagName().getText(), context.TagName().getSymbol(), root));
-        }
-        if (context.keyword() != null) {
-            return Optional.of(new AstString(context.keyword().getText(), context.keyword(), root));
-        }
-        if (context.Identifier() != null) {
-            return Optional.of(new AstString(context.Identifier().getText(), context.Identifier().getSymbol(), root));
-        }
-        return Optional.empty();
+        return Optional.of(new AstString(context.getText(), context, root));
+//        if (context.TagName() != null) {
+//            return Optional.of(new AstString(context.getText(), context.TagName().getSymbol(), root));
+//        }
+//        if (context.keyword() != null) {
+//            return Optional.of(new AstString(context.().getText(), context.keyword(), root));
+//        }
+//        if (context.Identifier() != null) {
+//            return Optional.of(new AstString(context.Identifier().getText(), context.Identifier().getSymbol(), root));
+//        }
+//        return Optional.empty();
     }
 }

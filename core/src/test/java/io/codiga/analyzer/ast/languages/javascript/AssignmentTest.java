@@ -1,7 +1,10 @@
 package io.codiga.analyzer.ast.languages.javascript;
 
 import io.codiga.model.ast.common.Assignment;
+import io.codiga.model.ast.common.AstArray;
 import io.codiga.model.ast.common.AstString;
+import io.codiga.model.ast.javascript.AstStringWithSpreadOperator;
+import io.codiga.model.ast.javascript.JavaScriptObject;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
@@ -15,8 +18,7 @@ import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformJavaScriptAssignmentExpressionToAssignment;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AssignmentTest extends JavaScriptTestUtils {
 
@@ -72,5 +74,55 @@ public class AssignmentTest extends JavaScriptTestUtils {
         }
     }
 
+    @Test
+    @DisplayName("Array values with spread element")
+    public void testArrayAssignment() {
+        String code = """
+            numbers = [1, ...foo, 2];
+            """;
 
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.AssignmentExpressionContext.class);
+
+        for (ParseTree node : nodes) {
+            Optional<Assignment> assignmentOptional = transformJavaScriptAssignmentExpressionToAssignment((JavaScriptParser.AssignmentExpressionContext) node, null);
+            assertTrue(assignmentOptional.isPresent());
+            Assignment assignment = assignmentOptional.get();
+            assertEquals("numbers", ((AstString) assignment.left).value);
+            AstArray arr = (AstArray) assignment.right;
+            assertEquals(3, arr.elements.length);
+            assertEquals("1", ((AstStringWithSpreadOperator) arr.elements[0]).value);
+            assertFalse(((AstStringWithSpreadOperator) arr.elements[0]).isSpread);
+            assertEquals("foo", ((AstStringWithSpreadOperator) arr.elements[1]).value);
+            assertTrue(((AstStringWithSpreadOperator) arr.elements[1]).isSpread);
+
+        }
+    }
+
+    @Test
+    @DisplayName("Object values with spread")
+    public void testObjectWithSpread() {
+        String code = """
+            foo = { ...obj, key: 'value' };
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.AssignmentExpressionContext.class);
+
+        for (ParseTree node : nodes) {
+            Optional<Assignment> assignmentOptional = transformJavaScriptAssignmentExpressionToAssignment((JavaScriptParser.AssignmentExpressionContext) node, null);
+            assertTrue(assignmentOptional.isPresent());
+            Assignment assignment = assignmentOptional.get();
+            assertEquals("foo", ((AstString) assignment.left).value);
+            JavaScriptObject obj = (JavaScriptObject) assignment.right;
+            assertEquals(2, obj.elements.length);
+            assertNull(obj.elements[0].name);
+            assertTrue(((AstStringWithSpreadOperator) obj.elements[0].value).isSpread);
+            assertEquals("obj", ((AstStringWithSpreadOperator) obj.elements[0].value).value);
+            assertEquals("key", ((AstString) obj.elements[1].name).value);
+            assertEquals("'value'", ((AstString) obj.elements[1].value).value);
+        }
+    }
 }

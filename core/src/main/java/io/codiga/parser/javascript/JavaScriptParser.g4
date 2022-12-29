@@ -385,9 +385,7 @@ htmlTagClosingName
     ;
 
 htmlTagName
-    : TagName
-    | keyword
-    | Identifier
+    : (TagName | keyword | Identifier) ('.' (TagName | keyword | Identifier))*
     ;
 
 htmlAttribute

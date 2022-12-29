@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.javascript.transformations;
 
 import io.codiga.model.ast.common.*;
+import io.codiga.model.ast.javascript.AstStringWithSpreadOperator;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -28,15 +29,19 @@ public class JavaScriptSingleExpressionTransformation {
 
 
     public static Optional<AstElement> transformSingleExpressionToAstElement(JavaScriptParser.SingleExpressionContext ctx, ParserRuleContext root) {
+        return transformSingleExpressionToAstElement(ctx, false, root);
+    }
+
+    public static Optional<AstElement> transformSingleExpressionToAstElement(JavaScriptParser.SingleExpressionContext ctx, boolean isSpread, ParserRuleContext root) {
         if (ctx == null) {
             return Optional.empty();
         }
-
+        
         // literal
         if (ctx instanceof JavaScriptParser.LiteralExpressionContext) {
             JavaScriptParser.LiteralExpressionContext literalExpressionContext = (JavaScriptParser.LiteralExpressionContext) ctx;
             if (literalExpressionContext.literal() != null) {
-                return Optional.of(new AstString(literalExpressionContext.literal().getText(), literalExpressionContext.literal(), root));
+                return Optional.of(new AstStringWithSpreadOperator(literalExpressionContext.literal().getText(), isSpread, literalExpressionContext.literal(), root));
             }
         }
 
@@ -52,7 +57,7 @@ public class JavaScriptSingleExpressionTransformation {
         if (ctx instanceof JavaScriptParser.IdentifierExpressionContext) {
             JavaScriptParser.IdentifierExpressionContext identifierExpressionContext = (JavaScriptParser.IdentifierExpressionContext) ctx;
             if (identifierExpressionContext.identifier() != null) {
-                return Optional.of(new AstString(identifierExpressionContext.identifier().getText(), identifierExpressionContext.identifier(), root));
+                return Optional.of(new AstStringWithSpreadOperator(identifierExpressionContext.identifier().getText(), isSpread, identifierExpressionContext.identifier(), root));
             }
         }
 

@@ -26,6 +26,15 @@ public class JavaScriptObjectLiteralToObject {
             }
 
         }
+
+        if (propertyAssignmentContext instanceof JavaScriptParser.PropertyShorthandContext) {
+            JavaScriptParser.PropertyShorthandContext propertyShorthandContext = (JavaScriptParser.PropertyShorthandContext) propertyAssignmentContext;
+            Optional<AstElement> value = transformSingleExpressionToAstElement(propertyShorthandContext.singleExpression(), propertyShorthandContext.Ellipsis() != null, root);
+            if (value.isPresent()) {
+                return Optional.of(new JavaScriptObjectElement(null, value.get(), propertyAssignmentContext, root));
+            }
+
+        }
         return Optional.empty();
     }
 

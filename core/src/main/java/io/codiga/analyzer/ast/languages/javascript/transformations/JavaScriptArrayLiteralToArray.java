@@ -19,7 +19,7 @@ public class JavaScriptArrayLiteralToArray {
         if (ctx.elementList() != null && ctx.elementList().arrayElement() != null) {
             for (JavaScriptParser.ArrayElementContext element : ctx.elementList().arrayElement()) {
                 if (element.singleExpression() != null) {
-                    Optional<AstElement> arrayElement = transformSingleExpressionToAstElement(element.singleExpression(), root);
+                    Optional<AstElement> arrayElement = transformSingleExpressionToAstElement(element.singleExpression(), element.Ellipsis() != null, root);
                     if (arrayElement.isPresent()) {
                         arrayElements.add(arrayElement.get());
                     }

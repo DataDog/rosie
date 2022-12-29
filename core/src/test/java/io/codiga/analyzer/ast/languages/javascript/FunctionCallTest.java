@@ -3,6 +3,7 @@ package io.codiga.analyzer.ast.languages.javascript;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionCall;
+import io.codiga.model.ast.javascript.AstStringWithSpreadOperator;
 import io.codiga.model.ast.javascript.JavaScriptObject;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -97,6 +98,31 @@ public class FunctionCallTest extends JavaScriptTestUtils {
 
 
     @Test
+    @DisplayName("Get a value with spread argument as argument")
+    public void testFunctionCallWithSpread() {
+        String code = """
+            myFunc(1, "bar", ...myVariable)
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.ArgumentsExpressionContext.class);
+
+        for (ParseTree node : nodes) {
+            if (isFunctionCall(node)) {
+                Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall((JavaScriptParser.ArgumentsExpressionContext) node, null);
+                assertTrue(functionCallOptional.isPresent());
+                FunctionCall functionCall = functionCallOptional.get();
+                assertEquals(((AstString) functionCall.functionName).value, "myFunc");
+                assertEquals(((AstString) functionCall.arguments.values[0].value).value, "1");
+                assertEquals(((AstString) functionCall.arguments.values[1].value).value, "\"bar\"");
+                assertEquals(((AstStringWithSpreadOperator) functionCall.arguments.values[2].value).value, "myVariable");
+                assertEquals(true, ((AstStringWithSpreadOperator) functionCall.arguments.values[2].value).isSpread);
+            }
+        }
+    }
+
+    @Test
     @DisplayName("Get an object as argument")
     public void testSimpleObject() {
         String code = """
@@ -113,6 +139,7 @@ public class FunctionCallTest extends JavaScriptTestUtils {
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();
                 assertEquals(((AstString) functionCall.functionName).value, "myFunc");
+                assertEquals(1, functionCall.arguments.values.length);
             }
         }
     }
