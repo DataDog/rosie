@@ -1,13 +1,19 @@
 package io.codiga.analyzer.ast.languages.typescript.transformations;
 
+import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
 import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToAstElement;
+
 public class TypeScriptSingleExpressionTransformation {
+    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
 
     public static Optional<Assignment> transformJavaScriptAssignmentExpressionToAssignment(TypeScriptParser.AssignmentExpressionContext ctx, ParserRuleContext root) {
         if (ctx.singleExpression().size() == 2) {
@@ -25,6 +31,8 @@ public class TypeScriptSingleExpressionTransformation {
         if (ctx == null) {
             return Optional.empty();
         }
+        logger.info("owiejwefoij");
+        logger.info(ctx.getClass().toString());
 
 //        // literal
 //        if (ctx instanceof TypeScriptParser.LiteralExpressionContext literalExpressionContext) {
@@ -41,12 +49,11 @@ public class TypeScriptSingleExpressionTransformation {
 //            }
 //        }
 //
-//        // identifier
-//        if (ctx instanceof TypeScriptParser.IdentifierExpressionContext identifierExpressionContext) {
-//            if (identifierExpressionContext.identifier() != null) {
-//                return Optional.of(new AstString(identifierExpressionContext.identifier().getText(), identifierExpressionContext.identifier(), root));
-//            }
-//        }
+
+        // identifier
+        if (ctx instanceof TypeScriptParser.IdentifierExpressionContext identifierExpressionContext) {
+            return transformIdentifierExpressionToAstElement((TypeScriptParser.IdentifierExpressionContext) identifierExpressionContext, root);
+        }
 //
 //
 //        // array

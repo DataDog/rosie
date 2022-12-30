@@ -34,12 +34,10 @@ public class TypeScriptHtmlElementTransformation {
             });
         }
 
-        if (tag.isPresent()) {
-            return Optional.of(
-                new io.codiga.model.ast.javascript.JavaScriptHtmlElement(tag.get(), attributes, ctx, root)
-            );
-        }
 
-        return Optional.empty();
+        return Optional.of(
+            new io.codiga.model.ast.javascript.JavaScriptHtmlElement(tag.orElse(null), attributes, ctx, root)
+        );
+        
     }
 }

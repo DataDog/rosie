@@ -14,8 +14,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TsxTest extends TypeScriptTestUtils {
 
@@ -72,7 +71,7 @@ public class TsxTest extends TypeScriptTestUtils {
             Optional<JavaScriptHtmlElement> elementOptional = transformTypeScriptHtmlElement(((TypeScriptParser.HtmlElementContext) node), null);
             assertTrue(elementOptional.isPresent());
             JavaScriptHtmlElement element = elementOptional.get();
-            assertEquals("ul", ((AstString)element.tag).value);
+            assertEquals("ul", ((AstString) element.tag).value);
 //            assertEquals(6, element.attributes.length);
 //            assertEquals("id", element.attributes[0].name.value);
 //            assertEquals("\"js-outcome-summary-container-{$objectType}-{$objectId}\"", ((AstString) element.attributes[0].value).value);
@@ -87,5 +86,47 @@ public class TsxTest extends TypeScriptTestUtils {
 //            assertEquals("role", element.attributes[5].name.value);
 //            assertEquals("\"group\"", ((AstString) element.attributes[5].value).value);
         }
+    }
+
+
+    @Test
+    @DisplayName("Get emtpy  tags")
+    public void testEmptyTag() {
+        String code = """
+            import React from 'react';
+
+            /**
+             * jive.outcomes.summary.summaryContainer
+             */
+            class SummaryContainer extends React.Component {
+              constructor(props) {
+                super(props);
+
+                this.state = {
+                  subject: 'Summary Container!!'
+                };
+              }
+
+              render() {
+                return (
+                  <>
+                    <div>
+                    </div>
+                    <div />
+                  </>
+                );
+              }
+            }
+
+            export default SummaryContainer;
+                        """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.HtmlElementContext.class);
+        Optional<JavaScriptHtmlElement> elementOptional = transformTypeScriptHtmlElement(((TypeScriptParser.HtmlElementContext) nodes.get(0)), null);
+        assertTrue(elementOptional.isPresent());
+        JavaScriptHtmlElement element = elementOptional.get();
+        assertNull(element.tag);
     }
 }

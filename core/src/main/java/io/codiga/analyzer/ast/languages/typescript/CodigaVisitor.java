@@ -20,6 +20,7 @@ import java.util.Stack;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlCharDataTransformation.transformTypescriptHtmlCharData;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToFunctionCall;
 
 
 /**
@@ -138,9 +139,29 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
             FunctionCall functionCall = functionCallOptional.get();
             functionCall.setContext(buildContext());
             this.functionCalls.add(functionCall);
+            visitedFunctionCalls.push(functionCall);
+            Object obj = visitChildren(ctx);
+            visitedFunctionCalls.pop();
+            return obj;
+        } else {
+            return visitChildren(ctx);
         }
+    }
 
-        return visitChildren(ctx);
+    @Override
+    public Object visitIdentifierExpression(TypeScriptParser.IdentifierExpressionContext ctx) {
+        Optional<FunctionCall> functionCallOptional = transformIdentifierExpressionToFunctionCall(ctx, root);
+        if (functionCallOptional.isPresent()) {
+            FunctionCall functionCall = functionCallOptional.get();
+            functionCall.setContext(buildContext());
+            this.functionCalls.add(functionCall);
+            visitedFunctionCalls.push(functionCall);
+            Object obj = visitChildren(ctx);
+            visitedFunctionCalls.pop();
+            return obj;
+        } else {
+            return visitChildren(ctx);
+        }
     }
 
 
