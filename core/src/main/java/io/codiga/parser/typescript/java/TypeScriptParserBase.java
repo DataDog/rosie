@@ -133,6 +133,6 @@ public abstract class TypeScriptParserBase extends Parser {
     // jsx
     protected boolean popHtmlTagName(String tagName) {
 //        return String.Equals(_tagNames.pop(), tagName, StringComparison.InvariantCulture);
-        return tagName.equalsIgnoreCase(_tagNames.pop());
+        return _tagNames.size() > 0 && tagName.equalsIgnoreCase(_tagNames.pop());
     }
 }
