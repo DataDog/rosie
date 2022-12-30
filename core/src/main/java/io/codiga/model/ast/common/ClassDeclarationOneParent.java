@@ -4,11 +4,11 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 
 public class ClassDeclarationOneParent extends ClassDeclaration {
-    public AstString parentClass;
+    public AstElement parentClass;
 
 
     public ClassDeclarationOneParent(AstString name,
-                                     AstString parentClass,
+                                     AstElement parentClass,
                                      ParserRuleContext ruleContext,
                                      ParserRuleContext root) {
         super(name, ruleContext, root);
