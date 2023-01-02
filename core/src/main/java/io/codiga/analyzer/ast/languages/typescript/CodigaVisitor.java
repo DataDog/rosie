@@ -19,10 +19,13 @@ import java.util.Stack;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptClassDeclarationToClass.transformClassDeclaration;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlCharDataTransformation.transformTypescriptHtmlCharData;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToFunctionCall;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptImportStatementToImport.transformImportStatementToImport;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTryStatement.transformTryStatementToTryCatchStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
 
 
@@ -97,6 +100,23 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
             this.assignments.add(assignment);
         }
         return visitChildren(ctx);
+    }
+
+
+    @Override
+    public Object visitFunctionDeclaration(TypeScriptParser.FunctionDeclarationContext ctx) {
+        Optional<FunctionDefinition> functionDefinitionOptional = transformFunctionDeclarationToFunctionDefinition(ctx, root);
+        if (functionDefinitionOptional.isPresent()) {
+            FunctionDefinition functionDefinition = functionDefinitionOptional.get();
+            functionDefinition.setContext(buildContext());
+            this.functionDefinitions.add(functionDefinition);
+            this.visitedFunctionDefinitions.push(functionDefinition);
+            Object res = visitChildren(ctx);
+            this.visitedFunctionDefinitions.pop();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
     }
 
     @Override
@@ -204,6 +224,33 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
         }
     }
 
+    @Override
+    public Object visitIfStatement(TypeScriptParser.IfStatementContext ctx) {
+        Optional<IfStatement> ifStatementOptional = transformIfStatementToIfStatement(ctx, root);
+
+        if (ifStatementOptional.isPresent()) {
+            IfStatement ifStatement = ifStatementOptional.get();
+            ifStatement.setContext(buildContext());
+            this.ifStatements.add(ifStatement);
+            this.visitedIfStatements.push(ifStatement);
+            Object res = visitChildren(ctx);
+            this.visitedIfStatements.pop();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
+    }
+
+    @Override
+    public Object visitTryStatement(TypeScriptParser.TryStatementContext ctx) {
+        Optional<JavaScriptTryCatchStatement> tryCatchStatementOptional = transformTryStatementToTryCatchStatement(ctx, root);
+        if (tryCatchStatementOptional.isPresent()) {
+            JavaScriptTryCatchStatement javaScriptTryCatchStatement = tryCatchStatementOptional.get();
+            javaScriptTryCatchStatement.setContext(buildContext());
+            this.tryStatements.add(javaScriptTryCatchStatement);
+        }
+        return visitChildren(ctx);
+    }
 
     @Trace(operationName = "CodigaTypeScriptVisitor.buildContext")
     private JavaScriptNodeContext buildContext() {

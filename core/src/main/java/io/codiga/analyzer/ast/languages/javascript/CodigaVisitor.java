@@ -175,11 +175,6 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         }
     }
 
-    @Override
-    public Object visitArrowFunction(JavaScriptParser.ArrowFunctionContext ctx) {
-        return visitChildren(ctx);
-    }
-
 
     @Override
     public Object visitTryStatement(JavaScriptParser.TryStatementContext ctx) {
@@ -225,7 +220,6 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         } else {
             return visitChildren(ctx);
         }
-
     }
 
     @Override

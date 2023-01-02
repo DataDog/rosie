@@ -6,6 +6,7 @@ import java.util.Optional;
 
 public class Conversions {
 
+
     public static Optional<AstElement> convertToAstElement(Optional<? extends AstElement> el) {
         if (el.isPresent()) {
             AstElement astElement = (AstElement) el.get();
