@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.Stack;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptClassDeclarationToClass.transformClassDeclaration;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptForStatement.transformForStatementToForStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlCharDataTransformation.transformTypescriptHtmlCharData;
@@ -118,6 +119,23 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
             return visitChildren(ctx);
         }
     }
+
+    @Override
+    public Object visitForStatement(TypeScriptParser.ForStatementContext ctx) {
+        Optional<ForStatement> forStatementOptional = transformForStatementToForStatement(ctx, root);
+        if (forStatementOptional.isPresent()) {
+            ForStatement forStatement = forStatementOptional.get();
+            forStatement.setContext(buildContext());
+            this.forStatements.add((forStatement));
+            this.visitedForStatements.push(forStatement);
+            Object res = visitChildren(ctx);
+            this.visitedForStatements.pop();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
+    }
+
 
     @Override
     public Object visitHtmlElement(TypeScriptParser.HtmlElementContext ctx) {
