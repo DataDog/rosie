@@ -72,19 +72,19 @@ public class TsxTest extends TypeScriptTestUtils {
             assertTrue(elementOptional.isPresent());
             JavaScriptHtmlElement element = elementOptional.get();
             assertEquals("ul", ((AstString) element.tag).value);
-//            assertEquals(6, element.attributes.length);
-//            assertEquals("id", element.attributes[0].name.value);
-//            assertEquals("\"js-outcome-summary-container-{$objectType}-{$objectId}\"", ((AstString) element.attributes[0].value).value);
-//            assertEquals("className", element.attributes[1].name.value);
-//            assertEquals("\"js-outcome-summary-container j-outcome-summary-container js-ed-{$objectType}-{$objectId}\"", ((AstString) element.attributes[1].value).value);
-//            assertEquals("data-object-type", element.attributes[2].name.value);
-//            assertEquals("\"{$objectType}\"", ((AstString) element.attributes[2].value).value);
-//            assertEquals("data-object-id", element.attributes[3].name.value);
-//            assertEquals("\"{$objectId}\"", ((AstString) element.attributes[3].value).value);
-//            assertEquals("aria-label", element.attributes[4].name.value);
-//            assertEquals("\"{i18nText('outcomes.summaryContainer.ariaLabel')}\"", ((AstString) element.attributes[4].value).value);
-//            assertEquals("role", element.attributes[5].name.value);
-//            assertEquals("\"group\"", ((AstString) element.attributes[5].value).value);
+            assertEquals(6, element.attributes.length);
+            assertEquals("id", element.attributes[0].name.value);
+            assertEquals("\"js-outcome-summary-container-{$objectType}-{$objectId}\"", ((AstString) element.attributes[0].value).value);
+            assertEquals("className", element.attributes[1].name.value);
+            assertEquals("\"js-outcome-summary-container j-outcome-summary-container js-ed-{$objectType}-{$objectId}\"", ((AstString) element.attributes[1].value).value);
+            assertEquals("data-object-type", element.attributes[2].name.value);
+            assertEquals("\"{$objectType}\"", ((AstString) element.attributes[2].value).value);
+            assertEquals("data-object-id", element.attributes[3].name.value);
+            assertEquals("\"{$objectId}\"", ((AstString) element.attributes[3].value).value);
+            assertEquals("aria-label", element.attributes[4].name.value);
+            assertEquals("\"{i18nText('outcomes.summaryContainer.ariaLabel')}\"", ((AstString) element.attributes[4].value).value);
+            assertEquals("role", element.attributes[5].name.value);
+            assertEquals("\"group\"", ((AstString) element.attributes[5].value).value);
         }
     }
 
