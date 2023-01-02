@@ -23,6 +23,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptImportStatementToImport.transformImportStatementToImport;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
 
 
 /**
@@ -83,6 +84,18 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
     @Override
     public Object visitProgram(TypeScriptParser.ProgramContext ctx) {
         this.root = ctx;
+        return visitChildren(ctx);
+    }
+
+
+    @Override
+    public Object visitVariableDeclaration(TypeScriptParser.VariableDeclarationContext ctx) {
+        Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment(ctx, root);
+        if (assignmentOptional.isPresent()) {
+            Assignment assignment = assignmentOptional.get();
+            assignment.setContext(buildContext());
+            this.assignments.add(assignment);
+        }
         return visitChildren(ctx);
     }
 
@@ -149,7 +162,6 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
 
         Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall(ctx, root);
         if (functionCallOptional.isPresent()) {
-            logger.info("visit arguments expression");
             FunctionCall functionCall = functionCallOptional.get();
             functionCall.setContext(buildContext());
             this.functionCalls.add(functionCall);

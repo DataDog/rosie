@@ -3,6 +3,7 @@ package io.codiga.analyzer.ast.languages.typescript.transformations;
 import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
 import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionDefinition;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrowFunctionDeclaration.transformArrowFunctionDeclarationContext;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToAstElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptObjectLiteralToObject.transformTypeScriptObjectLiteralToObject;
 
 public class TypeScriptSingleExpressionTransformation {
     private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
@@ -34,15 +36,15 @@ public class TypeScriptSingleExpressionTransformation {
         if (ctx == null) {
             return Optional.empty();
         }
-        logger.info("owiejwefoij");
+        logger.info("single expression");
         logger.info(ctx.getClass().toString());
 
-//        // literal
-//        if (ctx instanceof TypeScriptParser.LiteralExpressionContext literalExpressionContext) {
-//            if (literalExpressionContext.literal() != null) {
-//                return Optional.of(new AstString(literalExpressionContext.literal().getText(), literalExpressionContext.literal(), root));
-//            }
-//        }
+        // literal
+        if (ctx instanceof TypeScriptParser.LiteralExpressionContext literalExpressionContext) {
+            if (literalExpressionContext.literal() != null) {
+                return Optional.of(new AstString(literalExpressionContext.literal().getText(), literalExpressionContext.literal(), root));
+            }
+        }
 //
 //        // function call
 //        if (ctx instanceof JavaScriptParser.ArgumentsExpressionContext) {
@@ -69,14 +71,14 @@ public class TypeScriptSingleExpressionTransformation {
 //
 //
 //        // object
-//        if (ctx instanceof TypeScriptParser.ObjectLiteralExpressionContext objectLiteralExpressionContext) {
-//
-//            if (objectLiteralExpressionContext.objectLiteral() != null) {
-//                return transformJavaScriptObjectLiteralToObject(objectLiteralExpressionContext.objectLiteral(), root);
-//
-//            }
-//        }
-//
+        if (ctx instanceof TypeScriptParser.ObjectLiteralExpressionContext objectLiteralExpressionContext) {
+
+            if (objectLiteralExpressionContext.objectLiteral() != null) {
+                return transformTypeScriptObjectLiteralToObject(objectLiteralExpressionContext.objectLiteral(), root);
+
+            }
+        }
+
         // member dot
         if (ctx instanceof TypeScriptParser.MemberDotExpressionContext memberDotExpressionContext) {
 
