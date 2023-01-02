@@ -21,6 +21,8 @@ public class TypeScriptImportStatementToImport {
 
         if (importStatementContext.fromBlock() != null) {
             TypeScriptParser.FromBlockContext fromBlockContext = importStatementContext.fromBlock();
+
+            // match "import {foo1, foo2} from bar
             if (fromBlockContext.multipleImportStatement() != null) {
                 if (fromBlockContext.multipleImportStatement().identifierName() != null && fromBlockContext.multipleImportStatement().identifierName().size() > 0) {
                     for (TypeScriptParser.IdentifierNameContext identifierNameContext : fromBlockContext.multipleImportStatement().identifierName()) {
@@ -31,6 +33,31 @@ public class TypeScriptImportStatementToImport {
                     }
 
                 }
+            }
+
+            // match "import foo from bar"
+            if (fromBlockContext.Multiply() == null && fromBlockContext.multipleImportStatement() == null && fromBlockContext.identifierName() != null && fromBlockContext.identifierName().size() > 0) {
+                TypeScriptParser.IdentifierNameContext identifierNameContext = fromBlockContext.identifierName().get(0);
+                Optional<AstString> n = transformIdentifierNameToAstString(identifierNameContext, root);
+                if (n.isPresent()) {
+                    importedNameList.add(new JavaScriptImportedName(n.get(), null, identifierNameContext, root));
+                }
+
+            }
+
+            // match "import * from bar"
+            if (fromBlockContext.Multiply() != null) {
+                Optional<AstString> asName = Optional.empty();
+                if (fromBlockContext.identifierName() != null && fromBlockContext.identifierName().size() == 1) {
+                    asName = transformIdentifierNameToAstString(fromBlockContext.identifierName().get(0), root);
+                }
+
+                importedNameList.add(
+                    new JavaScriptImportedName(
+                        new AstString("*", fromBlockContext.Multiply().getSymbol(), root),
+                        asName.orElse(null),
+                        fromBlockContext,
+                        root));
             }
 
             if (fromBlockContext.StringLiteral() != null) {

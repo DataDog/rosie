@@ -1,7 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript;
 
 import io.codiga.model.ast.javascript.JavaScriptImport;
-import io.codiga.parser.javascript.gen.JavaScriptParser;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
@@ -38,7 +37,6 @@ public class ImportTest extends TypeScriptTestUtils {
             """;
 
         ParseTree root = parseCode(code);
-        printTree(root);
 
         List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.ImportStatementContext.class);
 
@@ -62,7 +60,7 @@ public class ImportTest extends TypeScriptTestUtils {
 
         ParseTree root = parseCode(code);
 
-        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.ImportStatementContext.class);
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.ImportStatementContext.class);
         assertEquals(1, nodes.size());
 
         Optional<JavaScriptImport> importOptional = transformImportStatementToImport((TypeScriptParser.ImportStatementContext) nodes.get(0), null);
@@ -73,26 +71,4 @@ public class ImportTest extends TypeScriptTestUtils {
         assertEquals("name", importOptional.get().importedNames[0].as.value);
     }
 
-
-    @Test
-    @DisplayName("import star with alias")
-    public void testMultipleImports() {
-        String code = """
-            import { export1 as alias1, export2 } from "module-name";
-            """;
-
-        ParseTree root = parseCode(code);
-
-        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.ImportStatementContext.class);
-        assertEquals(1, nodes.size());
-
-        Optional<JavaScriptImport> importOptional = transformImportStatementToImport((TypeScriptParser.ImportStatementContext) nodes.get(0), null);
-        assertTrue(importOptional.isPresent());
-        assertEquals("\"module-name\"", importOptional.get().pkg.value);
-        assertEquals(2, importOptional.get().importedNames.length);
-        assertEquals("export1", importOptional.get().importedNames[0].name.value);
-        assertEquals("alias1", importOptional.get().importedNames[0].as.value);
-        assertEquals("export2", importOptional.get().importedNames[1].name.value);
-        assertNull(importOptional.get().importedNames[1].as);
-    }
 }

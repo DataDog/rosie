@@ -11,6 +11,9 @@ public class TypeScriptIdentifierNameTransformation {
 
 
     public static Optional<AstString> transformIdentifierNameToAstString(TypeScriptParser.IdentifierNameContext ctx, ParserRuleContext root) {
+        if (ctx == null) {
+            return Optional.empty();
+        }
         if (ctx.Identifier() != null) {
             return Optional.of(new AstString(ctx.Identifier().getText(), ctx, root));
         }
