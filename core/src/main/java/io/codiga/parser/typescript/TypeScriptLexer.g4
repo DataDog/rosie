@@ -189,7 +189,7 @@ LineTerminator:                 [\r\n\u2028\u2029] -> channel(HIDDEN);
 
 /// Comments
 
-
+JsxComment:                     '{/*' .*? '*/}'           -> channel(HIDDEN);
 HtmlComment:                    '<!--' .*? '-->' -> channel(HIDDEN);
 CDataComment:                   '<![CDATA[' .*? ']]>' -> channel(HIDDEN);
 UnexpectedCharacter:            . -> channel(ERROR);
@@ -341,6 +341,7 @@ fragment HexEscapeSequence
 
 fragment UnicodeEscapeSequence
     : 'u' HexDigit HexDigit HexDigit HexDigit
+    | 'u' '{' HexDigit HexDigit+ '}'
     ;
 
 fragment ExtendedUnicodeEscapeSequence

@@ -38,10 +38,10 @@ public class TypeScriptParser extends TypeScriptParserBase {
         Number = 109, Boolean = 110, String = 111, Symbol = 112, TypeAlias = 113, Get = 114,
         Set = 115, Constructor = 116, Namespace = 117, Require = 118, Module = 119, Declare = 120,
         Abstract = 121, Is = 122, At = 123, Identifier = 124, StringLiteral = 125, BackTick = 126,
-        WhiteSpaces = 127, LineTerminator = 128, HtmlComment = 129, CDataComment = 130,
-        UnexpectedCharacter = 131, TemplateStringStartExpression = 132, TemplateStringAtom = 133,
-        TagOpen = 134, TagClose = 135, TagSlashClose = 136, TagSlash = 137, TagName = 138,
-        AttributeValue = 139, Attribute = 140, TagEquals = 141;
+        WhiteSpaces = 127, LineTerminator = 128, JsxComment = 129, HtmlComment = 130,
+        CDataComment = 131, UnexpectedCharacter = 132, TemplateStringStartExpression = 133,
+        TemplateStringAtom = 134, TagOpen = 135, TagClose = 136, TagSlashClose = 137,
+        TagSlash = 138, TagName = 139, AttributeValue = 140, Attribute = 141, TagEquals = 142;
     public static final int
         RULE_htmlElements = 0, RULE_htmlElement = 1, RULE_htmlContent = 2, RULE_htmlTagStartName = 3,
         RULE_htmlTagClosingName = 4, RULE_htmlTagName = 5, RULE_htmlAttribute = 6,
@@ -101,7 +101,7 @@ public class TypeScriptParser extends TypeScriptParserBase {
     @Deprecated
     public static final String[] tokenNames;
     public static final String _serializedATN =
-        "\u0004\u0001\u008d\u0730\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001" +
+        "\u0004\u0001\u008e\u0730\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001" +
             "\u0002\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004" +
             "\u0002\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007" +
             "\u0002\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b" +
@@ -470,11 +470,11 @@ public class TypeScriptParser extends TypeScriptParserBase {
             "\u0000\u0000\u0000\u0183\u0184\u0003\n\u0005\u0000\u0184\u0185\u0006\u0003" +
             "\uffff\uffff\u0000\u0185\u0007\u0001\u0000\u0000\u0000\u0186\u0187\u0003" +
             "\n\u0005\u0000\u0187\u0188\u0004\u0004\u0000\u0001\u0188\t\u0001\u0000" +
-            "\u0000\u0000\u0189\u018d\u0005\u008a\u0000\u0000\u018a\u018d\u0003\u012e" +
+            "\u0000\u0000\u0189\u018d\u0005\u008b\u0000\u0000\u018a\u018d\u0003\u012e" +
             "\u0097\u0000\u018b\u018d\u0005|\u0000\u0000\u018c\u0189\u0001\u0000\u0000" +
             "\u0000\u018c\u018a\u0001\u0000\u0000\u0000\u018c\u018b\u0001\u0000\u0000" +
             "\u0000\u018d\u0196\u0001\u0000\u0000\u0000\u018e\u0192\u0005\u0011\u0000" +
-            "\u0000\u018f\u0193\u0005\u008a\u0000\u0000\u0190\u0193\u0003\u012e\u0097" +
+            "\u0000\u018f\u0193\u0005\u008b\u0000\u0000\u0190\u0193\u0003\u012e\u0097" +
             "\u0000\u0191\u0193\u0005|\u0000\u0000\u0192\u018f\u0001\u0000\u0000\u0000" +
             "\u0192\u0190\u0001\u0000\u0000\u0000\u0192\u0191\u0001\u0000\u0000\u0000" +
             "\u0193\u0195\u0001\u0000\u0000\u0000\u0194\u018e\u0001\u0000\u0000\u0000" +
@@ -484,7 +484,7 @@ public class TypeScriptParser extends TypeScriptParserBase {
             "\u019a\u019b\u0005\r\u0000\u0000\u019b\u019c\u0003\u0012\t\u0000\u019c" +
             "\u019f\u0001\u0000\u0000\u0000\u019d\u019f\u0003\u000e\u0007\u0000\u019e" +
             "\u0199\u0001\u0000\u0000\u0000\u019e\u019d\u0001\u0000\u0000\u0000\u019f" +
-            "\r\u0001\u0000\u0000\u0000\u01a0\u01aa\u0005\u008a\u0000\u0000\u01a1\u01a6" +
+            "\r\u0001\u0000\u0000\u0000\u01a0\u01aa\u0005\u008b\u0000\u0000\u01a1\u01a6" +
             "\u0005|\u0000\u0000\u01a2\u01a3\u0005\u0015\u0000\u0000\u01a3\u01a5\u0005" +
             "|\u0000\u0000\u01a4\u01a2\u0001\u0000\u0000\u0000\u01a5\u01a8\u0001\u0000" +
             "\u0000\u0000\u01a6\u01a4\u0001\u0000\u0000\u0000\u01a6\u01a7\u0001\u0000" +
@@ -493,7 +493,7 @@ public class TypeScriptParser extends TypeScriptParserBase {
             "\u0000\u0000\u01aa\u000f\u0001\u0000\u0000\u0000\u01ab\u01ad\b\u0000\u0000" +
             "\u0000\u01ac\u01ab\u0001\u0000\u0000\u0000\u01ad\u01ae\u0001\u0000\u0000" +
             "\u0000\u01ae\u01ac\u0001\u0000\u0000\u0000\u01ae\u01af\u0001\u0000\u0000" +
-            "\u0000\u01af\u0011\u0001\u0000\u0000\u0000\u01b0\u01b4\u0005\u008b\u0000" +
+            "\u0000\u01af\u0011\u0001\u0000\u0000\u0000\u01b0\u01b4\u0005\u008c\u0000" +
             "\u0000\u01b1\u01b4\u0005}\u0000\u0000\u01b2\u01b4\u0003\u0014\n\u0000" +
             "\u01b3\u01b0\u0001\u0000\u0000\u0000\u01b3\u01b1\u0001\u0000\u0000\u0000" +
             "\u01b3\u01b2\u0001\u0000\u0000\u0000\u01b4\u0013\u0001\u0000\u0000\u0000" +
@@ -1293,8 +1293,8 @@ public class TypeScriptParser extends TypeScriptParserBase {
             "\u0000\u0000\u0000\u0707\u070a\u0001\u0000\u0000\u0000\u0708\u0706\u0001" +
             "\u0000\u0000\u0000\u0708\u0709\u0001\u0000\u0000\u0000\u0709\u070b\u0001" +
             "\u0000\u0000\u0000\u070a\u0708\u0001\u0000\u0000\u0000\u070b\u070c\u0005" +
-            "~\u0000\u0000\u070c\u0123\u0001\u0000\u0000\u0000\u070d\u0713\u0005\u0085" +
-            "\u0000\u0000\u070e\u070f\u0005\u0084\u0000\u0000\u070f\u0710\u0003\u0114" +
+            "~\u0000\u0000\u070c\u0123\u0001\u0000\u0000\u0000\u070d\u0713\u0005\u0086" +
+            "\u0000\u0000\u070e\u070f\u0005\u0085\u0000\u0000\u070f\u0710\u0003\u0114" +
             "\u008a\u0000\u0710\u0711\u0005\t\u0000\u0000\u0711\u0713\u0001\u0000\u0000" +
             "\u0000\u0712\u070d\u0001\u0000\u0000\u0000\u0712\u070e\u0001\u0000\u0000" +
             "\u0000\u0713\u0125\u0001\u0000\u0000\u0000\u0714\u0715\u0007\r\u0000\u0000" +
@@ -1433,8 +1433,8 @@ public class TypeScriptParser extends TypeScriptParserBase {
             "'protected'", "'static'", "'yield'", "'any'", "'number'", "'boolean'",
             "'string'", "'symbol'", "'type'", "'get'", "'set'", "'constructor'",
             "'namespace'", "'require'", "'module'", "'declare'", "'abstract'", "'is'",
-            "'@'", null, null, null, null, null, null, null, null, "'${'", null,
-            null, null, "'/>'"
+            "'@'", null, null, null, null, null, null, null, null, null, "'${'",
+            null, null, null, "'/>'"
         };
     }
 
@@ -1461,7 +1461,7 @@ public class TypeScriptParser extends TypeScriptParserBase {
             "Yield", "Any", "Number", "Boolean", "String", "Symbol", "TypeAlias",
             "Get", "Set", "Constructor", "Namespace", "Require", "Module", "Declare",
             "Abstract", "Is", "At", "Identifier", "StringLiteral", "BackTick", "WhiteSpaces",
-            "LineTerminator", "HtmlComment", "CDataComment", "UnexpectedCharacter",
+            "LineTerminator", "JsxComment", "HtmlComment", "CDataComment", "UnexpectedCharacter",
             "TemplateStringStartExpression", "TemplateStringAtom", "TagOpen", "TagClose",
             "TagSlashClose", "TagSlash", "TagName", "AttributeValue", "Attribute",
             "TagEquals"

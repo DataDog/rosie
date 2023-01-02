@@ -90,7 +90,7 @@ public class TsxTest extends TypeScriptTestUtils {
 
 
     @Test
-    @DisplayName("Get emtpy  tags")
+    @DisplayName("Get emtpy tags")
     public void testEmptyTag() {
         String code = """
             import React from 'react';
@@ -128,5 +128,38 @@ public class TsxTest extends TypeScriptTestUtils {
         assertTrue(elementOptional.isPresent());
         JavaScriptHtmlElement element = elementOptional.get();
         assertNull(element.tag);
+    }
+
+    @Test
+    @DisplayName("TSX with comments")
+    public void testTsxWithComments() {
+        String code = """
+                // Layout.jsx
+
+                export { Header, Content, Footer }
+
+                // App.jsx
+                import * as Layout from "./Layout";
+
+                return (
+                 <div>
+                    {/*
+                      These components don't return any .[naming] info
+                      and they are missing the props
+                    */}
+                   <Layout.Header user='Daniel' />
+                   <Layout.Content color='purple' />
+                   <Layout.Footer />
+                 </div>
+                )
+
+                // look at the 5th and 6th console results
+            """;
+
+        ParseTree root = parseCode(code);
+        printTree(root);
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.HtmlElementContext.class);
+        nodes.forEach(c -> log.info(c.getText()));
+        assertEquals(4, nodes.size());
     }
 }
