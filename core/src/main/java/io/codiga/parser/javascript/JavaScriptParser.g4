@@ -366,10 +366,11 @@ htmlElements
     ;
 
 htmlElement
-    : '<' htmlTagStartName? htmlAttribute* '>' htmlContent '<''/' htmlTagClosingName? '>'
+    : '<' htmlTagStartName htmlAttribute* '>' htmlContent '<''/' htmlTagClosingName '>'
     | '<' htmlTagName htmlAttribute* htmlContent '/''>'
     | '<' htmlTagName htmlAttribute* '/''>'
     | '<' htmlTagName htmlAttribute* '>'
+    | '<' '>' htmlContent '<' '/' '>'
     ;
 
 htmlContent
@@ -395,7 +396,13 @@ htmlAttribute
 
 htmlAttributeName
     : TagName
-    | Identifier ('-' Identifier)*		// 2020/10/28 bugfix: '-' is recognized as MINUS and TagName is splited by '-'.
+    | identifierOrKeyWord ('-' identifierOrKeyWord)*		// 2020/10/28 bugfix: '-' is recognized as MINUS and TagName is splited by '-'.
+    ;
+
+
+identifierOrKeyWord
+    : Identifier
+    | As
     ;
 
 htmlChardata

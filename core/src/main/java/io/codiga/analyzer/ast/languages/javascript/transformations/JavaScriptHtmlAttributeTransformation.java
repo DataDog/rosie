@@ -17,8 +17,8 @@ public class JavaScriptHtmlAttributeTransformation {
             return Optional.of(new AstString(name.TagName().getText(), name.TagName().getSymbol(), root));
         }
 
-        if (name.Identifier() != null) {
-            String n = String.join("-", name.Identifier().stream().map(i -> i.getText()).toList());
+        if (name.identifierOrKeyWord() != null) {
+            String n = String.join("-", name.identifierOrKeyWord().stream().map(i -> i.getText()).toList());
             return Optional.of(new AstString(n, name, root));
         }
         return Optional.empty();

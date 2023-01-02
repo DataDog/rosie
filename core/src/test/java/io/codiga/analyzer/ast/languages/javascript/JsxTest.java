@@ -195,4 +195,36 @@ public class JsxTest extends JavaScriptTestUtils {
         List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.HtmlElementContext.class);
         assertEquals(4, nodes.size());
     }
+
+    @Test
+    @DisplayName("Get JSX with as for property")
+    public void testJsxAsProperty() {
+        String code = """
+                // Layout.jsx
+
+                export { Header, Content, Footer }
+
+                // App.jsx
+                import * as Layout from "./Layout";
+
+                return (
+                 <Button>
+                 	<Box as="span">correct</Box>
+                 </Button>
+                )
+
+                // look at the 5th and 6th console results
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.HtmlElementContext.class);
+        assertEquals(2, nodes.size());
+        Optional<JavaScriptHtmlElement> elementOptional = transformJavaScriptHtmlElement(((JavaScriptParser.HtmlElementContext) nodes.get(1)), null);
+        assertTrue(elementOptional.isPresent());
+        JavaScriptHtmlElement element = elementOptional.get();
+        assertEquals(1, element.attributes.length);
+        assertEquals("as", element.attributes[0].name.value);
+        assertEquals("\"span\"", ((AstString) element.attributes[0].value).value);
+    }
 }

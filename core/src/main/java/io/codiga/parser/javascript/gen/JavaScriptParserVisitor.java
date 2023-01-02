@@ -803,6 +803,12 @@ public interface JavaScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitHtmlAttributeName(JavaScriptParser.HtmlAttributeNameContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JavaScriptParser#identifierOrKeyWord}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifierOrKeyWord(JavaScriptParser.IdentifierOrKeyWordContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JavaScriptParser#htmlChardata}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -74,7 +74,7 @@ htmlAttribute
 
 htmlAttributeName
     : TagName
-    | Identifier ('-' Identifier)*		// 2020/10/28 bugfix: '-' is recognized as MINUS and TagName is splited by '-'.
+    | identifierOrKeyWord ('-' identifierOrKeyWord)*		// 2020/10/28 bugfix: '-' is recognized as MINUS and TagName is splited by '-'.
     ;
 
 htmlChardata
@@ -834,6 +834,7 @@ identifierOrKeyWord
     : Identifier
     | TypeAlias
     | Require
+    | As
     ;
 
 reservedWord
