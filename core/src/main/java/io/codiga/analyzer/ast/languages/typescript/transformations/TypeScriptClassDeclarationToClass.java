@@ -28,7 +28,6 @@ public class TypeScriptClassDeclarationToClass {
             }
         }
 
-        // TODO: julien - parse the class extension
         return Optional.of(new ClassDeclarationOneParent(identifier.orElse(null), ext.orElse(null), ctx, root));
     }
 }

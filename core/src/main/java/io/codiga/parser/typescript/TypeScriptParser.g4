@@ -44,10 +44,11 @@ htmlElements
     ;
 
 htmlElement
-    : '<' htmlTagStartName? htmlAttribute* '>' htmlContent '<''/' htmlTagClosingName? '>'
+    : '<' htmlTagStartName htmlAttribute* '>' htmlContent '<''/' htmlTagClosingName '>'
     | '<' htmlTagName htmlAttribute* htmlContent '/''>'
     | '<' htmlTagName htmlAttribute* '/''>'
     | '<' htmlTagName htmlAttribute* '>'
+    | '<' '>' htmlContent '<' '/' '>'
     ;
 
 htmlContent

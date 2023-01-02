@@ -22,6 +22,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlCharDataTransformation.transformTypescriptHtmlCharData;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToFunctionCall;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptImportStatementToImport.transformImportStatementToImport;
 
 
 /**
@@ -110,6 +111,17 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
         }
     }
 
+    @Override
+    public Object visitImportStatement(TypeScriptParser.ImportStatementContext ctx) {
+        Optional<JavaScriptImport> javaScriptImport = transformImportStatementToImport(ctx, root);
+        if (javaScriptImport.isPresent()) {
+            JavaScriptImport jsImport = javaScriptImport.get();
+            jsImport.setContext(buildContext());
+            this.visitedImportStatements.add(jsImport);
+            this.importStatements.add(jsImport);
+        }
+        return visitChildren(ctx);
+    }
 
     @Override
     public Object visitHtmlChardata(TypeScriptParser.HtmlChardataContext ctx) {
