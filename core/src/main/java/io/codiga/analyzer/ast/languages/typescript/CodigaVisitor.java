@@ -149,6 +149,7 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
 
         Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall(ctx, root);
         if (functionCallOptional.isPresent()) {
+            logger.info("visit arguments expression");
             FunctionCall functionCall = functionCallOptional.get();
             functionCall.setContext(buildContext());
             this.functionCalls.add(functionCall);

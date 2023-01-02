@@ -3,6 +3,7 @@ package io.codiga.analyzer.ast.languages.typescript.transformations;
 import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
 import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.FunctionDefinition;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
@@ -10,7 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrowFunctionDeclaration.transformArrowFunctionDeclarationContext;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToAstElement;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
 
 public class TypeScriptSingleExpressionTransformation {
     private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
@@ -74,11 +77,11 @@ public class TypeScriptSingleExpressionTransformation {
 //            }
 //        }
 //
-//        // member dot
-//        if (ctx instanceof TypeScriptParser.MemberDotExpressionContext memberDotExpressionContext) {
-//
-//            return transformMemberDotToJavaScriptMember(memberDotExpressionContext, root);
-//        }
+        // member dot
+        if (ctx instanceof TypeScriptParser.MemberDotExpressionContext memberDotExpressionContext) {
+
+            return transformMemberDotToJavaScriptMember(memberDotExpressionContext, root);
+        }
 //
 //        // equality
 //        if (ctx instanceof TypeScriptParser.EqualityExpressionContext equalityExpressionContext) {
@@ -123,17 +126,17 @@ public class TypeScriptSingleExpressionTransformation {
 //            return Optional.of(new Operation(left.orElse(null), new AstString("=", assignmentExpressionContext.Assign().getSymbol(), root), right.orElse(null), ctx, root));
 //        }
 //
-//        // functions (including arrow function)
-//        if (ctx instanceof TypeScriptParser.FunctionExpressionContext functionExpressionContext) {
-//            if (functionExpressionContext.anoymousFunction() != null) {
-//                Optional<FunctionDefinition> res = transformAnonymousFunction(functionExpressionContext.anoymousFunction(), root);
-//                if (res.isPresent()) {
-//                    return Optional.of(res.get());
-//                } else {
-//                    return Optional.empty();
-//                }
-//            }
-//        }
+        // functions (including arrow function)
+        if (ctx instanceof TypeScriptParser.ArrowFunctionExpressionContext functionExpressionContext) {
+            if (functionExpressionContext.arrowFunctionDeclaration() != null) {
+                Optional<FunctionDefinition> res = transformArrowFunctionDeclarationContext(functionExpressionContext.arrowFunctionDeclaration(), root);
+                if (res.isPresent()) {
+                    return Optional.of(res.get());
+                } else {
+                    return Optional.empty();
+                }
+            }
+        }
 
         return Optional.empty();
     }
