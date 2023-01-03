@@ -1,8 +1,8 @@
 package io.codiga.analyzer.ast.languages.typescript.transformations;
 
 import io.codiga.model.ast.common.AstElement;
-import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionCallArgument;
+import io.codiga.model.ast.javascript.AstStringWithSpreadOperator;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -19,12 +19,12 @@ public class TypeScriptArgumentsTransformation {
     public static Optional<AstElement> transformArgumentToAstElement(TypeScriptParser.ArgumentContext ctx, ParserRuleContext root) {
         // just a literal/identifier
         if (ctx.Identifier() != null) {
-            return Optional.of(new AstString(ctx.Identifier().getText(), ctx.Identifier().getSymbol(), root));
+            return Optional.of(new AstStringWithSpreadOperator(ctx.Identifier().getText(), ctx.Ellipsis() != null, ctx.Identifier().getSymbol(), root));
         }
 
         // single expression, must dig in and get what it is
         if (ctx.singleExpression() != null) {
-            return transformSingleExpressionToAstElement(ctx.singleExpression(), root);
+            return transformSingleExpressionToAstElement(ctx.singleExpression(), ctx.Ellipsis() != null, root);
         }
 
         return Optional.empty();

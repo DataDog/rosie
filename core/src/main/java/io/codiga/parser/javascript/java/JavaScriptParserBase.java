@@ -65,6 +65,7 @@ public abstract class JavaScriptParserBase extends Parser {
      * Returns {@code true} iff on the current index of the parser's
      * token stream a token of the given {@code type} exists on the
      * {@code HIDDEN} channel.
+     * 1
      *
      * @param type the type of the token on the {@code HIDDEN} channel
      *             to check.

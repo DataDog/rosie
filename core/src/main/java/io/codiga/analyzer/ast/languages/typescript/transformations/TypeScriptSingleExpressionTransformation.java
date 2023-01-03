@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.languages.typescript.transformations;
 
 import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
 import io.codiga.model.ast.common.*;
+import io.codiga.model.ast.javascript.AstStringWithSpreadOperator;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
@@ -35,8 +36,12 @@ public class TypeScriptSingleExpressionTransformation {
         return Optional.empty();
     }
 
-
     public static Optional<AstElement> transformSingleExpressionToAstElement(TypeScriptParser.SingleExpressionContext ctx, ParserRuleContext root) {
+        return transformSingleExpressionToAstElement(ctx, false, root);
+    }
+
+
+    public static Optional<AstElement> transformSingleExpressionToAstElement(TypeScriptParser.SingleExpressionContext ctx, boolean isSpread, ParserRuleContext root) {
         if (ctx == null) {
             return Optional.empty();
         }
@@ -45,7 +50,7 @@ public class TypeScriptSingleExpressionTransformation {
         // literal
         if (ctx instanceof TypeScriptParser.LiteralExpressionContext literalExpressionContext) {
             if (literalExpressionContext.literal() != null) {
-                return Optional.of(new AstString(literalExpressionContext.literal().getText(), literalExpressionContext.literal(), root));
+                return Optional.of(new AstStringWithSpreadOperator(literalExpressionContext.literal().getText(), isSpread, literalExpressionContext.literal(), root));
             }
         }
 
@@ -90,7 +95,7 @@ public class TypeScriptSingleExpressionTransformation {
 
         // identifier
         if (ctx instanceof TypeScriptParser.IdentifierExpressionContext identifierExpressionContext) {
-            return transformIdentifierExpressionToAstElement(identifierExpressionContext, root);
+            return transformIdentifierExpressionToAstElement(identifierExpressionContext, isSpread, root);
         }
 
 

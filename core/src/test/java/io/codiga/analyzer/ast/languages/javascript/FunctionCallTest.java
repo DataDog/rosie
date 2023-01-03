@@ -36,43 +36,6 @@ public class FunctionCallTest extends JavaScriptTestUtils {
 
     }
 
-//    @Test
-//    @DisplayName("get a function call")
-//    public void testFunctionCallWithContent() {
-//        String code = """
-//                myFunc({...props}) {
-//                   console.log(props);
-//                }
-//            """;
-//
-//        ParseTree root = parseCode(code);
-//
-//        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.ExprContext.class);
-//        for (ParseTree node : exprNodes) {
-//            if (isFunctionCall(node)) {
-//                Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall((PythonParser.ExprContext) node, null);
-//                assertTrue(functionCallOptional.isPresent());
-//                PythonFunctionCall functionCall = functionCallOptional.get();
-//                assertEquals(functionCall.functionName.value, "connect");
-//                assertNotNull(functionCall.moduleOrObject);
-//                assertEquals(functionCall.moduleOrObject.value, "mysql.connector");
-//                assertEquals("host", functionCall.arguments.values[0].value.value);
-//                assertEquals("host", functionCall.arguments.values[0].name.value);
-//                assertEquals("user", functionCall.arguments.values[1].value.value);
-//                assertEquals("user", functionCall.arguments.values[1].name.value);
-//                assertEquals("\"password\"", functionCall.arguments.values[2].value.value);
-//                assertEquals("passwd", functionCall.arguments.values[2].name.value);
-//                assertEquals("database", functionCall.arguments.values[3].value.value);
-//                assertEquals("database", functionCall.arguments.values[3].name.value);
-//                assertEquals("'utf8mb4'", functionCall.arguments.values[4].value.value);
-//                assertEquals("charset", functionCall.arguments.values[4].name.value);
-//                assertEquals("True", functionCall.arguments.values[5].value.value);
-//                assertEquals("use_pure", functionCall.arguments.values[5].name.value);
-//                assertEquals("5", functionCall.arguments.values[6].value.value);
-//                assertEquals("connection_timeout", functionCall.arguments.values[6].name.value);
-//            }
-//        }
-//    }
 
     @Test
     @DisplayName("Get a value as argument")

@@ -38,6 +38,20 @@ public class TypeScriptObjectLiteralToObject {
             }
 
         }
+
+        if (propertyAssignmentContext instanceof TypeScriptParser.RestParameterInObjectContext restParameterInObjectContext) {
+            if (restParameterInObjectContext.restParameter() != null && restParameterInObjectContext.restParameter().singleExpression() != null) {
+                Optional<AstElement> astElementOptional = transformSingleExpressionToAstElement(restParameterInObjectContext.restParameter().singleExpression(),
+                    restParameterInObjectContext.restParameter().Ellipsis() != null,
+                    root);
+
+                if (astElementOptional.isPresent()) {
+                    return Optional.of(
+                        new JavaScriptObjectElement(null, astElementOptional.get(), restParameterInObjectContext.restParameter().singleExpression(), root)
+                    );
+                }
+            }
+        }
         return Optional.empty();
     }
 

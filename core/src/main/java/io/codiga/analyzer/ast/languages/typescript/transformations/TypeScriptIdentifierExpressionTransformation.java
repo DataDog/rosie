@@ -32,7 +32,6 @@ public class TypeScriptIdentifierExpressionTransformation {
         if (ctx.identifierName() == null || ctx.singleExpression() == null) {
             return Optional.empty();
         }
-        logger.info("plop");
 
         Optional<AstString> functionName = transformIdentifierNameToAstString(ctx.identifierName(), root);
         ArrayList<FunctionCallArgument> arguments = new ArrayList<>();
@@ -54,7 +53,7 @@ public class TypeScriptIdentifierExpressionTransformation {
         return Optional.of(new FunctionCall(functionName.orElse(null), new FunctionCallArguments(arguments, ctx.singleExpression(), root), ctx, root));
     }
 
-    public static Optional<AstElement> transformIdentifierExpressionToAstElement(TypeScriptParser.IdentifierExpressionContext ctx, ParserRuleContext root) {
+    public static Optional<AstElement> transformIdentifierExpressionToAstElement(TypeScriptParser.IdentifierExpressionContext ctx, boolean isSpread, ParserRuleContext root) {
         // If this is a function call, return a function call
         if (isIdentifierExpressionFunctionCall(ctx)) {
             return convertToAstElement(transformIdentifierExpressionToFunctionCall(ctx, root));
@@ -62,9 +61,13 @@ public class TypeScriptIdentifierExpressionTransformation {
 
         // if this is an identifier, map into a string
         if (ctx.identifierName() != null && ctx.singleExpression() == null) {
-            return convertToAstElement(transformIdentifierNameToAstString(ctx.identifierName(), root));
+            return convertToAstElement(transformIdentifierNameToAstString(ctx.identifierName(), isSpread, root));
         }
 
         return Optional.empty();
+    }
+
+    public static Optional<AstElement> transformIdentifierExpressionToAstElement(TypeScriptParser.IdentifierExpressionContext ctx, ParserRuleContext root) {
+        return transformIdentifierExpressionToAstElement(ctx, false, root);
     }
 }
