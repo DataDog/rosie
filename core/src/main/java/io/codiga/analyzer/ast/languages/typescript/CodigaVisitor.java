@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptAssignmentExpression.transformAssignmentExpressionToAssignment;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptClassDeclarationToClass.transformClassDeclaration;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptForStatement.transformForStatementToForStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
@@ -120,6 +121,18 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
             return visitChildren(ctx);
         }
     }
+
+    @Override
+    public Object visitAssignmentExpression(TypeScriptParser.AssignmentExpressionContext ctx) {
+        Optional<Assignment> assignmentOptional = transformAssignmentExpressionToAssignment(ctx, root);
+        if (assignmentOptional.isPresent()) {
+            Assignment assignment = assignmentOptional.get();
+            assignment.setContext(buildContext());
+            this.assignments.add(assignment);
+        }
+        return visitChildren(ctx);
+    }
+
 
     @Override
     public Object visitForStatement(TypeScriptParser.ForStatementContext ctx) {

@@ -12,6 +12,8 @@ import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrayLiteralToArray.transformArrayLiteralToArray;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrowFunctionDeclaration.transformArrowFunctionDeclarationContext;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptExpression.transformExpression;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptExpression.transformExpressionRightOnly;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToAstElement;
@@ -54,6 +56,37 @@ public class TypeScriptSingleExpressionTransformation {
             }
         }
 
+        // logical and
+        if (ctx instanceof TypeScriptParser.LogicalAndExpressionContext logicalAndExpressionContext && logicalAndExpressionContext.singleExpression().size() == 2) {
+            return convertToAstElement(transformExpression(
+                logicalAndExpressionContext.singleExpression().get(0),
+                logicalAndExpressionContext.And().getSymbol(),
+                logicalAndExpressionContext.singleExpression().get(1),
+                logicalAndExpressionContext,
+                root
+            ));
+        }
+
+        // logical or
+        if (ctx instanceof TypeScriptParser.LogicalOrExpressionContext logicalOrExpressionContext && logicalOrExpressionContext.singleExpression().size() == 2) {
+            return convertToAstElement(transformExpression(
+                logicalOrExpressionContext.singleExpression().get(0),
+                logicalOrExpressionContext.Or().getSymbol(),
+                logicalOrExpressionContext.singleExpression().get(1),
+                logicalOrExpressionContext,
+                root
+            ));
+        }
+
+        // not expression
+        if (ctx instanceof TypeScriptParser.NotExpressionContext notExpressionContext && notExpressionContext.singleExpression() != null) {
+            return convertToAstElement(transformExpressionRightOnly(
+                notExpressionContext.Not().getSymbol(),
+                notExpressionContext.singleExpression(),
+                notExpressionContext,
+                root
+            ));
+        }
 
         // identifier
         if (ctx instanceof TypeScriptParser.IdentifierExpressionContext identifierExpressionContext) {

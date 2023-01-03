@@ -1,8 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript;
 
-import io.codiga.model.ast.common.AstString;
-import io.codiga.model.ast.common.IfStatement;
-import io.codiga.model.ast.common.Sequence;
+import io.codiga.model.ast.common.*;
 import io.codiga.model.ast.javascript.JavaScriptHtmlElement;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -16,6 +14,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptSingleExpressionTransformation.transformSingleExpressionToAstElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -225,5 +224,29 @@ public class TsxTest extends TypeScriptTestUtils {
 
         assertEquals("sequence", element.elseStatements.astType);
         assertEquals("htmlelement", ((Sequence) element.elseStatements).elements[0].astType);
+    }
+
+    @Test
+    @DisplayName("TSX with condition")
+    public void testTsxWithCondition() {
+        String code = """
+            const ComponentThree = ({ elements }) => {
+              return (
+            		<div>
+            			{!!elements && <List elements={elements} />}
+            		</div>
+            	)
+            }
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.LogicalAndExpressionContext.class);
+        assertEquals(1, nodes.size());
+        Optional<AstElement> elementOptional = transformSingleExpressionToAstElement(((TypeScriptParser.LogicalAndExpressionContext) nodes.get(0)), null);
+        assertTrue(elementOptional.isPresent());
+        assertEquals("expression", elementOptional.get().astType);
+        AstExpression element = (AstExpression) elementOptional.get();
+        assertEquals("&&", ((AstString) element.operator).value);
     }
 }
