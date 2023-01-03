@@ -26,6 +26,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptImportStatementToImport.transformImportStatementToImport;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTryStatement.transformTryStatementToTryCatchStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
 
@@ -136,6 +137,22 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
         }
     }
 
+    @Override
+    public Object visitTernaryExpression(TypeScriptParser.TernaryExpressionContext ctx) {
+        Optional<IfStatement> ifStatementOptional = transformTernaryExpressionToIfStatement(ctx, root);
+
+        if (ifStatementOptional.isPresent()) {
+            IfStatement ifStatement = ifStatementOptional.get();
+            ifStatement.setContext(buildContext());
+            this.ifStatements.add(ifStatement);
+            this.visitedIfStatements.push(ifStatement);
+            Object res = visitChildren(ctx);
+            this.visitedIfStatements.pop();
+            return res;
+        } else {
+            return visitChildren(ctx);
+        }
+    }
 
     @Override
     public Object visitHtmlElement(TypeScriptParser.HtmlElementContext ctx) {

@@ -5,11 +5,13 @@ import io.codiga.model.ast.javascript.AstStringWithSpreadOperator;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 
+import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptAnonymousFunction.transformAnonymousFunction;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptArrayLiteralToArray.transformArrayLiteralToArray;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptObjectLiteralToObject.transformJavaScriptObjectLiteralToObject;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
@@ -36,26 +38,23 @@ public class JavaScriptSingleExpressionTransformation {
         if (ctx == null) {
             return Optional.empty();
         }
-        
+
         // literal
-        if (ctx instanceof JavaScriptParser.LiteralExpressionContext) {
-            JavaScriptParser.LiteralExpressionContext literalExpressionContext = (JavaScriptParser.LiteralExpressionContext) ctx;
+        if (ctx instanceof JavaScriptParser.LiteralExpressionContext literalExpressionContext) {
             if (literalExpressionContext.literal() != null) {
                 return Optional.of(new AstStringWithSpreadOperator(literalExpressionContext.literal().getText(), isSpread, literalExpressionContext.literal(), root));
             }
         }
 
         // function call
-        if (ctx instanceof JavaScriptParser.ArgumentsExpressionContext) {
-            JavaScriptParser.ArgumentsExpressionContext argumentsExpressionContext = (JavaScriptParser.ArgumentsExpressionContext) ctx;
+        if (ctx instanceof JavaScriptParser.ArgumentsExpressionContext argumentsExpressionContext) {
             if (argumentsExpressionContext != null) {
                 return convertToAstElement(transformArgumentsExpressionToFunctionCall(argumentsExpressionContext, root));
             }
         }
 
         // identifier
-        if (ctx instanceof JavaScriptParser.IdentifierExpressionContext) {
-            JavaScriptParser.IdentifierExpressionContext identifierExpressionContext = (JavaScriptParser.IdentifierExpressionContext) ctx;
+        if (ctx instanceof JavaScriptParser.IdentifierExpressionContext identifierExpressionContext) {
             if (identifierExpressionContext.identifier() != null) {
                 return Optional.of(new AstStringWithSpreadOperator(identifierExpressionContext.identifier().getText(), isSpread, identifierExpressionContext.identifier(), root));
             }
@@ -63,18 +62,15 @@ public class JavaScriptSingleExpressionTransformation {
 
 
         // array
-        if (ctx instanceof JavaScriptParser.ArrayLiteralExpressionContext) {
-            JavaScriptParser.ArrayLiteralExpressionContext arrayLiteralExpressionContext = (JavaScriptParser.ArrayLiteralExpressionContext) ctx;
+        if (ctx instanceof JavaScriptParser.ArrayLiteralExpressionContext arrayLiteralExpressionContext) {
 
             if (arrayLiteralExpressionContext.arrayLiteral() != null) {
                 return transformArrayLiteralToArray(arrayLiteralExpressionContext.arrayLiteral(), root);
             }
         }
 
-
         // object
-        if (ctx instanceof JavaScriptParser.ObjectLiteralExpressionContext) {
-            JavaScriptParser.ObjectLiteralExpressionContext objectLiteralExpressionContext = (JavaScriptParser.ObjectLiteralExpressionContext) ctx;
+        if (ctx instanceof JavaScriptParser.ObjectLiteralExpressionContext objectLiteralExpressionContext) {
 
             if (objectLiteralExpressionContext.objectLiteral() != null) {
                 return transformJavaScriptObjectLiteralToObject(objectLiteralExpressionContext.objectLiteral(), root);
@@ -82,16 +78,23 @@ public class JavaScriptSingleExpressionTransformation {
             }
         }
 
+        // HTML Expression
+        if (ctx instanceof JavaScriptParser.HtmlElementExpressionContext htmlElementExpressionContext) {
+
+            if (htmlElementExpressionContext.htmlElements() != null) {
+                List<AstElement> elementList = htmlElementExpressionContext.htmlElements().htmlElement().stream().map(htmlElement -> convertToAstElement(transformJavaScriptHtmlElement(htmlElement, root))).filter(v -> v.isPresent()).map(v -> v.get()).toList();
+                return Optional.of(new Sequence(elementList, ctx, root));
+            }
+        }
+
         // member dot
-        if (ctx instanceof JavaScriptParser.MemberDotExpressionContext) {
-            JavaScriptParser.MemberDotExpressionContext memberDotExpressionContext = (JavaScriptParser.MemberDotExpressionContext) ctx;
+        if (ctx instanceof JavaScriptParser.MemberDotExpressionContext memberDotExpressionContext) {
 
             return transformMemberDotToJavaScriptMember(memberDotExpressionContext, root);
         }
 
         // equality
-        if (ctx instanceof JavaScriptParser.EqualityExpressionContext) {
-            JavaScriptParser.EqualityExpressionContext equalityExpressionContext = (JavaScriptParser.EqualityExpressionContext) ctx;
+        if (ctx instanceof JavaScriptParser.EqualityExpressionContext equalityExpressionContext) {
             Optional<AstString> operator = Optional.empty();
             Optional<AstElement> left = Optional.empty();
             Optional<AstElement> right = Optional.empty();
@@ -121,8 +124,7 @@ public class JavaScriptSingleExpressionTransformation {
         }
 
         // assignment
-        if (ctx instanceof JavaScriptParser.AssignmentExpressionContext) {
-            JavaScriptParser.AssignmentExpressionContext assignmentExpressionContext = (JavaScriptParser.AssignmentExpressionContext) ctx;
+        if (ctx instanceof JavaScriptParser.AssignmentExpressionContext assignmentExpressionContext) {
             Optional<AstElement> left = Optional.empty();
             Optional<AstElement> right = Optional.empty();
 
@@ -135,12 +137,11 @@ public class JavaScriptSingleExpressionTransformation {
         }
 
         // functions (including arrow function)
-        if (ctx instanceof JavaScriptParser.FunctionExpressionContext) {
-            JavaScriptParser.FunctionExpressionContext functionExpressionContext = (JavaScriptParser.FunctionExpressionContext) ctx;
+        if (ctx instanceof JavaScriptParser.FunctionExpressionContext functionExpressionContext) {
             if (functionExpressionContext.anoymousFunction() != null) {
                 Optional<FunctionDefinition> res = transformAnonymousFunction(functionExpressionContext.anoymousFunction(), root);
                 if (res.isPresent()) {
-                    return Optional.of((AstElement) res.get());
+                    return Optional.of(res.get());
                 } else {
                     return Optional.empty();
                 }

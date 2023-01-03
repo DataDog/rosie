@@ -1,6 +1,8 @@
 package io.codiga.analyzer.ast.languages.typescript;
 
 import io.codiga.model.ast.common.AstString;
+import io.codiga.model.ast.common.IfStatement;
+import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.javascript.JavaScriptHtmlElement;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -14,6 +16,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TsxTest extends TypeScriptTestUtils {
@@ -190,5 +193,37 @@ public class TsxTest extends TypeScriptTestUtils {
         assertEquals(1, element.attributes.length);
         assertEquals("as", element.attributes[0].name.value);
         assertEquals("\"span\"", ((AstString) element.attributes[0].value).value);
+    }
+
+    @Test
+    @DisplayName("TSX with ternary operation")
+    public void testTernaryOperation() {
+        String code = """
+            const ComponentThree = ({ elements }) => {
+              return (
+            		<div>
+            			{elements
+            				? <List elements={elements} />
+            				: <EmptyList />}
+            		</div>
+            	)
+            }
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.TernaryExpressionContext.class);
+        assertEquals(1, nodes.size());
+        Optional<IfStatement> elementOptional = transformTernaryExpressionToIfStatement(((TypeScriptParser.TernaryExpressionContext) nodes.get(0)), null);
+        assertTrue(elementOptional.isPresent());
+        IfStatement element = elementOptional.get();
+        assertEquals("string", element.condition.astType);
+        assertEquals("elements", ((AstString) element.condition).value);
+
+        assertEquals("sequence", element.statements.astType);
+        assertEquals("htmlelement", ((Sequence) element.statements).elements[0].astType);
+
+        assertEquals("sequence", element.elseStatements.astType);
+        assertEquals("htmlelement", ((Sequence) element.elseStatements).elements[0].astType);
     }
 }

@@ -7,11 +7,13 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrayLiteralToArray.transformArrayLiteralToArray;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrowFunctionDeclaration.transformArrowFunctionDeclarationContext;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToAstElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptObjectLiteralToObject.transformTypeScriptObjectLiteralToObject;
@@ -46,8 +48,7 @@ public class TypeScriptSingleExpressionTransformation {
         }
 
         // function call
-        if (ctx instanceof TypeScriptParser.ArgumentsExpressionContext) {
-            TypeScriptParser.ArgumentsExpressionContext argumentsExpressionContext = (TypeScriptParser.ArgumentsExpressionContext) ctx;
+        if (ctx instanceof TypeScriptParser.ArgumentsExpressionContext argumentsExpressionContext) {
             if (argumentsExpressionContext != null) {
                 return convertToAstElement(transformArgumentsExpressionToFunctionCall(argumentsExpressionContext, root));
             }
@@ -56,7 +57,7 @@ public class TypeScriptSingleExpressionTransformation {
 
         // identifier
         if (ctx instanceof TypeScriptParser.IdentifierExpressionContext identifierExpressionContext) {
-            return transformIdentifierExpressionToAstElement((TypeScriptParser.IdentifierExpressionContext) identifierExpressionContext, root);
+            return transformIdentifierExpressionToAstElement(identifierExpressionContext, root);
         }
 
 
@@ -68,6 +69,14 @@ public class TypeScriptSingleExpressionTransformation {
             }
         }
 
+        // HTML Expression
+        if (ctx instanceof TypeScriptParser.HtmlElementExpressionContext htmlElementExpressionContext) {
+
+            if (htmlElementExpressionContext.htmlElements() != null) {
+                List<AstElement> elementList = htmlElementExpressionContext.htmlElements().htmlElement().stream().map(htmlElement -> convertToAstElement(transformTypeScriptHtmlElement(htmlElement, root))).filter(v -> v.isPresent()).map(v -> v.get()).toList();
+                return Optional.of(new Sequence(elementList, ctx, root));
+            }
+        }
 
         // object
         if (ctx instanceof TypeScriptParser.ObjectLiteralExpressionContext objectLiteralExpressionContext) {
