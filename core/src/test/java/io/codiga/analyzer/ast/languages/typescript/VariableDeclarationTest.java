@@ -45,7 +45,7 @@ public class VariableDeclarationTest extends TypeScriptTestUtils {
         VariableDeclaration variableDeclaration = variableDeclarationList.get(0);
         assertEquals("const", variableDeclaration.modifier.value);
         assertEquals("bla", ((AstString) variableDeclaration.name).value);
-        assertEquals("intcore/src/test/java/io/codiga/analyzer/ast/languages/typescript/VariableDeclarationTest.java", ((AstString) variableDeclaration.type).value);
+        assertEquals("int", ((AstString) variableDeclaration.type).value);
         assertEquals("1", ((AstString) variableDeclaration.value).value);
 
     }
