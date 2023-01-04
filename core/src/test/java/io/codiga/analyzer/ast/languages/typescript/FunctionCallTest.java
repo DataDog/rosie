@@ -72,7 +72,7 @@ public class FunctionCallTest extends TypeScriptTestUtils {
         List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.ArgumentsExpressionContext.class);
         assertEquals(1, nodes.size());
         for (ParseTree node : nodes) {
-            if (isFunctionCall((TypeScriptParser.ArgumentsExpressionContext) node)) {
+            if (isFunctionCall(node)) {
                 Optional<FunctionCall> functionCallOptional = transformArgumentsExpressionToFunctionCall((TypeScriptParser.ArgumentsExpressionContext) node, null);
                 assertTrue(functionCallOptional.isPresent());
                 FunctionCall functionCall = functionCallOptional.get();

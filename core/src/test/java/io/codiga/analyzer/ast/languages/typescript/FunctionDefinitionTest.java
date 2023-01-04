@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript;
 
+import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionDefinition;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -13,8 +14,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FunctionDefinitionTest extends TypeScriptTestUtils {
 
@@ -31,8 +31,8 @@ public class FunctionDefinitionTest extends TypeScriptTestUtils {
 
 
     @Test
-    @DisplayName("Parse a function call")
-    public void testParseClassWithParent() {
+    @DisplayName("Parse a function definition")
+    public void testParseFunctionDefinition() {
         String code = """
             function foo(bla, bli) {
                 console.log("foobar");
@@ -50,8 +50,34 @@ public class FunctionDefinitionTest extends TypeScriptTestUtils {
         assertEquals(functionDefinition.name.value, "foo");
         assertEquals(2, functionDefinition.parameters.values.length);
         assertEquals("bla", functionDefinition.parameters.values[0].name.value);
+        assertNull(functionDefinition.parameters.values[0].type);
         assertEquals("bli", functionDefinition.parameters.values[1].name.value);
+        assertNull(functionDefinition.parameters.values[1].type);
     }
 
+    @Test
+    @DisplayName("Parse a function definition")
+    public void testParseFunctionDefinitionWithTypes() {
+        String code = """
+            function foo(bla: int, bli: any) {
+                console.log("foobar");
+            }""";
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.FunctionDeclarationContext.class);
+
+        assertEquals(1, nodes.size());
+
+        Optional<FunctionDefinition> functionDefinitionOptional = transformFunctionDeclarationToFunctionDefinition((TypeScriptParser.FunctionDeclarationContext) nodes.get(0), null);
+        assertTrue(functionDefinitionOptional.isPresent());
+        FunctionDefinition functionDefinition = functionDefinitionOptional.get();
+        assertEquals(functionDefinition.name.value, "foo");
+        assertEquals(2, functionDefinition.parameters.values.length);
+        assertEquals("bla", functionDefinition.parameters.values[0].name.value);
+        assertEquals("int", ((AstString) functionDefinition.parameters.values[0].type).value);
+        assertEquals("bli", functionDefinition.parameters.values[1].name.value);
+        assertEquals("any", ((AstString) functionDefinition.parameters.values[1].type).value);
+    }
 
 }

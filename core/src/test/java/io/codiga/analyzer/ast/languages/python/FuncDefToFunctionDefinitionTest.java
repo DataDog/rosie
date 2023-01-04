@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.python;
 
+import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.python.PythonFunctionDefinition;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
 
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {
@@ -42,11 +43,11 @@ public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
         assertEquals("bla", pythonFunctionDefinition.name.str);
         assertFalse(pythonFunctionDefinition.isAsync);
         assertEquals("i", pythonFunctionDefinition.parameters.values[0].name.str);
-        assertEquals("int", pythonFunctionDefinition.parameters.values[0].type.str);
+        assertEquals("int", ((AstString) pythonFunctionDefinition.parameters.values[0].type).str);
         assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
 
         assertEquals("a", pythonFunctionDefinition.parameters.values[1].name.str);
-        assertEquals("typing.List[str]", pythonFunctionDefinition.parameters.values[1].type.str);
+        assertEquals("typing.List[str]", ((AstString) pythonFunctionDefinition.parameters.values[1].type).str);
         assertEquals("[]", pythonFunctionDefinition.parameters.values[1].defaultValue.value);
 
         assertEquals("b", pythonFunctionDefinition.parameters.values[2].name.value);

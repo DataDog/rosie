@@ -6,12 +6,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class FunctionDefinitionParameter extends AstElement {
 
     public AstString name;
-    public AstString type;
+    public AstElement type;
     public AstString defaultValue;
 
 
     public FunctionDefinitionParameter(AstString name,
-                                       AstString type,
+                                       AstElement type,
                                        AstString defaultValue,
                                        ParserRuleContext ruleContext,
                                        ParserRuleContext root) {
