@@ -33,6 +33,8 @@ import static io.codiga.utils.Base64Utils.encodeBase64;
 @TestPropertySource(locations = "classpath:test.properties")
 @ContextConfiguration
 public class E2EBase {
+    public final static List<Language> JAVASCRIPT_TYPESCRIPT = List.of(Language.JAVASCRIPT, Language.TYPESCRIPT);
+
 
     protected final Logger logger = LoggerFactory.getLogger(E2EBase.class);
     @Autowired

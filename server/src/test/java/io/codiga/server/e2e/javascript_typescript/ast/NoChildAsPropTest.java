@@ -1,6 +1,5 @@
-package io.codiga.server.e2e.javascript.ast;
+package io.codiga.server.e2e.javascript_typescript.ast;
 
-import io.codiga.model.Language;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -62,11 +61,13 @@ public class NoChildAsPropTest extends E2EBase {
     @Test
     @DisplayName("noChildAsProps")
     public void testHookRule() throws Exception {
-        Response response = executeTest("bla.js", codeWithError, Language.JAVASCRIPT, ruleCode, "no-child-as-prop", RULE_TYPE_AST, ENTITY_CHECKED_HTML_ELEMENT, null, true);
-        logger.info(response.toString());
-        assertEquals(1, response.ruleResponses.size());
-        // FIXME - julien - the /> operator is ambiguous and the parser believes this is a regular expression
-//        assertEquals(6, response.ruleResponses.get(0).violations.size());
+        JAVASCRIPT_TYPESCRIPT.forEach(l -> {
+            logger.info("Running test with language: " + l);
+            Response response = executeTest("bla.js", codeWithError, l, ruleCode, "no-child-as-prop", RULE_TYPE_AST, ENTITY_CHECKED_HTML_ELEMENT, null, true);
+            logger.info(response.toString());
+            assertEquals(1, response.ruleResponses.size());
+            assertEquals(3, response.ruleResponses.get(0).violations.size());
+        });
 
     }
 

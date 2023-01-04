@@ -141,6 +141,10 @@ public abstract class JavaScriptLexerBase extends Lexer {
             case JavaScriptLexer.MinusMinus:
                 // After any of the tokens above, no regex literal can follow.
                 return false;
+            // This is to make sure there is no parsing error with an HTML tag and that we start to detect
+            // regular expression when we do </>
+            case JavaScriptLexer.LessThan:
+                return false;
             default:
                 // In all other cases, a regex literal _is_ possible.
                 return true;
