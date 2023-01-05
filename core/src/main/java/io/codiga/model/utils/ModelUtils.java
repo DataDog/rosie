@@ -119,7 +119,9 @@ public class ModelUtils {
         if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_ASSIGNMENT)) {
             return EntityChecked.ASSIGNMENT;
         }
-
+        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_VARIABLE_DECLARATION)) {
+            return EntityChecked.VARIABLE_DECLARATION;
+        }
         return EntityChecked.UNKNOWN;
     }
 }

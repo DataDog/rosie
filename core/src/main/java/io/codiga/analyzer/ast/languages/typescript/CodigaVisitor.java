@@ -30,6 +30,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTryStatement.transformTryStatementToTryCatchStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableStatement.transformVariableStatementToVariableDeclaration;
 
 
 /**
@@ -53,6 +54,7 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
     List<Assignment> assignments;
 
     List<JavaScriptImport> importStatements;
+    List<VariableDeclaration> variableDeclarations;
     List<IfStatement> ifStatements;
     List<JavaScriptTryCatchStatement> tryStatements;
     List<ForStatement> forStatements;
@@ -76,6 +78,7 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
         forStatements = new ArrayList<>();
         tryStatements = new ArrayList<>();
         htmlElements = new ArrayList<>();
+        variableDeclarations = new ArrayList<>();
 
         // Initialize the visited elements
         visitedImportStatements = new ArrayList<>();
@@ -90,6 +93,15 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
     @Override
     public Object visitProgram(TypeScriptParser.ProgramContext ctx) {
         this.root = ctx;
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public Object visitVariableStatement(TypeScriptParser.VariableStatementContext ctx) {
+        List<VariableDeclaration> variableDeclarationList = transformVariableStatementToVariableDeclaration(ctx, root);
+        if (variableDeclarationList.size() > 0) {
+            this.variableDeclarations.addAll(variableDeclarationList);
+        }
         return visitChildren(ctx);
     }
 

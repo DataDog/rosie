@@ -20,6 +20,7 @@ public class Languages {
     public final static String ENTITY_CHECKED_IF_CONDITION = "ifcondition";
     public final static String ENTITY_CHECKED_IMPORT = "import";
     public final static String ENTITY_CHECKED_ASSIGNMENT = "assign";
+    public final static String ENTITY_CHECKED_VARIABLE_DECLARATION = "variabledeclaration";
     public final static String ENTITY_CHECKED_FOR_LOOP = "forloop";
     public final static String ENTITY_CHECKED_FUNCTION_DEFINITION = "functiondefinition";
     public final static String ENTITY_CHECKED_CLASS_DEFINITION = "classdefinition";

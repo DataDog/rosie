@@ -11,6 +11,7 @@ public enum EntityChecked {
     IF_STATEMENT,
     INTERFACE,
     IMPORT_STATEMENT,
+    VARIABLE_DECLARATION,
     TRY_BLOCK,
     TYPE,
     UNKNOWN,

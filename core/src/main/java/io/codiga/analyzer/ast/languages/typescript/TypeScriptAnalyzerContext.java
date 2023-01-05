@@ -46,5 +46,6 @@ public class TypeScriptAnalyzerContext extends AnalyzerContext {
         entityCheckedToAstElements.get(EntityChecked.ASSIGNMENT).addAll(codigaVisitor.assignments);
         entityCheckedToAstElements.get(EntityChecked.TRY_BLOCK).addAll(codigaVisitor.tryStatements);
         entityCheckedToAstElements.get(EntityChecked.HTML_ELEMENT).addAll(codigaVisitor.htmlElements);
+        entityCheckedToAstElements.get(EntityChecked.VARIABLE_DECLARATION).addAll(codigaVisitor.variableDeclarations);
     }
 }

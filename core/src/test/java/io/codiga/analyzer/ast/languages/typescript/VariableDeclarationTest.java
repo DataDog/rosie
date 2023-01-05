@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclarationToAssignment.transformVariableStatementToVariableDeclaration;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableStatement.transformVariableStatementToVariableDeclaration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VariableDeclarationTest extends TypeScriptTestUtils {
