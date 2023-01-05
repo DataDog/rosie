@@ -24,6 +24,9 @@ public class TypeScriptVariableDeclarationToAssignment {
 
 
     public static Optional<VariableDeclaration> transformVariableDeclarationToVariableDeclaration(AstString modifier, TypeScriptParser.VariableDeclarationContext ctx, ParserRuleContext root) {
+        if (ctx == null) {
+            return Optional.empty();
+        }
         if (ctx.singleExpression().size() != 1) {
             return Optional.empty();
         }

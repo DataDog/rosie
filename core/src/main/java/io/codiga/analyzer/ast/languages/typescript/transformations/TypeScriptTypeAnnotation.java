@@ -15,7 +15,7 @@ public class TypeScriptTypeAnnotation {
     private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
 
     public static Optional<AstElement> typeAnnotationToAstElement(TypeScriptParser.TypeAnnotationContext ctx, ParserRuleContext root) {
-        if (ctx.type_() != null) {
+        if (ctx != null && ctx.type_() != null) {
             return typeToAstElement(ctx.type_(), root);
         }
         return Optional.empty();
