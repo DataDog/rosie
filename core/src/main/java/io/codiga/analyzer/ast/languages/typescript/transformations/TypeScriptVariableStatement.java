@@ -38,9 +38,6 @@ public class TypeScriptVariableStatement {
                 }
             }
         }
-
         return result;
     }
-
-
 }

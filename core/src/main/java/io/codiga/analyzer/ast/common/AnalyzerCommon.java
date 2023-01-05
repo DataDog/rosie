@@ -33,6 +33,7 @@ import static io.codiga.utils.EnvironmentUtils.getEnvironmentValueAsLong;
 public abstract class AnalyzerCommon {
 
     public final static String COMMENT_SHARP = "#";
+    public final static String COMMENT_TWO_SLASHES = "//";
 
     private final Logger logger = LoggerFactory.getLogger(AnalyzerCommon.class);
     private final AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
@@ -71,11 +72,18 @@ public abstract class AnalyzerCommon {
 
     }
 
+
     public String getCommentsSymbol(Language language) {
         if (language == Language.PYTHON) {
             return COMMENT_SHARP;
         }
-        return COMMENT_SHARP;
+        if (language == Language.JAVASCRIPT) {
+            return COMMENT_TWO_SLASHES;
+        }
+        if (language == Language.TYPESCRIPT) {
+            return COMMENT_TWO_SLASHES;
+        }
+        return COMMENT_TWO_SLASHES;
     }
 
     public abstract RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule);
