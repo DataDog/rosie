@@ -253,6 +253,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
             // If there is one visited html elements, add it to the list
             if (visitedHtmlElements.size() > 0) {
                 JavaScriptHtmlElement parent = visitedHtmlElements.peek();
+                htmlElement.setParentHtmlElement(parent);
                 parent.addChild(htmlElement);
             }
             visitedHtmlElements.push(htmlElement);

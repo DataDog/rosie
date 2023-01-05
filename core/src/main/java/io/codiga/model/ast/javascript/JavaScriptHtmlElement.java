@@ -12,8 +12,8 @@ public class JavaScriptHtmlElement extends AstElement {
     public AstElement tag;
     public JavaScriptHtmlAttribute[] attributes;
     public AstElement[] htmlChildren;
-
-
+    public JavaScriptHtmlElement parentHtmlElement;
+    
     /**
      * Represents an HTML element.
      * This captures something like
@@ -43,5 +43,9 @@ public class JavaScriptHtmlElement extends AstElement {
 
     public void addChild(AstElement element) {
         this.childrenList.add(element);
+    }
+
+    public void setParentHtmlElement(JavaScriptHtmlElement parent) {
+        this.parentHtmlElement = parent;
     }
 }
