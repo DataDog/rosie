@@ -18,11 +18,12 @@ import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptAssignmentExpression.transformAssignmentExpressionToAssignment;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
+import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_FUNCTION_EXPRESSION;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AssignmentTest extends TypeScriptTestUtils {
 
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {
@@ -126,5 +127,24 @@ public class AssignmentTest extends TypeScriptTestUtils {
             assertEquals("key", ((AstString) obj.elements[1].name).value);
             assertEquals("'value'", ((AstString) obj.elements[1].value).value);
         }
+    }
+
+
+    @Test
+    @DisplayName("Assignment Function")
+    public void testAssignmentFunction() {
+        String code = """
+            c = (foo, bar) => {};
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.VariableDeclarationContext.class);
+        assertEquals(1, nodes.size());
+        Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment((TypeScriptParser.VariableDeclarationContext) nodes.get(0), null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        assertEquals("c", ((AstString) assignment.left).value);
+        assertEquals(AST_ELEMENT_TYPE_FUNCTION_EXPRESSION, assignment.right.astType);
     }
 }
