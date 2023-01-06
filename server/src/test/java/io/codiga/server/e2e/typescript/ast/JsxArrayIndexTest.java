@@ -93,7 +93,10 @@ public class JsxArrayIndexTest extends E2EBase {
                             const arg = currentFunctionCall.arguments.values[0].value;
                             
                             // check this is a function definition
-                            if(arg.astType === "functiondefinition") {
+                            console.log(arg.astType);
+                            if(arg.astType === "functionexpression") {
+                            console.log("here");
+                            console.log(arg.parameters);
                                 // check it has two argument
                                 if (arg.parameters && arg.parameters.values && arg.parameters.values.length === 2) {
                                     

@@ -8,9 +8,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class JavaScriptFunctionExpression extends FunctionDefinition {
 
-    public AstString name;
-    public FunctionDefinitionParameters parameters;
-
 
     public JavaScriptFunctionExpression(AstString name,
                                         FunctionDefinitionParameters functionDefinitionParameters,
