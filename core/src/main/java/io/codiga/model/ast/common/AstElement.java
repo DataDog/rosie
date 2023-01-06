@@ -27,6 +27,8 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_FUNCTION_EXCEPT_CLAUSE = "exceptclause";
     public static final String AST_ELEMENT_TYPE_FUNCTION_FINALLY_CLAUSE = "finallyclause";
     public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION = "functiondefinition";
+    public static final String AST_ELEMENT_TYPE_FUNCTION_EXPRESSION = "functionexpression";
+
     public static final String AST_ELEMENT_TYPE_CLASS_DEFINITION = "classdefinition";
     public static final String AST_ELEMENT_TYPE_IMPORT_STATEMENT = "importstatement";
     public static final String AST_ELEMENT_TYPE_IMPORTED_NAME = "importedname";

@@ -18,5 +18,14 @@ public class FunctionDefinition extends AstElement {
         this.name = name;
     }
 
+    public FunctionDefinition(String alternativeType,
+                              AstString name,
+                              FunctionDefinitionParameters functionDefinitionParameters,
+                              ParserRuleContext ruleContext,
+                              ParserRuleContext root) {
+        super(alternativeType, ruleContext, root);
+        this.parameters = functionDefinitionParameters;
+        this.name = name;
+    }
 
 }
