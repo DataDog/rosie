@@ -32,7 +32,9 @@ public class ClassOrFuncDefToClassDefinition {
                         PythonParser.Logical_testContext logical_testContext = argument.test(0).logical_test(0);
                         if (logical_testContext.comparison() != null && logical_testContext.comparison().expr() != null && logical_testContext.comparison().expr().atom() != null) {
                             PythonParser.NameContext name = argument.test(0).logical_test(0).comparison().expr().atom().name();
-                            astStrings.add(new AstString(name.getText(), name, root));
+                            if (name != null) {
+                                astStrings.add(new AstString(name.getText(), name, root));
+                            }
                         }
                     }
                 }
