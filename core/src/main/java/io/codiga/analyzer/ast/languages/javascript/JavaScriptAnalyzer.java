@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static io.codiga.metrics.MetricsName.METRIC_DISTRIBUTION_PARSING_TIME_PER_LANGUAGE;
+
 public class JavaScriptAnalyzer extends AnalyzerCommon {
 
 
@@ -76,6 +78,11 @@ public class JavaScriptAnalyzer extends AnalyzerCommon {
     @Trace(operationName = "JavaScriptAnalyzer.buildContext")
     @Override
     public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
-        return new JavaScriptAnalyzerContext(language, filename, code, rules, logOutput);
+        long startTimestamp = System.currentTimeMillis();
+        JavaScriptAnalyzerContext javaScriptAnalyzerContext = new JavaScriptAnalyzerContext(language, filename, code, rules, logOutput);
+        long endTimestamp = System.currentTimeMillis();
+        long executionTimeMs = endTimestamp - startTimestamp;
+        this.metrics.recordDistribution(String.format("%s-%s", METRIC_DISTRIBUTION_PARSING_TIME_PER_LANGUAGE, language.toString().toLowerCase()), executionTimeMs);
+        return javaScriptAnalyzerContext;
     }
 }

@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static io.codiga.metrics.MetricsName.METRIC_DISTRIBUTION_PARSING_TIME_PER_LANGUAGE;
+
 public class PythonAnalyzer extends AnalyzerCommon {
 
 
@@ -80,9 +82,13 @@ public class PythonAnalyzer extends AnalyzerCommon {
         /**
          * Build the parser to execute all rules.
          */
-        PythonAnalyzerContext analyzerContext = new PythonAnalyzerContext(language, filename, code, rules, logOutput);
 
-        return analyzerContext;
+        long startTimestamp = System.currentTimeMillis();
+        PythonAnalyzerContext pythonAnalyzerContext = new PythonAnalyzerContext(language, filename, code, rules, logOutput);
+        long endTimestamp = System.currentTimeMillis();
+        long executionTimeMs = endTimestamp - startTimestamp;
+        this.metrics.recordDistribution(String.format("%s-%s", METRIC_DISTRIBUTION_PARSING_TIME_PER_LANGUAGE, language.toString().toLowerCase()), executionTimeMs);
+        return pythonAnalyzerContext;
     }
 
 

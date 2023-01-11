@@ -34,11 +34,9 @@ public abstract class AnalyzerCommon {
 
     public final static String COMMENT_SHARP = "#";
     public final static String COMMENT_TWO_SLASHES = "//";
-
+    protected final MetricsInterface metrics;
     private final Logger logger = LoggerFactory.getLogger(AnalyzerCommon.class);
     private final AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
-
-    private final MetricsInterface metrics;
     private final ErrorReportingInterface errorReporting;
     private final AnalyzerConfiguration analyzerConfiguration;
 
