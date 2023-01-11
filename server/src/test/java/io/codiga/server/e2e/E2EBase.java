@@ -34,6 +34,8 @@ import static io.codiga.utils.Base64Utils.encodeBase64;
 @ContextConfiguration
 public class E2EBase {
     public final static List<Language> JAVASCRIPT_TYPESCRIPT = List.of(Language.JAVASCRIPT, Language.TYPESCRIPT);
+    public final static List<Language> TYPESCRIPT_ONLY = List.of(Language.TYPESCRIPT);
+    public final static List<Language> JAVASCRIPT_ONLY = List.of(Language.JAVASCRIPT);
 
 
     protected final Logger logger = LoggerFactory.getLogger(E2EBase.class);

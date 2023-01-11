@@ -1,9 +1,10 @@
 package io.codiga.analyzer.ast.languages.javascript.transformations;
 
 import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
-import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.javascript.JavaScriptHtmlAttribute;
+import io.codiga.model.ast.javascript.JavaScriptHtmlTag;
+import io.codiga.model.common.Position;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
@@ -13,20 +14,101 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.AstUtils.getEndPosition;
+import static io.codiga.analyzer.ast.AstUtils.getStartPosition;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlAttributeTransformation.transformJavaScriptHtmlAttribute;
 
 public class JavaScriptHtmlElementTransformation {
     private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
 
+
+    public static Optional<Position> getOpeningTagStartPosition(JavaScriptParser.HtmlElementContext ctx) {
+        if (ctx.LessThan() != null && ctx.LessThan().size() > 0) {
+            return Optional.of(getStartPosition(ctx.LessThan().get(0).getSymbol()));
+        }
+
+        return Optional.empty();
+    }
+
+    public static Optional<Position> getOpeningTagEndPosition(JavaScriptParser.HtmlElementContext ctx) {
+        if (ctx.htmlTagStartName() != null && ctx.MoreThan() != null && ctx.MoreThan().size() == 2) {
+            return Optional.of(getEndPosition(ctx.MoreThan().get(0).getSymbol()));
+        }
+        if (ctx.htmlTagName() != null) {
+            return Optional.of(getEndPosition(ctx.htmlTagName()));
+        }
+
+        if (ctx.htmlTagName() == null && ctx.htmlTagStartName() == null && ctx.LessThan() != null && ctx.MoreThan() != null && ctx.LessThan().size() > 0 && ctx.MoreThan().size() > 0) {
+            return Optional.of(getEndPosition(ctx.MoreThan().get(0).getSymbol()));
+        }
+
+        return Optional.empty();
+    }
+
+
+    public static Optional<Position> getClosingTagStartPosition(JavaScriptParser.HtmlElementContext ctx) {
+        if (ctx.htmlTagStartName() != null) {
+            if (ctx.htmlTagClosingName() != null && ctx.LessThan() != null && ctx.LessThan().size() == 2) {
+                return Optional.of(getStartPosition(ctx.LessThan().get(1).getSymbol()));
+            }
+        }
+
+        if (ctx.htmlTagStartName() == null && ctx.htmlTagName() != null) {
+            if (ctx.Divide() != null) {
+                return Optional.of(getStartPosition(ctx.Divide().getSymbol()));
+            }
+        }
+
+        if (ctx.htmlTagName() == null && ctx.htmlTagStartName() == null) {
+            if (ctx.LessThan() != null && ctx.LessThan().size() == 2) {
+                return Optional.of(getStartPosition(ctx.LessThan().get(1).getSymbol()));
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public static Optional<Position> getClosingTagEndPosition(JavaScriptParser.HtmlElementContext ctx) {
+        if (ctx.htmlTagStartName() != null && ctx.MoreThan() != null && ctx.MoreThan().size() == 2) {
+            return Optional.of(getEndPosition(ctx.MoreThan().get(1).getSymbol()));
+        }
+
+        if (ctx.htmlTagStartName() == null && ctx.htmlTagName() == null && ctx.MoreThan() != null && ctx.MoreThan().size() == 1) {
+            return Optional.of(getEndPosition(ctx.MoreThan().get(0).getSymbol()));
+        }
+
+        if (ctx.htmlTagStartName() == null && ctx.htmlTagName() != null && ctx.MoreThan() != null && ctx.MoreThan().size() == 1) {
+            return Optional.of(getEndPosition(ctx.MoreThan().get(0).getSymbol()));
+        }
+
+        return Optional.empty();
+    }
+
     public static Optional<io.codiga.model.ast.javascript.JavaScriptHtmlElement> transformJavaScriptHtmlElement(JavaScriptParser.HtmlElementContext ctx, ParserRuleContext root) {
-        Optional<AstElement> tag = Optional.empty();
+        Optional<AstString> tag = Optional.empty();
+        Optional<JavaScriptHtmlTag> openingTag = Optional.empty();
+        Optional<JavaScriptHtmlTag> closingTag = Optional.empty();
         List<JavaScriptHtmlAttribute> attributes = new ArrayList<>();
+
+        // opening tag and tag name
         if (ctx.htmlTagStartName() != null) {
             tag = mapTagName(ctx.htmlTagStartName().htmlTagName(), root);
         }
         if (ctx.htmlTagName() != null) {
             tag = mapTagName(ctx.htmlTagName(), root);
         }
+        if (ctx.htmlTagStartName() == null && ctx.htmlTagName() == null) {
+            tag = Optional.empty();
+        }
+        openingTag = Optional.of(new JavaScriptHtmlTag(tag.orElse(null), getOpeningTagStartPosition(ctx).orElse(null), getOpeningTagEndPosition(ctx).orElse(null), ctx, root));
+
+
+        // closing tag
+        Optional<AstString> closingTagName = Optional.empty();
+        if (ctx != null && ctx.htmlTagClosingName() != null) {
+            closingTagName = mapTagName(ctx.htmlTagClosingName().htmlTagName(), root);
+        }
+        closingTag = Optional.of(new JavaScriptHtmlTag(closingTagName.orElse(null), getClosingTagStartPosition(ctx).orElse(null), getClosingTagEndPosition(ctx).orElse(null), ctx, root));
 
 
         if (ctx.htmlAttribute() != null) {
@@ -39,13 +121,13 @@ public class JavaScriptHtmlElementTransformation {
         }
 
         return Optional.of(
-            new io.codiga.model.ast.javascript.JavaScriptHtmlElement(tag.orElse(null), attributes, ctx, root)
+            new io.codiga.model.ast.javascript.JavaScriptHtmlElement(tag.orElse(null), openingTag.orElse(null), closingTag.orElse(null), attributes, ctx, root)
         );
 
 
     }
 
-    public static Optional<AstElement> mapTagName(JavaScriptParser.HtmlTagNameContext context, ParserRuleContext root) {
+    public static Optional<AstString> mapTagName(JavaScriptParser.HtmlTagNameContext context, ParserRuleContext root) {
         if (context == null) {
             return Optional.empty();
         }

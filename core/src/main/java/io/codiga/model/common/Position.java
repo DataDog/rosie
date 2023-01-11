@@ -1,5 +1,6 @@
 package io.codiga.model.common;
 
+import org.antlr.v4.runtime.Token;
 import org.graalvm.polyglot.HostAccess;
 
 public class Position {
@@ -20,10 +21,13 @@ public class Position {
         this.col = col;
     }
 
+    public static Position fromToken(Token token) {
+        return new Position(token.getLine(), token.getCharPositionInLine());
+    }
+
     public String toString() {
         return String.format("Position [%s %s]", this.line, this.col);
     }
-
 
     public int getLine() {
         return this.line;

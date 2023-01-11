@@ -45,6 +45,7 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_VARIABLE_DECLARATION = "variabledeclaration";
     public static final String AST_ELEMENT_TYPE_MEMBER = "member";
     public static final String AST_ELEMENT_TYPE_HTML_ELEMENT = "htmlelement";
+    public static final String AST_ELEMENT_TYPE_HTML_TAG = "htmltag";
     public static final String AST_ELEMENT_TYPE_HTML_ATTRIBUTE = "htmlattribute";
     public static final String AST_ELEMENT_TYPE_HTML_DATA = "htmldata";
 
@@ -91,6 +92,21 @@ public class AstElement {
         this.start = getStartPosition(token);
         this.end = getEndPosition(token);
         this.parserRuleContext = null;
+        this.root = root;
+        this.context = null;
+    }
+
+    public AstElement(String astType,
+                      Position startPosition,
+                      Position endPosition,
+                      ParserRuleContext parserRuleContext,
+                      ParserRuleContext root) {
+        this.astType = astType;
+        this.start = startPosition;
+        this.end = endPosition;
+        this.startIndex = parserRuleContext.start.getStartIndex();
+        this.endIndex = parserRuleContext.stop.getStopIndex();
+        this.parserRuleContext = parserRuleContext;
         this.root = root;
         this.context = null;
     }

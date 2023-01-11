@@ -13,7 +13,9 @@ public class JavaScriptHtmlElement extends AstElement {
     public JavaScriptHtmlAttribute[] attributes;
     public AstElement[] htmlChildren;
     public JavaScriptHtmlElement parentHtmlElement;
-    
+    public JavaScriptHtmlTag openingTag;
+    public JavaScriptHtmlTag closingTag;
+
     /**
      * Represents an HTML element.
      * This captures something like
@@ -26,11 +28,13 @@ public class JavaScriptHtmlElement extends AstElement {
      * @param parserRuleContext
      * @param root
      */
-    public JavaScriptHtmlElement(AstElement tag, List<JavaScriptHtmlAttribute> attributeList, ParserRuleContext parserRuleContext, ParserRuleContext root) {
+    public JavaScriptHtmlElement(AstElement tag, JavaScriptHtmlTag openingTag, JavaScriptHtmlTag closingTag, List<JavaScriptHtmlAttribute> attributeList, ParserRuleContext parserRuleContext, ParserRuleContext root) {
         super(AST_ELEMENT_TYPE_HTML_ELEMENT, parserRuleContext, root);
         this.tag = tag;
         this.attributes = attributeList.stream().toArray(JavaScriptHtmlAttribute[]::new);
         this.htmlChildren = new AstElement[0];
+        this.openingTag = openingTag;
+        this.closingTag = closingTag;
     }
 
     /**
