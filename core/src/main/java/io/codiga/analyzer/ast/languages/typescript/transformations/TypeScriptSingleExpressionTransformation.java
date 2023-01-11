@@ -20,6 +20,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToAstElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptObjectLiteralToObject.transformTypeScriptObjectLiteralToObject;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
 public class TypeScriptSingleExpressionTransformation {
@@ -130,6 +131,13 @@ public class TypeScriptSingleExpressionTransformation {
 
             return transformMemberDotToJavaScriptMember(memberDotExpressionContext, root);
         }
+
+        // ternary expressioN
+        if (ctx instanceof TypeScriptParser.TernaryExpressionContext ternaryExpressionContext) {
+
+            return convertToAstElement(transformTernaryExpressionToIfStatement(ternaryExpressionContext, root));
+        }
+
 
         // equality
         if (ctx instanceof TypeScriptParser.EqualityExpressionContext equalityExpressionContext) {

@@ -12,7 +12,7 @@ public class IfStatement extends AstElement {
                        AstElement elseStatements,
                        ParserRuleContext ctx,
                        ParserRuleContext root) {
-        super(AST_ELEMENT_ELIF_STATEMENT, ctx, root);
+        super(AST_ELEMENT_IF_STATEMENT, ctx, root);
         this.condition = condition;
         this.statements = statements;
         this.elseStatements = elseStatements;

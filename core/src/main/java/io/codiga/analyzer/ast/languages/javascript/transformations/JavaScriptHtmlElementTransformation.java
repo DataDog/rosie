@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.javascript.transformations;
 
 import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
+import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.javascript.JavaScriptHtmlAttribute;
 import io.codiga.model.ast.javascript.JavaScriptHtmlTag;
@@ -11,11 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.AstUtils.getEndPosition;
 import static io.codiga.analyzer.ast.AstUtils.getStartPosition;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptExpressionSequence.transformExpressionSequenceToSequence;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlAttributeTransformation.transformJavaScriptHtmlAttribute;
 
 public class JavaScriptHtmlElementTransformation {
@@ -84,6 +87,41 @@ public class JavaScriptHtmlElementTransformation {
         return Optional.empty();
     }
 
+
+    public static List<AstElement> getContent(JavaScriptParser.HtmlElementContext ctx, ParserRuleContext root) {
+        if (ctx == null || ctx.htmlContent() == null) {
+            return List.of();
+        }
+
+        List<AstElement> elementList = new ArrayList<>();
+
+
+        JavaScriptParser.HtmlContentContext contentContext = ctx.htmlContent();
+
+        if (contentContext.htmlElement() != null && contentContext.htmlElement().size() > 0) {
+            for (var htmlElement : contentContext.htmlElement()) {
+                var object = transformJavaScriptHtmlElement(htmlElement, root);
+                if (object.isPresent()) {
+                    elementList.add(object.get());
+                }
+            }
+        }
+
+        if (contentContext.objectExpressionSequence() != null && contentContext.objectExpressionSequence().size() > 0) {
+            for (var objectExpression : contentContext.objectExpressionSequence()) {
+                if (objectExpression.expressionSequence() != null) {
+                    var expressionSequence = transformExpressionSequenceToSequence(objectExpression.expressionSequence(), root);
+                    if (expressionSequence.isPresent() && expressionSequence.get().elements != null && expressionSequence.get().elements.length > 0) {
+                        elementList.addAll(Arrays.stream(expressionSequence.get().elements).toList());
+                    }
+                }
+            }
+        }
+
+
+        return elementList;
+    }
+
     public static Optional<io.codiga.model.ast.javascript.JavaScriptHtmlElement> transformJavaScriptHtmlElement(JavaScriptParser.HtmlElementContext ctx, ParserRuleContext root) {
         Optional<AstString> tag = Optional.empty();
         Optional<JavaScriptHtmlTag> openingTag = Optional.empty();
@@ -120,8 +158,9 @@ public class JavaScriptHtmlElementTransformation {
             });
         }
 
+
         return Optional.of(
-            new io.codiga.model.ast.javascript.JavaScriptHtmlElement(tag.orElse(null), openingTag.orElse(null), closingTag.orElse(null), attributes, ctx, root)
+            new io.codiga.model.ast.javascript.JavaScriptHtmlElement(tag.orElse(null), openingTag.orElse(null), closingTag.orElse(null), attributes, getContent(ctx, root), ctx, root)
         );
 
 

@@ -261,4 +261,6 @@ public class JsxTest extends JavaScriptTestUtils {
         assertEquals("sequence", element.elseStatements.astType);
         assertEquals("htmlelement", ((Sequence) element.elseStatements).elements[0].astType);
     }
+
+
 }

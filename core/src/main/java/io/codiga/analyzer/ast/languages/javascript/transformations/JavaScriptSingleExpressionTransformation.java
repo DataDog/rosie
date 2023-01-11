@@ -10,10 +10,12 @@ import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptAnonymousFunction.transformAnonymousFunction;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptArrayLiteralToArray.transformArrayLiteralToArray;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptExpression.transformExpression;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptObjectLiteralToObject.transformJavaScriptObjectLiteralToObject;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
 public class JavaScriptSingleExpressionTransformation {
@@ -134,6 +136,38 @@ public class JavaScriptSingleExpressionTransformation {
             }
 
             return Optional.of(new Operation(left.orElse(null), new AstString("=", assignmentExpressionContext.Assign().getSymbol(), root), right.orElse(null), ctx, root));
+        }
+
+
+        // or expression (||)
+        if (ctx instanceof JavaScriptParser.LogicalOrExpressionContext logicalOrExpressionContext) {
+            if (logicalOrExpressionContext.singleExpression().size() == 2) {
+                return convertToAstElement(transformExpression(
+                    logicalOrExpressionContext.singleExpression().get(0),
+                    logicalOrExpressionContext.Or().getSymbol(),
+                    logicalOrExpressionContext.singleExpression().get(1),
+                    logicalOrExpressionContext,
+                    root
+                ));
+            }
+        }
+
+        // or expression (&&)
+        if (ctx instanceof JavaScriptParser.LogicalAndExpressionContext logicalAndExpressionContext) {
+            if (logicalAndExpressionContext.singleExpression().size() == 2) {
+                return convertToAstElement(transformExpression(
+                    logicalAndExpressionContext.singleExpression().get(0),
+                    logicalAndExpressionContext.And().getSymbol(),
+                    logicalAndExpressionContext.singleExpression().get(1),
+                    logicalAndExpressionContext,
+                    root
+                ));
+            }
+        }
+
+        // ternary expression
+        if (ctx instanceof JavaScriptParser.TernaryExpressionContext ternaryExpressionContext) {
+            return convertToAstElement(transformTernaryExpressionToIfStatement(ternaryExpressionContext, root));
         }
 
         // functions (including arrow function)

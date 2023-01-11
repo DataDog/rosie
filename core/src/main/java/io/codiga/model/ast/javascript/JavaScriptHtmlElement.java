@@ -12,6 +12,7 @@ public class JavaScriptHtmlElement extends AstElement {
     public AstElement tag;
     public JavaScriptHtmlAttribute[] attributes;
     public AstElement[] htmlChildren;
+    public AstElement[] content;
     public JavaScriptHtmlElement parentHtmlElement;
     public JavaScriptHtmlTag openingTag;
     public JavaScriptHtmlTag closingTag;
@@ -28,10 +29,17 @@ public class JavaScriptHtmlElement extends AstElement {
      * @param parserRuleContext
      * @param root
      */
-    public JavaScriptHtmlElement(AstElement tag, JavaScriptHtmlTag openingTag, JavaScriptHtmlTag closingTag, List<JavaScriptHtmlAttribute> attributeList, ParserRuleContext parserRuleContext, ParserRuleContext root) {
+    public JavaScriptHtmlElement(AstElement tag,
+                                 JavaScriptHtmlTag openingTag,
+                                 JavaScriptHtmlTag closingTag,
+                                 List<JavaScriptHtmlAttribute> attributeList,
+                                 List<AstElement> contentList,
+                                 ParserRuleContext parserRuleContext,
+                                 ParserRuleContext root) {
         super(AST_ELEMENT_TYPE_HTML_ELEMENT, parserRuleContext, root);
         this.tag = tag;
         this.attributes = attributeList.stream().toArray(JavaScriptHtmlAttribute[]::new);
+        this.content = contentList.stream().toArray(AstElement[]::new);
         this.htmlChildren = new AstElement[0];
         this.openingTag = openingTag;
         this.closingTag = closingTag;
