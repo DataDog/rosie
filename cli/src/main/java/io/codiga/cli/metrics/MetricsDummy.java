@@ -19,4 +19,9 @@ public class MetricsDummy implements MetricsInterface {
     @Override
     public void histogramValue(String metricName, double value) {
     }
+
+    @Override
+    public void recordDistribution(String metricName, long value) {
+        
+    }
 }

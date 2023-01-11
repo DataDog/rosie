@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static io.codiga.metrics.MetricsName.METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_TOTAL;
+import static io.codiga.metrics.MetricsName.*;
 import static io.codiga.model.RuleErrorCode.ERROR_RULE_INVALID_RULE_TYPE;
 import static io.codiga.model.RuleErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
 import static io.codiga.utils.CompletableFutureUtils.sequence;
@@ -93,7 +93,11 @@ public class Analyzer {
                 .build();
             long endAnalysisTimestampMs = System.currentTimeMillis();
             long analysisTimeMs = endAnalysisTimestampMs - startAnalysisTimestampMs;
+            // Total analysis time
             metrics.histogramValue(METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_TOTAL, analysisTimeMs);
+            metrics.recordDistribution(METRIC_DISTRIBUTION_ANALYSIS_TOTAL_TIME, analysisTimeMs);
+            // Analysis time per language
+            metrics.recordDistribution(String.format("%s-%s", METRIC_DISTRIBUTION_ANALYSIS_TIME_PER_LANGUAGE, language.toString().toLowerCase()), analysisTimeMs);
             return new AnalysisResult(allRuleResult);
         });
     }

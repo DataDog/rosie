@@ -47,4 +47,8 @@ public class MetricsDatadog implements MetricsInterface {
     public void histogramValue(String metricName, double value) {
         this.datadogClient.histogram(metricName, value);
     }
+
+    public void recordDistribution(String metricName, long value) {
+        this.datadogClient.distribution(metricName, value);
+    }
 }

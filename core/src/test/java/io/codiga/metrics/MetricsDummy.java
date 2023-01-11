@@ -20,4 +20,9 @@ public class MetricsDummy implements MetricsInterface {
     public void histogramValue(String metricName, double value) {
         logger.info(String.format("not changing histogram %s", metricName));
     }
+
+    @Override
+    public void recordDistribution(String metricName, long value) {
+        logger.info(String.format("not changing distribution %s", metricName));
+    }
 }

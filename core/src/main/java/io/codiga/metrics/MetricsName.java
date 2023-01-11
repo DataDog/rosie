@@ -12,6 +12,8 @@ public final class MetricsName {
     public static String METRIC_INVALID_LANGUAGE = "invalid-language";
     public static String METRIC_PING_REQUEST = "ping-request";
     public static String METRIC_VERSION_REQUEST = "version-request";
+    public static String METRIC_DISTRIBUTION_ANALYSIS_TIME_PER_LANGUAGE = "distribution-analysis-time";
+    public static String METRIC_DISTRIBUTION_ANALYSIS_TOTAL_TIME = "distribution-total-analysis-time";
     public static String METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_TOTAL = "histogram-analysis-time-total";
     public static String METRIC_HISTOGRAM_REQUEST_ANALYSIS_TIME_PREFIX = "histogram-analysis-time";
 
