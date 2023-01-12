@@ -185,4 +185,39 @@ public class AssignmentTest extends JavaScriptTestUtils {
         Sequence seq = (Sequence) functionExpression.content;
         assertEquals(5, seq.elements.length);
     }
+
+
+    @Test
+    @DisplayName("Assign a function expression2")
+    public void testAssignmentFunctionExpression2() {
+        String code = """
+            const myComponent = () => {
+              const { data, loading } = useQuery();
+             
+              if (loading) {
+                return "bla";
+              }
+             
+              // invalid
+              useEffect(() => {
+                // do something
+              }, [data]);
+             
+              return (<div>data.example</div>);
+            }
+            """;
+
+        ParseTree root = parseCode(code);
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.VariableDeclarationContext.class);
+        assertEquals(2, nodes.size());
+        JavaScriptParser.VariableDeclarationContext firstVariableDeclaration = (JavaScriptParser.VariableDeclarationContext) nodes.get(0);
+        Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment(firstVariableDeclaration, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        assertEquals(AST_ELEMENT_TYPE_FUNCTION_EXPRESSION, assignment.right.astType);
+        JavaScriptFunctionExpression functionExpression = (JavaScriptFunctionExpression) assignment.right;
+        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, functionExpression.content.astType);
+        Sequence seq = (Sequence) functionExpression.content;
+        assertEquals(4, seq.elements.length);
+    }
 }

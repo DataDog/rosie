@@ -25,7 +25,7 @@ public class JavaScriptFunctionBody {
                 }
             }
 
-            return Optional.of(new Sequence(astElementList, ctx, root));
+            return Optional.of(new Sequence(astElementList, ctx, root).flatten());
 
         }
         return Optional.empty();

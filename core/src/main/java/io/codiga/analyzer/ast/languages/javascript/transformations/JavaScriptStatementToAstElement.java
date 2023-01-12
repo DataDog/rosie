@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptBlock.transformBlockContext;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptExpressionSequence.transformExpressionSequenceToSequence;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptReturn.transformReturn;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableStatement.transformVariableStatement;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
@@ -34,6 +35,10 @@ public class JavaScriptStatementToAstElement {
 
         if (ctx.returnStatement() != null) {
             return transformReturn(ctx.returnStatement(), root);
+        }
+
+        if (ctx.ifStatement() != null) {
+            return convertToAstElement(transformIfStatementToIfStatement(ctx.ifStatement(), root));
         }
         return Optional.empty();
 
