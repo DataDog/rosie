@@ -54,8 +54,8 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_ARGUMENTS = "arguments";
     public static final String AST_ELEMENT_TYPE_TYPE = "type";
     public static final String AST_ELEMENT_TYPE_TYPE_OPERATION = "typeoperation";
-    private final ParserRuleContext parserRuleContext;
-    private final ParserRuleContext root;
+    protected final ParserRuleContext parserRuleContext;
+    protected final ParserRuleContext root;
 
     @HostAccess.Export
     public Position start;
