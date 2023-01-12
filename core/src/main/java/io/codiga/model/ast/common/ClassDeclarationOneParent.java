@@ -13,6 +13,14 @@ public class ClassDeclarationOneParent extends ClassDeclaration {
                                      ParserRuleContext root) {
         super(name, ruleContext, root);
         this.parentClass = parentClass;
+    }
 
+    public ClassDeclarationOneParent(AstString name,
+                                     AstElement content,
+                                     AstElement parentClass,
+                                     ParserRuleContext ruleContext,
+                                     ParserRuleContext root) {
+        super(name, content, ruleContext, root);
+        this.parentClass = parentClass;
     }
 }

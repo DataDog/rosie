@@ -7,6 +7,7 @@ public class FunctionDefinition extends AstElement {
 
     public AstString name;
     public FunctionDefinitionParameters parameters;
+    public AstElement content;
 
 
     public FunctionDefinition(AstString name,
@@ -16,16 +17,19 @@ public class FunctionDefinition extends AstElement {
         super(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, ruleContext, root);
         this.parameters = functionDefinitionParameters;
         this.name = name;
+        this.content = null;
     }
 
     public FunctionDefinition(String alternativeType,
                               AstString name,
                               FunctionDefinitionParameters functionDefinitionParameters,
+                              AstElement content,
                               ParserRuleContext ruleContext,
                               ParserRuleContext root) {
         super(alternativeType, ruleContext, root);
         this.parameters = functionDefinitionParameters;
         this.name = name;
+        this.content = content;
     }
 
 }

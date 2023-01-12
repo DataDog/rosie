@@ -17,7 +17,7 @@ public class TypeScriptArrowFunctionDeclaration {
     public static Optional<FunctionDefinition> transformArrowFunctionDeclarationContext(TypeScriptParser.ArrowFunctionDeclarationContext ctx, ParserRuleContext root) {
         if (ctx.arrowFunctionParameters() != null) {
             Optional<FunctionDefinitionParameters> parameters = transformArrowFunctionParametersToFunctionParameters(ctx.arrowFunctionParameters(), root);
-            return Optional.of(new JavaScriptFunctionExpression(null, parameters.orElse(null), ctx, root));
+            return Optional.of(new JavaScriptFunctionExpression(null, parameters.orElse(null), null, ctx, root));
         }
         return Optional.empty();
     }

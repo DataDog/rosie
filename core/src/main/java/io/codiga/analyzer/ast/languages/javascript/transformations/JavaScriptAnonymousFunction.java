@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.javascript.transformations;
 
+import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.FunctionDefinition;
 import io.codiga.model.ast.common.FunctionDefinitionParameters;
 import io.codiga.model.ast.javascript.JavaScriptFunctionExpression;
@@ -8,8 +9,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptArrowFunctionBody.transformArrowFunctionBody;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptArrowFunctionParametersToFunctionParameters.transformArrowFunctionParametersToFunctionParameters;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFormalParametersToFunctionParameters.transformFormalParametersToFunctionParameters;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionBody.transformFunctionBody;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionDeclarationToFunctionDefinition.transformFunctionDeclarationToFunctionDefinition;
 
 public class JavaScriptAnonymousFunction {
@@ -23,14 +26,23 @@ public class JavaScriptAnonymousFunction {
         }
 
         if (ctx instanceof JavaScriptParser.AnoymousFunctionDeclContext declaration) {
+            Optional<AstElement> functionContent = Optional.empty();
+            if (declaration.functionBody() != null) {
+                functionContent = transformFunctionBody(declaration.functionBody(), root);
+            }
 
-            return Optional.of(new JavaScriptFunctionExpression(null, transformFormalParametersToFunctionParameters(declaration.formalParameterList(), root).orElse(null), declaration, root));
+            return Optional.of(new JavaScriptFunctionExpression(null, transformFormalParametersToFunctionParameters(declaration.formalParameterList(), root).orElse(null), functionContent.orElse(null), declaration, root));
 
         }
 
         if (ctx instanceof JavaScriptParser.ArrowFunctionContext declaration) {
             Optional<FunctionDefinitionParameters> parameters = transformArrowFunctionParametersToFunctionParameters(declaration.arrowFunctionParameters(), root);
-            return Optional.of(new JavaScriptFunctionExpression(null, parameters.orElse(null), declaration, root));
+            Optional<AstElement> functionContent = Optional.empty();
+
+            if (declaration.arrowFunctionBody() != null) {
+                functionContent = transformArrowFunctionBody(declaration.arrowFunctionBody(), root);
+            }
+            return Optional.of(new JavaScriptFunctionExpression(null, parameters.orElse(null), functionContent.orElse(null), declaration, root));
         }
 
         return Optional.empty();
