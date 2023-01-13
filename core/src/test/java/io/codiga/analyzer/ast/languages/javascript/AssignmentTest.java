@@ -20,8 +20,7 @@ import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformJavaScriptAssignmentExpressionToAssignment;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
-import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_FUNCTION_EXPRESSION;
-import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_SEQUENCE;
+import static io.codiga.model.ast.common.AstElement.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AssignmentTest extends JavaScriptTestUtils {
@@ -219,5 +218,52 @@ public class AssignmentTest extends JavaScriptTestUtils {
         assertEquals(AST_ELEMENT_TYPE_SEQUENCE, functionExpression.content.astType);
         Sequence seq = (Sequence) functionExpression.content;
         assertEquals(4, seq.elements.length);
+    }
+
+
+    @Test
+    @DisplayName("Assign a function expression3")
+    public void testAssignmentFunctionExpression3() {
+        String code = """
+            const useMyCustomHook = (isReady) => {
+              if (!isReady){
+            		return;
+            	}
+             
+              // invalid
+              const [state, setState] = useState();
+             
+              // invalid
+              const myCallback = useCallback(() => {
+                // invalid
+                useEffect(function myEffect() {
+                  return;
+                });
+              }, []);
+             
+              // invalid
+              const value = useMemo(() => ({ state, myCallback}), []);
+             
+              return value;
+              }
+            """;
+
+        ParseTree root = parseCode(code);
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.VariableDeclarationContext.class);
+        assertEquals(4, nodes.size());
+        JavaScriptParser.VariableDeclarationContext firstVariableDeclaration = (JavaScriptParser.VariableDeclarationContext) nodes.get(0);
+        Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment(firstVariableDeclaration, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        assertEquals(AST_ELEMENT_TYPE_FUNCTION_EXPRESSION, assignment.right.astType);
+        JavaScriptFunctionExpression functionExpression = (JavaScriptFunctionExpression) assignment.right;
+        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, functionExpression.content.astType);
+        Sequence seq = (Sequence) functionExpression.content;
+        assertEquals(5, seq.elements.length);
+        assertEquals(AST_ELEMENT_IF_STATEMENT, seq.elements[0].astType);
+        assertEquals(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, seq.elements[1].astType);
+        assertEquals(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, seq.elements[2].astType);
+        assertEquals(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, seq.elements[3].astType);
+        assertEquals(AST_ELEMENT_TYPE_RETURN, seq.elements[4].astType);
     }
 }

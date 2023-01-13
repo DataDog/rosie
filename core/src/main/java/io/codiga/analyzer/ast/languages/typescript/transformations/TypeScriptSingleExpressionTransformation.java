@@ -19,6 +19,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToAstElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptNotExpresssion.transformNotExpressionToAstElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptObjectLiteralToObject.transformTypeScriptObjectLiteralToObject;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
@@ -132,10 +133,16 @@ public class TypeScriptSingleExpressionTransformation {
             return transformMemberDotToJavaScriptMember(memberDotExpressionContext, root);
         }
 
-        // ternary expressioN
+        // ternary expression
         if (ctx instanceof TypeScriptParser.TernaryExpressionContext ternaryExpressionContext) {
 
             return convertToAstElement(transformTernaryExpressionToIfStatement(ternaryExpressionContext, root));
+        }
+
+
+        // not expression
+        if (ctx instanceof TypeScriptParser.NotExpressionContext notExpressionContext) {
+            return transformNotExpressionToAstElement(notExpressionContext, root);
         }
 
 

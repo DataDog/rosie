@@ -230,4 +230,52 @@ public class AssignmentTest extends TypeScriptTestUtils {
         assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, seq.elements[2].astType);
         assertEquals(AST_ELEMENT_TYPE_RETURN, seq.elements[3].astType);
     }
+
+
+    @Test
+    @DisplayName("Assign a function expression3")
+    public void testAssignmentFunctionExpression3() {
+        String code = """
+            const useMyCustomHook = (isReady) => {
+              if (!isReady){
+            		return;
+            	}
+             
+              // invalid
+              const [state, setState] = useState();
+             
+              // invalid
+              const myCallback = useCallback(() => {
+                // invalid
+                useEffect(function myEffect() {
+                  return;
+                });
+              }, []);
+             
+              // invalid
+              const value = useMemo(() => ({ state, myCallback}), []);
+             
+              return value;
+              }
+            """;
+
+        ParseTree root = parseCode(code);
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.VariableDeclarationContext.class);
+        assertEquals(5, nodes.size());
+        TypeScriptParser.VariableDeclarationContext firstVariableDeclaration = (TypeScriptParser.VariableDeclarationContext) nodes.get(0);
+        Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment(firstVariableDeclaration, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        assertEquals(AST_ELEMENT_TYPE_FUNCTION_EXPRESSION, assignment.right.astType);
+        JavaScriptFunctionExpression functionExpression = (JavaScriptFunctionExpression) assignment.right;
+        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, functionExpression.content.astType);
+        Sequence seq = (Sequence) functionExpression.content;
+
+        assertEquals(5, seq.elements.length);
+        assertEquals(AST_ELEMENT_IF_STATEMENT, seq.elements[0].astType);
+        assertEquals(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, seq.elements[1].astType);
+        assertEquals(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, seq.elements[2].astType);
+        assertEquals(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, seq.elements[3].astType);
+        assertEquals(AST_ELEMENT_TYPE_RETURN, seq.elements[4].astType);
+    }
 }

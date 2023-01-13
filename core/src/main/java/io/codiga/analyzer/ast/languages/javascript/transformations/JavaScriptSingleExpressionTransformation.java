@@ -14,6 +14,7 @@ import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaSc
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptNotExpression.transformNotExpressionToAstElement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptObjectLiteralToObject.transformJavaScriptObjectLiteralToObject;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
@@ -163,6 +164,11 @@ public class JavaScriptSingleExpressionTransformation {
                     root
                 ));
             }
+        }
+
+        // not expression
+        if (ctx instanceof JavaScriptParser.NotExpressionContext notExpressionContext) {
+            return convertToAstElement(transformNotExpressionToAstElement(notExpressionContext, root));
         }
 
         // ternary expression
