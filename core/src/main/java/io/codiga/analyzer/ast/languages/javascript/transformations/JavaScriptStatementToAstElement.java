@@ -41,7 +41,6 @@ public class JavaScriptStatementToAstElement {
             return convertToAstElement(transformIfStatementToIfStatement(ctx.ifStatement(), root));
         }
         return Optional.empty();
-
     }
 
 }

@@ -17,7 +17,7 @@ public class RuleOfHooksTest extends E2EBase {
     private static final Logger logger = LoggerFactory.getLogger(RuleOfHooksTest.class);
 
 
-    String codeWithError = """
+    String codeWithError1 = """
         const myComponent = () => {
           const { data, loading } = useQuery();
          
@@ -31,6 +31,51 @@ public class RuleOfHooksTest extends E2EBase {
           }, [data]);
          
           return (<div>data.example</div>);
+        }
+        """;
+
+    String codeWithError2 = """
+        const useMyCustomHook = (isReady) => {
+          if (!isReady){
+        		return;
+        	}
+         
+          // invalid
+          const [state, setState] = useState();
+         
+          // invalid
+          const myCallback = useCallback(() => {
+            // invalid
+            useEffect(function myEffect() {
+              return;
+            });
+          }, []);
+         
+          // invalid
+          const value = useMemo(() => ({ state, myCallback}), []);
+         
+          return value;
+        }
+        """;
+
+
+    String codeWithError3 = """
+        const MyComp = () => {
+          const [payload, setPayload] = useState();
+          const [result, setResult] = useState();
+         
+          const handleClick = () => {
+            // invalid
+            setPayload(useContext(MyContext));
+          };
+         
+          useEffect(() => {
+            fetch(payload).then((res) => {
+              setResult(res);
+            });
+          }, [payload]);
+
+          return <button onClick={handleClick}>my button</button>;
         }
         """;
 
@@ -65,22 +110,28 @@ public class RuleOfHooksTest extends E2EBase {
             "useMemo"
           ]
 
-          const flagHook = (element) => {
+          const flagHook = (element, message) => {
             const error = buildError(element.start.line, element.start.col,
               element.end.line, element.end.col,
-              "hook should not be placed after a if that returns", "WARNING", "BEST_PRACTICE");
+              message, "WARNING", "BEST_PRACTICE");
             addError(error);
           }
 
 
           // is there a hook usage from this node?
           const containsHook = (element) => {
-            if(!element) {
-                return false
+            if (!element) {
+              return false;
             }
             if (element.astType === "functioncall") {
               const name = element.functionName.value;
               return (REACT_HOOKS_NAMES.includes(name));
+            }
+            if (element.astType === "sequence") {
+              return element.elements.map((e) => containsHook(e)).includes(true);
+            }
+            if (element.astType === "variabledeclaration") {
+              return containsHook(element.value);
             }
             return false;
           }
@@ -105,10 +156,10 @@ public class RuleOfHooksTest extends E2EBase {
 
           // do we have a if statement with a return inside
           const containsIfWithReturn = (element) => {
+
             if (!element || element === null) {
               return false;
             }
-
             if (element.astType === "sequence") {
               element.elements.forEach((e) => {
                 if (containsIfWithReturn(e)) {
@@ -117,25 +168,72 @@ public class RuleOfHooksTest extends E2EBase {
               });
             }
             if (element.astType === "ifstatement") {
+
               return containsReturnStatement(element.statements) || containsReturnStatement(element.elseStatements);
             }
             return false;
           }
 
+
+          const checkHookUsageInsideFunctionDefinition = (element) => {
+
+            // check if a function content ever calls a hook
+            const checkFunctionContent = (element) => {
+              if (element.astType === "functionexpression") {
+                checkFunctionContent(element.content);
+              }
+              if (element.astType === "sequence") {
+                element.elements.forEach((e) => checkFunctionContent(e));
+              }
+
+              if (element.astType === "functioncall") {
+                if (element.arguments && element.arguments.values) {
+                  element.arguments.values.forEach((v) => {
+                    checkFunctionContent(v.value);
+                  });
+                }
+              }
+
+              if (containsHook(element)) {
+                flagHook(element, "hook should not be called inside inner functions");
+              }
+
+            };
+
+
+            if (!element) {
+              return;
+            }
+            if (element.astType === "variabledeclaration") {
+              checkHookUsageInsideFunctionDefinition(element.value);
+            }
+
+            if (element.astType === "functionexpression") {
+              checkFunctionContent(element);
+            }
+          };
+
+
+
           // main entry point
-          console.log(node.right.astType);
-          console.log("here");
           if (node.right.astType === "functionexpression") {
+
             const functionContent = node.right.content;
             var hasIfWithReturn = false;
-            console.log(functionContent.astType);
             if (functionContent.astType === "sequence") {
-              console.log("INSIDE FUNCTION CONTENT");
+              /**
+               * Check for potential use of a hook inside a function there
+               */
               functionContent.elements.forEach(e => {
-                console.log(e.astType);
+                checkHookUsageInsideFunctionDefinition(e);
+              })
+              /**
+               * Check for each element if we found a if with a return inside.
+               * If there is a if with a return, any subsequent hook will have an error
+               */
+              functionContent.elements.forEach(e => {
+
                 const isHook = containsHook(e);
-                console.log(`isHook = ${isHook}`);
-                console.log(`hasIfWithReturn = ${hasIfWithReturn}`);
                 if (!hasIfWithReturn) {
                   const t = containsIfWithReturn(e);
                   if (t) {
@@ -143,27 +241,37 @@ public class RuleOfHooksTest extends E2EBase {
                   }
                 }
                 if (isHook && hasIfWithReturn) {
-                  flagHook(e);
+                  flagHook(e, "hook should not be placed after a if that returns");
                 }
               });
             }
           }
         }
-        """;
+                """;
 
     @Test
     @DisplayName("rules of hooks")
     public void testHookRule() throws Exception {
         JAVASCRIPT_TYPESCRIPT.forEach(l -> {
             logger.info("Running test with language: " + l);
-            Response responseWithError = executeTest("bla.js", codeWithError, l, ruleCode, "rule-of-hooks", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
-            logger.info(responseWithError.toString());
-            assertEquals(1, responseWithError.ruleResponses.size());
-            assertEquals(1, responseWithError.ruleResponses.get(0).violations.size());
+            Response responseWithError1 = executeTest("bla.js", codeWithError1, l, ruleCode, "rule-of-hooks", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
+            logger.info(responseWithError1.toString());
+            assertEquals(1, responseWithError1.ruleResponses.size());
+            assertEquals(1, responseWithError1.ruleResponses.get(0).violations.size());
 
+
+            Response responseWithError2 = executeTest("bla.js", codeWithError2, l, ruleCode, "rule-of-hooks", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
+            logger.info(responseWithError2.toString());
+            assertEquals(1, responseWithError2.ruleResponses.size());
+            assertEquals(3, responseWithError2.ruleResponses.get(0).violations.size());
+
+            Response responseWithError3 = executeTest("bla.js", codeWithError3, l, ruleCode, "rule-of-hooks", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
+            logger.info(responseWithError3.toString());
+            assertEquals(1, responseWithError3.ruleResponses.size());
+            assertEquals(1, responseWithError3.ruleResponses.get(0).violations.size());
 
             Response responseWithoutError = executeTest("bla.js", codeWithoutError, l, ruleCode, "rule-of-hooks", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
-            logger.info(responseWithError.toString());
+            logger.info(responseWithError1.toString());
             assertEquals(1, responseWithoutError.ruleResponses.size());
             assertEquals(0, responseWithoutError.ruleResponses.get(0).violations.size());
         });
