@@ -49,7 +49,7 @@ public class JavaScriptVariableDeclarationList {
 
 
         if (result.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         if (result.size() == 1) {
             return Optional.of(result.get(0));

@@ -15,6 +15,7 @@ public class JavaScriptStatementListToAstElement {
 
 
     public static Optional<AstElement> transformStatementList(JavaScriptParser.StatementListContext ctx, ParserRuleContext root) {
+
         if (ctx == null || ctx.statement() == null) {
             return Optional.empty();
         }
