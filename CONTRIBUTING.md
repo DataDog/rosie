@@ -14,13 +14,21 @@
 
 ## ANTLR
 
-### Generate Python AST
+### Generate ASTs
+
+#### JavaScript
 
 ```bash
 antlr4 -o gen -no-listener -visitor -package io.codiga.parser.javascript.gen JavaScriptLexer.g4 JavaScriptParser.g4
 ```
 
 Make sure you copy the `Java/*` file with the `.g4` file
+
+#### TypeScript
+
+```bash
+antlr4 -o gen -no-listener -visitor -package io.codiga.parser.typescript.gen TypeScriptLexer.g4 TypeScriptParser.g4
+```
 
 ```bash
 javac *.java
