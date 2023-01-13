@@ -15,11 +15,11 @@ public class JavaScriptFunctionBody {
 
 
     public static Optional<AstElement> transformFunctionBody(JavaScriptParser.FunctionBodyContext ctx, ParserRuleContext root) {
-
+        Optional<AstElement> elementTransformed = Optional.empty();
         if (ctx.sourceElements() != null) {
             List<AstElement> astElementList = new ArrayList<>();
             for (var element : ctx.sourceElements().sourceElement()) {
-                Optional<AstElement> elementTransformed = transformSourceElement(element, root);
+                elementTransformed = transformSourceElement(element, root);
                 if (elementTransformed.isPresent()) {
                     astElementList.add(elementTransformed.get());
                 }
