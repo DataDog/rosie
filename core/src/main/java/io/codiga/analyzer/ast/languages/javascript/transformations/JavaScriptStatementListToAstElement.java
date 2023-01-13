@@ -22,12 +22,12 @@ public class JavaScriptStatementListToAstElement {
         List<AstElement> astElementList = new ArrayList<>();
 
         for (JavaScriptParser.StatementContext statementContext : ctx.statement()) {
-            var statementOptional = transformStatement(statementContext, root);
+            Optional<AstElement> statementOptional = transformStatement(statementContext, root);
             if (statementOptional.isPresent()) {
                 astElementList.add(statementOptional.get());
             }
         }
-        
+
         return Optional.of(new Sequence(astElementList, ctx, root));
     }
 

@@ -19,7 +19,7 @@ public class JavaScriptFunctionBody {
         if (ctx.sourceElements() != null) {
             List<AstElement> astElementList = new ArrayList<>();
             for (var element : ctx.sourceElements().sourceElement()) {
-                var elementTransformed = transformSourceElement(element, root);
+                Optional<AstElement> elementTransformed = transformSourceElement(element, root);
                 if (elementTransformed.isPresent()) {
                     astElementList.add(elementTransformed.get());
                 }
