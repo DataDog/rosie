@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrowFunctionBody.transformArrowFunctionBody;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrowFunctionParametersToFunctionParameters.transformArrowFunctionParametersToFunctionParameters;
 
 
@@ -17,7 +18,8 @@ public class TypeScriptArrowFunctionDeclaration {
     public static Optional<FunctionDefinition> transformArrowFunctionDeclarationContext(TypeScriptParser.ArrowFunctionDeclarationContext ctx, ParserRuleContext root) {
         if (ctx.arrowFunctionParameters() != null) {
             Optional<FunctionDefinitionParameters> parameters = transformArrowFunctionParametersToFunctionParameters(ctx.arrowFunctionParameters(), root);
-            return Optional.of(new JavaScriptFunctionExpression(null, parameters.orElse(null), null, ctx, root));
+
+            return Optional.of(new JavaScriptFunctionExpression(null, parameters.orElse(null), transformArrowFunctionBody(ctx.arrowFunctionBody(), root).orElse(null), ctx, root));
         }
         return Optional.empty();
     }
