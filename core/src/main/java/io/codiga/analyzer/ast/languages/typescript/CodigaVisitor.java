@@ -29,7 +29,8 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptImportStatementToImport.transformImportStatementToImport;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTryStatement.transformTryStatementToTryCatchStatement;
-import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclaration.transformVariableDeclarationToAssignment;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclaration.transformVariableDeclarationToFunctionCall;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableStatement.transformVariableStatementToVariableDeclaration;
 
 
@@ -109,11 +110,21 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
     @Override
     public Object visitVariableDeclaration(TypeScriptParser.VariableDeclarationContext ctx) {
         Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment(ctx, root);
-        if (assignmentOptional.isPresent()) {
+
+        // Assignment
+        if (assignmentOptional.isPresent() && ctx.Assign() != null) {
             Assignment assignment = assignmentOptional.get();
             assignment.setContext(buildContext());
             this.assignments.add(assignment);
         }
+
+        Optional<FunctionCall> functionCallOptional = transformVariableDeclarationToFunctionCall(ctx, root);
+        if (functionCallOptional.isPresent()) {
+            FunctionCall functionCall = functionCallOptional.get();
+            functionCall.setContext(buildContext());
+            this.functionCalls.add(functionCall);
+        }
+
         return visitChildren(ctx);
     }
 

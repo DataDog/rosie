@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptAssignmentExpression.transformAssignmentExpressionToAssignment;
-import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclaration.transformVariableDeclarationToAssignment;
 import static io.codiga.model.ast.common.AstElement.*;
 import static org.junit.jupiter.api.Assertions.*;
 

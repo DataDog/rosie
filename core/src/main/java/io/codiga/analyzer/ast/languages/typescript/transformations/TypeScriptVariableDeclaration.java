@@ -1,10 +1,7 @@
 package io.codiga.analyzer.ast.languages.typescript.transformations;
 
 import io.codiga.analyzer.ast.languages.typescript.CodigaVisitor;
-import io.codiga.model.ast.common.Assignment;
-import io.codiga.model.ast.common.AstElement;
-import io.codiga.model.ast.common.AstString;
-import io.codiga.model.ast.common.VariableDeclaration;
+import io.codiga.model.ast.common.*;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
@@ -13,13 +10,14 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrayLiteralToArray.transformArrayLiteralToArray;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionSequence.transformExpressionSequenceToFunctionArguments;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierOrKeywordTransformation.transformIdentifierNameToAstString;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptObjectLiteralToObject.transformTypeScriptObjectLiteralToObject;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptSingleExpressionTransformation.transformSingleExpressionToAstElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTypeAnnotation.typeAnnotationToAstElement;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
-public class TypeScriptVariableDeclarationToAssignment {
+public class TypeScriptVariableDeclaration {
     private final Logger logger = LoggerFactory.getLogger(CodigaVisitor.class);
 
 
@@ -94,5 +92,28 @@ public class TypeScriptVariableDeclarationToAssignment {
 
     }
 
+    public static Optional<FunctionCall> transformVariableDeclarationToFunctionCall(TypeScriptParser.VariableDeclarationContext ctx, ParserRuleContext root) {
+        if (ctx.singleExpression().size() != 1 || ctx.Assign() != null || ctx.identifierOrKeyWord() == null) {
+            return Optional.empty();
+        }
 
+        TypeScriptParser.SingleExpressionContext arguments = ctx.singleExpression().get(0);
+
+        if (!(arguments instanceof TypeScriptParser.ParenthesizedExpressionContext)) {
+            return Optional.empty();
+        }
+
+        TypeScriptParser.ParenthesizedExpressionContext parenthesizedExpressionContext = (TypeScriptParser.ParenthesizedExpressionContext) arguments;
+
+
+        Optional<AstString> functionName = transformIdentifierNameToAstString(ctx.identifierOrKeyWord(), root);
+        Optional<FunctionCallArguments> functionCallArgumentsOptional = transformExpressionSequenceToFunctionArguments(parenthesizedExpressionContext.expressionSequence(), root);
+
+        if (functionName.isPresent() && functionCallArgumentsOptional.isPresent()) {
+            return Optional.of(new FunctionCall(functionName.get(), functionCallArgumentsOptional.get(), ctx, root));
+        }
+
+        return Optional.empty();
+
+    }
 }

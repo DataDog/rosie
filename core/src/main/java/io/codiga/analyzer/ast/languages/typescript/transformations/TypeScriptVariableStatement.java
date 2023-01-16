@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierOrKeywordTransformation.transformIdentifierNameToAstString;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptParenthesizedExpression.typescriptParenthesizedExpresssionToFunctionCallArguments;
-import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclarationToAssignment.transformVariableDeclarationToVariableDeclaration;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclaration.transformVariableDeclarationToVariableDeclaration;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
 public class TypeScriptVariableStatement {
