@@ -278,4 +278,6 @@ public class AssignmentTest extends TypeScriptTestUtils {
         assertEquals(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, seq.elements[3].astType);
         assertEquals(AST_ELEMENT_TYPE_RETURN, seq.elements[4].astType);
     }
+
+
 }

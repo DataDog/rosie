@@ -104,4 +104,6 @@ public class VariableDeclarationTest extends TypeScriptTestUtils {
         assertEquals("1", ((AstString) variableDeclaration.value).value);
 
     }
+
+
 }
