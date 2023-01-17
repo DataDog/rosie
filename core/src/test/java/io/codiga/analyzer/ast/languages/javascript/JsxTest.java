@@ -262,5 +262,37 @@ public class JsxTest extends JavaScriptTestUtils {
         assertEquals("htmlelement", ((Sequence) element.elseStatements).elements[0].astType);
     }
 
+    @Test
+    @DisplayName("Get JSX with in as attribute name")
+    public void testJsxWithInKeywords() {
+        String code = """
+            export default function RuleMetadataInput({
+              data,
+              sharedData,
+              ruleSet,
+              ruleSetId,
+              ...props
+            }) {
 
+              return (
+                <Box w="full" {...props}>
+                  <Box w="full">
+                    <Collapse in={isOpen} animateOpacity>
+                    </Collapse>
+                  </Box>
+                </Box>
+              );
+            }
+                        """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.HtmlElementContext.class);
+        assertEquals(3, nodes.size());
+        Optional<JavaScriptHtmlElement> elementOptional = transformJavaScriptHtmlElement(((JavaScriptParser.HtmlElementContext) nodes.get(2)), null);
+        assertTrue(elementOptional.isPresent());
+        JavaScriptHtmlElement element = elementOptional.get();
+        assertEquals(2, element.attributes.length);
+        assertEquals("in", element.attributes[0].name.value);
+    }
 }

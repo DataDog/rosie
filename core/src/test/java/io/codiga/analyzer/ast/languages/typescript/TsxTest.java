@@ -249,4 +249,38 @@ public class TsxTest extends TypeScriptTestUtils {
         AstExpression element = (AstExpression) elementOptional.get();
         assertEquals("&&", ((AstString) element.operator).value);
     }
+
+
+    @Test
+    @DisplayName("TSX with in property")
+    public void testInProperty() {
+        String code = """
+            export default function RuleMetadataInput({
+              data,
+              sharedData,
+              ruleSet,
+              ruleSetId,
+              ...props
+            }) {
+
+              return (
+                <Box w="full" {...props}>
+                  <Box w="full">
+                    <Collapse in={isOpen} animateOpacity>
+                    </Collapse>
+                  </Box>
+                </Box>
+              );
+            }
+                        """;
+
+        ParseTree root = parseCode(code);
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.HtmlElementContext.class);
+        assertEquals(3, nodes.size());
+        Optional<JavaScriptHtmlElement> elementOptional = transformTypeScriptHtmlElement(((TypeScriptParser.HtmlElementContext) nodes.get(2)), null);
+        assertTrue(elementOptional.isPresent());
+        JavaScriptHtmlElement element = elementOptional.get();
+        assertEquals(2, element.attributes.length);
+        assertEquals("in", element.attributes[0].name.value);
+    }
 }

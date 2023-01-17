@@ -17,8 +17,8 @@ public class TypeScriptHtmlAttributeTransformation {
             return Optional.of(new AstString(name.TagName().getText(), name.TagName().getSymbol(), root));
         }
 
-        if (name.identifierOrKeyWord() != null) {
-            String n = String.join("-", name.identifierOrKeyWord().stream().map(i -> i.getText()).toList());
+        if (name.identifierOrKeyWordForHtmlAttribute() != null) {
+            String n = String.join("-", name.identifierOrKeyWordForHtmlAttribute().stream().map(i -> i.getText()).toList());
             return Optional.of(new AstString(n, name, root));
         }
         return Optional.empty();

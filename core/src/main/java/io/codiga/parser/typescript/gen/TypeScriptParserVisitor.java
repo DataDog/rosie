@@ -59,6 +59,12 @@ public interface TypeScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitHtmlAttributeName(TypeScriptParser.HtmlAttributeNameContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link TypeScriptParser#identifierOrKeyWordForHtmlAttribute}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifierOrKeyWordForHtmlAttribute(TypeScriptParser.IdentifierOrKeyWordForHtmlAttributeContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link TypeScriptParser#htmlChardata}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
