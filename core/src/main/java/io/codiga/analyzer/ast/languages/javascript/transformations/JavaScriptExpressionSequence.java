@@ -10,11 +10,30 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformSingleExpressionToAstElement;
+import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
 public class JavaScriptExpressionSequence {
 
 
+    public static Optional<AstElement> transformExpressionSequenceToAstElement(JavaScriptParser.ExpressionSequenceContext ctx, ParserRuleContext root) {
+        if (ctx == null || ctx.singleExpression() == null) {
+            return Optional.empty();
+        }
+
+        if (ctx.singleExpression().isEmpty()) {
+            return Optional.empty();
+        }
+
+        if (ctx.singleExpression().size() == 1) {
+            return transformSingleExpressionToAstElement(ctx.singleExpression().get(0), root);
+        }
+        return convertToAstElement(transformExpressionSequenceToSequence(ctx, root));
+    }
+
     public static Optional<Sequence> transformExpressionSequenceToSequence(JavaScriptParser.ExpressionSequenceContext ctx, ParserRuleContext root) {
+        if (ctx == null) {
+            return Optional.empty();
+        }
         List<AstElement> res = new ArrayList<>();
         ctx.singleExpression().forEach(v -> {
             Optional<AstElement> t = transformSingleExpressionToAstElement(v, root);

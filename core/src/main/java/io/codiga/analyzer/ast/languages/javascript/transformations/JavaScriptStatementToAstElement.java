@@ -7,9 +7,11 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptBlock.transformBlockContext;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptBreak.transformBreak;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptExpressionSequence.transformExpressionSequenceToSequence;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptReturn.transformReturn;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSwitchStatement.transformSwitchStatement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableStatement.transformVariableStatement;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
@@ -39,6 +41,14 @@ public class JavaScriptStatementToAstElement {
 
         if (ctx.ifStatement() != null) {
             return convertToAstElement(transformIfStatementToIfStatement(ctx.ifStatement(), root));
+        }
+
+        if (ctx.switchStatement() != null) {
+            return convertToAstElement(transformSwitchStatement(ctx.switchStatement(), root));
+        }
+
+        if (ctx.breakStatement() != null) {
+            return convertToAstElement(transformBreak(ctx.breakStatement(), null));
         }
         return Optional.empty();
     }

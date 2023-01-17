@@ -20,6 +20,9 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_ASSIGNMENTS = "assignments";
     public static final String AST_ELEMENT_TYPE_CONTAINER = "container";
     public static final String AST_ELEMENT_TYPE_RETURN = "return";
+    public static final String AST_ELEMENT_TYPE_BREAK = "break";
+    public static final String AST_ELEMENT_TYPE_SWITCH = "switch";
+    public static final String AST_ELEMENT_TYPE_SWITCH_CASE = "switchcase";
     public static final String AST_ELEMENT_TYPE_SEQUENCE = "sequence";
     public static final String AST_ELEMENT_TYPE_OPERATION = "operation";
     public static final String AST_ELEMENT_TYPE_FUNCTION_CALL = "functioncall";
