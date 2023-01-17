@@ -57,6 +57,8 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_IMPORT_PACKAGE = "importpackage";
     public static final String AST_ELEMENT_TYPE_ARGUMENTS = "arguments";
     public static final String AST_ELEMENT_TYPE_TYPE = "type";
+    public static final String AST_ELEMENT_TYPE_INTERFACE = "interface";
+    public static final String AST_ELEMENT_TYPE_INTERFACE_PROPERTY = "interfaceproperty";
     public static final String AST_ELEMENT_TYPE_TYPE_OPERATION = "typeoperation";
     protected final ParserRuleContext parserRuleContext;
     protected final ParserRuleContext root;

@@ -6,6 +6,7 @@ import io.codiga.model.ast.javascript.JavaScriptHtmlData;
 import io.codiga.model.ast.javascript.JavaScriptHtmlElement;
 import io.codiga.model.ast.javascript.JavaScriptImport;
 import io.codiga.model.ast.javascript.JavaScriptTryCatchStatement;
+import io.codiga.model.ast.typescript.TypeScriptInterface;
 import io.codiga.model.context.JavaScriptNodeContext;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import io.codiga.parser.typescript.gen.TypeScriptParserBaseVisitor;
@@ -27,6 +28,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptImportStatementToImport.transformImportStatementToImport;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptInterfaceTransformation.transformInterfaceDeclaration;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptTryStatement.transformTryStatementToTryCatchStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableDeclaration.transformVariableDeclarationToAssignment;
@@ -58,6 +60,7 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
     List<VariableDeclaration> variableDeclarations;
     List<IfStatement> ifStatements;
     List<JavaScriptTryCatchStatement> tryStatements;
+    List<TypeScriptInterface> typeScriptInterfaces;
     List<ForStatement> forStatements;
     List<FunctionDefinition> functionDefinitions;
     List<FunctionCall> functionCalls;
@@ -80,6 +83,7 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
         tryStatements = new ArrayList<>();
         htmlElements = new ArrayList<>();
         variableDeclarations = new ArrayList<>();
+        typeScriptInterfaces = new ArrayList<>();
 
         // Initialize the visited elements
         visitedImportStatements = new ArrayList<>();
@@ -323,6 +327,19 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
         }
         return visitChildren(ctx);
     }
+
+
+    @Override
+    public Object visitInterfaceDeclaration(TypeScriptParser.InterfaceDeclarationContext ctx) {
+        Optional<TypeScriptInterface> typeScriptInterfaceOptional = transformInterfaceDeclaration(ctx, root);
+        if (typeScriptInterfaceOptional.isPresent()) {
+            TypeScriptInterface typeScriptInterface = typeScriptInterfaceOptional.get();
+            typeScriptInterface.setContext(buildContext());
+            this.typeScriptInterfaces.add(typeScriptInterface);
+        }
+        return visitChildren(ctx);
+    }
+
 
     @Trace(operationName = "CodigaTypeScriptVisitor.buildContext")
     private JavaScriptNodeContext buildContext() {
