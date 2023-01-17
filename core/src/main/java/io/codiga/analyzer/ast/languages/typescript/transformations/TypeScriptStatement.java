@@ -8,9 +8,11 @@ import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrowFunctionDeclaration.transformArrowFunctionDeclarationContext;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptBlock.transformBlock;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptBreak.transformBreak;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptExpressionSequence.transformExpressionSequenceToSequence;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptReturn.transformReturnStatement;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptSwitchStatement.transformSwitchStatement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableStatement.transformVariableStatementToSequence;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
@@ -45,6 +47,14 @@ public class TypeScriptStatement {
 
         if (ctx.returnStatement() != null) {
             return transformReturnStatement(ctx.returnStatement(), root);
+        }
+
+        if (ctx.switchStatement() != null) {
+            return convertToAstElement(transformSwitchStatement(ctx.switchStatement(), root));
+        }
+
+        if (ctx.breakStatement() != null) {
+            return convertToAstElement(transformBreak(ctx.breakStatement(), null));
         }
         return Optional.empty();
 

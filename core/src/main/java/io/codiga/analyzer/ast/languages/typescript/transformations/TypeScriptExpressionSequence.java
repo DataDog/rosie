@@ -10,10 +10,26 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptSingleExpressionTransformation.transformSingleExpressionToAstElement;
+import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
 
 public class TypeScriptExpressionSequence {
 
+
+    public static Optional<AstElement> transformExpressionSequenceToAstElement(TypeScriptParser.ExpressionSequenceContext ctx, ParserRuleContext root) {
+        if (ctx == null || ctx.singleExpression() == null) {
+            return Optional.empty();
+        }
+
+        if (ctx.singleExpression().isEmpty()) {
+            return Optional.empty();
+        }
+
+        if (ctx.singleExpression().size() == 1) {
+            return transformSingleExpressionToAstElement(ctx.singleExpression().get(0), root);
+        }
+        return convertToAstElement(transformExpressionSequenceToSequence(ctx, root));
+    }
 
     public static Optional<Sequence> transformExpressionSequenceToSequence(TypeScriptParser.ExpressionSequenceContext ctx, ParserRuleContext root) {
         List<AstElement> res = new ArrayList<>();
