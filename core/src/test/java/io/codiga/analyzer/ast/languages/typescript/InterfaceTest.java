@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.languages.typescript;
 
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.typescript.TypeScriptInterface;
+import io.codiga.model.ast.typescript.TypeScriptInterfaceIndexSignature;
 import io.codiga.model.ast.typescript.TypeScriptInterfaceProperty;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptInterfaceTransformation.transformInterfaceDeclaration;
+import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_INTERFACE_INDEX_SIGNATURE;
 import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_INTERFACE_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,5 +62,33 @@ public class InterfaceTest extends TypeScriptTestUtils {
 
     }
 
+
+    @Test
+    @DisplayName("interface with index signature")
+    public void testIndexSignature() {
+        String code = """
+            interface StringByString {
+              [key: string]: string;
+            }
+                                    """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.InterfaceDeclarationContext.class);
+
+        assertEquals(1, nodes.size());
+
+        Optional<TypeScriptInterface> interfaceOptional = transformInterfaceDeclaration((TypeScriptParser.InterfaceDeclarationContext) nodes.get(0), null);
+        assertTrue(interfaceOptional.isPresent());
+        assertEquals("StringByString", ((AstString) interfaceOptional.get().name).value);
+        assertEquals(1, interfaceOptional.get().members.length);
+        assertEquals(AST_ELEMENT_TYPE_INTERFACE_INDEX_SIGNATURE, interfaceOptional.get().members[0].astType);
+        TypeScriptInterfaceIndexSignature typeScriptInterfaceIndexSignature = (TypeScriptInterfaceIndexSignature) interfaceOptional.get().members[0];
+
+        assertEquals("key", ((AstString) typeScriptInterfaceIndexSignature.keyName).value);
+        assertEquals("string", ((AstString) typeScriptInterfaceIndexSignature.keyType).value);
+        assertEquals("string", ((AstString) typeScriptInterfaceIndexSignature.type).value);
+
+    }
 
 }

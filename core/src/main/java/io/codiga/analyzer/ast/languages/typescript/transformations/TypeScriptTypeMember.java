@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIndexSignatureTransformation.transformIndexSignature;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptPropertySignature.transformTypeScriptPropertySignature;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
@@ -23,6 +24,10 @@ public class TypeScriptTypeMember {
 
         if (ctx.propertySignatur() != null) {
             return convertToAstElement(transformTypeScriptPropertySignature(ctx.propertySignatur(), root));
+        }
+
+        if (ctx.indexSignature() != null) {
+            return convertToAstElement(transformIndexSignature(ctx.indexSignature(), root));
         }
         return Optional.empty();
 
