@@ -1,7 +1,6 @@
 package io.codiga.analyzer.ast.languages.python.transformations;
 
 import io.codiga.model.ast.common.AstString;
-import io.codiga.model.ast.common.FunctionCall;
 import io.codiga.model.ast.common.FunctionCallArgument;
 import io.codiga.model.ast.common.FunctionCallArguments;
 import io.codiga.model.ast.python.PythonFunctionCall;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
+import static io.codiga.analyzer.ast.languages.python.transformations.ArgumentsTransformation.transformArgumentsToFunctionCallArguments;
 
 public class ExprToFunctionCall {
 
@@ -55,6 +55,14 @@ public class ExprToFunctionCall {
         // get the latest trailer to get the function name
         PythonParser.TrailerContext trailerContext = ctx.trailer().get(ctx.trailer().size() - 1);
 
+        if (trailerContext.arguments() == null) {
+            return Optional.empty();
+        }
+
+        if (trailerContext.arguments().OPEN_PAREN() == null || trailerContext.arguments().CLOSE_PAREN() == null) {
+            return Optional.empty();
+        }
+
         if (trailerContext.name() != null) {
             objectOrModule = getModuleOrObject(ctx, root);
             functionName = new AstString(trailerContext.name().getText(), trailerContext.name(), root);
@@ -62,32 +70,13 @@ public class ExprToFunctionCall {
             functionName = new AstString(atom.getText(), atom, root);
         }
 
-        if (trailerContext.arguments() != null && trailerContext.arguments().arglist() != null && trailerContext.arguments().arglist().argument() != null) {
-            for (PythonParser.ArgumentContext argumentContext : trailerContext.arguments().arglist().argument()) {
-                AstString argumentName = null;
-                AstString argumentValue = null;
-
-                if (argumentContext.ASSIGN() != null) {
-                    argumentName = new AstString(argumentContext.test(0).getText(), argumentContext.test(0), root);
-                    argumentValue = new AstString(argumentContext.test(1).getText(), argumentContext.test(1), root);
-                } else {
-                    argumentValue = new AstString(argumentContext.test(0).getText(), argumentContext.test(0), root);
-                }
-
-                functionArguments.add(new FunctionCallArgument(
-                    argumentName,
-                    argumentValue, argumentContext, root));
-            }
-        }
+        Optional<FunctionCallArguments> arguments = transformArgumentsToFunctionCallArguments(trailerContext.arguments(), root);
 
         Position start = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
         Position end = new Position(ctx.stop.getLine(), ctx.stop.getCharPositionInLine());
         FunctionCallArguments functionCallArguments = null;
 
-        if (trailerContext.arguments() != null && trailerContext.arguments().arglist() != null) {
-            functionCallArguments = new FunctionCallArguments(functionArguments, trailerContext.arguments().arglist(), root);
-        }
 
-        return Optional.of(new PythonFunctionCall(objectOrModule, functionName, functionCallArguments, start, end, ctx, root));
+        return Optional.of(new PythonFunctionCall(objectOrModule, functionName, arguments.orElse(null), start, end, ctx, root));
     }
 }

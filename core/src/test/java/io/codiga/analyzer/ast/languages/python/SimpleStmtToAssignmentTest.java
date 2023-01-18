@@ -15,15 +15,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.python.transformations.SimpleStmtToAssignment.isAssignment;
-import static io.codiga.analyzer.ast.languages.python.transformations.SimpleStmtToAssignment.transformSimpleStmtToPythonAssignment;
+import static io.codiga.analyzer.ast.languages.python.transformations.ExprStmtTransformation.isAssignment;
+import static io.codiga.analyzer.ast.languages.python.transformations.ExprStmtTransformation.transformExprStmtToAssignment;
 import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_FUNCTION_CALL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SimpleStmtToAssignmentTest extends PythonTestUtils {
 
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {
@@ -41,16 +41,17 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
 
         ParseTree root = parseCode(code);
 
-        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Simple_stmtContext.class);
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Expr_stmtContext.class);
+        assertEquals(1, exprNodes.size());
+        PythonParser.Expr_stmtContext node = (PythonParser.Expr_stmtContext) exprNodes.get(0);
 
-        for (ParseTree node : exprNodes) {
-            assertTrue(isAssignment(node));
-            Optional<Assignment> assignmentOptional = transformSimpleStmtToPythonAssignment((PythonParser.Simple_stmtContext) node, null);
-            assertTrue(assignmentOptional.isPresent());
-            Assignment assignment = assignmentOptional.get();
-            assertEquals("v", ((AstString) assignment.left).getText());
-            assertEquals("10", ((AstString) assignment.right).getText());
-        }
+
+        assertTrue(isAssignment(node));
+        Optional<Assignment> assignmentOptional = transformExprStmtToAssignment(node, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        assertEquals("v", assignment.left.getText());
+        assertEquals("10", assignment.right.getText());
     }
 
     @Test
@@ -60,18 +61,18 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
 
         ParseTree root = parseCode(code);
 
-        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Simple_stmtContext.class);
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Expr_stmtContext.class);
+        assertEquals(1, exprNodes.size());
+        PythonParser.Expr_stmtContext node = (PythonParser.Expr_stmtContext) exprNodes.get(0);
 
-        for (ParseTree node : exprNodes) {
-            assertTrue(isAssignment(node));
-            Optional<Assignment> assignmentOptional = transformSimpleStmtToPythonAssignment((PythonParser.Simple_stmtContext) node, null);
-            assertTrue(assignmentOptional.isPresent());
-            Assignment assignment = assignmentOptional.get();
-            assertEquals("v", ((AstString) (((PythonList) assignment.left).elements[0])).str);
-            assertEquals("w", ((AstString) (((PythonList) assignment.left).elements[1])).str);
-            assertEquals("42", ((AstString) (((PythonList) assignment.right).elements[0])).str);
-            assertEquals("51", ((AstString) (((PythonList) assignment.right).elements[1])).str);
-        }
+        assertTrue(isAssignment(node));
+        Optional<Assignment> assignmentOptional = transformExprStmtToAssignment(node, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        assertEquals("v", ((AstString) (((PythonList) assignment.left).elements[0])).str);
+        assertEquals("w", ((AstString) (((PythonList) assignment.left).elements[1])).str);
+        assertEquals("42", ((AstString) (((PythonList) assignment.right).elements[0])).str);
+        assertEquals("51", ((AstString) (((PythonList) assignment.right).elements[1])).str);
     }
 
 
@@ -82,16 +83,16 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
 
         ParseTree root = parseCode(code);
 
-        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Simple_stmtContext.class);
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Expr_stmtContext.class);
+        assertEquals(1, exprNodes.size());
+        PythonParser.Expr_stmtContext node = (PythonParser.Expr_stmtContext) exprNodes.get(0);
+        assertTrue(isAssignment(node));
+        Optional<Assignment> assignmentOptional = transformExprStmtToAssignment(node, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        assertEquals("v", ((AstString) assignment.left).str);
+        assertEquals("f\"SELECT foo FROM bar WHERE plop={bli}\"", ((AstString) assignment.right).str);
 
-        for (ParseTree node : exprNodes) {
-            assertTrue(isAssignment(node));
-            Optional<Assignment> assignmentOptional = transformSimpleStmtToPythonAssignment((PythonParser.Simple_stmtContext) node, null);
-            assertTrue(assignmentOptional.isPresent());
-            Assignment assignment = assignmentOptional.get();
-            assertEquals("v", ((AstString) assignment.left).str);
-            assertEquals("f\"SELECT foo FROM bar WHERE plop={bli}\"", ((AstString) assignment.right).str);
-        }
     }
 
 
@@ -102,19 +103,42 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
 
         ParseTree root = parseCode(code);
 
-        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Simple_stmtContext.class);
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Expr_stmtContext.class);
+        assertEquals(1, exprNodes.size());
+        PythonParser.Expr_stmtContext node = (PythonParser.Expr_stmtContext) exprNodes.get(0);
+        assertTrue(isAssignment(node));
+        Optional<Assignment> assignmentOptional = transformExprStmtToAssignment(node, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        assertEquals("v", ((AstString) assignment.left).str);
+        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, assignment.right.astType);
+        PythonFunctionCall functionCall = (PythonFunctionCall) assignment.right;
+        assertEquals("format", ((AstString) functionCall.functionName).value);
+        assertEquals("\"SELECT foo FROM bar WHERE plop={0}\"", functionCall.moduleOrObject.str);
 
-        for (ParseTree node : exprNodes) {
-            assertTrue(isAssignment(node));
-            Optional<Assignment> assignmentOptional = transformSimpleStmtToPythonAssignment((PythonParser.Simple_stmtContext) node, null);
-            assertTrue(assignmentOptional.isPresent());
-            Assignment assignment = assignmentOptional.get();
-            assertEquals("v", ((AstString) assignment.left).str);
-            assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, assignment.right.astType);
-            PythonFunctionCall functionCall = (PythonFunctionCall) assignment.right;
-            assertEquals("format", ((AstString) functionCall.functionName).value);
-            assertEquals("\"SELECT foo FROM bar WHERE plop={0}\"", functionCall.moduleOrObject.str);
 
-        }
+    }
+
+    @Test
+    @DisplayName("Assignment to key")
+    public void testAssignmentToKey() {
+        String code = "response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'";
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Expr_stmtContext.class);
+        assertEquals(1, exprNodes.size());
+        PythonParser.Expr_stmtContext node = (PythonParser.Expr_stmtContext) exprNodes.get(0);
+
+        assertTrue(isAssignment(node));
+        Optional<Assignment> assignmentOptional = transformExprStmtToAssignment(node, null);
+        assertTrue(assignmentOptional.isPresent());
+//        Assignment assignment = assignmentOptional.get();
+//        assertEquals("v", ((AstString) assignment.left).str);
+//        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, assignment.right.astType);
+//        PythonFunctionCall functionCall = (PythonFunctionCall) assignment.right;
+//        assertEquals("format", ((AstString) functionCall.functionName).value);
+//        assertEquals("\"SELECT foo FROM bar WHERE plop={0}\"", functionCall.moduleOrObject.str);
+
     }
 }

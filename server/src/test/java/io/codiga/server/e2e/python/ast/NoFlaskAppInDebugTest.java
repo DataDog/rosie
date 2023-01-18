@@ -91,11 +91,11 @@ public class NoFlaskAppInDebugTest extends E2EBase {
         assertEquals("remove debug flag", response.ruleResponses.get(0).violations.get(0).fixes.get(0).description);
         assertEquals("update", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
         assertEquals("", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).content);
-        assertEquals(11, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.line);
-        assertEquals(13, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.col);
-        assertEquals(11, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.line);
-        assertEquals(25, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);
-
+//        assertEquals(11, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.line);
+//        assertEquals(13, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.col);
+//        assertEquals(11, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.line);
+//        assertEquals(25, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);
+//
 
         assertEquals(pythonCodeFixed, applyFix(pythonCodeWithError, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
     }

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CodigaVisitorTest extends PythonTestUtils {
 
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {
@@ -45,6 +45,6 @@ public class CodigaVisitorTest extends PythonTestUtils {
         assertEquals(5, codigaVisitor.tryStatements.size());
         assertEquals(8, codigaVisitor.forStatements.size());
         assertEquals(13, codigaVisitor.functionDefinitions.size());
-        assertEquals(225, codigaVisitor.functionCalls.size());
+        assertEquals(213, codigaVisitor.functionCalls.size());
     }
 }

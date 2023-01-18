@@ -13,12 +13,11 @@ import static io.codiga.analyzer.ast.languages.python.transformations.Comparison
 public class PythonAstUtils {
 
     public static boolean isFunctionCall(ParseTree parseTree) {
-        if (parseTree instanceof PythonParser.ExprContext) {
-            PythonParser.ExprContext expr = (PythonParser.ExprContext) parseTree;
+        if (parseTree instanceof PythonParser.ExprContext expr) {
             if (expr.atom() != null && expr.trailer() != null) {
                 if (expr.trailer().size() > 0) {
                     PythonParser.TrailerContext lastTrailer = expr.trailer().get(expr.trailer().size() - 1);
-                    return (lastTrailer.arguments() != null);
+                    return (lastTrailer.arguments() != null && lastTrailer.arguments().OPEN_PAREN() != null && lastTrailer.arguments().CLOSE_PAREN() != null);
                 }
             }
         }

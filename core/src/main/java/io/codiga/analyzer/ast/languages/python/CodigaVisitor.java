@@ -18,6 +18,8 @@ import java.util.Stack;
 
 import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition.isClassDefinition;
 import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition.transformClassOrFuncDefToClassDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.ExprStmtTransformation.isAssignment;
+import static io.codiga.analyzer.ast.languages.python.transformations.ExprStmtTransformation.transformExprStmtToAssignment;
 import static io.codiga.analyzer.ast.languages.python.transformations.ExprToFunctionCall.transformExprToFunctionCall;
 import static io.codiga.analyzer.ast.languages.python.transformations.ForStmtToForStatement.transformForStatement;
 import static io.codiga.analyzer.ast.languages.python.transformations.FuncDefToFunctionDefinition.isFunctionDefinition;
@@ -25,8 +27,6 @@ import static io.codiga.analyzer.ast.languages.python.transformations.FuncDefToF
 import static io.codiga.analyzer.ast.languages.python.transformations.IfStmtToIfStatement.transformIfStatement;
 import static io.codiga.analyzer.ast.languages.python.transformations.ImportFromToFromStatement.transformFromStmtToFromStatement;
 import static io.codiga.analyzer.ast.languages.python.transformations.ImportStmtToImportStatement.transformImportStmtToImportStatement;
-import static io.codiga.analyzer.ast.languages.python.transformations.SimpleStmtToAssignment.isAssignment;
-import static io.codiga.analyzer.ast.languages.python.transformations.SimpleStmtToAssignment.transformSimpleStmtToPythonAssignment;
 import static io.codiga.analyzer.ast.languages.python.transformations.TryStmtToTryStatement.transformStmtToTryStatement;
 
 
@@ -110,9 +110,9 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitSimple_stmt(PythonParser.Simple_stmtContext ctx) {
+    public Object visitExpr_stmt(PythonParser.Expr_stmtContext ctx) {
         if (isAssignment(ctx)) {
-            transformSimpleStmtToPythonAssignment(ctx, this.root).ifPresent(v -> {
+            transformExprStmtToAssignment(ctx, this.root).ifPresent(v -> {
                 // Set the context of the AST Element
                 v.setContext(buildContext());
                 assignments.add(v);
