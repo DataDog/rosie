@@ -138,7 +138,6 @@ public class PatternMatcher {
 
 
         while (matcher.find()) {
-            logger.info("Regular Expression matches");
             HashMap<String, PatternVariableValue> variables = new HashMap<>();
 
             for (int i = 1; i <= matcher.groupCount(); i++) {
