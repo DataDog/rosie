@@ -11,6 +11,7 @@ import java.util.Optional;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptAnonymousFunction.transformAnonymousFunction;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptArrayLiteralToArray.transformArrayLiteralToArray;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptExpression.transformExpression;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptExpressionSequence.transformExpressionSequenceToAstElement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
@@ -70,6 +71,12 @@ public class JavaScriptSingleExpressionTransformation {
             if (arrayLiteralExpressionContext.arrayLiteral() != null) {
                 return transformArrayLiteralToArray(arrayLiteralExpressionContext.arrayLiteral(), root);
             }
+        }
+
+        // parenthesized expression
+        if (ctx instanceof JavaScriptParser.ParenthesizedExpressionContext parenthesizedExpressionContext) {
+
+            return transformExpressionSequenceToAstElement(parenthesizedExpressionContext.expressionSequence(), root);
         }
 
         // object

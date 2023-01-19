@@ -15,6 +15,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptArrowFunctionDeclaration.transformArrowFunctionDeclarationContext;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptExpression.transformExpression;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptExpression.transformExpressionRightOnly;
+import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptExpressionSequence.transformExpressionSequenceToAstElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptFunctionCallTransformation.transformArgumentsExpressionToFunctionCall;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptIdentifierExpressionTransformation.transformIdentifierExpressionToAstElement;
@@ -61,6 +62,12 @@ public class TypeScriptSingleExpressionTransformation {
             if (argumentsExpressionContext != null) {
                 return convertToAstElement(transformArgumentsExpressionToFunctionCall(argumentsExpressionContext, root));
             }
+        }
+
+
+        // parenthesized expression
+        if (ctx instanceof TypeScriptParser.ParenthesizedExpressionContext parenthesizedExpressionContext) {
+            return transformExpressionSequenceToAstElement(parenthesizedExpressionContext.expressionSequence(), root);
         }
 
         // logical and

@@ -124,4 +124,37 @@ public class JsxWithContentTest extends JavaScriptTestUtils {
         assertEquals("sequence", ifStatement.elseStatements.astType);
         assertEquals(AST_ELEMENT_TYPE_HTML_ELEMENT, ((Sequence) ifStatement.elseStatements).elements[0].astType);
     }
+
+    @Test
+    @DisplayName("Get content with a return with parenthesis")
+    public void testReturnWithParenthesis() {
+        String code = """
+            const Index = () => {
+              return (
+                <>
+                  <b>World</b>
+                  {true && (
+                    <div>
+                      <Box w="full" as={CodeMirror} value={decodeBase64(rule.content)} />
+                    </div>
+                  )}
+                </>
+              );
+            };
+                        """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, JavaScriptParser.HtmlElementContext.class);
+        assertEquals(4, nodes.size());
+        Optional<JavaScriptHtmlElement> elementOptional = transformJavaScriptHtmlElement(((JavaScriptParser.HtmlElementContext) nodes.get(0)), null);
+        assertTrue(elementOptional.isPresent());
+        JavaScriptHtmlElement element = elementOptional.get();
+        assertEquals(2, element.content.length);
+        assertEquals(AST_ELEMENT_TYPE_EXPRESSION, element.content[1].astType);
+        AstExpression expression = (AstExpression) element.content[1];
+        assertEquals("true", ((AstString) expression.left).value);
+        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, expression.right.astType);
+        assertEquals(1, ((Sequence) expression.right).elements.length);
+    }
 }
