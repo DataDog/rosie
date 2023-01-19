@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.getDecoratorsForClassOrFunctionDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.SuiteTransformation.transformSuiteToAstElement;
 
 public class FuncDefToFunctionDefinition {
 
@@ -115,6 +116,7 @@ public class FuncDefToFunctionDefinition {
             name,
             parameters,
             returnType,
+            transformSuiteToAstElement(ctx.funcdef().suite(), root).orElse(null),
             ctx,
             root));
     }

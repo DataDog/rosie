@@ -12,12 +12,12 @@ import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.python.transformations.SmallStmtToAstElement.transformSmallStatementToAstElement;
 
-public class SimpleStmtToAssignment {
+public class SimpleStmtTransformation {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleStmtToAssignment.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleStmtTransformation.class);
 
 
-    public static Optional<AstElement> transformSimpleStmtToAstElement(PythonParser.Simple_stmtContext ctx, PythonParser.RootContext root) {
+    public static Optional<? extends AstElement> transformSimpleStmtToAstElement(PythonParser.Simple_stmtContext ctx, PythonParser.RootContext root) {
         if (ctx.small_stmt() == null || ctx.small_stmt().size() == 0) {
             return Optional.empty();
         }

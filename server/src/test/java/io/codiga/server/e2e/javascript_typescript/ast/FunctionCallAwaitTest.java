@@ -17,22 +17,23 @@ public class FunctionCallAwaitTest extends E2EBase {
 
 
     String codeWithError = """
+                function delay(t, v) {
+                  return new Promise(resolve => setTimeout(resolve, t, v));
+                }
+                        
+                test('should not pass', async () => {
         function delay(t, v) {
           return new Promise(resolve => setTimeout(resolve, t, v));
         }
-                
+
         test('should not pass', async () => {
-          setTimeout(() => {
+
+          await delay(10000, 'Delayed for 10 seconds.')
+
           expect(true).toBeDefined();
-          console.log("Delayed for 1 second.");
-          }, 1000)
-                
-          await delay(1000, 'Delayed for 1 second.')
-         
-        	await delay(10000, 'Delayed for 10 seconds.')
-         
-        	await delay(1000, 'Delayed for 1 second.')
-        });""";
+        });
+
+        """;
 
 
     String ruleCode = """

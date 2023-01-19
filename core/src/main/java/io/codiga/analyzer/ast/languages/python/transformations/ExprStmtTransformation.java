@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static io.codiga.analyzer.ast.languages.python.transformations.PythonTestTransformation.getAstElementFromTest;
+import static io.codiga.analyzer.ast.languages.python.transformations.PythonTestListStarExprTransformation.transformTestListStarExprToAstElement;
+import static io.codiga.analyzer.ast.languages.python.transformations.PythonTestTransformation.transformTestToAstElement;
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
 public class ExprStmtTransformation {
@@ -53,8 +54,8 @@ public class ExprStmtTransformation {
             return Optional.empty();
         }
 
-        List<AstElement> leftElements = leftTests.stream().map(e -> getAstElementFromTest(e, root)).filter(v -> v.isPresent()).map(v -> v.get()).collect(Collectors.toList());
-        List<AstElement> rightElements = rightTests.stream().map(e -> getAstElementFromTest(e, root)).filter(v -> v.isPresent()).map(v -> v.get()).collect(Collectors.toList());
+        List<AstElement> leftElements = leftTests.stream().map(e -> transformTestToAstElement(e, root)).filter(v -> v.isPresent()).map(v -> v.get()).collect(Collectors.toList());
+        List<AstElement> rightElements = rightTests.stream().map(e -> transformTestToAstElement(e, root)).filter(v -> v.isPresent()).map(v -> v.get()).collect(Collectors.toList());
 
         AstElement leftElement = null;
         AstElement rightElement = null;
@@ -76,17 +77,17 @@ public class ExprStmtTransformation {
     }
 
 
-    public static Optional<AstElement> transformExprStmtToAstElement(PythonParser.Expr_stmtContext ctx, PythonParser.RootContext root) {
+    public static Optional<? extends AstElement> transformExprStmtToAstElement(PythonParser.Expr_stmtContext ctx, PythonParser.RootContext root) {
         if (ctx == null) {
             return Optional.empty();
         }
-
-        if (ctx.testlist_star_expr() == null || ctx.assign_part() != null) {
-            return Optional.empty();
-        }
-
+        
         if (isAssignment(ctx)) {
             return convertToAstElement(transformExprStmtToAssignment(ctx, root));
+        }
+
+        if (ctx.assign_part() == null) {
+            return transformTestListStarExprToAstElement(ctx.testlist_star_expr(), root);
         }
 
         return Optional.empty();

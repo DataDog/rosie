@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.model.ast.common.AstString;
+import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.python.PythonFunctionDefinition;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.python.transformations.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
+import static io.codiga.model.ast.common.AstElement.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
@@ -163,5 +165,38 @@ public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
         assertEquals("one", pythonFunctionDefinition.parameters.values[0].name.str);
         assertNull(pythonFunctionDefinition.parameters.values[0].type);
         assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
+    }
+
+    @Test
+    @DisplayName("Correctly map a function definition with a decorator with arguments")
+    public void testTransformContentOfFunction() {
+        String code = """
+            from flask import Flask
+            import json
+                        
+            app = Flask(__name__)
+
+
+            @app.route('/')
+            def hello():
+                json.dumps(bla)
+                foo = 42
+                return 'Hello, World!'
+                        """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Class_or_func_def_stmtContext.class);
+        PythonParser.Class_or_func_def_stmtContext funcdefContext = (PythonParser.Class_or_func_def_stmtContext) exprNodes.get(0);
+        var functionDefinitionOptional = transformFuncDefToFunctionDefinition(funcdefContext, null);
+        assertTrue(functionDefinitionOptional.isPresent());
+        var functionDefinition = functionDefinitionOptional.get();
+        assertEquals("hello", functionDefinition.name.str);
+        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, functionDefinition.content.astType);
+        assertEquals(3, ((Sequence) functionDefinition.content).elements.length);
+        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, ((Sequence) functionDefinition.content).elements[0].astType);
+        assertEquals(AST_ELEMENT_TYPE_ASSIGNMENT, ((Sequence) functionDefinition.content).elements[1].astType);
+        assertEquals(AST_ELEMENT_TYPE_RETURN, ((Sequence) functionDefinition.content).elements[2].astType);
+
     }
 }

@@ -19,6 +19,7 @@ public class PythonFunctionDefinition extends AstElement {
     public PythonDecorator[] decorators;
     public Assignment[] assignments;
     public boolean isAsync;
+    public AstElement content;
 
 
     public PythonFunctionDefinition(boolean isAsync,
@@ -26,10 +27,12 @@ public class PythonFunctionDefinition extends AstElement {
                                     AstString name,
                                     FunctionDefinitionParameters functionDefinitionParameters,
                                     AstString returnType,
+                                    AstElement content,
                                     ParserRuleContext ruleContext,
                                     ParserRuleContext root) {
         super(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, ruleContext, root);
         this.isAsync = isAsync;
+        this.content = content;
         this.parameters = functionDefinitionParameters;
         this.name = name;
         this.returnType = returnType;

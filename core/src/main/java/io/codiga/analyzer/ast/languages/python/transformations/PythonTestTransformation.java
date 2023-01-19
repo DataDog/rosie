@@ -16,7 +16,7 @@ public class PythonTestTransformation {
     private static final Logger logger = LoggerFactory.getLogger(PythonTestTransformation.class);
 
 
-    public static Optional<? extends AstElement> getAstElementFromTest(PythonParser.TestContext test, PythonParser.RootContext root) {
+    public static Optional<? extends AstElement> transformTestToAstElement(PythonParser.TestContext test, PythonParser.RootContext root) {
         if (test == null) {
             return Optional.empty();
         }
