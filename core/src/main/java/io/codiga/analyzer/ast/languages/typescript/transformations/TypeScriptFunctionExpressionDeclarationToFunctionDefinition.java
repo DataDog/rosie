@@ -12,7 +12,7 @@ import java.util.Optional;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptParametersListToFunctionParameters.transformParametersListToFunctionParameters;
 
 
-public class TypeScriptFunctionDeclarationToFunctionDefinition {
+public class TypeScriptFunctionExpressionDeclarationToFunctionDefinition {
 
 
     public static Optional<FunctionDefinition> transformFunctionDeclarationToFunctionDefinition(TypeScriptParser.FunctionDeclarationContext ctx, ParserRuleContext root) {

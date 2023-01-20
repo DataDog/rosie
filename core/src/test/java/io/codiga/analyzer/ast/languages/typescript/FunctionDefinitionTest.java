@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.languages.typescript;
 
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionDefinition;
+import io.codiga.model.ast.javascript.JavaScriptFunctionDefinition;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
@@ -80,4 +81,26 @@ public class FunctionDefinitionTest extends TypeScriptTestUtils {
         assertEquals("any", ((AstString) functionDefinition.parameters.values[1].type).value);
     }
 
+    @Test
+    @DisplayName("Have an async function")
+    public void testAsync() {
+        String code = """
+            async function foo(bar, baz) {
+              var bli = 1;
+            }
+            """;
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> nodes = getNodesFromType(root, TypeScriptParser.FunctionDeclarationContext.class);
+        TypeScriptParser.FunctionDeclarationContext node = (TypeScriptParser.FunctionDeclarationContext) nodes.get(0);
+        Optional<FunctionDefinition> functionCallOptional = transformFunctionDeclarationToFunctionDefinition(node, null);
+        assertTrue(functionCallOptional.isPresent());
+        JavaScriptFunctionDefinition functionDefinition = (JavaScriptFunctionDefinition) functionCallOptional.get();
+        assertEquals(functionDefinition.name.value, "foo");
+        assertEquals(functionDefinition.name.value, "foo");
+        assertEquals(functionDefinition.parameters.values[0].name.value, "bar");
+        assertEquals(functionDefinition.parameters.values[1].name.value, "baz");
+        assertTrue(functionDefinition.isAsync);
+    }
 }
