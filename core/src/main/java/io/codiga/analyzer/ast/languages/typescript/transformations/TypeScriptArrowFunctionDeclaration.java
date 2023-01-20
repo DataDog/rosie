@@ -19,7 +19,7 @@ public class TypeScriptArrowFunctionDeclaration {
         if (ctx.arrowFunctionParameters() != null) {
             Optional<FunctionDefinitionParameters> parameters = transformArrowFunctionParametersToFunctionParameters(ctx.arrowFunctionParameters(), root);
 
-            return Optional.of(new JavaScriptFunctionExpression(null, parameters.orElse(null), transformArrowFunctionBody(ctx.arrowFunctionBody(), root).orElse(null), ctx, root));
+            return Optional.of(new JavaScriptFunctionExpression(ctx.Async() != null, null, parameters.orElse(null), transformArrowFunctionBody(ctx.arrowFunctionBody(), root).orElse(null), ctx, root));
         }
         return Optional.empty();
     }

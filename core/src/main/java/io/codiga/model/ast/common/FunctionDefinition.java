@@ -12,6 +12,7 @@ public class FunctionDefinition extends AstElement {
 
     public FunctionDefinition(AstString name,
                               FunctionDefinitionParameters functionDefinitionParameters,
+                              AstElement content,
                               ParserRuleContext ruleContext,
                               ParserRuleContext root) {
         super(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, ruleContext, root);

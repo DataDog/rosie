@@ -31,7 +31,7 @@ public class JavaScriptAnonymousFunction {
                 functionContent = transformFunctionBody(declaration.functionBody(), root);
             }
 
-            return Optional.of(new JavaScriptFunctionExpression(null, transformFormalParametersToFunctionParameters(declaration.formalParameterList(), root).orElse(null), functionContent.orElse(null), declaration, root));
+            return Optional.of(new JavaScriptFunctionExpression(declaration.Async() != null, null, transformFormalParametersToFunctionParameters(declaration.formalParameterList(), root).orElse(null), functionContent.orElse(null), declaration, root));
 
         }
 
@@ -42,7 +42,7 @@ public class JavaScriptAnonymousFunction {
             if (declaration.arrowFunctionBody() != null) {
                 functionContent = transformArrowFunctionBody(declaration.arrowFunctionBody(), root);
             }
-            return Optional.of(new JavaScriptFunctionExpression(null, parameters.orElse(null), functionContent.orElse(null), declaration, root));
+            return Optional.of(new JavaScriptFunctionExpression(declaration.Async() != null, null, parameters.orElse(null), functionContent.orElse(null), declaration, root));
         }
 
         return Optional.empty();

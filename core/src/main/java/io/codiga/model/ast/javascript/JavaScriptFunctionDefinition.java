@@ -7,17 +7,17 @@ import io.codiga.model.ast.common.FunctionDefinitionParameters;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 
-public class JavaScriptFunctionExpression extends FunctionDefinition {
+public class JavaScriptFunctionDefinition extends FunctionDefinition {
 
     public boolean isAsync;
 
-    public JavaScriptFunctionExpression(boolean isAsync,
+    public JavaScriptFunctionDefinition(boolean isAsync,
                                         AstString name,
                                         FunctionDefinitionParameters functionDefinitionParameters,
                                         AstElement content,
                                         ParserRuleContext ruleContext,
                                         ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_FUNCTION_EXPRESSION, name, functionDefinitionParameters, content, ruleContext, root);
+        super(name, functionDefinitionParameters, content, ruleContext, root);
         this.isAsync = isAsync;
     }
 }
