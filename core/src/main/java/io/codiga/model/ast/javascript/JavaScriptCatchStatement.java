@@ -11,7 +11,7 @@ public class JavaScriptCatchStatement extends AstElement {
     public AstElement exception;
 
     public JavaScriptCatchStatement(List<AstElement> statementsList, AstElement exceptionName, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_TRY_STATEMENT, parserRuleContext, root);
+        super(AST_ELEMENT_TYPE_CATCH_STATEMENT, parserRuleContext, root);
         this.exception = exceptionName;
         this.statements = statementsList.stream().toArray(AstElement[]::new);
 
