@@ -8,20 +8,20 @@ import java.util.List;
 
 public class PythonIfStatement extends AstElement {
     public PythonComparison condition;
-    public PythonString statements;
+    public AstElement statements;
     public PythonElifStatement[] elifStatements;
-    public PythonElseStatement elseStatement;
+    public PythonElseStatement elseStatements;
 
     public PythonIfStatement(PythonComparison condition,
-                             PythonString statements,
+                             AstElement statements,
                              List<PythonElifStatement> elifStatements,
-                             PythonElseStatement elseStatement,
+                             PythonElseStatement elseStatements,
                              PythonParser.If_stmtContext parserRuleContext,
                              ParserRuleContext root) {
         super(AST_ELEMENT_IF_STATEMENT, parserRuleContext, root);
         this.condition = condition;
         this.statements = statements;
-        this.elseStatement = elseStatement;
+        this.elseStatements = elseStatements;
         this.elifStatements = elifStatements.stream().toArray(PythonElifStatement[]::new);
     }
 }

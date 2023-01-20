@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.languages.python.transformations;
 
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.Return;
+import io.codiga.model.ast.python.PythonPass;
 import io.codiga.parser.python.gen.PythonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,11 @@ public class SmallStmtToAstElement {
         if (ctx instanceof PythonParser.Return_stmtContext return_stmtContext) {
             return Optional.of(new Return(flattenAstElement(transformTestlistToAstElement(return_stmtContext.testlist(), root)).orElse(null),
                 return_stmtContext, root));
+        }
+
+
+        if (ctx instanceof PythonParser.Pass_stmtContext pass_stmtContext) {
+            return Optional.of(new PythonPass(pass_stmtContext, root));
         }
         return Optional.empty();
     }

@@ -1,6 +1,9 @@
 package io.codiga.analyzer.ast.languages.python.transformations;
 
-import io.codiga.model.ast.python.*;
+import io.codiga.model.ast.python.PythonComparison;
+import io.codiga.model.ast.python.PythonElifStatement;
+import io.codiga.model.ast.python.PythonElseStatement;
+import io.codiga.model.ast.python.PythonIfStatement;
 import io.codiga.parser.python.gen.PythonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.getPythonComparisonFromTestContext;
+import static io.codiga.analyzer.ast.languages.python.transformations.SuiteTransformation.transformSuiteToAstElement;
 
 public class IfStmtToIfStatement {
 
@@ -32,7 +36,7 @@ public class IfStmtToIfStatement {
             if (comparison.isPresent() && elif_clauseContext.suite() != null) {
                 PythonElifStatement pythonElifStatement = new PythonElifStatement(
                     comparison.get(),
-                    new PythonString(elif_clauseContext.suite().getText(), elif_clauseContext, root),
+                    transformSuiteToAstElement(elif_clauseContext.suite(), root).orElse(null),
                     elif_clauseContext,
                     root);
                 elifStatements.add(pythonElifStatement);
@@ -40,7 +44,7 @@ public class IfStmtToIfStatement {
         }
         if (if_stmtContext.else_clause() != null && if_stmtContext.else_clause().suite() != null) {
             elseStatement = new PythonElseStatement(
-                new PythonString(if_stmtContext.else_clause().suite().getText(), if_stmtContext.else_clause().suite(), root),
+                transformSuiteToAstElement(if_stmtContext.else_clause().suite(), root).orElse(null),
                 if_stmtContext.else_clause(),
                 root
             );
@@ -50,9 +54,10 @@ public class IfStmtToIfStatement {
             return Optional.empty();
         }
 
+        var statementsOptional = transformSuiteToAstElement(if_stmtContext.suite(), root);
         return Optional.of(new PythonIfStatement(
             ifComparison,
-            new PythonString(if_stmtContext.suite().getText(), if_stmtContext.suite(), root),
+            statementsOptional.orElse(null),
             elifStatements,
             elseStatement,
             if_stmtContext,

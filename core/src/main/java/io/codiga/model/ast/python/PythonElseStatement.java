@@ -6,9 +6,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class PythonElseStatement extends AstElement {
 
-    public PythonString statements;
+    public AstElement statements;
 
-    public PythonElseStatement(PythonString statements,
+    public PythonElseStatement(AstElement statements,
                                PythonParser.Else_clauseContext parserRuleContext,
                                ParserRuleContext root) {
         super(AST_ELEMENT_ELSE_STATEMENT, parserRuleContext, root);

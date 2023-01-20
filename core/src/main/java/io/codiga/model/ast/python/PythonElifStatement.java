@@ -6,10 +6,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class PythonElifStatement extends AstElement {
     public PythonComparison condition;
-    public PythonString statements;
+    public AstElement statements;
 
     public PythonElifStatement(PythonComparison pythonComparison,
-                               PythonString statements,
+                               AstElement statements,
                                PythonParser.Elif_clauseContext parserRuleContext,
                                ParserRuleContext root) {
         super(AST_ELEMENT_ELIF_STATEMENT, parserRuleContext, root);
