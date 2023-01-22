@@ -1,0 +1,81 @@
+package io.codiga.server.e2e.javascript_typescript.ast;
+
+import io.codiga.server.e2e.E2EBase;
+import io.codiga.server.response.Response;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static io.codiga.constants.Languages.ENTITY_CHECKED_ANY;
+import static io.codiga.constants.Languages.RULE_TYPE_AST;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
+public class AnyElementTypeTest extends E2EBase {
+
+    private static final Logger logger = LoggerFactory.getLogger(AnyElementTypeTest.class);
+
+
+    String codeWithError1 = """
+        foo = my_function(foo, bar);
+
+        """;
+
+
+    String ruleCode = """
+        function visit(node, filename, code) {
+          if (node.astType !== "functioncall") {
+            return;
+          }
+          const arguments = node.arguments.values;
+
+          /*
+           * Check each argument. If one argument has the variable "foo" used,
+           * we report it.
+           */
+          arguments.forEach((a) => {
+            if (a.value.astType === "string") {
+              console.log(a.value.value);
+              if (a.value.value === "foo") {
+                const error = buildError(a.value.start.line, a.value.start.col,
+                  a.value.end.line, a.value.end.col,
+                  "Do not use foo as value", "WARNING", "BEST_PRACTICE");
+
+                addError(error);
+              }
+            }
+          });
+
+          /*
+           * Check the function name. We cannot use my_function, we recommend to use myFunction
+           */
+          if (node.functionName && node.functionName.astType === "string") {
+            if (node.functionName.value === "my_function") {
+              const error = buildError(node.functionName.start.line, node.functionName.start.col,
+                node.functionName.end.line, node.functionName.end.col,
+                "Do not use function_name", "WARNING", "BEST_PRACTICE");
+              const edit = buildEditUpdate(node.functionName.start.line, node.functionName.start.col,
+                node.functionName.end.line, node.functionName.end.col,
+                "myFunction");
+              const fix = buildFix("use myFunction", [edit]);
+              addError(error.addFix(fix));
+            }
+          }
+        }
+                        """;
+
+    @Test
+    @DisplayName("test a rule with the element checked set to ANY")
+    public void testAnyElementChecked() throws Exception {
+        JAVASCRIPT_TYPESCRIPT.forEach(l -> {
+            logger.info("Running test with language: " + l);
+            Response response = executeTest("bla.js", codeWithError1, l, ruleCode, "errorUseQuery", RULE_TYPE_AST, ENTITY_CHECKED_ANY, null, true);
+            logger.info(response.toString());
+            assertEquals(1, response.ruleResponses.size());
+            assertEquals(2, response.ruleResponses.get(0).violations.size());
+        });
+    }
+
+
+}
