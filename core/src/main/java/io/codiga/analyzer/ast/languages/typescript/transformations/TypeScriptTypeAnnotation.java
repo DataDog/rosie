@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript.transformations;
 
-import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
+import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -12,7 +12,7 @@ import java.util.Optional;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptType.typeToAstElement;
 
 public class TypeScriptTypeAnnotation {
-    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);
 
     public static Optional<AstElement> typeAnnotationToAstElement(TypeScriptParser.TypeAnnotationContext ctx, ParserRuleContext root) {
         if (ctx != null && ctx.type_() != null) {

@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript.transformations;
 
-import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
+import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.typescript.TypeScriptType;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
@@ -14,7 +14,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
 public class TypeScriptTypeReferenceToTypeScriptType {
-    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);
 
     public static Optional<TypeScriptType> typeReferenceToType(TypeScriptParser.TypeReferenceContext ctx, ParserRuleContext root) {
         Optional<AstElement> typename = Optional.empty();

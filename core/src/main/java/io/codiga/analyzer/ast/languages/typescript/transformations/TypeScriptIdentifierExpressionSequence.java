@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript.transformations;
 
-import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
+import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.FunctionCallArgument;
 import io.codiga.model.ast.common.FunctionCallArguments;
@@ -18,7 +18,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 
 public class TypeScriptIdentifierExpressionSequence {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);
 
 
     public static Optional<FunctionCallArguments> transformExpressionSequenceToFunctionArguments(TypeScriptParser.ExpressionSequenceContext ctx, ParserRuleContext root) {

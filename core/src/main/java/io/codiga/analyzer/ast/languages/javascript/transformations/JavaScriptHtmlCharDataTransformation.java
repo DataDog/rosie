@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.javascript.transformations;
 
-import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
+import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.javascript.JavaScriptHtmlData;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 public class JavaScriptHtmlCharDataTransformation {
-    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);
 
     public static Optional<JavaScriptHtmlData> transformJavaScriptHtmlCharData(JavaScriptParser.HtmlChardataContext ctx, ParserRuleContext root) {
         if (ctx.getText() != null) {

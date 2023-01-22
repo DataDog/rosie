@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.languages.python.transformations.CompoundTransformation.transformCompoundStatement;
 import static io.codiga.analyzer.ast.languages.python.transformations.SimpleStmtTransformation.transformSimpleStmtToAstElement;
 
 public class StmtTransformation {
@@ -21,6 +22,10 @@ public class StmtTransformation {
 
         if (ctx.simple_stmt() != null) {
             return transformSimpleStmtToAstElement(ctx.simple_stmt(), root);
+        }
+
+        if (ctx.compound_stmt() != null) {
+            return transformCompoundStatement(ctx.compound_stmt(), root);
         }
         return Optional.empty();
     }

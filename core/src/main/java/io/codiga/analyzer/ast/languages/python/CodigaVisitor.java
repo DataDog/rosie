@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
-import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition.isClassDefinition;
-import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition.transformClassOrFuncDefToClassDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation.isClassDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation.transformClassOrFuncDefToClassDefinition;
 import static io.codiga.analyzer.ast.languages.python.transformations.ExprStmtTransformation.isAssignment;
 import static io.codiga.analyzer.ast.languages.python.transformations.ExprStmtTransformation.transformExprStmtToAssignment;
 import static io.codiga.analyzer.ast.languages.python.transformations.ExprToFunctionCall.transformExprToFunctionCall;

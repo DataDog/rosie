@@ -32,6 +32,7 @@ public class SimpleStmtTransformation {
             var astElementOptional = transformSmallStatementToAstElement(small_stmtContext, root);
             astElementOptional.ifPresent(astElementList::add);
         }
+        
 
         return Optional.of(new Sequence(astElementList, ctx, root));
     }

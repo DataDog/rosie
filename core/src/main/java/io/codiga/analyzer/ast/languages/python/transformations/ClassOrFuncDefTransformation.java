@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.python.transformations;
 
+import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.python.PythonClassDefinition;
 import io.codiga.model.ast.python.PythonDecorator;
@@ -12,10 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.getDecoratorsForClassOrFunctionDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.SuiteTransformation.transformSuiteToAstElement;
+import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
-public class ClassOrFuncDefToClassDefinition {
+public class ClassOrFuncDefTransformation {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);
 
 
     public static boolean isClassDefinition(PythonParser.Class_or_func_def_stmtContext ctx) {
@@ -44,14 +48,31 @@ public class ClassOrFuncDefToClassDefinition {
     }
 
     public static Optional<PythonClassDefinition> transformClassOrFuncDefToClassDefinition(PythonParser.Class_or_func_def_stmtContext ctx, PythonParser.RootContext root) {
+        Optional<AstElement> content = Optional.empty();
         if (!isClassDefinition(ctx)) {
             return Optional.empty();
         }
 
         AstString className = new AstString(ctx.classdef().name().getText(), ctx.classdef().name(), root);
         List<PythonDecorator> decorators = getDecoratorsForClassOrFunctionDefinition(ctx, root);
+        content = convertToAstElement(transformSuiteToAstElement(ctx.classdef().suite(), root));
 
-        return Optional.of(new PythonClassDefinition(decorators, className, getInheritedClasses(ctx, root), ctx, root));
+        return Optional.of(new PythonClassDefinition(decorators, className, getInheritedClasses(ctx, root), content.orElse(null), ctx, root));
 
+    }
+
+    public static Optional<AstElement> transformClassOrFuncDefToAstElement(PythonParser.Class_or_func_def_stmtContext ctx, PythonParser.RootContext root) {
+        if (ctx == null) {
+            return Optional.empty();
+        }
+
+        if (ctx.classdef() != null) {
+            return convertToAstElement(transformClassOrFuncDefToClassDefinition(ctx, root));
+        }
+
+        if (ctx.funcdef() != null) {
+            return convertToAstElement(transformFuncDefToFunctionDefinition(ctx, root));
+        }
+        return Optional.empty();
     }
 }

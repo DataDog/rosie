@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript.transformations;
 
-import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
+import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.FunctionCallArgument;
 import io.codiga.model.ast.common.FunctionCallArguments;
@@ -16,7 +16,7 @@ import java.util.Optional;
 import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptSingleExpressionTransformation.transformSingleExpressionToAstElement;
 
 public class TypeScriptParenthesizedExpression {
-    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);
 
 
     public static Optional<FunctionCallArguments> typescriptParenthesizedExpresssionToFunctionCallArguments(TypeScriptParser.ParenthesizedExpressionContext ctx, ParserRuleContext root) {

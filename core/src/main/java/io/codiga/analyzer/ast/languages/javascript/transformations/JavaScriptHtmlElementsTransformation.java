@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.javascript.transformations;
 
-import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
+import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
 
 public class JavaScriptHtmlElementsTransformation {
-    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);
 
     public static Optional<AstElement> transformJavaScriptHtmlElements(JavaScriptParser.HtmlElementsContext ctx, ParserRuleContext root) {
         if (ctx == null) {

@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript.transformations;
 
-import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
+import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation;
 import io.codiga.model.ast.common.*;
 import io.codiga.model.ast.javascript.AstStringWithSpreadOperator;
 import io.codiga.parser.typescript.gen.TypeScriptParser;
@@ -26,7 +26,7 @@ import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeSc
 import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 
 public class TypeScriptSingleExpressionTransformation {
-    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);
 
     public static Optional<Assignment> transformJavaScriptAssignmentExpressionToAssignment(TypeScriptParser.AssignmentExpressionContext ctx, ParserRuleContext root) {
         if (ctx.singleExpression().size() == 2) {

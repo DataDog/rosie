@@ -1,6 +1,6 @@
 package io.codiga.analyzer.ast.languages.javascript.transformations;
 
-import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition;
+import io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.javascript.JavaScriptHtmlAttribute;
@@ -22,7 +22,7 @@ import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaSc
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlAttributeTransformation.transformJavaScriptHtmlAttribute;
 
 public class JavaScriptHtmlElementTransformation {
-    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefToClassDefinition.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);
 
 
     public static Optional<Position> getOpeningTagStartPosition(JavaScriptParser.HtmlElementContext ctx) {

@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.python;
 
+import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.python.PythonClassDefinition;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -11,8 +12,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition.isClassDefinition;
-import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefToClassDefinition.transformClassOrFuncDefToClassDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation.isClassDefinition;
+import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation.transformClassOrFuncDefToClassDefinition;
+import static io.codiga.model.ast.common.AstElement.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -113,8 +115,35 @@ public class ClassDefToClassDefinitionTest extends PythonTestUtils {
         assertEquals(1, pythonClassDefinition.decorators[1].arguments.length);
         assertEquals("blo", pythonClassDefinition.decorators[1].arguments[0].value.str);
         assertEquals("bli", pythonClassDefinition.decorators[1].arguments[0].name.str);
-
     }
 
+    @Test
+    @DisplayName("Class with methods")
+    public void testClassWithMethods() {
+        String code = """
+            class FooBar:
+                def __init__(self):
+                    pass
+                
+                
+                def my_method(self, argument1):
+                    pass""";
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Class_or_func_def_stmtContext.class);
+
+        PythonParser.Class_or_func_def_stmtContext funcdefContext = (PythonParser.Class_or_func_def_stmtContext) exprNodes.get(0);
+        assertTrue(isClassDefinition(funcdefContext));
+        var optionalClass = transformClassOrFuncDefToClassDefinition(funcdefContext, null);
+        assertTrue(optionalClass.isPresent());
+        var classDefinition = optionalClass.get();
+        assertEquals(AST_ELEMENT_TYPE_CLASS_DEFINITION, classDefinition.astType);
+        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, classDefinition.content.astType);
+        Sequence seq = (Sequence) classDefinition.content;
+        assertEquals(2, seq.elements.length);
+        assertEquals(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, seq.elements[0].astType);
+        assertEquals(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, seq.elements[1].astType);
+    }
 
 }
