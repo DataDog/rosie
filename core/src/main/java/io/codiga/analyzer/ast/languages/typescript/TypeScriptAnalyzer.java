@@ -53,7 +53,7 @@ public class TypeScriptAnalyzer extends AnalyzerCommon {
 
         vmContext.initializeRule(rule);
 
-        List<AstElement> astElements = context.entityCheckedToAstElements.get(rule.entityChecked());
+        List<AstElement> astElements = context.getElementsToCheck(rule.entityChecked());
 
         // no object to analyze, return directly and do not waste resource allocating a VM
         if (astElements.isEmpty()) {

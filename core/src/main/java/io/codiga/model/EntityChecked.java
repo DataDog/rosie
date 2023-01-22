@@ -1,6 +1,7 @@
 package io.codiga.model;
 
 public enum EntityChecked {
+    ANY,
     ASSIGNMENT,
     CLASS_DEFINITION,
     FOR_LOOP,

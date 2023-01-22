@@ -4,7 +4,6 @@ import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
-import io.codiga.model.ast.common.AstElement;
 import io.codiga.parser.javascript.gen.JavaScriptLexer;
 import io.codiga.parser.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.CharStreams;
@@ -12,13 +11,13 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.List;
 
 public class JavaScriptAnalyzerContext extends AnalyzerContext {
 
 
     private final Logger logger = LoggerFactory.getLogger(JavaScriptAnalyzerContext.class);
-    Map<EntityChecked, List<AstElement>> entityCheckedToAstElements;
+
 
     public JavaScriptAnalyzerContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
         super(language, filename, code, rules, logOutput);
@@ -31,12 +30,6 @@ public class JavaScriptAnalyzerContext extends AnalyzerContext {
         codigaVisitor.visit(parser.program());
 
 
-        entityCheckedToAstElements = new HashMap<>();
-
-        Arrays.stream(EntityChecked.values()).toList().forEach(entityChecked -> {
-            entityCheckedToAstElements.put(entityChecked, new ArrayList<>());
-        });
-
         entityCheckedToAstElements.get(EntityChecked.CLASS_DEFINITION).addAll(codigaVisitor.classDefinitions);
         entityCheckedToAstElements.get(EntityChecked.FUNCTION_DEFINITION).addAll(codigaVisitor.functionDefinitions);
         entityCheckedToAstElements.get(EntityChecked.IF_STATEMENT).addAll(codigaVisitor.ifStatements);
@@ -46,5 +39,9 @@ public class JavaScriptAnalyzerContext extends AnalyzerContext {
         entityCheckedToAstElements.get(EntityChecked.ASSIGNMENT).addAll(codigaVisitor.assignments);
         entityCheckedToAstElements.get(EntityChecked.TRY_BLOCK).addAll(codigaVisitor.tryStatements);
         entityCheckedToAstElements.get(EntityChecked.HTML_ELEMENT).addAll(codigaVisitor.htmlElements);
+
+
+        // Add all entities to the ANY type
+        addAllEntityToAny();
     }
 }

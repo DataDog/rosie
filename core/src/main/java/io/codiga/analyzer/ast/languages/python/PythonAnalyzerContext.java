@@ -17,7 +17,6 @@ import java.util.*;
 public class PythonAnalyzerContext extends AnalyzerContext {
 
 
-    Map<EntityChecked, List<AstElement>> entityCheckedToAstElements;
     private Logger logger = LoggerFactory.getLogger(PythonAnalyzerContext.class);
 
     public PythonAnalyzerContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
@@ -30,14 +29,6 @@ public class PythonAnalyzerContext extends AnalyzerContext {
         CodigaVisitor codigaVisitor = new CodigaVisitor(code);
         codigaVisitor.visit(parser.root());
 
-
-        entityCheckedToAstElements = new HashMap<>();
-
-        Arrays.stream(EntityChecked.values()).toList().forEach(entityChecked -> {
-            entityCheckedToAstElements.put(entityChecked, new ArrayList<>());
-        });
-
-
         entityCheckedToAstElements.get(EntityChecked.ASSIGNMENT).addAll(codigaVisitor.assignments);
         entityCheckedToAstElements.get(EntityChecked.FOR_LOOP).addAll(codigaVisitor.forStatements);
         entityCheckedToAstElements.get(EntityChecked.FUNCTION_CALL).addAll(codigaVisitor.functionCalls);
@@ -48,5 +39,7 @@ public class PythonAnalyzerContext extends AnalyzerContext {
         entityCheckedToAstElements.get(EntityChecked.TRY_BLOCK).addAll(codigaVisitor.tryStatements);
         entityCheckedToAstElements.get(EntityChecked.CLASS_DEFINITION).addAll(codigaVisitor.classDefinitions);
 
+        // Add all entities to the ANY type
+        addAllEntityToAny();
     }
 }

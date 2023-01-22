@@ -1,11 +1,13 @@
 package io.codiga.analyzer.ast.common;
 
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.ast.common.AstElement;
 import org.antlr.v4.runtime.Parser;
 import org.graalvm.polyglot.Engine;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * This class holds all the context that is built BEFORE all threads are executed.
@@ -13,6 +15,7 @@ import java.util.List;
  * For example, for an AST rule, we build the AST prior to starting the analysis.
  */
 public class AnalyzerContext {
+    protected Map<EntityChecked, List<AstElement>> entityCheckedToAstElements;
     Parser parser = null;
     Language language = null;
     String filename = null;
@@ -28,12 +31,17 @@ public class AnalyzerContext {
         this.code = code;
         this.rules = rules;
         this.logOutput = logOutput;
+        entityCheckedToAstElements = new HashMap<>();
+
+        Arrays.stream(EntityChecked.values()).toList().forEach(entityChecked -> {
+            entityCheckedToAstElements.put(entityChecked, new ArrayList<>());
+        });
+
         this.engine = Engine.newBuilder("js")
             .allowExperimentalOptions(true)
             .option("engine.WarnInterpreterOnly", "false") // no warning when we are attempting to run the engine
 
             .build();
-
     }
 
     public Engine getEngine() {
@@ -62,5 +70,23 @@ public class AnalyzerContext {
 
     public boolean isLogOutput() {
         return logOutput;
+    }
+
+
+    /**
+     * Add all the elements to the any type
+     */
+    protected void addAllEntityToAny() {
+        for (EntityChecked entityChecked : this.entityCheckedToAstElements.keySet()) {
+            if (entityChecked == EntityChecked.ANY) {
+                continue;
+            }
+            this.entityCheckedToAstElements.get(EntityChecked.ANY).addAll(this.entityCheckedToAstElements.get(entityChecked));
+        }
+
+    }
+
+    public List<AstElement> getElementsToCheck(EntityChecked entityChecked) {
+        return this.entityCheckedToAstElements.get(entityChecked);
     }
 }
