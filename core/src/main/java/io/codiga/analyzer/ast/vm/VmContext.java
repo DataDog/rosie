@@ -53,6 +53,25 @@ public class VmContext {
       .filter(p => p.name && p.name.value === moduleName).length > 0;
   }
     """
+        ,
+        """
+  function useImportFrom(imports, package, element) {
+    return imports
+		  .filter(i => i.astType === "fromstatement")
+			.filter(r => r.pkg && r.pkg.value === package && r.elements && r.elements.filter(e => e.name).map(e => e.name.value).includes(element))
+			.length > 0;
+	}
+""",
+        """
+  function findVariableFromFunctionCall(assignments, module, functionName) {
+    const filtered = assignments.filter(a => a.right.astType === "functioncall" && a.right.moduleOrObject === module && a.right.name.value === functionName);
+    console.log(filtered.length);
+    if (filtered.length > 0) {
+      return filtered[0];
+    }
+    return null;
+  }
+"""
     };
 
     private final String initializationCode =
