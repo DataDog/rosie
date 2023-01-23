@@ -4,6 +4,7 @@ import datadog.trace.api.Trace;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.ast.common.ErrorReporting;
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.model.Language;
 import io.codiga.model.error.Violation;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
@@ -43,6 +44,17 @@ public class VmContext {
             "}"
     };
 
+
+    private final String[] PYTHON_HELPER_FUNCTIONS = new String[]{
+        """
+  function useModule(imports, moduleName) {
+    return imports && imports.filter(i => i.astType === "importstatement")
+      .flatMap(i => i.packages)
+      .filter(p => p.name && p.name.value === moduleName).length > 0;
+  }
+    """
+    };
+
     private final String initializationCode =
         "reportError = addError.addError; " +
             "buildFix = addError.buildFix; " +
@@ -53,6 +65,7 @@ public class VmContext {
             "buildEditRemove = addError.buildEditRemove; " +
             "addError = addError.addViolation; " +
             String.join(",", helperFunctions) + ";";
+    private final AnalyzerContext analyzerContext;
     Source executeSource;
     private OutputStream outputStream;
     private InputStream inputStream;
@@ -60,6 +73,7 @@ public class VmContext {
 
     public VmContext(AnalyzerContext analyzerContext) {
         this.errorReporting = new ErrorReporting();
+        this.analyzerContext = analyzerContext;
 
         if (analyzerContext.isLogOutput()) {
             PipedOutputStream pipedOutputStream = new PipedOutputStream();
@@ -94,6 +108,20 @@ public class VmContext {
         // the main source used for each invocation
         String toExecute = "root.forEach(r => {visit(r, filename, code)});";
         executeSource = Source.create("js", toExecute);
+    }
+
+    public String[] getLanguageInitializationCode(Language language) {
+        if (language == Language.PYTHON) {
+            return PYTHON_HELPER_FUNCTIONS;
+        }
+        return new String[]{};
+    }
+
+    private final String getInitializationCode() {
+        return String.join(";", new String[]{
+            String.join(";", getLanguageInitializationCode(this.analyzerContext.getLanguage())),
+            initializationCode
+        });
     }
 
     public String getOutput() {
@@ -133,7 +161,7 @@ public class VmContext {
 
         context.getBindings("js").putMember("filename", analyzerContext.getFilename());
 
-        Source source = Source.create("js", initializationCode);
+        Source source = Source.create("js", getInitializationCode());
         context.eval(source);
     }
 
