@@ -17,6 +17,7 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_OBJECT = "object";
     public static final String AST_ELEMENT_TYPE_OBJECT_ELEMENT = "object_element";
     public static final String AST_ELEMENT_TYPE_ASSIGNMENT = "assignment";
+    public static final String AST_ELEMENT_TYPE_VARIABLE_INDEX = "variableindex";
     public static final String AST_ELEMENT_TYPE_ASSIGNMENTS = "assignments";
     public static final String AST_ELEMENT_TYPE_CONTAINER = "container";
     public static final String AST_ELEMENT_TYPE_RETURN = "return";

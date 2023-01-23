@@ -27,4 +27,18 @@ public class Conversions {
         }
         return Optional.empty();
     }
+
+    public static Optional<AstElement> elementOrSequence(Optional<? extends AstElement> el) {
+        if (el.isPresent()) {
+            AstElement astElement = el.get();
+            if (astElement instanceof Sequence) {
+                Sequence sequence = (Sequence) astElement;
+                if (sequence.elements.length == 1) {
+                    return Optional.of(sequence.elements[0]);
+                }
+            }
+            return Optional.of(astElement);
+        }
+        return Optional.empty();
+    }
 }

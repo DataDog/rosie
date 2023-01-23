@@ -1,8 +1,6 @@
 package io.codiga.analyzer.ast.languages.python.transformations;
 
-import io.codiga.model.ast.common.AstString;
-import io.codiga.model.ast.common.FunctionCallArgument;
-import io.codiga.model.ast.common.FunctionCallArguments;
+import io.codiga.model.ast.common.*;
 import io.codiga.parser.python.gen.PythonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static io.codiga.analyzer.ast.languages.python.transformations.PythonTestTransformation.transformTestToAstElement;
 
 public class ArgumentsTransformation {
 
@@ -48,6 +48,32 @@ public class ArgumentsTransformation {
             return Optional.of(new FunctionCallArguments(functionArguments, ctx.arglist() != null ? ctx.arglist() : ctx, root));
         }
 
+        return Optional.empty();
+    }
+
+
+    public static Optional<Sequence> transformArgumentsToSequence(PythonParser.ArgumentsContext ctx, PythonParser.RootContext root) {
+        if (ctx == null) {
+            return Optional.empty();
+        }
+        List<AstElement> elementList = new ArrayList<>();
+
+        if (ctx.subscriptlist() != null) {
+            for (PythonParser.SubscriptContext subscriptlistContext : ctx.subscriptlist().subscript()) {
+                if (subscriptlistContext.test() != null) {
+                    for (PythonParser.TestContext testContext : subscriptlistContext.test()) {
+                        var testOptional = transformTestToAstElement(testContext, root);
+                        if (testOptional.isPresent()) {
+                            elementList.add(testOptional.get());
+                        }
+                    }
+                }
+            }
+
+            if (elementList.size() > 0) {
+                return Optional.of(new Sequence(elementList, ctx, root));
+            }
+        }
         return Optional.empty();
     }
 }

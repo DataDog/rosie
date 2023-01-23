@@ -7,9 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isArrayOrDictReference;
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
 import static io.codiga.analyzer.ast.languages.python.transformations.AtomToPythonString.transformAtomToPythonString;
 import static io.codiga.analyzer.ast.languages.python.transformations.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.analyzer.ast.languages.python.transformations.ExprToVariableIndex.transformExprToVariableIndex;
 
 public class PythonTestTransformation {
 
@@ -32,6 +34,10 @@ public class PythonTestTransformation {
         }
         if (isFunctionCall(logical_testContext.comparison().expr())) {
             return transformExprToFunctionCall(logical_testContext.comparison().expr(), root);
+        }
+
+        if (isArrayOrDictReference(logical_testContext.comparison().expr())) {
+            return transformExprToVariableIndex(logical_testContext.comparison().expr(), root);
         }
         if (logical_testContext.comparison().expr().atom() != null) {
             return transformAtomToPythonString(logical_testContext.comparison().expr().atom(), root);

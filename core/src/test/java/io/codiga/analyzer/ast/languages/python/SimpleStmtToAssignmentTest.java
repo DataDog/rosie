@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstString;
+import io.codiga.model.ast.common.VariableIndex;
 import io.codiga.model.ast.python.PythonFunctionCall;
 import io.codiga.model.ast.python.PythonList;
 import io.codiga.parser.python.gen.PythonParser;
@@ -140,5 +141,29 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
 //        assertEquals("format", ((AstString) functionCall.functionName).value);
 //        assertEquals("\"SELECT foo FROM bar WHERE plop={0}\"", functionCall.moduleOrObject.str);
 
+    }
+
+
+    @Test
+    @DisplayName("Assignment with index")
+    public void testTransformAssignmentWithIndex() {
+        String code = """
+            response["Set-Cookie"] = value""";
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Expr_stmtContext.class);
+        assertEquals(1, exprNodes.size());
+        PythonParser.Expr_stmtContext node = (PythonParser.Expr_stmtContext) exprNodes.get(0);
+
+
+        assertTrue(isAssignment(node));
+        Optional<Assignment> assignmentOptional = transformExprStmtToAssignment(node, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        assertEquals("variableindex", assignment.left.astType);
+        VariableIndex variableIndex = (VariableIndex) assignment.left;
+        assertEquals("\"Set-Cookie\"", ((AstString) variableIndex.index).value);
+        assertEquals("response", ((AstString) variableIndex.variable).value);
     }
 }

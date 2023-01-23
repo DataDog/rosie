@@ -24,6 +24,18 @@ public class PythonAstUtils {
         return false;
     }
 
+
+    public static boolean isArrayOrDictReference(PythonParser.ExprContext exprContext) {
+        if (exprContext.atom() != null && exprContext.trailer() != null) {
+            if (exprContext.trailer().size() > 0) {
+                PythonParser.TrailerContext lastTrailer = exprContext.trailer().get(exprContext.trailer().size() - 1);
+                return (lastTrailer.arguments() != null && lastTrailer.arguments().OPEN_BRACKET() != null && lastTrailer.arguments().CLOSE_BRACKET() != null);
+            }
+        }
+
+        return false;
+    }
+
     public static Optional<PythonComparison> getPythonComparisonFromTestContext(PythonParser.TestContext testContext, PythonParser.RootContext root) {
         if (testContext != null && testContext.logical_test() != null && testContext.logical_test().size() == 1) {
             PythonParser.ComparisonContext comparisonContext = testContext.logical_test().get(0).comparison();
