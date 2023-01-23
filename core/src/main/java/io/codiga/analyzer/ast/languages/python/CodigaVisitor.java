@@ -84,6 +84,7 @@ public class CodigaVisitor extends PythonParserBaseVisitor<Object> {
             .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
             .code(this.code)
             .importsList(visitedImportStatements)
+            .assignmentsList(assignments)
             .build();
         return res;
     }
