@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclarationToVariableDeclaration;
@@ -30,7 +31,19 @@ public class JavaScriptVariableDeclarationList {
     }
 
     public static Optional<AstElement> transformVariableDeclarationToAstElement(JavaScriptParser.VariableDeclarationListContext ctx, ParserRuleContext root) {
-        List<AstElement> result = new ArrayList<>();
+        List<? extends AstElement> result = transformVariableDeclarationToList(ctx, root);
+
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+        if (result.size() == 1) {
+            return Optional.of(result.get(0));
+        }
+        return Optional.of(new Sequence(result.stream().map(v -> (AstElement) v).collect(Collectors.toList()), ctx, root));
+    }
+
+    public static List<VariableDeclaration> transformVariableDeclarationToList(JavaScriptParser.VariableDeclarationListContext ctx, ParserRuleContext root) {
+        List<VariableDeclaration> result = new ArrayList<>();
         Optional<AstString> modifier = Optional.empty();
 
         if (ctx.varModifier() != null) {
@@ -47,13 +60,6 @@ public class JavaScriptVariableDeclarationList {
             }
         }
 
-
-        if (result.isEmpty()) {
-            return Optional.empty();
-        }
-        if (result.size() == 1) {
-            return Optional.of(result.get(0));
-        }
-        return Optional.of(new Sequence(result, ctx, root));
+        return result;
     }
 }

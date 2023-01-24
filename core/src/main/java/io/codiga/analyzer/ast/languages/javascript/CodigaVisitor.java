@@ -28,6 +28,7 @@ import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaSc
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSingleExpressionTransformation.transformJavaScriptAssignmentExpressionToAssignment;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptTryStatement.transformTryStatementToTryCatchStatement;
+import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationList.transformVariableDeclarationToList;
 import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
 
 
@@ -53,6 +54,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     List<Assignment> assignments;
 
     List<JavaScriptImport> importStatements;
+    List<VariableDeclaration> variableDeclarations;
     List<IfStatement> ifStatements;
     List<JavaScriptTryCatchStatement> tryStatements;
     List<ForStatement> forStatements;
@@ -76,6 +78,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         forStatements = new ArrayList<>();
         tryStatements = new ArrayList<>();
         htmlElements = new ArrayList<>();
+        variableDeclarations = new ArrayList<>();
 
         // Initialize the visited elements
         visitedFunctionCalls = new Stack<>();
@@ -130,6 +133,17 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
             assignment.setContext(buildContext());
             this.assignments.add(assignment);
         }
+        return visitChildren(ctx);
+    }
+
+
+    @Override
+    public Object visitVariableDeclarationList(JavaScriptParser.VariableDeclarationListContext ctx) {
+        List<VariableDeclaration> list = transformVariableDeclarationToList(ctx, root);
+        list.forEach(c -> {
+            c.setContext(buildContext());
+            this.variableDeclarations.add(c);
+        });
         return visitChildren(ctx);
     }
 
