@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public class AtomToPythonString {
+public class AtomTransformation {
 
-    private static final Logger logger = LoggerFactory.getLogger(AtomToPythonString.class);
+    private static final Logger logger = LoggerFactory.getLogger(AtomTransformation.class);
 
     public static Optional<PythonString> transformAtomToPythonString(PythonParser.AtomContext atomContext, PythonParser.RootContext root) {
         if (atomContext.number() != null) {
@@ -24,5 +24,6 @@ public class AtomToPythonString {
         }
         return Optional.empty();
     }
+
 
 }

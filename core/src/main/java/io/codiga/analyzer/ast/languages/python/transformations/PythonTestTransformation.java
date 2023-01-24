@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isArrayOrDictReference;
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
-import static io.codiga.analyzer.ast.languages.python.transformations.AtomToPythonString.transformAtomToPythonString;
+import static io.codiga.analyzer.ast.languages.python.transformations.AtomTransformation.transformAtomToPythonString;
 import static io.codiga.analyzer.ast.languages.python.transformations.ExprToFunctionCall.transformExprToFunctionCall;
 import static io.codiga.analyzer.ast.languages.python.transformations.ExprToVariableIndex.transformExprToVariableIndex;
 

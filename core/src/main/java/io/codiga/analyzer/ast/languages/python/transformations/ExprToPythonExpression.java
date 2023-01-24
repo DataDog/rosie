@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.python.transformations.AtomToPythonString.transformAtomToPythonString;
+import static io.codiga.analyzer.ast.languages.python.transformations.AtomTransformation.transformAtomToPythonString;
 import static io.codiga.model.ast.python.PythonExpression.PYTHON_EXPRESSION_TYPE_ATOM;
 
 public class ExprToPythonExpression {

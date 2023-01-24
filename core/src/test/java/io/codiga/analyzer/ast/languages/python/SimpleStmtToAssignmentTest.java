@@ -166,4 +166,67 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
         assertEquals("\"Set-Cookie\"", ((AstString) variableIndex.index).value);
         assertEquals("response", ((AstString) variableIndex.variable).value);
     }
+
+    @Test
+    @DisplayName("Assignment with index and a member")
+    public void testTransformIndexAndMember() {
+        String code = """
+            url = request.args["next_page"]""";
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Expr_stmtContext.class);
+        assertEquals(1, exprNodes.size());
+        PythonParser.Expr_stmtContext node = (PythonParser.Expr_stmtContext) exprNodes.get(0);
+
+
+        assertTrue(isAssignment(node));
+        Optional<Assignment> assignmentOptional = transformExprStmtToAssignment(node, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        VariableIndex variableIndex = (VariableIndex) assignment.right;
+        assertEquals("request.args", ((AstString) variableIndex.variable).value);
+    }
+
+    @Test
+    @DisplayName("Assignment with index and two members")
+    public void testTransformIndexAndTwoMembers() {
+        String code = """
+            url = request.foo.args["next_page"]""";
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Expr_stmtContext.class);
+        assertEquals(1, exprNodes.size());
+        PythonParser.Expr_stmtContext node = (PythonParser.Expr_stmtContext) exprNodes.get(0);
+
+
+        assertTrue(isAssignment(node));
+        Optional<Assignment> assignmentOptional = transformExprStmtToAssignment(node, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        VariableIndex variableIndex = (VariableIndex) assignment.right;
+        assertEquals("request.foo.args", ((AstString) variableIndex.variable).value);
+    }
+
+    @Test
+    @DisplayName("Assignment with index and no member")
+    public void testTransformIndexAndNoMembers() {
+        String code = """
+            url = request["next_page"]""";
+
+        ParseTree root = parseCode(code);
+
+        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Expr_stmtContext.class);
+        assertEquals(1, exprNodes.size());
+        PythonParser.Expr_stmtContext node = (PythonParser.Expr_stmtContext) exprNodes.get(0);
+
+
+        assertTrue(isAssignment(node));
+        Optional<Assignment> assignmentOptional = transformExprStmtToAssignment(node, null);
+        assertTrue(assignmentOptional.isPresent());
+        Assignment assignment = assignmentOptional.get();
+        VariableIndex variableIndex = (VariableIndex) assignment.right;
+        assertEquals("request", ((AstString) variableIndex.variable).value);
+    }
 }

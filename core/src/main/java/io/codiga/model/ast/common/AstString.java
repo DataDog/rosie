@@ -6,6 +6,9 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.Optional;
 
+import static io.codiga.analyzer.ast.AstUtils.getEndPosition;
+import static io.codiga.analyzer.ast.AstUtils.getStartPosition;
+
 
 public class AstString extends AstElement {
 
@@ -28,6 +31,16 @@ public class AstString extends AstElement {
         this.str = value;
     }
 
+
+    public AstString(String value,
+                     ParserRuleContext startingContext,
+                     ParserRuleContext endingContext,
+                     ParserRuleContext ruleContext,
+                     ParserRuleContext root) {
+        super(AST_ELEMENT_TYPE_STRING, getStartPosition(startingContext), getEndPosition(endingContext), ruleContext, root);
+        this.value = value;
+        this.str = value;
+    }
 
     public static Optional<AstString> fromTerminalNode(TerminalNode terminalNode, ParserRuleContext root) {
         if (terminalNode != null && terminalNode.getText() != null) {
