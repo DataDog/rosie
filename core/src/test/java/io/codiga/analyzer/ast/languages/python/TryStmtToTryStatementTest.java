@@ -104,7 +104,7 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
             except SocketTimeout:
                 client_obj.handle_url_timeout(url)
             finally:
-                pass
+                break
                         """;
 
         ParseTree root = parseCode(code);
@@ -121,6 +121,6 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
         assertEquals("SocketTimeout", tryStatement.exceptClauses[1].exceptions[0].str);
         assertEquals("sequence", tryStatement.exceptClauses[1].content.astType);
         assertEquals("sequence", tryStatement.finallyClause.content.astType);
-        assertEquals("pass", ((Sequence) tryStatement.finallyClause.content).elements[0].astType);
+        assertEquals("break", ((Sequence) tryStatement.finallyClause.content).elements[0].astType);
     }
 }

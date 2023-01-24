@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.python.transformations;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.Break;
 import io.codiga.model.ast.common.Continue;
 import io.codiga.model.ast.common.Return;
 import io.codiga.model.ast.python.PythonPass;
@@ -37,6 +38,10 @@ public class SmallStmtToAstElement {
             return Optional.of(new Continue(continue_stmtContext, root));
         }
 
+
+        if (ctx instanceof PythonParser.Break_stmtContext break_stmtContext) {
+            return Optional.of(new Break(break_stmtContext, root));
+        }
 
         if (ctx instanceof PythonParser.Pass_stmtContext pass_stmtContext) {
             return Optional.of(new PythonPass(pass_stmtContext, root));
