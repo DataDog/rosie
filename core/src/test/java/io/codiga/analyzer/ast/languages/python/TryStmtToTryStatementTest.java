@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.python;
 
+import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.python.TryStatement;
 import io.codiga.parser.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -102,6 +103,8 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
                 client_obj.remove_url(url)
             except SocketTimeout:
                 client_obj.handle_url_timeout(url)
+            finally:
+                pass
                         """;
 
         ParseTree root = parseCode(code);
@@ -116,5 +119,8 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
         assertEquals("ValueError", tryStatement.exceptClauses[0].exceptions[1].str);
         assertEquals(1, tryStatement.exceptClauses[1].exceptions.length);
         assertEquals("SocketTimeout", tryStatement.exceptClauses[1].exceptions[0].str);
+        assertEquals("sequence", tryStatement.exceptClauses[1].content.astType);
+        assertEquals("sequence", tryStatement.finallyClause.content.astType);
+        assertEquals("pass", ((Sequence) tryStatement.finallyClause.content).elements[0].astType);
     }
 }

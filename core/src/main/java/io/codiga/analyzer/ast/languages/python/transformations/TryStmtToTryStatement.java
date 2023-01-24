@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static io.codiga.analyzer.ast.languages.python.transformations.SuiteTransformation.transformSuiteToAstElement;
+
 public class TryStmtToTryStatement {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TryStmtToTryStatement.class);
@@ -73,16 +75,21 @@ public class TryStmtToTryStatement {
                 if (ctx.except_clause().get(0).name() != null) {
                     astString = new AstString(ctx.except_clause().get(0).name().getText(), ctx.except_clause().get(0).name(), root);
                 }
-                return new ExceptClause(exceptionNames, astString, exceptClause, root);
+                return new ExceptClause(
+                    transformSuiteToAstElement(exceptClause.suite(), root).orElse(null),
+                    exceptionNames,
+                    astString,
+                    exceptClause,
+                    root);
             }).collect(Collectors.toList());
 
 
         }
         if (ctx.finally_clause() != null) {
-            finallyClause = new FinallyClause(ctx.finally_clause(), root);
+            finallyClause = new FinallyClause(transformSuiteToAstElement(ctx.finally_clause().suite(), root).orElse(null), ctx.finally_clause(), root);
         }
 
-        TryStatement tryStatement = new TryStatement(exceptClauses, finallyClause, ctx, root);
+        TryStatement tryStatement = new TryStatement(transformSuiteToAstElement(ctx.suite(), root).orElse(null), exceptClauses, finallyClause, ctx, root);
         return Optional.of(tryStatement);
     }
 }

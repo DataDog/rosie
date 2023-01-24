@@ -34,11 +34,15 @@ public class FuncDefToFunctionDefinition {
         PythonParser.FuncdefContext functionDefinition = ctx.funcdef();
 
         boolean isAsync = functionDefinition.ASYNC() != null;
+        Optional<AstString> nameOptional = Optional.empty();
+        if (functionDefinition.name() != null) {
+            nameOptional = Optional.of(
+                new AstStringBuilder()
+                    .setValue(functionDefinition.name().getText())
+                    .setRuleContext(functionDefinition.name())
+                    .setRoot(root).createAstString());
+        }
 
-        AstString name = new AstStringBuilder()
-            .setValue(functionDefinition.name().getText())
-            .setRuleContext(functionDefinition.name())
-            .setRoot(root).createAstString();
         AstString returnType = null;
         FunctionDefinitionParameters parameters = null;
         List<FunctionDefinitionParameter> parameterList = new ArrayList<>();
@@ -113,7 +117,7 @@ public class FuncDefToFunctionDefinition {
         return Optional.of(new PythonFunctionDefinition(
             isAsync,
             decorators,
-            name,
+            nameOptional.orElse(null),
             parameters,
             returnType,
             transformSuiteToAstElement(ctx.funcdef().suite(), root).orElse(null),
