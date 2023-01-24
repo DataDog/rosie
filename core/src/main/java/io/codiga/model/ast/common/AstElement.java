@@ -22,6 +22,7 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_CONTAINER = "container";
     public static final String AST_ELEMENT_TYPE_RETURN = "return";
     public static final String AST_ELEMENT_TYPE_BREAK = "break";
+    public static final String AST_ELEMENT_TYPE_CONTINUE = "continue";
     public static final String AST_ELEMENT_TYPE_SWITCH = "switch";
     public static final String AST_ELEMENT_TYPE_SWITCH_CASE = "switchcase";
     public static final String AST_ELEMENT_TYPE_SEQUENCE = "sequence";
