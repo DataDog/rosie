@@ -71,6 +71,17 @@ public class VmContext {
     }
     return null;
   }
+""",
+        """
+	function hasDecorator(node, decoratorName) {
+		if (!node) {
+			return false;
+		}
+		if(node.astType !== "functiondefinition") {
+			return false;
+		}
+		return node.decorators && node.decorators.filter(d => d.name && d.name.value === decoratorName).length > 0;
+	}
 """
     };
 
