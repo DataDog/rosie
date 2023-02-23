@@ -37,6 +37,10 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
 }
 
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-Xplugin:DatadogCompilerPlugin")
+}
+
 val ddTracerAgent by configurations.creating
 
 configurations {
@@ -54,6 +58,7 @@ if (project.hasProperty("dd-civisibility")) {
         annotationProcessor("com.datadoghq:dd-javac-plugin:0.1.1")
         testAnnotationProcessor("com.datadoghq:dd-javac-plugin:0.1.1")
     }
+
 
 }
 
