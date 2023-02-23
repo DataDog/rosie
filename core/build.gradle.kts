@@ -37,6 +37,26 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
 }
 
+val ddTracerAgent by configurations.creating
+
+configurations {
+    ddTracerAgent
+}
+
+dependencies {
+    ddTracerAgent("com.datadoghq:dd-java-agent:1.8.3")
+}
+val ddTraceAgentAsPath: String = ddTracerAgent.asPath
+
+if (project.hasProperty("dd-civisibility")) {
+    dependencies {
+        implementation("com.datadoghq:dd-javac-plugin-client:0.1.1")
+        annotationProcessor("com.datadoghq:dd-javac-plugin:0.1.1")
+        testAnnotationProcessor("com.datadoghq:dd-javac-plugin:0.1.1")
+    }
+
+}
+
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
@@ -47,4 +67,9 @@ tasks.getByName<Test>("test") {
         showCauses = true
         showStackTraces = true
     }
+    jvmArgs = listOf(
+        "-javaagent:$ddTraceAgentAsPath",
+        "-Ddd.service=rosie",
+        "-Ddd.civisibility.enabled=true"
+    )
 }
