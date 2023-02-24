@@ -12,10 +12,22 @@ version = "1.0-SNAPSHOT"
 //    version = "22.2.0"
 //}
 
+val ddTracerAgent by configurations.creating
+
+configurations {
+    ddTracerAgent
+}
+
+dependencies {
+    ddTracerAgent("com.datadoghq:dd-java-agent:1.8.3")
+}
+
 repositories {
     mavenCentral()
     mavenLocal()
 }
+
+
 
 
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -37,19 +49,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
 }
 
-tasks.withType<JavaCompile> {
-    options.compilerArgs.add("-Xplugin:DatadogCompilerPlugin")
-}
 
-val ddTracerAgent by configurations.creating
-
-configurations {
-    ddTracerAgent
-}
-
-dependencies {
-    ddTracerAgent("com.datadoghq:dd-java-agent:1.8.3")
-}
 val ddTraceAgentAsPath: String = ddTracerAgent.asPath
 
 if (project.hasProperty("dd-civisibility")) {
@@ -58,7 +58,9 @@ if (project.hasProperty("dd-civisibility")) {
         annotationProcessor("com.datadoghq:dd-javac-plugin:0.1.1")
         testAnnotationProcessor("com.datadoghq:dd-javac-plugin:0.1.1")
     }
-
+    tasks.withType<JavaCompile> {
+        options.compilerArgs.add("-Xplugin:DatadogCompilerPlugin")
+    }
 
 }
 
