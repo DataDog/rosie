@@ -3,7 +3,7 @@ package io.codiga.analyzer.ast.languages.javascript;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.common.Switch;
-import io.codiga.parser.javascript.gen.JavaScriptParser;
+import io.codiga.parser.antlr.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptSwitchStatement.transformSwitchStatement;
 import static io.codiga.model.ast.common.AstElement.*;
+import static io.codiga.parser.antlr.javascript.transformations.JavaScriptSwitchStatement.transformSwitchStatement;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwitchTest extends JavaScriptTestUtils {

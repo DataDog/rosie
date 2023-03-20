@@ -1,7 +1,7 @@
 package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.model.ast.python.PythonForStatement;
-import io.codiga.parser.python.gen.PythonParser;
+import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.python.transformations.ForStmtToForStatement.transformForStatement;
+import static io.codiga.parser.antlr.python.transformations.ForStmtToForStatement.transformForStatement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

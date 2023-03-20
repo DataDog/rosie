@@ -1,8 +1,8 @@
 package io.codiga.analyzer.ast.languages.typescript;
 
 import io.codiga.analyzer.ast.TestUtils;
-import io.codiga.parser.typescript.gen.TypeScriptLexer;
-import io.codiga.parser.typescript.gen.TypeScriptParser;
+import io.codiga.parser.antlr.typescript.gen.TypeScriptLexer;
+import io.codiga.parser.antlr.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;

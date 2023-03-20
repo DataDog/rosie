@@ -4,8 +4,9 @@ import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
-import io.codiga.parser.typescript.gen.TypeScriptLexer;
-import io.codiga.parser.typescript.gen.TypeScriptParser;
+import io.codiga.parser.antlr.typescript.CodigaVisitor;
+import io.codiga.parser.antlr.typescript.gen.TypeScriptLexer;
+import io.codiga.parser.antlr.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public class TypeScriptAnalyzerContext extends AnalyzerContext {
         TypeScriptParser parser = new TypeScriptParser(tokens);
 
 
-        io.codiga.analyzer.ast.languages.typescript.CodigaVisitor codigaVisitor = new CodigaVisitor(code);
+        CodigaVisitor codigaVisitor = new CodigaVisitor(code);
         codigaVisitor.visit(parser.program());
 
 

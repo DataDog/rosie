@@ -1,7 +1,7 @@
 package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
-import io.codiga.parser.python.gen.PythonParser;
+import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class PythonElseStatement extends AstElement {

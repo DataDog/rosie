@@ -4,7 +4,7 @@ import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.IfStatement;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.javascript.JavaScriptHtmlElement;
-import io.codiga.parser.javascript.gen.JavaScriptParser;
+import io.codiga.parser.antlr.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
-import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
+import static io.codiga.parser.antlr.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
+import static io.codiga.parser.antlr.javascript.transformations.JavaScriptTernaryExpressionToIfStatement.transformTernaryExpressionToIfStatement;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JsxTest extends JavaScriptTestUtils {

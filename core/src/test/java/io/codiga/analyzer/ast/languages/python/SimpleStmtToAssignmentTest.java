@@ -5,7 +5,7 @@ import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.VariableIndex;
 import io.codiga.model.ast.python.PythonFunctionCall;
 import io.codiga.model.ast.python.PythonList;
-import io.codiga.parser.python.gen.PythonParser;
+import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.python.transformations.ExprStmtTransformation.isAssignment;
-import static io.codiga.analyzer.ast.languages.python.transformations.ExprStmtTransformation.transformExprStmtToAssignment;
 import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_FUNCTION_CALL;
+import static io.codiga.parser.antlr.python.transformations.ExprStmtTransformation.isAssignment;
+import static io.codiga.parser.antlr.python.transformations.ExprStmtTransformation.transformExprStmtToAssignment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

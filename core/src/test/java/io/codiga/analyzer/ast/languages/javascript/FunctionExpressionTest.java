@@ -1,7 +1,7 @@
 package io.codiga.analyzer.ast.languages.javascript;
 
 import io.codiga.model.ast.javascript.JavaScriptFunctionExpression;
-import io.codiga.parser.javascript.gen.JavaScriptParser;
+import io.codiga.parser.antlr.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.javascript.transformations.JavaScriptAnonymousFunction.transformAnonymousFunction;
+import static io.codiga.parser.antlr.javascript.transformations.JavaScriptAnonymousFunction.transformAnonymousFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

@@ -4,7 +4,7 @@ import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.typescript.TypeScriptInterface;
 import io.codiga.model.ast.typescript.TypeScriptInterfaceIndexSignature;
 import io.codiga.model.ast.typescript.TypeScriptInterfaceProperty;
-import io.codiga.parser.typescript.gen.TypeScriptParser;
+import io.codiga.parser.antlr.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptInterfaceTransformation.transformInterfaceDeclaration;
 import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_INTERFACE_INDEX_SIGNATURE;
 import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_INTERFACE_PROPERTY;
+import static io.codiga.parser.antlr.typescript.transformations.TypeScriptInterfaceTransformation.transformInterfaceDeclaration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

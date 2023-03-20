@@ -1,7 +1,8 @@
 package io.codiga.analyzer.ast.languages.python;
 
-import io.codiga.parser.python.gen.PythonLexer;
-import io.codiga.parser.python.gen.PythonParser;
+import io.codiga.parser.antlr.python.CodigaVisitor;
+import io.codiga.parser.antlr.python.gen.PythonLexer;
+import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.jupiter.api.AfterAll;

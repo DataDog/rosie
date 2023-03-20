@@ -2,7 +2,7 @@ package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.python.PythonFunctionCall;
-import io.codiga.parser.python.gen.PythonParser;
+import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isFunctionCall;
-import static io.codiga.analyzer.ast.languages.python.transformations.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.parser.antlr.python.transformations.ExprToFunctionCall.transformExprToFunctionCall;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExprToFunctionCallTest extends PythonTestUtils {

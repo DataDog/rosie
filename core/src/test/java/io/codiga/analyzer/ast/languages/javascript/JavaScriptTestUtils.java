@@ -1,8 +1,8 @@
 package io.codiga.analyzer.ast.languages.javascript;
 
 import io.codiga.analyzer.ast.TestUtils;
-import io.codiga.parser.javascript.gen.JavaScriptLexer;
-import io.codiga.parser.javascript.gen.JavaScriptParser;
+import io.codiga.parser.antlr.javascript.gen.JavaScriptLexer;
+import io.codiga.parser.antlr.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;

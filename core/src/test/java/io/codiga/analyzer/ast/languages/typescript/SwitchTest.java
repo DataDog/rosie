@@ -3,7 +3,7 @@ package io.codiga.analyzer.ast.languages.typescript;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.common.Switch;
-import io.codiga.parser.typescript.gen.TypeScriptParser;
+import io.codiga.parser.antlr.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptSwitchStatement.transformSwitchStatement;
 import static io.codiga.model.ast.common.AstElement.*;
+import static io.codiga.parser.antlr.typescript.transformations.TypeScriptSwitchStatement.transformSwitchStatement;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwitchTest extends TypeScriptTestUtils {

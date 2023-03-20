@@ -2,13 +2,13 @@ package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.model.ast.python.PythonComparison;
 import io.codiga.model.ast.python.PythonDecorator;
-import io.codiga.parser.python.gen.PythonParser;
+import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.python.transformations.ComparisontoPythonComparison.transformComparisonToPythonComparison;
+import static io.codiga.parser.antlr.python.transformations.ComparisontoPythonComparison.transformComparisonToPythonComparison;
 
 public class PythonAstUtils {
 

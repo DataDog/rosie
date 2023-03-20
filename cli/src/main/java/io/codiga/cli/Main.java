@@ -142,7 +142,7 @@ public class Main {
         long startTimeMs = System.currentTimeMillis();
         int cpus = Runtime.getRuntime().availableProcessors();
         // we are defining parallemism: if we have more than 2 CPUs, we take the number of CPU - 1
-        int parallelism = cpus > 2 ? cpus - 1 : cpus;
+        int parallelism = cpus > 1 ? cpus - 1 : cpus;
 
         // For each language, we get the list of file for this language and get the violations
         for (Map.Entry<Language, List<String>> entry : LANGUAGE_EXTENSIONS.entrySet()) {

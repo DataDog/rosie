@@ -5,8 +5,7 @@ import io.codiga.model.Language;
 import java.util.List;
 import java.util.Map;
 
-import static io.codiga.model.Language.JAVASCRIPT;
-import static io.codiga.model.Language.PYTHON;
+import static io.codiga.model.Language.*;
 
 public class Languages {
 
@@ -31,7 +30,8 @@ public class Languages {
     public final static List<String> SUPPORTED_LANGUAGES = List.of(LANGUAGE_PYTHON, LANGUAGE_JAVASCRIPT, LANGUAGE_TYPESCRIPT);
     public final static Map<Language, List<String>> LANGUAGE_EXTENSIONS = Map.of(
         PYTHON, List.of("py", "py3"),
-        JAVASCRIPT, List.of("js", "jsx")
+        JAVASCRIPT, List.of("js", "jsx"),
+        TYPESCRIPT, List.of("ts", "tsx")
     );
     public List<Language> allLanguages = List.of(PYTHON);
 

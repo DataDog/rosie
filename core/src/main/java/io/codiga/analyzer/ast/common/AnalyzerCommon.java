@@ -30,7 +30,9 @@ import static io.codiga.model.RuleErrorCode.*;
 import static io.codiga.utils.EnvironmentUtils.ANALYSIS_TIMEOUT;
 import static io.codiga.utils.EnvironmentUtils.getEnvironmentValueAsLong;
 
+
 public abstract class AnalyzerCommon {
+
 
     public final static String COMMENT_SHARP = "#";
     public final static String COMMENT_TWO_SLASHES = "//";

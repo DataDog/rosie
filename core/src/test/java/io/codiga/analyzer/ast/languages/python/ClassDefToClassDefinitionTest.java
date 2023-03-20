@@ -2,7 +2,7 @@ package io.codiga.analyzer.ast.languages.python;
 
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.python.PythonClassDefinition;
-import io.codiga.parser.python.gen.PythonParser;
+import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation.isClassDefinition;
-import static io.codiga.analyzer.ast.languages.python.transformations.ClassOrFuncDefTransformation.transformClassOrFuncDefToClassDefinition;
 import static io.codiga.model.ast.common.AstElement.*;
+import static io.codiga.parser.antlr.python.transformations.ClassOrFuncDefTransformation.isClassDefinition;
+import static io.codiga.parser.antlr.python.transformations.ClassOrFuncDefTransformation.transformClassOrFuncDefToClassDefinition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

@@ -3,7 +3,7 @@ package io.codiga.analyzer.ast.languages.typescript;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.VariableDeclaration;
 import io.codiga.model.ast.typescript.TypeScriptTypeOperation;
-import io.codiga.parser.typescript.gen.TypeScriptParser;
+import io.codiga.parser.antlr.typescript.gen.TypeScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static io.codiga.analyzer.ast.languages.typescript.transformations.TypeScriptVariableStatement.transformVariableStatementToVariableDeclaration;
+import static io.codiga.parser.antlr.typescript.transformations.TypeScriptVariableStatement.transformVariableStatementToVariableDeclaration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VariableDeclarationTest extends TypeScriptTestUtils {

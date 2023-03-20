@@ -4,15 +4,15 @@ import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
-import io.codiga.model.ast.common.AstElement;
-import io.codiga.parser.python.gen.PythonLexer;
-import io.codiga.parser.python.gen.PythonParser;
+import io.codiga.parser.antlr.python.CodigaVisitor;
+import io.codiga.parser.antlr.python.gen.PythonLexer;
+import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.List;
 
 public class PythonAnalyzerContext extends AnalyzerContext {
 
@@ -24,6 +24,7 @@ public class PythonAnalyzerContext extends AnalyzerContext {
         PythonLexer lexer = new PythonLexer(CharStreams.fromString(code));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         PythonParser parser = new PythonParser(tokens);
+
         parser.setBuildParseTree(true);
 
         CodigaVisitor codigaVisitor = new CodigaVisitor(code);
@@ -43,3 +44,5 @@ public class PythonAnalyzerContext extends AnalyzerContext {
         addAllEntityToAny();
     }
 }
+
+
