@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.javascript;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionCall;
 import io.codiga.model.ast.common.FunctionDefinition;
 import io.codiga.model.ast.javascript.AstStringWithSpreadOperator;
