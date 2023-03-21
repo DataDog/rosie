@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.python.transformations.PythonTestListStarExprTransformation.transformTestListStarExprToAstElement;
 import static io.codiga.parser.antlr.python.transformations.PythonTestTransformation.transformTestToAstElement;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class ExprStmtTransformation {
 

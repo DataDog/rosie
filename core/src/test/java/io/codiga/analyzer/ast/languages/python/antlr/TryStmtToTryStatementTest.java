@@ -1,4 +1,4 @@
-package io.codiga.analyzer.ast.languages.python;
+package io.codiga.analyzer.ast.languages.python.antlr;
 
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.python.TryStatement;

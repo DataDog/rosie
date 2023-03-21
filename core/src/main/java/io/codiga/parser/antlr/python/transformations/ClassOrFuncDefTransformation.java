@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.getDecoratorsForClassOrFunctionDefinition;
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.python.transformations.FuncDefToFunctionDefinition.transformFuncDefToFunctionDefinition;
 import static io.codiga.parser.antlr.python.transformations.SuiteTransformation.transformSuiteToAstElement;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class ClassOrFuncDefTransformation {
 

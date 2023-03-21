@@ -6,12 +6,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptArrowFunctionDeclaration.transformArrowFunctionDeclarationContext;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptBlock.transformBlock;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptExpressionSequence.transformExpressionSequenceToSequence;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptReturn.transformReturnStatement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptVariableStatement.transformVariableStatementToSequence;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 
 public class TypeScriptStatement {

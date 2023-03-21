@@ -1,5 +1,6 @@
 package io.codiga.model.ast.common;
 
+import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 
@@ -19,4 +20,13 @@ public class FunctionCall extends AstElement {
         this.arguments = arguments;
         this.functionName = functionName;
     }
+
+    public FunctionCall(AstElement functionName,
+                        FunctionCallArguments arguments,
+                        ParserContext context) {
+        super(AST_ELEMENT_TYPE_FUNCTION_CALL, context);
+        this.arguments = arguments;
+        this.functionName = functionName;
+    }
+
 }

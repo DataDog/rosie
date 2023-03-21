@@ -7,9 +7,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.flattenAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptExpressionSequence.transformExpressionSequenceToAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptStatementList.transformStatementListToSequence;
+import static io.codiga.utils.Conversions.flattenAstElement;
 
 public class TypeScriptCaseClause {
 

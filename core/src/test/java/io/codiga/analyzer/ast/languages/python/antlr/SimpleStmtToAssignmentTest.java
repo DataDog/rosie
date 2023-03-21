@@ -1,4 +1,4 @@
-package io.codiga.analyzer.ast.languages.python;
+package io.codiga.analyzer.ast.languages.python.antlr;
 
 import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstString;

@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptArrayLiteralToArray.transformArrayLiteralToArray;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptArrowFunctionDeclaration.transformArrowFunctionDeclarationContext;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptExpressionSequence.transformExpressionSequenceToAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptHtmlElementTransformation.transformTypeScriptHtmlElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptObjectLiteralToObject.transformTypeScriptObjectLiteralToObject;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class TypeScriptSingleExpressionTransformation {
     private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);

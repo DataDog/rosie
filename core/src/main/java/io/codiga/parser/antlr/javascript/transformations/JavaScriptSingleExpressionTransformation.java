@@ -8,12 +8,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptAnonymousFunction.transformAnonymousFunction;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptArrayLiteralToArray.transformArrayLiteralToArray;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptExpression.transformExpression;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptMemberDotTransformation.transformMemberDotToJavaScriptMember;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptNotExpression.transformNotExpressionToAstElement;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class JavaScriptSingleExpressionTransformation {
 

@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptTypeNameToAstString.typenameToAstString;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class TypeScriptTypeReferenceToTypeScriptType {
     private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);

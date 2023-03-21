@@ -25,6 +25,9 @@ dependencies {
 repositories {
     mavenCentral()
     mavenLocal()
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -38,6 +41,7 @@ dependencies {
     implementation("com.datadoghq:dd-trace-api:1.3.0")
     implementation("org.antlr:antlr4-runtime:4.11.1")
     implementation("com.rollbar:rollbar-java:1.9.0")
+    implementation("com.github.serenadeai:java-tree-sitter:1.1.2")
 
     implementation("org.graalvm.js:js:22.2.0")
     implementation("org.graalvm.js:js-scriptengine:22.2.0")

@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.flattenAstElement;
 import static io.codiga.parser.antlr.python.transformations.ExprStmtTransformation.transformExprStmtToAstElement;
 import static io.codiga.parser.antlr.python.transformations.PythonTestListTransformation.transformTestlistToAstElement;
+import static io.codiga.utils.Conversions.flattenAstElement;
 
 public class SmallStmtToAstElement {
 

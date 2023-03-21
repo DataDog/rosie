@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.flattenAstElement;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptCaseClause.transformCaseClauseToSwitchCase;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptStatementListToAstElement.transformStatementList;
+import static io.codiga.utils.Conversions.flattenAstElement;
 
 public class JavaScriptSwitchStatement {
 

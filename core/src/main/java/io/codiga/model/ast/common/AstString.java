@@ -1,5 +1,6 @@
 package io.codiga.model.ast.common;
 
+import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -19,6 +20,13 @@ public class AstString extends AstElement {
                      ParserRuleContext ruleContext,
                      ParserRuleContext root) {
         super(AST_ELEMENT_TYPE_STRING, ruleContext, root);
+        this.value = value;
+        this.str = value;
+    }
+
+    public AstString(String value,
+                     ParserContext parserContext) {
+        super(AST_ELEMENT_TYPE_STRING, parserContext);
         this.value = value;
         this.str = value;
     }

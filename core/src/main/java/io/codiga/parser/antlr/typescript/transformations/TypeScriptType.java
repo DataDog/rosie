@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
+import static io.codiga.utils.Conversions.convertToAstElement;
+
 
 public class TypeScriptType {
     private static final Logger logger = LoggerFactory.getLogger(ClassOrFuncDefTransformation.class);

@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.flattenAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptCaseClause.transformCaseClauseToSwitchCase;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptExpressionSequence.transformExpressionSequenceToAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptStatementList.transformStatementListToSequence;
+import static io.codiga.utils.Conversions.flattenAstElement;
 
 public class TypeScriptSwitchStatement {
 

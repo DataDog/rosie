@@ -13,9 +13,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static io.codiga.analyzer.ast.languages.python.PythonAstUtils.isArrayOrDictReference;
-import static io.codiga.analyzer.ast.languages.utils.Conversions.*;
 import static io.codiga.parser.antlr.python.transformations.ArgumentsTransformation.transformArgumentsToSequence;
 import static io.codiga.parser.antlr.python.transformations.AtomTransformation.transformAtomToPythonString;
+import static io.codiga.utils.Conversions.*;
 
 public class ExprToVariableIndex {
 

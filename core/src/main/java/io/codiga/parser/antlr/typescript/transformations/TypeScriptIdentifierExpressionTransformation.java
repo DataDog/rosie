@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptIdentifierNameTransformation.transformIdentifierNameToAstString;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptSingleExpressionTransformation.transformSingleExpressionToAstElement;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 
 public class TypeScriptIdentifierExpressionTransformation {

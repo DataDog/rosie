@@ -1,11 +1,11 @@
-package io.codiga.analyzer.ast;
+package io.codiga.analyzer.ast.utils;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestUtils {
+public class AntlrUtils {
 
 
     public List<ParseTree> getNodesFromType(ParseTree parseTree, Class classType) {
