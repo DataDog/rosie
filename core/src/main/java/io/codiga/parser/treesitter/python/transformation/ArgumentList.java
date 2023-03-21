@@ -28,7 +28,6 @@ public class ArgumentList {
 
         for (int i = 0; i < node.getChildCount(); i++) {
             Node child = node.getChild(i);
-            LOGGER.info(child.getType());
             Optional<FunctionCallArgument> argumentOptional = Optional.empty();
 
             if (child.getType().equalsIgnoreCase(TreeSitterPythonTypes.IDENTIFIER.label)) {

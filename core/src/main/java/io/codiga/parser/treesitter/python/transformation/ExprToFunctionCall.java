@@ -57,10 +57,6 @@ public class ExprToFunctionCall {
         Optional<FunctionCallArguments> functionCallArgumentsOptional = transformArgumentListToFunctionCallArguments(arguments, parsingContext);
 
 
-        LOGGER.info(functionName.getType());
-        LOGGER.info(arguments.getType());
-
-
         if (functionCallNameOptional.isPresent() && functionCallArgumentsOptional.isPresent()) {
             ParserContextTreeSitter parserContext = ParserContextTreeSitter.builder()
                 .node(node)

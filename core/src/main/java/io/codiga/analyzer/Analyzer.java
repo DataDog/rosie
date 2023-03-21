@@ -13,9 +13,11 @@ import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.AnalysisResult;
 import io.codiga.model.error.RuleResult;
+import io.codiga.parser.treesitter.utils.TreeSitterInit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -45,6 +47,13 @@ public class Analyzer {
         this.pythonAnalyzer = new PythonAnalyzer(this.metrics, this.errorReporting, configuration);
         this.javaScriptAnalyzer = new JavaScriptAnalyzer(this.metrics, this.errorReporting, configuration);
         this.typeScriptAnalyzer = new TypeScriptAnalyzer(this.metrics, this.errorReporting, configuration);
+
+        try {
+            TreeSitterInit.init();
+        } catch (FileNotFoundException fileNotFoundException) {
+            logger.info("Shared library not found");
+        }
+
     }
 
     public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {

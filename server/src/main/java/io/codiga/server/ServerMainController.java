@@ -29,10 +29,8 @@ import java.util.concurrent.CompletableFuture;
 import static io.codiga.constants.Languages.SUPPORTED_LANGUAGES;
 import static io.codiga.metrics.MetricsName.*;
 import static io.codiga.model.utils.ModelUtils.*;
-import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
 import static io.codiga.server.response.ResponseErrors.*;
 import static io.codiga.utils.Version.CURRENT_VERSION;
-import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 
 @RestController
 public class ServerMainController {
@@ -49,7 +47,9 @@ public class ServerMainController {
         errorReporting = injectorService.getInjector().getInstance(ErrorReportingInterface.class);
         this.analyzer = new Analyzer(errorReporting, metrics, configuration);
         this.injectorService = injectorService;
-        warmupAnalyzer(this.analyzer, WARMUP_LOOPS);
+
+        // TODO add again
+        // warmupAnalyzer(this.analyzer, WARMUP_LOOPS);
     }
 
     /**
@@ -134,7 +134,7 @@ public class ServerMainController {
                     return analyzerRule;
                 }).toList();
         } catch (IllegalArgumentException iae) {
-            logger.error("rule is not base64: " + rules);
+            logger.error("rule is not base64: " + request.rules);
             return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_RULE_NOT_BASE64)));
         }
         CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language), request.filename, decodedCode, rules, request.logOutput);

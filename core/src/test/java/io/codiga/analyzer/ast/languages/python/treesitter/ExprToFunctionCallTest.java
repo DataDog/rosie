@@ -29,6 +29,51 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
 
     }
 
+    @Test
+    @DisplayName("Correctly transform a function call with a long trailing parent")
+    public void testTransformFunctionCallLongTrailing() {
+        String code = """
+            connection = mysql.connector.connect(
+              host=host,
+              user=user,
+              passwd="password",
+              database=database,
+              charset='utf8mb4',
+              use_pure=True,
+              connection_timeout=5)
+            """;
+
+        Node rootNode = parseCode(code);
+        TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+
+
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, "call");
+        assertEquals(1, nodes.size());
+
+        Node node = nodes.get(0);
+
+        Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall(node, parsingContext);
+        assertTrue(functionCallOptional.isPresent());
+        PythonFunctionCall functionCall = functionCallOptional.get();
+        assertEquals(((AstString) functionCall.functionName).value, "connect");
+        assertNotNull(functionCall.moduleOrObject);
+        assertEquals(functionCall.moduleOrObject.value, "mysql.connector");
+        assertEquals("host", ((AstString) functionCall.arguments.values[0].value).value);
+        assertEquals("host", functionCall.arguments.values[0].name.value);
+        assertEquals("user", ((AstString) functionCall.arguments.values[1].value).value);
+        assertEquals("user", functionCall.arguments.values[1].name.value);
+        assertEquals("\"password\"", ((AstString) functionCall.arguments.values[2].value).value);
+        assertEquals("passwd", functionCall.arguments.values[2].name.value);
+        assertEquals("database", ((AstString) functionCall.arguments.values[3].value).value);
+        assertEquals("database", functionCall.arguments.values[3].name.value);
+        assertEquals("'utf8mb4'", ((AstString) functionCall.arguments.values[4].value).value);
+        assertEquals("charset", functionCall.arguments.values[4].name.value);
+        assertEquals("True", ((AstString) functionCall.arguments.values[5].value).value);
+        assertEquals("use_pure", functionCall.arguments.values[5].name.value);
+        assertEquals("5", ((AstString) functionCall.arguments.values[6].value).value);
+        assertEquals("connection_timeout", functionCall.arguments.values[6].name.value);
+
+    }
 
     @Test
     @DisplayName("Correctly transform a function for get()")

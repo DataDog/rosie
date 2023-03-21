@@ -5,10 +5,7 @@ import io.codiga.model.ast.common.AstElement;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static io.codiga.parser.treesitter.python.transformation.ArgumentList.transformArgumentListToFunctionCallArguments;
 import static io.codiga.parser.treesitter.python.transformation.ExprToFunctionCall.transformExprToFunctionCall;
@@ -19,10 +16,6 @@ import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class TreeSitterPythonParser {
 
-    static {
-        Map<String, Function> NODE_TYPE_TO_PARSING_FUNCTION = new HashMap<>();
-
-    }
 
     public static Optional<AstElement> parse(Node node, TreeSitterParsingContext parsingContext) {
         TreeSitterPythonTypes nodeType = TreeSitterPythonTypes.NODE_TYPE_TO_ENUMERATION.get(node.getType());
@@ -34,14 +27,13 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformArgumentListToFunctionCallArguments(node, parsingContext));
             case CALL:
                 return convertToAstElement(transformExprToFunctionCall(node, parsingContext));
-            case FALSE:
-                return convertToAstElement(transformIdentifierToAstStringWithoutCheck(node, parsingContext));
             case IDENTIFIER:
                 return convertToAstElement(transformIdentifierToAstString(node, parsingContext));
-            case INTEGER:
-                return convertToAstElement(transformIdentifierToAstStringWithoutCheck(node, parsingContext));
             case KEYWORD_ARGUMENT:
                 return convertToAstElement(keywordArgumentToFunctionCallArgument(node, parsingContext));
+            case INTEGER:
+            case FALSE:
+            case STRING:
             case TRUE:
                 return convertToAstElement(transformIdentifierToAstStringWithoutCheck(node, parsingContext));
             default:

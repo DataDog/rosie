@@ -4,7 +4,7 @@ import ai.serenade.treesitter.Languages;
 import ai.serenade.treesitter.Node;
 import ai.serenade.treesitter.Parser;
 import io.codiga.analyzer.ast.utils.AntlrUtils;
-import io.codiga.utils.TreeSitterInit;
+import io.codiga.parser.treesitter.utils.TreeSitterInit;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;

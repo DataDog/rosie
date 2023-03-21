@@ -10,8 +10,10 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     mavenLocal()
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
-
 
 
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -36,7 +38,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-web:2.7.3")
     implementation("org.springframework.guice:spring-guice:2.0.1")
-    
+
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.3")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")

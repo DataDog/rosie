@@ -11,6 +11,7 @@ public enum TreeSitterPythonTypes {
     IDENTIFIER("identifier"),
     INTEGER("integer"),
     KEYWORD_ARGUMENT("keyword_argument"),
+    STRING("string"),
     TRUE("true"),
     UNKNOWN("unknown");
 
@@ -24,6 +25,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("identifier", IDENTIFIER);
         NODE_TYPE_TO_ENUMERATION.put("integer", INTEGER);
         NODE_TYPE_TO_ENUMERATION.put("keyword_argument", KEYWORD_ARGUMENT);
+        NODE_TYPE_TO_ENUMERATION.put("string", TRUE);
         NODE_TYPE_TO_ENUMERATION.put("true", TRUE);
         NODE_TYPE_TO_ENUMERATION.put("unknown", UNKNOWN);
     }

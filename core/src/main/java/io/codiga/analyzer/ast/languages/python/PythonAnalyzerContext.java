@@ -4,7 +4,6 @@ import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
-import io.codiga.parser.antlr.python.CodigaVisitor;
 import io.codiga.parser.antlr.python.gen.PythonLexer;
 import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.CharStreams;
@@ -27,8 +26,14 @@ public class PythonAnalyzerContext extends AnalyzerContext {
 
         parser.setBuildParseTree(true);
 
-        CodigaVisitor codigaVisitor = new CodigaVisitor(code);
-        codigaVisitor.visit(parser.root());
+        //ANTLR
+//        CodigaVisitor codigaVisitor = new CodigaVisitor(code);
+//        codigaVisitor.visit(parser.root());
+
+        // TreeSitter
+        io.codiga.parser.treesitter.python.CodigaVisitor codigaVisitor = new io.codiga.parser.treesitter.python.CodigaVisitor(code);
+        codigaVisitor.parse();
+        
 
         entityCheckedToAstElements.get(EntityChecked.ASSIGNMENT).addAll(codigaVisitor.assignments);
         entityCheckedToAstElements.get(EntityChecked.FOR_LOOP).addAll(codigaVisitor.forStatements);
