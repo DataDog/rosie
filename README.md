@@ -15,5 +15,6 @@ Make sure all submodules are up-to-date. Tree-sitter for java-tree-sitter (the `
 and the version for the Python grammars must be the same (or the python grammar be less than the `tree-sitter`
 directory).
 
-To update the submodules: `git submodule update --recursive`
+To update the submodules: `git submodule update --init --recursive` (first time)
+and `git submodule update --recursive --remote`
 

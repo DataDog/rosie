@@ -29,6 +29,14 @@ public final class TreeSitterInit {
                 toLoad = "lib/tree-sitter/darwin-aarch64/libjava-tree-sitter.dylib";
             }
         }
+        if (os.toLowerCase().startsWith("linux")) {
+            if (arch.equalsIgnoreCase("amd64")) {
+                toLoad = "lib/tree-sitter/linux-amd64/libjava-tree-sitter.so";
+            }
+            if (arch.equalsIgnoreCase("arm64")) {
+                toLoad = "lib/tree-sitter/linux-arm64/libjava-tree-sitter.so";
+            }
+        }
 
         if (toLoad == null) {
             throw new FileNotFoundException("shared library not found");
