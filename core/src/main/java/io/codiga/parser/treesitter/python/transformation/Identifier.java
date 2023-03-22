@@ -4,7 +4,6 @@ import ai.serenade.treesitter.Node;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionCallArgument;
 import io.codiga.parser.common.context.ParserContext;
-import io.codiga.parser.common.context.ParserContextTreeSitter;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 
@@ -31,7 +30,7 @@ public class Identifier {
 
         String value = parsingContext.getStringForNode(node);
         if (value != null) {
-            ParserContext parserContext = ParserContextTreeSitter.builder().code(parsingContext.getCode()).root(parsingContext.getRootNode()).node(node).build();
+            ParserContext parserContext = parsingContext.getParserContextForNode(node);
             return Optional.of(new AstString(value, parserContext));
         }
 
@@ -39,14 +38,11 @@ public class Identifier {
     }
 
 
-    public static Optional<FunctionCallArgument> transformIdentifierToFunctionCallArgument(Node node, TreeSitterParsingContext parsingContext) {
-        if (!node.getType().equalsIgnoreCase(TreeSitterPythonTypes.IDENTIFIER.label)) {
-            return Optional.empty();
-        }
+    public static Optional<FunctionCallArgument> transformNodeToFunctionArgument(Node node, TreeSitterParsingContext parsingContext) {
 
         String value = parsingContext.getStringForNode(node);
         if (value != null) {
-            ParserContext parserContext = ParserContextTreeSitter.builder().code(parsingContext.getCode()).root(parsingContext.getRootNode()).node(node).build();
+            ParserContext parserContext = parsingContext.getParserContextForNode(node);
             return Optional.of(new FunctionCallArgument(null, new AstString(value, parserContext), parserContext));
         }
 

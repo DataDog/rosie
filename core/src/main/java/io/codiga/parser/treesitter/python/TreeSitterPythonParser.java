@@ -12,16 +12,14 @@ import static io.codiga.parser.treesitter.python.transformation.ExprToFunctionCa
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstStringWithoutCheck;
 import static io.codiga.parser.treesitter.python.transformation.KeywordArgument.keywordArgumentToFunctionCallArgument;
+import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class TreeSitterPythonParser {
 
 
     public static Optional<AstElement> parse(Node node, TreeSitterParsingContext parsingContext) {
-        TreeSitterPythonTypes nodeType = TreeSitterPythonTypes.NODE_TYPE_TO_ENUMERATION.get(node.getType());
-        if (nodeType == null) {
-            return Optional.empty();
-        }
+        TreeSitterPythonTypes nodeType = getNodeType(node);
         switch (nodeType) {
             case ARGUMENT_LIST:
                 return convertToAstElement(transformArgumentListToFunctionCallArguments(node, parsingContext));

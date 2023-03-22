@@ -5,7 +5,6 @@ import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionCallArgument;
 import io.codiga.parser.common.context.ParserContext;
-import io.codiga.parser.common.context.ParserContextTreeSitter;
 import io.codiga.parser.treesitter.python.TreeSitterPythonParser;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
@@ -31,7 +30,7 @@ public class KeywordArgument {
         Optional<AstElement> valueOptional = TreeSitterPythonParser.parse(value, parsingContext);
 
         if (nameOptional.isPresent() && valueOptional.isPresent()) {
-            ParserContext parserContext = ParserContextTreeSitter.builder().code(parsingContext.getCode()).root(parsingContext.getRootNode()).node(node).build();
+            ParserContext parserContext = parsingContext.getParserContextForNode(node);
 
             return Optional.of(new FunctionCallArgument(nameOptional.orElse(null), valueOptional.orElse(null), parserContext));
         }

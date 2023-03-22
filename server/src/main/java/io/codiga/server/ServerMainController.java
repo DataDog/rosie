@@ -1,6 +1,7 @@
 package io.codiga.server;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
@@ -137,7 +138,11 @@ public class ServerMainController {
             logger.error("rule is not base64: " + request.rules);
             return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_RULE_NOT_BASE64)));
         }
-        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language), request.filename, decodedCode, rules, request.logOutput);
+        AnalysisOptions options = AnalysisOptions.builder()
+            .logOutput(request.options != null && request.options.logOutput)
+            .useTreeSitter(request.options != null && request.options.useTreeSitter)
+            .build();
+        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language), request.filename, decodedCode, rules, options);
 
 
         return violationsFuture.thenApply(analysisResult -> {

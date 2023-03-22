@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages;
 
+import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.ast.languages.python.antlr.PythonTestUtils;
@@ -49,8 +50,8 @@ public class AnalyzerCommonTest extends PythonTestUtils {
 
 
             @Override
-            public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
-                return new AnalyzerContext(language, filename, code, rules, logOutput);
+            public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, AnalysisOptions options) {
+                return new AnalyzerContext(language, filename, code, rules, options);
             }
         };
         List<Long> commentsLine = analyzerCommon.getCommentsLine(code, "#");

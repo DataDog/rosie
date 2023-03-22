@@ -58,10 +58,7 @@ public class ExprToFunctionCall {
 
 
         if (functionCallNameOptional.isPresent() && functionCallArgumentsOptional.isPresent()) {
-            ParserContextTreeSitter parserContext = ParserContextTreeSitter.builder()
-                .node(node)
-                .root(parsingContext.getRootNode())
-                .code(parsingContext.getCode()).build();
+            ParserContextTreeSitter parserContext = parsingContext.getParserContextForNode(node);
 
 
             return Optional.of(new PythonFunctionCall(moduleOrObjectOptional.orElse(null), functionCallNameOptional.get(), functionCallArgumentsOptional.orElse(null), parserContext));

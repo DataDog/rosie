@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.common;
 
 import datadog.trace.api.Trace;
+import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
@@ -88,16 +89,16 @@ public abstract class AnalyzerCommon {
 
     public abstract RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule);
 
-    public abstract AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput);
+    public abstract AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, AnalysisOptions options);
 
     @Trace(operationName = "AnalyzerCommon.analyze")
-    public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
+    public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, AnalysisOptions options) {
         long timeoutMs = getTimeoutMs();
         // Get the lines to ignore that have codiga-disable
         List<Long> linesToIgnore = getCommentsLine(code, getCommentsSymbol(language));
 
         // Build execution, get the parser if this is an AST rule.
-        AnalyzerContext analyzerContext = buildContext(language, filename, code, rules, logOutput);
+        AnalyzerContext analyzerContext = buildContext(language, filename, code, rules, options);
 
         CompletableFuture<AnalysisResult> result = CompletableFuture.supplyAsync(() -> {
                 List<RuleResult> ruleResults = rules.stream().map(rule -> {

@@ -7,6 +7,7 @@ import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.FunctionCall;
 import io.codiga.model.ast.python.*;
+import io.codiga.model.context.PythonNodeContext;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 
 import java.io.UnsupportedEncodingException;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.Stack;
 
 import static io.codiga.parser.treesitter.python.transformation.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.parser.treesitter.python.transformation.ImportFromStatement.transformImportFromStatement;
+import static io.codiga.parser.treesitter.python.transformation.ImportStatement.transformImportStatement;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 
 public class CodigaVisitor {
@@ -74,6 +77,17 @@ public class CodigaVisitor {
         }
     }
 
+    private PythonNodeContext buildContext() {
+        PythonNodeContext res = PythonNodeContext.buildPythonNodeContext()
+            .currentFunction(visitedFunctionDefinitions.isEmpty() ? null : visitedFunctionDefinitions.lastElement())
+            .currentTryBlock(visitedTryStatements.size() > 0 ? visitedTryStatements.lastElement() : null)
+            .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
+            .code(this.code)
+            .importsList(visitedImportStatements)
+            .assignmentsList(assignments)
+            .build();
+        return res;
+    }
 
     private void walk(Node node, TreeSitterParsingContext parsingContext) {
         var nodeType = getNodeType(node);
@@ -81,7 +95,26 @@ public class CodigaVisitor {
         switch (nodeType) {
             case CALL: {
                 var functionCallOptional = transformExprToFunctionCall(node, parsingContext);
-                functionCallOptional.ifPresent(pythonFunctionCall -> this.functionCalls.add(pythonFunctionCall));
+                functionCallOptional.ifPresent(pythonFunctionCall -> {
+                    pythonFunctionCall.setContext(buildContext());
+                    this.functionCalls.add(pythonFunctionCall);
+                });
+            }
+
+            case IMPORT_STATEMENT: {
+                var transformationResUltOptional = transformImportStatement(node, parsingContext);
+                transformationResUltOptional.ifPresent(res -> {
+                    this.importStatements.add(res);
+                    this.visitedImportStatements.add(res);
+                });
+            }
+
+            case IMPORT_FROM_STATEMENT: {
+                var transformationResUltOptional = transformImportFromStatement(node, parsingContext);
+                transformationResUltOptional.ifPresent(res -> {
+                    this.fromStatements.add(res);
+                    this.visitedImportStatements.add(res);
+                });
             }
         }
 

@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.common;
 
+import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
@@ -25,12 +26,12 @@ public class AnalyzerContext {
     Engine engine;
 
 
-    public AnalyzerContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
+    public AnalyzerContext(Language language, String filename, String code, List<AnalyzerRule> rules, AnalysisOptions options) {
         this.language = language;
         this.filename = filename;
         this.code = code;
         this.rules = rules;
-        this.logOutput = logOutput;
+        this.logOutput = options.isLogOutput();
         entityCheckedToAstElements = new HashMap<>();
 
         Arrays.stream(EntityChecked.values()).toList().forEach(entityChecked -> {

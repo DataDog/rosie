@@ -2,6 +2,7 @@ package io.codiga.parser.common.context;
 
 import ai.serenade.treesitter.Node;
 import io.codiga.model.common.Position;
+import io.codiga.utils.PositionFinder;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,14 +23,18 @@ public class ParserContextTreeSitter implements ParserContext {
     @Setter
     String code;
 
+    @Getter
+    @Setter
+    PositionFinder positionFinder;
+
     @Override
     public Position getStartPosition() {
-        return new Position(0, 0);
+        return positionFinder.getCodePosition(node.getStartByte());
     }
 
     @Override
     public Position getEndPosition() {
-        return new Position(0, 0);
+        return positionFinder.getCodePosition(node.getEndByte());
     }
 
     @Override
@@ -39,6 +44,6 @@ public class ParserContextTreeSitter implements ParserContext {
 
     @Override
     public int getEndIndex() {
-        return node.getStartByte();
+        return node.getEndByte();
     }
 }

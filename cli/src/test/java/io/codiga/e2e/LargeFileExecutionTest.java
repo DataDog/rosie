@@ -1,5 +1,6 @@
 package io.codiga.e2e;
 
+import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
@@ -68,8 +69,8 @@ public class LargeFileExecutionTest {
             FILES_TO_ANALYZE.forEach((fileName, fileContent) -> {
                 try {
                     String decoded = new String(Base64.getDecoder().decode(fileContent.getBytes()));
-
-                    AnalysisResult analysisResult = analyzer.analyze(Language.PYTHON, fileName, decoded, rules, false).get();
+                    AnalysisOptions options = AnalysisOptions.builder().build();
+                    AnalysisResult analysisResult = analyzer.analyze(Language.PYTHON, fileName, decoded, rules, options).get();
                     List<String> errors = analysisResult.ruleResults().stream().flatMap(r -> r.errors().stream()).collect(Collectors.toList());
                     List<Violation> violations = analysisResult.ruleResults().stream().flatMap(r -> r.violations().stream()).collect(Collectors.toList());
                     assertEquals(0, errors.size());

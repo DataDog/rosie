@@ -56,7 +56,7 @@ public class Analyzer {
 
     }
 
-    public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
+    public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, AnalysisOptions options) {
         long startAnalysisTimestampMs = System.currentTimeMillis();
         // Distinguish between rules with valid languages and invalid ones.
         List<AnalyzerRule> rulesWithValidLanguage = rules.stream().filter(f -> f.validForLanguage(language)).toList();
@@ -68,13 +68,13 @@ public class Analyzer {
         // First, AST analysis
         switch (language) {
             case PYTHON:
-                completedResultForAst = pythonAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
+                completedResultForAst = pythonAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, options);
                 break;
             case JAVASCRIPT:
-                completedResultForAst = javaScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
+                completedResultForAst = javaScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, options);
                 break;
             case TYPESCRIPT:
-                completedResultForAst = typeScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
+                completedResultForAst = typeScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, options);
                 break;
             default:
                 completedResultForAst = CompletableFuture.completedFuture(new AnalysisResult(List.of()));
@@ -82,7 +82,7 @@ public class Analyzer {
         }
 
         // Second, pattern analysis
-        CompletableFuture<AnalysisResult> patternAnalysis = patternAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForPattern, logOutput);
+        CompletableFuture<AnalysisResult> patternAnalysis = patternAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForPattern, options);
 
         CompletableFuture<List<AnalysisResult>> allFutures = sequence(List.of(patternAnalysis, completedResultForAst));
 

@@ -48,6 +48,7 @@ public class NoFlaskAppInDebugTest extends E2EBase {
         }
                 
         function visit(node) {
+        console.log("here2");
             const useFlask = node.context.imports.filter(i => {
                 const useFlaskAsImport = i.astType === "importpackage" && i.name.str === "flask";
                  const useFlaskAsFrom = i.astType === "fromstatement" && i.pkg.str === "flask";
@@ -59,6 +60,8 @@ public class NoFlaskAppInDebugTest extends E2EBase {
             if (useDebug && useFlask) {
                 const lastArgument = node.arguments.values[node.arguments.values.length - 1];
                 const lastArgumentPosition = lastArgument.value.end;
+                
+                console.log("here");
                 
                 const argumentsWithoutDebug = node.arguments.values.filter(a => (a.name && a.name.str !== "debug") && (a.value && a.value.str !== "True"));
                 const newArguments = argumentsWithoutDebug.map(a => printArgument(a)).join(", ");
@@ -77,8 +80,9 @@ public class NoFlaskAppInDebugTest extends E2EBase {
     @Test
     @DisplayName("Do not use debug=True in flask")
     public void testPythonNoDebugTrueInFlask() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "flask-no-debug", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "flask-no-debug", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
         logger.info(String.format("response: %s", response));
+
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

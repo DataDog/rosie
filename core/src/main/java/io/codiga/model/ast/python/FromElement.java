@@ -2,6 +2,7 @@ package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
+import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class FromElement extends AstElement {
@@ -13,4 +14,11 @@ public class FromElement extends AstElement {
         this.name = name;
         this.as = as;
     }
+
+    public FromElement(AstString name, AstString as, ParserContext parserContext) {
+        super(AST_ELEMENT_TYPE_FROM_ELEMENT, parserContext);
+        this.name = name;
+        this.as = as;
+    }
 }
+
