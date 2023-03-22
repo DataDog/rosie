@@ -19,6 +19,15 @@ public class ParserContextTreeSitter implements ParserContext {
     @Setter
     Node node;
 
+
+    @Getter
+    @Setter
+    Integer startByte = null; // used only if we want to override the position
+
+    @Getter
+    @Setter
+    Integer endByte = null; // used only if we want to override the position
+
     @Getter
     @Setter
     String code;
@@ -29,12 +38,21 @@ public class ParserContextTreeSitter implements ParserContext {
 
     @Override
     public Position getStartPosition() {
-        return positionFinder.getCodePosition(node.getStartByte());
+        Node n = this.node;
+        if (this.startByte != null) {
+            return positionFinder.getCodePosition(this.startByte + 1);
+        }
+        return positionFinder.getCodePosition(n.getStartByte() + 1);
     }
 
     @Override
     public Position getEndPosition() {
-        return positionFinder.getCodePosition(node.getEndByte());
+        Node n = node;
+        if (this.endByte != null) {
+            return positionFinder.getCodePosition(this.endByte + 1);
+        }
+
+        return positionFinder.getCodePosition(n.getEndByte() + 1);
     }
 
     @Override

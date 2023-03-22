@@ -66,6 +66,12 @@ public class NoFlaskAppInDebugTest extends E2EBase {
                 const argumentsWithoutDebug = node.arguments.values.filter(a => (a.name && a.name.str !== "debug") && (a.value && a.value.str !== "True"));
                 const newArguments = argumentsWithoutDebug.map(a => printArgument(a)).join(", ");
                 const newFunctionCall = `app.run(${argumentsWithoutDebug})`;
+                
+                
+                console.log(`edit position: ${node.arguments.start.line}:${node.arguments.start.col} ${lastArgumentPosition.line}:${lastArgumentPosition.col}`);
+                console.log(`error position: ${node.start.line}:${node.start.col} ${node.end.line}:${node.end.col}`);
+
+                
                 const editRemoveDebugFlag = buildEditUpdate(node.arguments.start.line, node.arguments.start.col, lastArgumentPosition.line, lastArgumentPosition.col, newArguments)
                 const fix = buildFix("remove debug flag", [editRemoveDebugFlag]);
 
@@ -81,6 +87,7 @@ public class NoFlaskAppInDebugTest extends E2EBase {
     @DisplayName("Do not use debug=True in flask")
     public void testPythonNoDebugTrueInFlask() throws Exception {
         Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "flask-no-debug", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
+//        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "flask-no-debug", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
         logger.info(String.format("response: %s", response));
 
 

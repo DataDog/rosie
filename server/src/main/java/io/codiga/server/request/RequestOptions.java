@@ -12,6 +12,6 @@ public class RequestOptions {
         this.logOutput = logOutput;
         this.useTreeSitter = useTreeSitter;
     }
-
-
+    
 }
+

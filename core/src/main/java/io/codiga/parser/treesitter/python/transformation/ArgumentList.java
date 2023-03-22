@@ -4,7 +4,7 @@ import ai.serenade.treesitter.Node;
 import com.google.common.collect.ImmutableSet;
 import io.codiga.model.ast.common.FunctionCallArgument;
 import io.codiga.model.ast.common.FunctionCallArguments;
-import io.codiga.parser.common.context.ParserContext;
+import io.codiga.parser.common.context.ParserContextTreeSitter;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 
@@ -21,12 +21,12 @@ import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 public class ArgumentList {
 
     public static final Set<TreeSitterPythonTypes> ARGUMENTS_TYPES =
-        ImmutableSet.of(TreeSitterPythonTypes.IDENTIFIER, TreeSitterPythonTypes.INTEGER, TreeSitterPythonTypes.KEYWORD_ARGUMENT, TreeSitterPythonTypes.STRING);
+        ImmutableSet.of(TreeSitterPythonTypes.IDENTIFIER, TreeSitterPythonTypes.INTEGER, TreeSitterPythonTypes.STRING);
 
     private static final Logger LOGGER = java.util.logging.Logger.getLogger(ArgumentList.class.getName());
 
     public static Optional<FunctionCallArguments> transformArgumentListToFunctionCallArguments(Node node, TreeSitterParsingContext parsingContext) {
-        if (node == null) {
+        if (node == null || getNodeType(node) != TreeSitterPythonTypes.ARGUMENT_LIST || node.getChildCount() < 2) {
             return Optional.empty();
         }
         List<FunctionCallArgument> functionArguments = new ArrayList<>();
@@ -54,7 +54,8 @@ public class ArgumentList {
                 functionArguments.add(argumentOptional.get());
             }
         }
-        ParserContext parserContext = parsingContext.getParserContextForNode(node);
+        ParserContextTreeSitter parserContext = parsingContext.getParserContextForNode(node);
+        parserContext.setStartByte(node.getChild(0).getEndByte());
 
         return Optional.of(new FunctionCallArguments(functionArguments, parserContext));
     }

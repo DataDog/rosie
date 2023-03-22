@@ -13,13 +13,14 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
+import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 
 public class KeywordArgument {
 
     private static final Logger LOGGER = Logger.getLogger(KeywordArgument.class.getName());
 
     public static Optional<FunctionCallArgument> keywordArgumentToFunctionCallArgument(Node node, TreeSitterParsingContext parsingContext) {
-        if (node == null || !node.getType().equalsIgnoreCase(TreeSitterPythonTypes.KEYWORD_ARGUMENT.label) || node.getChildCount() != 3) {
+        if (node == null || getNodeType(node) != TreeSitterPythonTypes.KEYWORD_ARGUMENT || node.getChildCount() != 3) {
             return Optional.empty();
         }
 
