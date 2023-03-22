@@ -10,6 +10,8 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     mavenLocal()
+
+    // For tree-sitter
     maven {
         url = uri("https://jitpack.io")
     }

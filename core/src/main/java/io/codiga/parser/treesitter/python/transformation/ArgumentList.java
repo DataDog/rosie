@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformNodeToFunctionArgument;
+import static io.codiga.parser.treesitter.python.transformation.KeywordArgument.keywordArgumentToFunctionCallArgument;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 
 public class ArgumentList {
@@ -33,13 +34,20 @@ public class ArgumentList {
         for (int i = 0; i < node.getChildCount(); i++) {
             Node child = node.getChild(i);
             Optional<FunctionCallArgument> argumentOptional = Optional.empty();
-
+            TreeSitterPythonTypes childType = getNodeType(child);
             /**
              * For the arguments that can be simply converted as a string, do it
              */
-            if (ARGUMENTS_TYPES.contains(getNodeType(child))) {
+            if (ARGUMENTS_TYPES.contains(childType)) {
                 argumentOptional = transformNodeToFunctionArgument(child, parsingContext);
 
+            }
+
+            /**
+             * If this is a keyword argument (e.g. foo=bar), handle it differently than a simple value.
+             */
+            if (childType == TreeSitterPythonTypes.KEYWORD_ARGUMENT) {
+                argumentOptional = keywordArgumentToFunctionCallArgument(child, parsingContext);
             }
 
             if (argumentOptional.isPresent()) {

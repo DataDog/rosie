@@ -25,6 +25,8 @@ dependencies {
 repositories {
     mavenCentral()
     mavenLocal()
+
+    // tree-sitter
     maven {
         url = uri("https://jitpack.io")
     }
