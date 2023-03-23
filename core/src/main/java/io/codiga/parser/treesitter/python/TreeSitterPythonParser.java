@@ -8,12 +8,14 @@ import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 import java.util.Optional;
 
 import static io.codiga.parser.treesitter.python.transformation.ArgumentList.transformArgumentListToFunctionCallArguments;
+import static io.codiga.parser.treesitter.python.transformation.AttributeTransformation.transformAttribute;
 import static io.codiga.parser.treesitter.python.transformation.ExprToFunctionCall.transformExprToFunctionCall;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionListTransformation.transformExpressionList;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstStringWithoutCheck;
 import static io.codiga.parser.treesitter.python.transformation.KeywordArgument.keywordArgumentToFunctionCallArgument;
 import static io.codiga.parser.treesitter.python.transformation.PatternListTransformation.transformPatternList;
+import static io.codiga.parser.treesitter.python.transformation.SubscriptTransformation.transformSubscript;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 import static io.codiga.utils.Conversions.convertToAstElement;
 
@@ -25,6 +27,8 @@ public class TreeSitterPythonParser {
         switch (nodeType) {
             case ARGUMENT_LIST:
                 return convertToAstElement(transformArgumentListToFunctionCallArguments(node, parsingContext));
+            case ATTRIBUTE:
+                return convertToAstElement(transformAttribute(node, parsingContext));
             case CALL:
                 return convertToAstElement(transformExprToFunctionCall(node, parsingContext));
             case EXPRESSION_LIST:
@@ -35,6 +39,8 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(keywordArgumentToFunctionCallArgument(node, parsingContext));
             case PATTERN_LIST:
                 return convertToAstElement(transformPatternList(node, parsingContext));
+            case SUBSCRIPT:
+                return convertToAstElement(transformSubscript(node, parsingContext));
             case INTEGER:
             case FALSE:
             case STRING:

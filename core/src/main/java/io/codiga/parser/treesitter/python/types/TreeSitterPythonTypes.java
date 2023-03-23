@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TreeSitterPythonTypes {
+
     ALIASED_IMPORT("aliased_import"),
     ARGUMENT_LIST("argument_list"),
     ASSIGNMENT("assignment"),
@@ -19,6 +20,7 @@ public enum TreeSitterPythonTypes {
     KEYWORD_ARGUMENT("keyword_argument"),
     PATTERN_LIST("pattern_list"),
     STRING("string"),
+    SUBSCRIPT("subscript"),
     TRUE("true"),
     UNKNOWN("unknown");
 
@@ -40,6 +42,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("keyword_argument", KEYWORD_ARGUMENT);
         NODE_TYPE_TO_ENUMERATION.put("pattern_list", PATTERN_LIST);
         NODE_TYPE_TO_ENUMERATION.put("string", TRUE);
+        NODE_TYPE_TO_ENUMERATION.put("subscript", SUBSCRIPT);
         NODE_TYPE_TO_ENUMERATION.put("true", TRUE);
         NODE_TYPE_TO_ENUMERATION.put("unknown", UNKNOWN);
     }
