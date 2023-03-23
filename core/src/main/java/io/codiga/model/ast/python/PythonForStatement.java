@@ -2,6 +2,7 @@ package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.parser.antlr.python.gen.PythonParser;
+import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.List;
@@ -20,6 +21,19 @@ public class PythonForStatement extends AstElement {
                               PythonParser.For_stmtContext parserRuleContext,
                               ParserRuleContext root) {
         super(AST_ELEMENT_FOR_STATEMENT, parserRuleContext, root);
+        this.variables = variables.stream().toArray(PythonExpression[]::new);
+        this.list = list;
+        this.statements = statements;
+        this.elseStatement = elseStatement;
+
+    }
+
+    public PythonForStatement(List<PythonExpression> variables,
+                              PythonString list,
+                              PythonString statements,
+                              PythonElseStatement elseStatement,
+                              ParserContext context) {
+        super(AST_ELEMENT_FOR_STATEMENT, context);
         this.variables = variables.stream().toArray(PythonExpression[]::new);
         this.list = list;
         this.statements = statements;

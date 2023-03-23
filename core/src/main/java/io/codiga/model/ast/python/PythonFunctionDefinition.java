@@ -4,6 +4,7 @@ import io.codiga.model.ast.common.Assignment;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionDefinitionParameters;
+import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
@@ -31,6 +32,24 @@ public class PythonFunctionDefinition extends AstElement {
                                     ParserRuleContext ruleContext,
                                     ParserRuleContext root) {
         super(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, ruleContext, root);
+        this.isAsync = isAsync;
+        this.content = content;
+        this.parameters = functionDefinitionParameters;
+        this.name = name;
+        this.returnType = returnType;
+        this.decorators = decoratorList.stream().toArray(PythonDecorator[]::new);
+        this.assignmentList = new ArrayList<>();
+        this.assignments = new Assignment[0];
+    }
+
+    public PythonFunctionDefinition(boolean isAsync,
+                                    List<PythonDecorator> decoratorList,
+                                    AstString name,
+                                    FunctionDefinitionParameters functionDefinitionParameters,
+                                    AstString returnType,
+                                    AstElement content,
+                                    ParserContext context) {
+        super(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, context);
         this.isAsync = isAsync;
         this.content = content;
         this.parameters = functionDefinitionParameters;
