@@ -1,5 +1,6 @@
 package io.codiga.warmup;
 
+import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.error.AnalysisResult;
@@ -31,8 +32,9 @@ public class AnalyzerWarmup {
 //                    LOGGER.info(String.format("Warming up rules: %s", rules));
 
                     String decodedCode = new String(Base64.getDecoder().decode(analyzerWarmupCodeData.codeBase64.getBytes()));
+                    AnalysisOptions options = AnalysisOptions.builder().build();
                     CompletableFuture<AnalysisResult> futureResult = analyzer.analyze(analyzerWarmupCodeData.language, analyzerWarmupCodeData.filename,
-                        decodedCode, analyzerWarmupCodeData.analyzerRuleList.stream().map(analyzerRule -> new AnalyzerRule(analyzerRule.name(), analyzerRule.language(), analyzerRule.ruleType(), analyzerRule.entityChecked(), new String(Base64.getDecoder().decode(analyzerRule.code())), analyzerRule.pattern())).collect(Collectors.toList()), false);
+                        decodedCode, analyzerWarmupCodeData.analyzerRuleList.stream().map(analyzerRule -> new AnalyzerRule(analyzerRule.name(), analyzerRule.language(), analyzerRule.ruleType(), analyzerRule.entityChecked(), new String(Base64.getDecoder().decode(analyzerRule.code())), analyzerRule.pattern())).collect(Collectors.toList()), options);
                     AnalysisResult analysisResult = futureResult.join();
                     int nbViolations = analysisResult.ruleResults().stream().flatMap(r -> r.violations().stream()).toList().size();
 //                    int nbErrors = analysisResult.ruleResults().stream().flatMap(r -> r.errors().stream()).toList().size();

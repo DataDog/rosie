@@ -3,10 +3,7 @@ package io.codiga.server.e2e;
 import io.codiga.model.Language;
 import io.codiga.server.ServerMainController;
 import io.codiga.server.configuration.ServerTestConfiguration;
-import io.codiga.server.request.Request;
-import io.codiga.server.request.RequestBuilder;
-import io.codiga.server.request.Rule;
-import io.codiga.server.request.RuleBuilder;
+import io.codiga.server.request.*;
 import io.codiga.server.response.Response;
 import io.codiga.server.response.ViolationFix;
 import io.codiga.server.response.ViolationFixEdit;
@@ -56,12 +53,47 @@ public class E2EBase {
                                 String entityChecked,
                                 String pattern,
                                 boolean logOutput) {
+        RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
             .setFilename(filename)
             .setLanguage(stringFromLanguage(language))
             .setFileEncoding("utf-8")
             .setCodeBase64(encodeBase64(code))
-            .setLogOutput(logOutput)
+            .setOptions(requestOptions)
+            .setRules(
+                List.of(
+                    new RuleBuilder()
+                        .setId(ruleName)
+                        .setContentBase64(encodeBase64(ruleCode))
+                        .setLanguage(stringFromLanguage(language))
+                        .setType(ruleType)
+                        .setEntityChecked(entityChecked)
+                        .setPattern(pattern)
+                        .createRule()
+                )
+            ).createRequest();
+        Response response = this.restTemplate.postForObject(
+            "http://localhost:" + port + "/analyze", request,
+            Response.class);
+        return response;
+    }
+
+    public Response executeTestWithTreeSitter(String filename,
+                                              String code,
+                                              Language language,
+                                              String ruleCode,
+                                              String ruleName,
+                                              String ruleType,
+                                              String entityChecked,
+                                              String pattern,
+                                              boolean logOutput) {
+        RequestOptions requestOptions = new RequestOptions(logOutput, true);
+        Request request = new RequestBuilder()
+            .setFilename(filename)
+            .setLanguage(stringFromLanguage(language))
+            .setFileEncoding("utf-8")
+            .setCodeBase64(encodeBase64(code))
+            .setOptions(requestOptions)
             .setRules(
                 List.of(
                     new RuleBuilder()
@@ -90,12 +122,13 @@ public class E2EBase {
                                 String entityChecked,
                                 String pattern,
                                 boolean logOutput) {
+        RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
             .setFilename(filename)
             .setLanguage(stringFromLanguage(codeLanguage))
             .setFileEncoding("utf-8")
             .setCodeBase64(encodeBase64(code))
-            .setLogOutput(logOutput)
+            .setOptions(requestOptions)
             .setRules(
                 List.of(
                     new RuleBuilder()
@@ -120,12 +153,13 @@ public class E2EBase {
                                          Language language,
                                          List<Rule> rules,
                                          boolean logOutput) {
+        RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
             .setFilename(filename)
             .setLanguage(stringFromLanguage(language))
             .setFileEncoding("utf-8")
             .setCodeBase64(encodeBase64(code))
-            .setLogOutput(logOutput)
+            .setOptions(requestOptions)
             .setRules(rules)
             .createRequest();
         Response response = this.restTemplate.postForObject(

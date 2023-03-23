@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.javascript;
 
+import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.EntityChecked;
@@ -20,8 +21,8 @@ public class JavaScriptAnalyzerContext extends AnalyzerContext {
     private final Logger logger = LoggerFactory.getLogger(JavaScriptAnalyzerContext.class);
 
 
-    public JavaScriptAnalyzerContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
-        super(language, filename, code, rules, logOutput);
+    public JavaScriptAnalyzerContext(Language language, String filename, String code, List<AnalyzerRule> rules, AnalysisOptions options) {
+        super(language, filename, code, rules, options);
         JavaScriptLexer lexer = new JavaScriptLexer(CharStreams.fromString(code));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         JavaScriptParser parser = new JavaScriptParser(tokens);

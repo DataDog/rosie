@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptIndexSignatureTransformation.transformIndexSignature;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptPropertySignature.transformTypeScriptPropertySignature;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class TypeScriptTypeMember {
     private final Logger logger = LoggerFactory.getLogger(CodigaVisitor.class);

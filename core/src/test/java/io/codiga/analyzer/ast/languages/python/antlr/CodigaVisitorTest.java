@@ -1,4 +1,4 @@
-package io.codiga.analyzer.ast.languages.python;
+package io.codiga.analyzer.ast.languages.python.antlr;
 
 import io.codiga.parser.antlr.python.CodigaVisitor;
 import io.codiga.parser.antlr.python.gen.PythonLexer;

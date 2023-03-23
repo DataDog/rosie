@@ -19,12 +19,17 @@ configurations {
 }
 
 dependencies {
-    ddTracerAgent("com.datadoghq:dd-java-agent:1.8.3")
+    ddTracerAgent("com.datadoghq:dd-java-agent:1.10.0")
 }
 
 repositories {
     mavenCentral()
     mavenLocal()
+
+    // tree-sitter
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -34,16 +39,17 @@ java.targetCompatibility = JavaVersion.VERSION_17
 dependencies {
 
     implementation("com.google.inject:guice:5.1.0")
-    implementation("com.datadoghq:java-dogstatsd-client:4.1.0")
-    implementation("com.datadoghq:dd-trace-api:1.3.0")
+    implementation("com.datadoghq:java-dogstatsd-client:4.2.0")
+    implementation("com.datadoghq:dd-trace-api:1.10.0")
     implementation("org.antlr:antlr4-runtime:4.11.1")
-    implementation("com.rollbar:rollbar-java:1.9.0")
+    implementation("com.rollbar:rollbar-java:1.10.0")
+    implementation("com.github.serenadeai:java-tree-sitter:1.1.2")
 
-    implementation("org.graalvm.js:js:22.2.0")
-    implementation("org.graalvm.js:js-scriptengine:22.2.0")
+    implementation("org.graalvm.js:js:22.3.1")
+    implementation("org.graalvm.js:js-scriptengine:22.3.1")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
 

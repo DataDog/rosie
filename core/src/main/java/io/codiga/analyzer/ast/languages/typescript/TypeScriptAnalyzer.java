@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.typescript;
 
 import datadog.trace.api.Trace;
+import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.ast.vm.VmContext;
@@ -77,10 +78,10 @@ public class TypeScriptAnalyzer extends AnalyzerCommon {
 
     @Trace(operationName = "TypeScriptAnalyzer.buildContext")
     @Override
-    public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
+    public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, AnalysisOptions options) {
 
         long startTimestamp = System.currentTimeMillis();
-        TypeScriptAnalyzerContext typeScriptAnalyzerContext = new TypeScriptAnalyzerContext(language, filename, code, rules, logOutput);
+        TypeScriptAnalyzerContext typeScriptAnalyzerContext = new TypeScriptAnalyzerContext(language, filename, code, rules, options);
         long endTimestamp = System.currentTimeMillis();
         long executionTimeMs = endTimestamp - startTimestamp;
         this.metrics.recordDistribution(String.format("%s-%s", METRIC_DISTRIBUTION_PARSING_TIME_PER_LANGUAGE, language.toString().toLowerCase()), executionTimeMs);

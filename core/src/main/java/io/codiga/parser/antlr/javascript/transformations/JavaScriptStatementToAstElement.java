@@ -6,12 +6,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptBreak.transformBreak;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptIfStatementToIfStatement.transformIfStatementToIfStatement;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptReturn.transformReturn;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptSwitchStatement.transformSwitchStatement;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptVariableStatement.transformVariableStatement;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class JavaScriptStatementToAstElement {
 

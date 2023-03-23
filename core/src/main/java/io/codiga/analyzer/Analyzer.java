@@ -13,9 +13,11 @@ import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.AnalysisResult;
 import io.codiga.model.error.RuleResult;
+import io.codiga.parser.treesitter.utils.TreeSitterInit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -45,9 +47,16 @@ public class Analyzer {
         this.pythonAnalyzer = new PythonAnalyzer(this.metrics, this.errorReporting, configuration);
         this.javaScriptAnalyzer = new JavaScriptAnalyzer(this.metrics, this.errorReporting, configuration);
         this.typeScriptAnalyzer = new TypeScriptAnalyzer(this.metrics, this.errorReporting, configuration);
+
+        try {
+            TreeSitterInit.init();
+        } catch (FileNotFoundException fileNotFoundException) {
+            logger.info("Shared library not found");
+        }
+
     }
 
-    public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
+    public CompletableFuture<AnalysisResult> analyze(Language language, String filename, String code, List<AnalyzerRule> rules, AnalysisOptions options) {
         long startAnalysisTimestampMs = System.currentTimeMillis();
         // Distinguish between rules with valid languages and invalid ones.
         List<AnalyzerRule> rulesWithValidLanguage = rules.stream().filter(f -> f.validForLanguage(language)).toList();
@@ -56,16 +65,17 @@ public class Analyzer {
         List<AnalyzerRule> rulesWithInvalidLanguage = rules.stream().filter(f -> !f.validForLanguage(language)).toList();
         CompletableFuture<AnalysisResult> completedResultForAst;
 
+
         // First, AST analysis
         switch (language) {
             case PYTHON:
-                completedResultForAst = pythonAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
+                completedResultForAst = pythonAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, options);
                 break;
             case JAVASCRIPT:
-                completedResultForAst = javaScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
+                completedResultForAst = javaScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, options);
                 break;
             case TYPESCRIPT:
-                completedResultForAst = typeScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, logOutput);
+                completedResultForAst = typeScriptAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForAst, options);
                 break;
             default:
                 completedResultForAst = CompletableFuture.completedFuture(new AnalysisResult(List.of()));
@@ -73,7 +83,7 @@ public class Analyzer {
         }
 
         // Second, pattern analysis
-        CompletableFuture<AnalysisResult> patternAnalysis = patternAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForPattern, logOutput);
+        CompletableFuture<AnalysisResult> patternAnalysis = patternAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForPattern, options);
 
         CompletableFuture<List<AnalysisResult>> allFutures = sequence(List.of(patternAnalysis, completedResultForAst));
 

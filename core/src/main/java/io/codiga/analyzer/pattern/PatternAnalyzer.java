@@ -1,6 +1,7 @@
 package io.codiga.analyzer.pattern;
 
 import datadog.trace.api.Trace;
+import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
@@ -61,8 +62,8 @@ public class PatternAnalyzer extends AnalyzerCommon {
 
     @Trace(operationName = "PatternAnalyzer.buildContext")
     @Override
-    public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, boolean logOutput) {
-        return new AnalyzerContext(language, filename, code, rules, logOutput);
+    public AnalyzerContext buildContext(Language language, String filename, String code, List<AnalyzerRule> rules, AnalysisOptions options) {
+        return new AnalyzerContext(language, filename, code, rules, options);
     }
 
 }

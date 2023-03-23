@@ -12,6 +12,11 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     mavenLocal()
+
+    // tree-sitter
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 
@@ -42,14 +47,14 @@ dependencies {
 dependencies {
     implementation(project(":core"))
     testImplementation(project(":core"))
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
     implementation("com.google.inject:guice:5.1.0")
     implementation("commons-cli:commons-cli:1.5.0")
-    implementation("com.rollbar:rollbar-java:1.8.1")
-    implementation("ch.qos.logback:logback-classic:1.3.2")
+    implementation("com.rollbar:rollbar-java:1.10.0")
+    implementation("ch.qos.logback:logback-classic:1.4.6")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
 val ddTraceAgentAsPath: String = ddTracerAgent.asPath

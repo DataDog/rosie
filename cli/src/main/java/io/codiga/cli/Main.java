@@ -1,5 +1,6 @@
 package io.codiga.cli;
 
+import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
@@ -144,6 +145,9 @@ public class Main {
         // we are defining parallemism: if we have more than 2 CPUs, we take the number of CPU - 1
         int parallelism = cpus > 1 ? cpus - 1 : cpus;
 
+        // Analysis options
+        AnalysisOptions analysisOptions = AnalysisOptions.builder().build();
+
         // For each language, we get the list of file for this language and get the violations
         for (Map.Entry<Language, List<String>> entry : LANGUAGE_EXTENSIONS.entrySet()) {
             if (debug) {
@@ -178,7 +182,7 @@ public class Main {
                     }
 
                     // Analyze the file with one thread that is sharing
-                    List<CompletableFuture<AnalysisResult>> futures = subList.stream().map(ruleList -> analyzer.analyze(entry.getKey(), basename, code, ruleList, false)).toList();
+                    List<CompletableFuture<AnalysisResult>> futures = subList.stream().map(ruleList -> analyzer.analyze(entry.getKey(), basename, code, ruleList, analysisOptions)).toList();
 
 
                     List<AnalysisResult> analysisResultList = sequence(futures).get(configuration.analysisTimeoutMs, TimeUnit.MILLISECONDS);

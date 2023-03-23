@@ -3,6 +3,7 @@ package io.codiga.model.ast.common;
 
 import io.codiga.model.common.Position;
 import io.codiga.model.context.Context;
+import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.graalvm.polyglot.HostAccess;
@@ -65,21 +66,19 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_INTERFACE_PROPERTY = "interfaceproperty";
     public static final String AST_ELEMENT_TYPE_INTERFACE_INDEX_SIGNATURE = "indexsignature";
     public static final String AST_ELEMENT_TYPE_TYPE_OPERATION = "typeoperation";
-    protected final ParserRuleContext parserRuleContext;
-    protected final ParserRuleContext root;
-
     @HostAccess.Export
     public Position start;
-
     @HostAccess.Export
     public Position end;
     public int startIndex;
     public int endIndex;
     @HostAccess.Export
     public String astType;
-
     @HostAccess.Export
     public Context context;
+    protected ParserContext parserContext = null;
+    protected ParserRuleContext parserRuleContext = null;
+    protected ParserRuleContext root = null;
 
     public AstElement(String astType,
                       ParserRuleContext parserRuleContext,
@@ -91,6 +90,16 @@ public class AstElement {
         this.endIndex = parserRuleContext.stop.getStopIndex();
         this.parserRuleContext = parserRuleContext;
         this.root = root;
+        this.context = null;
+    }
+
+    public AstElement(String astType,
+                      ParserContext parserContext) {
+        this.astType = astType;
+        this.start = parserContext.getStartPosition();
+        this.end = parserContext.getEndPosition();
+        this.startIndex = parserContext.getStartIndex();
+        this.endIndex = parserContext.getEndIndex();
         this.context = null;
     }
 

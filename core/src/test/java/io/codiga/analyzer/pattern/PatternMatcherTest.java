@@ -1,6 +1,6 @@
 package io.codiga.analyzer.pattern;
 
-import io.codiga.analyzer.ast.languages.python.PythonTestUtils;
+import io.codiga.analyzer.ast.languages.python.antlr.PythonTestUtils;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;

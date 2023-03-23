@@ -2,14 +2,17 @@ package io.codiga.analyzer.pattern;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.codiga.analyzer.rule.AnalyzerRule;
-import io.codiga.model.common.Position;
 import io.codiga.model.pattern.PatternObject;
 import io.codiga.model.pattern.PatternVariable;
 import io.codiga.model.pattern.PatternVariableValue;
+import io.codiga.utils.PositionFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,19 +21,12 @@ public class PatternMatcher {
     private static final Logger logger = LoggerFactory.getLogger(PatternMatcher.class);
     private final String code;
     private final AnalyzerRule analyzerRule;
-    private final List<String> codeLines;
+    private final PositionFinder positionFinder;
 
     public PatternMatcher(String code, AnalyzerRule rule) {
         this.code = code;
         this.analyzerRule = rule;
-        this.codeLines = new ArrayList<>();
-
-        Scanner scanner = new Scanner(code);
-
-        while (scanner.hasNextLine()) {
-            this.codeLines.add(scanner.nextLine());
-        }
-        scanner.close();
+        this.positionFinder = new PositionFinder(this.code);
     }
 
     // Escape parenthesis and other special characters from the string
@@ -49,17 +45,6 @@ public class PatternMatcher {
 
     }
 
-    private Position getCodePosition(int index) {
-        int lineNumber = 1;
-        for (String line : codeLines) {
-            if (index <= line.length() + 1) {
-                return new Position(lineNumber, index);
-            }
-            index = index - line.length() - 1;
-            lineNumber = lineNumber + 1;
-        }
-        return null;
-    }
 
     /**
      * Get the list of variables from the pattern.
@@ -146,16 +131,16 @@ public class PatternMatcher {
 //                logger.info(String.format("start %s, end %s", startIndex, endIndex));
                 PatternVariable patternVariable = patternVariables.get(i - 1);
                 PatternVariableValue patternPosition = new PatternVariableValue(matcher.group(i),
-                    getCodePosition(startIndex + 1),
-                    getCodePosition(endIndex + 1),
+                    positionFinder.getCodePosition(startIndex + 1),
+                    positionFinder.getCodePosition(endIndex + 1),
                     startIndex,
                     endIndex);
                 variables.put(stripVariable(patternVariable.name()), patternPosition);
             }
 
             patternObjects.add(new PatternObject(
-                getCodePosition(matcher.start(0) + 1),
-                getCodePosition(matcher.end(0) + 1),
+                positionFinder.getCodePosition(matcher.start(0) + 1),
+                positionFinder.getCodePosition(matcher.end(0) + 1),
                 matcher.start(0),
                 matcher.end(0),
                 variables));

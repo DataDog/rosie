@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptArrayLiteralToArray.transformArrayLiteralToArray;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptIdentifierExpressionSequence.transformExpressionSequenceToFunctionArguments;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptIdentifierOrKeywordTransformation.transformIdentifierNameToAstString;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptObjectLiteralToObject.transformTypeScriptObjectLiteralToObject;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptSingleExpressionTransformation.transformSingleExpressionToAstElement;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class TypeScriptVariableDeclaration {
     private final Logger logger = LoggerFactory.getLogger(CodigaVisitor.class);

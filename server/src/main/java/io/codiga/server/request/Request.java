@@ -9,20 +9,20 @@ public class Request {
     public String fileEncoding;
     public String codeBase64;
     public List<Rule> rules;
-    public boolean logOutput;
+    public RequestOptions options;
 
 
     public Request() {
 
     }
 
-    public Request(String filename, String language, String fileEncoding, String codeBase64, List<Rule> rules, boolean logOutput) {
+    public Request(String filename, String language, String fileEncoding, String codeBase64, List<Rule> rules, RequestOptions options) {
         this.filename = filename;
         this.language = language;
         this.fileEncoding = fileEncoding;
         this.codeBase64 = codeBase64;
         this.rules = rules;
-        this.logOutput = logOutput;
+        this.options = options;
     }
 
     public boolean isValid() {

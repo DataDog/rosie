@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static io.codiga.analyzer.ast.languages.utils.Conversions.convertToAstElement;
 import static io.codiga.parser.antlr.python.transformations.ClassOrFuncDefTransformation.transformClassOrFuncDefToAstElement;
 import static io.codiga.parser.antlr.python.transformations.ForStmtToForStatement.transformForStatement;
 import static io.codiga.parser.antlr.python.transformations.IfStmtToIfStatement.transformIfStatement;
 import static io.codiga.parser.antlr.python.transformations.TryStmtToTryStatement.transformStmtToTryStatement;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class CompoundTransformation {
 
