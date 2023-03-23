@@ -3,6 +3,7 @@ package io.codiga.analyzer.ast.languages.python.treesitter;
 import ai.serenade.treesitter.Node;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.python.PythonFunctionCall;
+import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -84,7 +85,7 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
         io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
 
-        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, "call");
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.CALL.label);
         assertEquals(1, nodes.size());
 
         Node node = nodes.get(0);
@@ -113,7 +114,7 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
 
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
 
-        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, "call");
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.CALL.label);
         assertEquals(1, nodes.size());
 
         Node node = nodes.get(0);

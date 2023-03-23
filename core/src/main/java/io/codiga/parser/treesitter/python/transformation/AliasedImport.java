@@ -9,14 +9,14 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstStringWithoutCheck;
-import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.*;
+import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChild;
+import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 
 public class AliasedImport {
 
     private static final Logger LOGGER = Logger.getLogger(AliasedImport.class.getName());
 
     public static Optional<FromElement> transformAliasedImport(Node node, TreeSitterParsingContext parsingContext) {
-        getNodeChildren(node).forEach(v -> System.out.println(v.getType()));
         if (node == null || getNodeType(node) != TreeSitterPythonTypes.ALIASED_IMPORT) {
             return Optional.empty();
         }

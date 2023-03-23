@@ -9,9 +9,11 @@ import java.util.Optional;
 
 import static io.codiga.parser.treesitter.python.transformation.ArgumentList.transformArgumentListToFunctionCallArguments;
 import static io.codiga.parser.treesitter.python.transformation.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.parser.treesitter.python.transformation.ExpressionListTransformation.transformExpressionList;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstStringWithoutCheck;
 import static io.codiga.parser.treesitter.python.transformation.KeywordArgument.keywordArgumentToFunctionCallArgument;
+import static io.codiga.parser.treesitter.python.transformation.PatternListTransformation.transformPatternList;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 import static io.codiga.utils.Conversions.convertToAstElement;
 
@@ -25,10 +27,14 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformArgumentListToFunctionCallArguments(node, parsingContext));
             case CALL:
                 return convertToAstElement(transformExprToFunctionCall(node, parsingContext));
+            case EXPRESSION_LIST:
+                return convertToAstElement(transformExpressionList(node, parsingContext));
             case IDENTIFIER:
                 return convertToAstElement(transformIdentifierToAstString(node, parsingContext));
             case KEYWORD_ARGUMENT:
                 return convertToAstElement(keywordArgumentToFunctionCallArgument(node, parsingContext));
+            case PATTERN_LIST:
+                return convertToAstElement(transformPatternList(node, parsingContext));
             case INTEGER:
             case FALSE:
             case STRING:
