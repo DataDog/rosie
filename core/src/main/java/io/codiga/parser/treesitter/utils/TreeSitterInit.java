@@ -33,7 +33,7 @@ public final class TreeSitterInit {
             if (arch.equalsIgnoreCase("amd64")) {
                 toLoad = "lib/tree-sitter/linux-amd64/libjava-tree-sitter.so";
             }
-            if (arch.equalsIgnoreCase("arm64")) {
+            if (arch.equalsIgnoreCase("arm64") || arch.equalsIgnoreCase("aarch64")) {
                 toLoad = "lib/tree-sitter/linux-arm64/libjava-tree-sitter.so";
             }
         }
@@ -62,7 +62,7 @@ public final class TreeSitterInit {
             tmpFile.delete();
             isSharedLibraryLoaded = true;
         } catch (IOException ioException) {
-            LOGGER.info("blabla");
+            LOGGER.info("Cannot find the file");
         }
 
     }
