@@ -36,14 +36,14 @@ dependencies {
     implementation(project(":core"))
     testImplementation(project(":core"))
     implementation("com.google.inject:guice:5.1.0")
-    implementation("com.rollbar:rollbar-java:1.8.1")
+    implementation("com.rollbar:rollbar-java:1.10.0")
 
-    implementation("org.springframework.boot:spring-boot-starter-web:2.7.3")
-    implementation("org.springframework.guice:spring-guice:2.0.1")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.0.5")
+    implementation("org.springframework.guice:spring-guice:2.0.2")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.3")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.0.4")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
 val ddTraceAgentAsPath: String = ddTracerAgent.asPath

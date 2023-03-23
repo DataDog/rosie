@@ -65,6 +65,7 @@ public class Analyzer {
         List<AnalyzerRule> rulesWithInvalidLanguage = rules.stream().filter(f -> !f.validForLanguage(language)).toList();
         CompletableFuture<AnalysisResult> completedResultForAst;
 
+
         // First, AST analysis
         switch (language) {
             case PYTHON:

@@ -14,6 +14,7 @@ import io.codiga.model.error.AnalysisResult;
 import io.codiga.server.request.Request;
 import io.codiga.server.response.*;
 import io.codiga.server.services.InjectorService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -21,7 +22,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;

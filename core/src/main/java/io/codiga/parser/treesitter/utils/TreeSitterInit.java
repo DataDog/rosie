@@ -38,6 +38,7 @@ public final class TreeSitterInit {
             }
         }
 
+
         if (toLoad == null) {
             throw new FileNotFoundException("shared library not found");
         }
