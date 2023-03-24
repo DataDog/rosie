@@ -82,7 +82,7 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
         String code = "r = get(w, verify=False, timeout=10)";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
 
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.CALL.label);
@@ -110,7 +110,7 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
         String code = "r = requests.get(w, verify=False, timeout=10)";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
 
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
 

@@ -41,7 +41,7 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
         String code = "v = 10";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSIGNMENT.label);
         assertEquals(1, nodes.size());
@@ -61,7 +61,7 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
         String code = "v, w = 42, 51";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSIGNMENT.label);
         assertEquals(1, nodes.size());
@@ -83,7 +83,7 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
         String code = "v = f\"SELECT foo FROM bar WHERE plop={bli}\"";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSIGNMENT.label);
         assertEquals(1, nodes.size());
@@ -104,7 +104,7 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
         String code = "v = \"SELECT foo FROM bar WHERE plop={0}\".format(bli)";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSIGNMENT.label);
         assertEquals(1, nodes.size());
@@ -128,7 +128,7 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
         String code = "response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSIGNMENT.label);
         assertEquals(1, nodes.size());
@@ -148,7 +148,7 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
             response["Set-Cookie"] = value""";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSIGNMENT.label);
         assertEquals(1, nodes.size());
@@ -170,7 +170,7 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
             url = request.args["next_page"]""";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSIGNMENT.label);
         assertEquals(1, nodes.size());
@@ -190,7 +190,7 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
             url = request.foo.args["next_page"]""";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSIGNMENT.label);
         assertEquals(1, nodes.size());
@@ -210,7 +210,7 @@ public class SimpleStmtToAssignmentTest extends PythonTestUtils {
             url = request["next_page"]""";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSIGNMENT.label);
         assertEquals(1, nodes.size());

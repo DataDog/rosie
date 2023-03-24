@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import static io.codiga.parser.treesitter.python.transformation.ArgumentList.transformArgumentListToFunctionCallArguments;
 import static io.codiga.parser.treesitter.python.transformation.AttributeTransformation.transformAttribute;
+import static io.codiga.parser.treesitter.python.transformation.BreakStatementTransformation.transformBreak;
 import static io.codiga.parser.treesitter.python.transformation.ExprToFunctionCall.transformExprToFunctionCall;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionListTransformation.transformExpressionList;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
@@ -30,6 +31,8 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformArgumentListToFunctionCallArguments(node, parsingContext));
             case ATTRIBUTE:
                 return convertToAstElement(transformAttribute(node, parsingContext));
+            case BREAK_STATEMENT:
+                return convertToAstElement(transformBreak(node, parsingContext));
             case CALL:
                 return convertToAstElement(transformExprToFunctionCall(node, parsingContext));
             case EXPRESSION_LIST:

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import static io.codiga.parser.treesitter.python.transformation.BlockTransformation.transformBlock;
 import static io.codiga.parser.treesitter.python.transformation.ExceptClauseTransformation.transformExceptClause;
+import static io.codiga.parser.treesitter.python.transformation.FinallyClauseTransformation.transformFinallyClause;
 import static io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes.TRY_STATEMENT;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.*;
 
@@ -19,13 +20,13 @@ public class TryStatementTransformation {
     private static final Logger LOGGER = Logger.getLogger(TryStatementTransformation.class.getName());
 
     public static Optional<TryStatement> transformTryStatement(Node node, TreeSitterParsingContext parsingContext) {
-        if (node == null || getNodeType(node) != TRY_STATEMENT || node.getChildCount() != 4) {
+        if (node == null || getNodeType(node) != TRY_STATEMENT || node.getChildCount() < 4) {
             return Optional.empty();
         }
-
-        getNodeChildren(node).forEach(n -> System.out.println(n.getType()));
-
+        
         var blockOptional = getNodeChild(node, TreeSitterPythonTypes.BLOCK).flatMap(b -> transformBlock(b, parsingContext));
+
+        var finallyOptional = getNodeChild(node, TreeSitterPythonTypes.FINALLY_CLAUSE).flatMap(b -> transformFinallyClause(b, parsingContext));
 
         var exceptClauses = getNodeChildren(node, TreeSitterPythonTypes.EXCEPT_CLAUSE)
             .stream()
@@ -40,7 +41,7 @@ public class TryStatementTransformation {
                 new TryStatement(
                     blockOptional.get(),
                     exceptClauses,
-                    null,
+                    finallyOptional.orElse(null),
                     parsingContext.getParserContextForNode(node)));
         }
         return Optional.empty();
