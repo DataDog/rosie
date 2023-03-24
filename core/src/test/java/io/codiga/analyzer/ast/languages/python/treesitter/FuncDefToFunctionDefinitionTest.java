@@ -61,55 +61,63 @@ public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
         assertNull(pythonFunctionDefinition.parameters.values[2].defaultValue);
     }
 
-//    @Test
-//    @DisplayName("Correctly map an async function definition with different parameters")
-//    public void testTransformAsyncFunctionDefinition() {
-//        String code = "async def bar(one): pass";
-//
-//        ParseTree root = parseCode(code);
-//
-//        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Class_or_func_def_stmtContext.class);
-//        PythonParser.Class_or_func_def_stmtContext funcdefContext = (PythonParser.Class_or_func_def_stmtContext) exprNodes.get(0);
-//        PythonFunctionDefinition pythonFunctionDefinition = transformFuncDefToFunctionDefinition(funcdefContext, null).get();
-//
-//        assertEquals("bar", pythonFunctionDefinition.name.str);
-//        assertTrue(pythonFunctionDefinition.isAsync);
-//        assertEquals(1, pythonFunctionDefinition.start.line);
-//        assertEquals(1, pythonFunctionDefinition.start.col);
-//
-//        assertEquals("one", pythonFunctionDefinition.parameters.values[0].name.str);
-//        assertNull(pythonFunctionDefinition.parameters.values[0].type);
-//        assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Correctly map a function definition with a decorator")
-//    public void testTransformFunctionWithDecorator() {
-//        String code = """
-//            @plop.bla.plip
-//            def bar(one): pass
-//            """;
-//
-//        ParseTree root = parseCode(code);
-//
-//        List<ParseTree> exprNodes = getNodesFromType(root, PythonParser.Class_or_func_def_stmtContext.class);
-//        PythonParser.Class_or_func_def_stmtContext funcdefContext = (PythonParser.Class_or_func_def_stmtContext) exprNodes.get(0);
-//        PythonFunctionDefinition pythonFunctionDefinition = transformFuncDefToFunctionDefinition(funcdefContext, null).get();
-//
-//        assertEquals(1, pythonFunctionDefinition.decorators.length);
-//        assertEquals(0, pythonFunctionDefinition.decorators[0].arguments.length);
-//        assertEquals("plop.bla.plip", pythonFunctionDefinition.decorators[0].name.str);
-//        assertEquals("bar", pythonFunctionDefinition.name.str);
-//        assertEquals("bar", pythonFunctionDefinition.name.str);
-//        assertFalse(pythonFunctionDefinition.isAsync);
-//        assertEquals(1, pythonFunctionDefinition.start.line);
-//        assertEquals(1, pythonFunctionDefinition.start.col);
-//
-//        assertEquals("one", pythonFunctionDefinition.parameters.values[0].name.str);
-//        assertNull(pythonFunctionDefinition.parameters.values[0].type);
-//        assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
-//    }
+    @Test
+    @DisplayName("Correctly map an async function definition with different parameters")
+    public void testTransformAsyncFunctionDefinition() {
+        String code = "async def bar(one): pass";
+        Node rootNode = parseCode(code);
+        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+
+        TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.FUNCTION_DEFINITION.label);
+        assertEquals(1, nodes.size());
+        Optional<PythonFunctionDefinition> functionDefinitionOptional = transformFunctionDefinition(nodes.get(0), parsingContext);
+        assertTrue(functionDefinitionOptional.isPresent());
+        var pythonFunctionDefinition = functionDefinitionOptional.get();
+
+        assertEquals("bar", pythonFunctionDefinition.name.str);
+        assertTrue(pythonFunctionDefinition.isAsync);
+        assertEquals(1, pythonFunctionDefinition.start.line);
+        assertEquals(1, pythonFunctionDefinition.start.col);
+
+        assertEquals("one", pythonFunctionDefinition.parameters.values[0].name.str);
+        assertNull(pythonFunctionDefinition.parameters.values[0].type);
+        assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
+
+    }
+
+    @Test
+    @DisplayName("Correctly map a function definition with a decorator")
+    public void testTransformFunctionWithDecorator() {
+        String code = """
+            @plop.bla.plip
+            def bar(one): pass
+            """;
+
+        Node rootNode = parseCode(code);
+        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+
+        TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.FUNCTION_DEFINITION.label);
+        assertEquals(1, nodes.size());
+        Optional<PythonFunctionDefinition> functionDefinitionOptional = transformFunctionDefinition(nodes.get(0), parsingContext);
+        assertTrue(functionDefinitionOptional.isPresent());
+        var pythonFunctionDefinition = functionDefinitionOptional.get();
+
+        
+        assertEquals(1, pythonFunctionDefinition.decorators.length);
+        assertEquals(0, pythonFunctionDefinition.decorators[0].arguments.length);
+        assertEquals("plop.bla.plip", pythonFunctionDefinition.decorators[0].name.str);
+        assertEquals("bar", pythonFunctionDefinition.name.str);
+        assertEquals("bar", pythonFunctionDefinition.name.str);
+        assertFalse(pythonFunctionDefinition.isAsync);
+        assertEquals(1, pythonFunctionDefinition.start.line);
+        assertEquals(1, pythonFunctionDefinition.start.col);
+
+        assertEquals("one", pythonFunctionDefinition.parameters.values[0].name.str);
+        assertNull(pythonFunctionDefinition.parameters.values[0].type);
+        assertNull(pythonFunctionDefinition.parameters.values[0].defaultValue);
+    }
 //
 //    @Test
 //    @DisplayName("Correctly map a function definition with a decorator with arguments")

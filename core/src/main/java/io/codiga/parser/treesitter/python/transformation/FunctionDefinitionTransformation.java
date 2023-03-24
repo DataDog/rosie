@@ -11,7 +11,9 @@ import java.util.logging.Logger;
 
 import static io.codiga.parser.treesitter.python.transformation.BlockTransformation.transformBlock;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
+import static io.codiga.parser.treesitter.python.transformation.ParametersTransformation.transformParameters;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChild;
+import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChildren;
 
 public class FunctionDefinitionTransformation {
 
@@ -26,19 +28,22 @@ public class FunctionDefinitionTransformation {
      * @return
      */
     public static Optional<PythonFunctionDefinition> transformFunctionDefinition(Node node, TreeSitterParsingContext parsingContext) {
-
+        var isAsync = getNodeChildren(node).stream().filter(n -> n.getType().equalsIgnoreCase("async")).count() > 0;
         var nodeNameOptional = getNodeChild(node, TreeSitterPythonTypes.IDENTIFIER)
             .flatMap(n -> transformIdentifierToAstString(n, parsingContext));
 
         var blockOptional = getNodeChild(node, TreeSitterPythonTypes.BLOCK)
             .flatMap(n -> transformBlock(n, parsingContext));
 
+        var parametersOptional = getNodeChild(node, TreeSitterPythonTypes.PARAMETERS)
+            .flatMap(n -> transformParameters(n, parsingContext));
+
         return Optional.of(
             new PythonFunctionDefinition(
-                false, // isAsync
+                isAsync, // isAsync
                 List.of(), // decorators
                 nodeNameOptional.orElse(null), // name
-                null, // function parameters (FunctionDefinitionParameters)
+                parametersOptional.orElse(null), // function parameters (FunctionDefinitionParameters)
                 null, // return type
                 blockOptional.orElse(null), //content
                 parsingContext.getParserContextForNode(node)

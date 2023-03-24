@@ -35,6 +35,7 @@ public enum TreeSitterPythonTypes {
     TUPLE("tuple"),
     TYPE("type"),
     TYPED_PARAMETER("typed_parameter"),
+    TYPED_DEFAULT_PARAMETER("typed_default_parameter"),
     UNKNOWN("unknown");
 
     public static Map<String, TreeSitterPythonTypes> NODE_TYPE_TO_ENUMERATION = new HashMap<>();
@@ -70,12 +71,13 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("tuple", TUPLE);
         NODE_TYPE_TO_ENUMERATION.put("type", TYPE);
         NODE_TYPE_TO_ENUMERATION.put("typed_parameter", TYPED_PARAMETER);
+        NODE_TYPE_TO_ENUMERATION.put("typed_default_parameter", TYPED_DEFAULT_PARAMETER);
         NODE_TYPE_TO_ENUMERATION.put("unknown", UNKNOWN);
     }
 
     public final String label;
 
-    private TreeSitterPythonTypes(String l) {
+    TreeSitterPythonTypes(String l) {
         this.label = l;
     }
 }
