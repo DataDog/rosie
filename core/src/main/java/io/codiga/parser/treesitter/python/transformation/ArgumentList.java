@@ -4,6 +4,7 @@ import ai.serenade.treesitter.Node;
 import com.google.common.collect.ImmutableSet;
 import io.codiga.model.ast.common.FunctionCallArgument;
 import io.codiga.model.ast.common.FunctionCallArguments;
+import io.codiga.model.ast.python.PythonArgument;
 import io.codiga.parser.common.context.ParserContextTreeSitter;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
@@ -14,8 +15,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformNodeToFunctionArgument;
 import static io.codiga.parser.treesitter.python.transformation.KeywordArgument.keywordArgumentToFunctionCallArgument;
+import static io.codiga.parser.treesitter.python.transformation.KeywordArgument.keywordArgumentToPythonArgument;
+import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChildren;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 
 public class ArgumentList {
@@ -58,6 +62,35 @@ public class ArgumentList {
         parserContext.setStartByte(node.getChild(0).getEndByte());
 
         return Optional.of(new FunctionCallArguments(functionArguments, parserContext));
+    }
+
+
+    private static Optional<PythonArgument> transformNodeListToPythonArguments(Node node, TreeSitterParsingContext parsingContext) {
+        if (getNodeType(node) == TreeSitterPythonTypes.KEYWORD_ARGUMENT) {
+            return keywordArgumentToPythonArgument(node, parsingContext);
+        }
+        if (getNodeType(node) == TreeSitterPythonTypes.IDENTIFIER) {
+            var id = transformIdentifierToAstString(node, parsingContext);
+            if (id.isPresent()) {
+                return Optional.of(new PythonArgument(null, id.get(), parsingContext.getParserContextForNode(node)));
+            }
+        }
+        return Optional.empty();
+    }
+
+    public static List<PythonArgument> transformArgumentListToPythonArguments(Node node, TreeSitterParsingContext parsingContext) {
+        if (node == null || getNodeType(node) != TreeSitterPythonTypes.ARGUMENT_LIST) {
+            return List.of();
+        }
+        List<PythonArgument> res = new ArrayList<>();
+
+
+        return getNodeChildren(node)
+            .stream()
+            .map(n -> transformNodeListToPythonArguments(n, parsingContext))
+            .filter(n -> n.isPresent())
+            .map(n -> n.get())
+            .toList();
     }
 
 

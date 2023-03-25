@@ -18,9 +18,9 @@ import static io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes.ATT
 import static io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes.IDENTIFIER;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 
-public class ExprToFunctionCall {
+public class FunctionCallTransformation {
 
-    private static final Logger LOGGER = Logger.getLogger(ExprToFunctionCall.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FunctionCallTransformation.class.getName());
 
 
     /**
@@ -40,7 +40,7 @@ public class ExprToFunctionCall {
         Node functionName = node.getChild(0);
         Node arguments = node.getChild(1);
 
-        if (!arguments.getType().equalsIgnoreCase(TreeSitterPythonTypes.ARGUMENT_LIST.label)) {
+        if (getNodeType(arguments) != TreeSitterPythonTypes.ARGUMENT_LIST) {
             return Optional.empty();
         }
 

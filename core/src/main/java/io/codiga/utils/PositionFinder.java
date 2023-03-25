@@ -26,7 +26,7 @@ public class PositionFinder {
     }
 
     public Position getCodePosition(int index) {
-        // TODO - check why this is failing 
+        // TODO - check why this is failing
 //        if (this.foundPosition.containsKey(index)) {
 //            return this.foundPosition.get(index);
 //        }

@@ -18,6 +18,7 @@ public enum TreeSitterPythonTypes {
     DECORATED_DEFINITION("decorated_definition"),
     DECORATOR("decorator"),
     EXPRESSION_LIST("expression_list"),
+    EXPRESSION_STATEMENT("expression_statement"),
     EXCEPT_CLAUSE("except_clause"),
     FALSE("false"),
     FINALLY_CLAUSE("finally_clause"),
@@ -30,6 +31,7 @@ public enum TreeSitterPythonTypes {
     PATTERN_LIST("pattern_list"),
     PARAMETERS("parameters"),
     PASS_STATEMENT("pass_statement"),
+    RETURN_STATEMENT("return_statement"),
     STRING("string"),
     SUBSCRIPT("subscript"),
     TRUE("true"),
@@ -56,6 +58,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("decorator", DECORATOR);
         NODE_TYPE_TO_ENUMERATION.put("dotted_name", DOTTED_NAME);
         NODE_TYPE_TO_ENUMERATION.put("expression_list", EXPRESSION_LIST);
+        NODE_TYPE_TO_ENUMERATION.put("expression_statement", EXPRESSION_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("except_clause", EXCEPT_CLAUSE);
         NODE_TYPE_TO_ENUMERATION.put("false", FALSE);
         NODE_TYPE_TO_ENUMERATION.put("function_definition", FUNCTION_DEFINITION);
@@ -68,6 +71,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("pattern_list", PATTERN_LIST);
         NODE_TYPE_TO_ENUMERATION.put("parameters", PARAMETERS);
         NODE_TYPE_TO_ENUMERATION.put("pass_statement", PASS_STATEMENT);
+        NODE_TYPE_TO_ENUMERATION.put("return_statement", RETURN_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("string", TRUE);
         NODE_TYPE_TO_ENUMERATION.put("subscript", SUBSCRIPT);
         NODE_TYPE_TO_ENUMERATION.put("true", TRUE);

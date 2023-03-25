@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.parser.treesitter.python.transformation.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.parser.treesitter.python.transformation.FunctionCallTransformation.transformExprToFunctionCall;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.python.treesitter.PythonTestUtils {
 
-    private static Logger LOGGER = Logger.getLogger(ExprToFunctionCallTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ExprToFunctionCallTest.class.getName());
 
     @BeforeAll
     public static void init() {
@@ -123,7 +123,7 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
         PythonFunctionCall functionCall = functionCallOptional.get();
         assertEquals(((AstString) functionCall.functionName).value, "get");
         assertNotNull(functionCall.moduleOrObject);
-        assertEquals(((AstString) functionCall.moduleOrObject).value, "requests");
+        assertEquals(functionCall.moduleOrObject.value, "requests");
         assertEquals(((AstString) functionCall.arguments.values[0].value).value, "w");
         assertNull(functionCall.arguments.values[0].name);
         assertEquals(functionCall.arguments.values[1].name.value, "verify");
