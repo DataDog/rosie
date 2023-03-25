@@ -8,12 +8,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.util.List;
 
 public class PythonIfStatement extends AstElement {
-    public PythonComparison condition;
+    public AstElement condition;
     public AstElement statements;
     public PythonElifStatement[] elifStatements;
     public PythonElseStatement elseStatements;
 
-    public PythonIfStatement(PythonComparison condition,
+    public PythonIfStatement(AstElement condition,
                              AstElement statements,
                              List<PythonElifStatement> elifStatements,
                              PythonElseStatement elseStatements,
@@ -26,7 +26,7 @@ public class PythonIfStatement extends AstElement {
         this.elifStatements = elifStatements.stream().toArray(PythonElifStatement[]::new);
     }
 
-    public PythonIfStatement(PythonComparison condition,
+    public PythonIfStatement(AstElement condition,
                              AstElement statements,
                              List<PythonElifStatement> elifStatements,
                              PythonElseStatement elseStatements,

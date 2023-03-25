@@ -14,6 +14,7 @@ public enum TreeSitterPythonTypes {
     BLOCK("block"),
     BREAK_STATEMENT("break_statement"),
     CALL("call"),
+    COMPARISON_OPERATOR("comparison_operator"),
     DOTTED_NAME("dotted_name"),
     DECORATED_DEFINITION("decorated_definition"),
     DECORATOR("decorator"),
@@ -24,6 +25,7 @@ public enum TreeSitterPythonTypes {
     FINALLY_CLAUSE("finally_clause"),
     FUNCTION_DEFINITION("function_definition"),
     IDENTIFIER("identifier"),
+    IF_STATEMENT("if_statement"),
     IMPORT_FROM_STATEMENT("import_from_statement"),
     IMPORT_STATEMENT("import_statement"),
     INTEGER("integer"),
@@ -54,6 +56,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("block", BLOCK);
         NODE_TYPE_TO_ENUMERATION.put("break_statement", BREAK_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("call", CALL);
+        NODE_TYPE_TO_ENUMERATION.put("comparison_operator", COMPARISON_OPERATOR);
         NODE_TYPE_TO_ENUMERATION.put("decorated_definition", DECORATED_DEFINITION);
         NODE_TYPE_TO_ENUMERATION.put("decorator", DECORATOR);
         NODE_TYPE_TO_ENUMERATION.put("dotted_name", DOTTED_NAME);
@@ -64,6 +67,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("function_definition", FUNCTION_DEFINITION);
         NODE_TYPE_TO_ENUMERATION.put("finally_clause", FINALLY_CLAUSE);
         NODE_TYPE_TO_ENUMERATION.put("identifier", IDENTIFIER);
+        NODE_TYPE_TO_ENUMERATION.put("if_statement", IF_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("import_from_statement", IMPORT_FROM_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("import_statement", IMPORT_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("integer", INTEGER);
