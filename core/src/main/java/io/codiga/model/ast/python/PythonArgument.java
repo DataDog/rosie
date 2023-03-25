@@ -2,6 +2,7 @@ package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.parser.antlr.python.gen.PythonParser;
+import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Optional;
@@ -13,6 +14,12 @@ public class PythonArgument extends AstElement {
 
     public PythonArgument(PythonString name, PythonString value, PythonParser.ArgumentContext context, ParserRuleContext root) {
         super(AST_ELEMENT_TYPE_ARGUMENT, context, root);
+        this.name = name;
+        this.value = value;
+    }
+
+    public PythonArgument(PythonString name, PythonString value, ParserContext parserContext) {
+        super(AST_ELEMENT_TYPE_ARGUMENT, parserContext);
         this.name = name;
         this.value = value;
     }

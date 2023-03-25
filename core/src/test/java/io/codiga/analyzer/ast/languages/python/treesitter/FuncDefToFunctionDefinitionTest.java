@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.python.treesitter;
 
 import ai.serenade.treesitter.Node;
+import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.python.PythonFunctionDefinition;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinitionTransformation.transformDecoratedDefinition;
 import static io.codiga.parser.treesitter.python.transformation.FunctionDefinitionTransformation.transformFunctionDefinition;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,13 +100,15 @@ public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
         io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
 
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
-        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.FUNCTION_DEFINITION.label);
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.DECORATED_DEFINITION.label);
         assertEquals(1, nodes.size());
-        Optional<PythonFunctionDefinition> functionDefinitionOptional = transformFunctionDefinition(nodes.get(0), parsingContext);
-        assertTrue(functionDefinitionOptional.isPresent());
-        var pythonFunctionDefinition = functionDefinitionOptional.get();
+        Optional<AstElement> decoratedDefinitionOptional = transformDecoratedDefinition(nodes.get(0), parsingContext);
+        assertTrue(decoratedDefinitionOptional.isPresent());
+        AstElement astElement = decoratedDefinitionOptional.get();
+        assertTrue(astElement instanceof PythonFunctionDefinition);
+        PythonFunctionDefinition pythonFunctionDefinition = (PythonFunctionDefinition) astElement;
 
-        
+
         assertEquals(1, pythonFunctionDefinition.decorators.length);
         assertEquals(0, pythonFunctionDefinition.decorators[0].arguments.length);
         assertEquals("plop.bla.plip", pythonFunctionDefinition.decorators[0].name.str);

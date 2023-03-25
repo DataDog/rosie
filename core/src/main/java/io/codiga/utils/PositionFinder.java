@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class PositionFinder {
     private final List<String> codeLines;
-    private Map<Integer, Position> foundPosition;
+    private final Map<Integer, Position> foundPosition;
 
     public PositionFinder(String code) {
         this.codeLines = new ArrayList<>();
@@ -26,9 +26,10 @@ public class PositionFinder {
     }
 
     public Position getCodePosition(int index) {
-        if (this.foundPosition.containsKey(index)) {
-            return this.foundPosition.get(index);
-        }
+        // TODO - check why this is failing 
+//        if (this.foundPosition.containsKey(index)) {
+//            return this.foundPosition.get(index);
+//        }
         int lineNumber = 1;
         for (String line : codeLines) {
             if (index <= line.length() + 1) {

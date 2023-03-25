@@ -15,6 +15,8 @@ public enum TreeSitterPythonTypes {
     BREAK_STATEMENT("break_statement"),
     CALL("call"),
     DOTTED_NAME("dotted_name"),
+    DECORATED_DEFINITION("decorated_definition"),
+    DECORATOR("decorator"),
     EXPRESSION_LIST("expression_list"),
     EXCEPT_CLAUSE("except_clause"),
     FALSE("false"),
@@ -50,6 +52,8 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("block", BLOCK);
         NODE_TYPE_TO_ENUMERATION.put("break_statement", BREAK_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("call", CALL);
+        NODE_TYPE_TO_ENUMERATION.put("decorated_definition", DECORATED_DEFINITION);
+        NODE_TYPE_TO_ENUMERATION.put("decorator", DECORATOR);
         NODE_TYPE_TO_ENUMERATION.put("dotted_name", DOTTED_NAME);
         NODE_TYPE_TO_ENUMERATION.put("expression_list", EXPRESSION_LIST);
         NODE_TYPE_TO_ENUMERATION.put("except_clause", EXCEPT_CLAUSE);
