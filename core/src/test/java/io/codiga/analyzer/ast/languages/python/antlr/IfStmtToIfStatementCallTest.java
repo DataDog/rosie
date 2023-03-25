@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.python.antlr;
 
 import io.codiga.model.ast.common.Sequence;
+import io.codiga.model.ast.python.PythonComparison;
 import io.codiga.model.ast.python.PythonIfStatement;
 import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IfStmtToIfStatementCallTest extends PythonTestUtils {
 
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {
@@ -45,10 +46,10 @@ public class IfStmtToIfStatementCallTest extends PythonTestUtils {
             assertTrue(ifStatementOptional.isPresent());
             PythonIfStatement ifStatement = ifStatementOptional.get();
 
-            assertEquals(ifStatement.condition.operator, "==");
+            assertEquals(((PythonComparison) ifStatement.condition).operator, "==");
             assertEquals(AST_ELEMENT_TYPE_PASS, ifStatement.statements.astType);
-            assertEquals("x", ifStatement.condition.leftSide.expression.atom.value);
-            assertEquals("5", ifStatement.condition.rightSide.expression.atom.str);
+            assertEquals("x", ((PythonComparison) ifStatement.condition).leftSide.expression.atom.value);
+            assertEquals("5", ((PythonComparison) ifStatement.condition).rightSide.expression.atom.str);
         }
     }
 
@@ -73,7 +74,7 @@ public class IfStmtToIfStatementCallTest extends PythonTestUtils {
             assertTrue(ifStatementOptional.isPresent());
             PythonIfStatement ifStatement = ifStatementOptional.get();
 
-            assertEquals(ifStatement.condition.operator, "==");
+            assertEquals(((PythonComparison) ifStatement.condition).operator, "==");
             assertEquals(AST_ELEMENT_TYPE_SEQUENCE, ifStatement.statements.astType);
             Sequence seq = (Sequence) ifStatement.statements;
             assertEquals(2, seq.elements.length);
