@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import static io.codiga.parser.treesitter.python.transformation.ExprToFunctionCall.transformExprToFunctionCall;
+import static io.codiga.parser.treesitter.python.transformation.FunctionCallTransformation.transformExprToFunctionCall;
 import static io.codiga.parser.treesitter.python.transformation.ImportFromStatement.transformImportFromStatement;
 import static io.codiga.parser.treesitter.python.transformation.ImportStatement.transformImportStatement;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 
 public class CodigaVisitor {
-    private static java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(CodigaVisitor.class.getName());
+    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(CodigaVisitor.class.getName());
 
     private final String code;
     // List of all AST elements

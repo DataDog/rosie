@@ -22,10 +22,12 @@ public class ParserContextTreeSitter implements ParserContext {
 
     @Getter
     @Setter
+    @Builder.Default
     Integer startByte = null; // used only if we want to override the position
 
     @Getter
     @Setter
+    @Builder.Default
     Integer endByte = null; // used only if we want to override the position
 
     @Getter

@@ -76,6 +76,7 @@ public class AstElement {
     public String astType;
     @HostAccess.Export
     public Context context;
+
     protected ParserContext parserContext = null;
     protected ParserRuleContext parserRuleContext = null;
     protected ParserRuleContext root = null;

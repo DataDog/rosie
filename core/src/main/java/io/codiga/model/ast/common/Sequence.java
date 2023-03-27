@@ -1,5 +1,6 @@
 package io.codiga.model.ast.common;
 
+import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
@@ -13,6 +14,12 @@ public class Sequence extends AstElement {
 
     public Sequence(List<AstElement> elementsList, ParserRuleContext parserRuleContext, ParserRuleContext root) {
         super(AST_ELEMENT_TYPE_SEQUENCE, parserRuleContext, root);
+        this.elements = new AstElement[elementsList.size()];
+        this.elements = elementsList.toArray(elements);
+    }
+
+    public Sequence(List<AstElement> elementsList, ParserContext context) {
+        super(AST_ELEMENT_TYPE_SEQUENCE, context);
         this.elements = new AstElement[elementsList.size()];
         this.elements = elementsList.toArray(elements);
     }

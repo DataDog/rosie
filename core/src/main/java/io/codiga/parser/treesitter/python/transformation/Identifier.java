@@ -10,6 +10,8 @@ import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
+
 public class Identifier {
 
     private static final Logger LOGGER = Logger.getLogger(Identifier.class.getName());
@@ -23,7 +25,7 @@ public class Identifier {
     }
 
     public static Optional<AstString> transformIdentifierToAstString(Node node, TreeSitterParsingContext parsingContext, boolean check) {
-        if (check && !node.getType().equalsIgnoreCase(TreeSitterPythonTypes.IDENTIFIER.label)) {
+        if (check && getNodeType(node) != TreeSitterPythonTypes.IDENTIFIER) {
             return Optional.empty();
         }
 

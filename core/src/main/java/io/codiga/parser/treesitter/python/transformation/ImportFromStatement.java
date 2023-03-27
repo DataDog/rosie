@@ -56,7 +56,6 @@ public class ImportFromStatement {
             .map(v -> v.get())
             .collect(Collectors.toList());
 
-        elementList.forEach(v -> System.out.println(v.name.value));
 
         if (packageString.isPresent()) {
             return Optional.of(new FromStatement(packageString.get(), elementList, parsingContext.getParserContextForNode(node)));

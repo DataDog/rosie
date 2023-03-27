@@ -35,7 +35,7 @@ public class FromStmtToFromStatementTest extends PythonTestUtils {
         String code = "from collections import bar, baz";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
 
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
 
@@ -56,7 +56,7 @@ public class FromStmtToFromStatementTest extends PythonTestUtils {
     public void testTransformFromStatementWithAs() {
         String code = "from collections import bar as boz, baz";
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
 
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
 

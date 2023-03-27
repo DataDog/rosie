@@ -1,6 +1,8 @@
 package io.codiga.parser.treesitter.utils;
 
 import ai.serenade.treesitter.Node;
+import io.codiga.model.ast.common.AstElement;
+import io.codiga.parser.treesitter.python.TreeSitterPythonParser;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
 
 import java.util.ArrayList;
@@ -23,6 +25,21 @@ public class TreeSitterNodeUtils {
         List<Node> res = new ArrayList<>(node.getChildCount());
         for (int i = 0; i < node.getChildCount(); i++) {
             res.add(node.getChild(i));
+        }
+        return res;
+    }
+
+    /**
+     * Get the children and map them into AST element
+     *
+     * @param node
+     * @return
+     */
+    public static List<AstElement> getNodeChildrenContent(Node node, TreeSitterParsingContext parsingContext) {
+        List<AstElement> res = new ArrayList<>(node.getChildCount());
+        for (int i = 0; i < node.getChildCount(); i++) {
+            var mapped = TreeSitterPythonParser.parse(node.getChild(i), parsingContext);
+            mapped.ifPresent(res::add);
         }
         return res;
     }

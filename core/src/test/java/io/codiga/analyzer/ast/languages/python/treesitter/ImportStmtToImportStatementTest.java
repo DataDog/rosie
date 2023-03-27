@@ -32,7 +32,7 @@ public class ImportStmtToImportStatementTest extends PythonTestUtils {
     public void testTransformSimpleImport() {
         String code = "import collections.abc";
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
 
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.IMPORT_STATEMENT.label);
@@ -44,7 +44,7 @@ public class ImportStmtToImportStatementTest extends PythonTestUtils {
         for (int i = 0; i < bla.size(); i++) {
             Object o = bla.get(0);
         }
-        
+
 
         assertTrue(importStatement.isPresent());
         assertEquals(1, importStatement.get().packages.length);
@@ -58,7 +58,7 @@ public class ImportStmtToImportStatementTest extends PythonTestUtils {
         String code = "import collections.abc as foo, requests, shutil";
 
         Node rootNode = parseCode(code);
-        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
 
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
         List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.IMPORT_STATEMENT.label);

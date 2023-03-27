@@ -25,11 +25,6 @@ dependencies {
 repositories {
     mavenCentral()
     mavenLocal()
-
-    // tree-sitter
-    maven {
-        url = uri("https://jitpack.io")
-    }
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -43,8 +38,8 @@ dependencies {
     implementation("com.datadoghq:dd-trace-api:1.10.0")
     implementation("org.antlr:antlr4-runtime:4.11.1")
     implementation("com.rollbar:rollbar-java:1.10.0")
-    implementation("com.github.serenadeai:java-tree-sitter:1.1.2")
-
+//    implementation("com.github.serenadeai:java-tree-sitter:1.1.2")
+    implementation(files("libs/java-tree-sitter-1.1.2.jar"))
     implementation("org.graalvm.js:js:22.3.1")
     implementation("org.graalvm.js:js-scriptengine:22.3.1")
 

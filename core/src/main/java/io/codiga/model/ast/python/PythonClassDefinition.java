@@ -2,6 +2,7 @@ package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
+import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.List;
@@ -21,6 +22,18 @@ public class PythonClassDefinition extends AstElement {
                                  ParserRuleContext ruleContext,
                                  ParserRuleContext root) {
         super(AST_ELEMENT_TYPE_CLASS_DEFINITION, ruleContext, root);
+        this.name = name;
+        this.decorators = decoratorList.stream().toArray(PythonDecorator[]::new);
+        this.parentClasses = parentClasses.stream().toArray(AstString[]::new);
+        this.content = content;
+    }
+
+    public PythonClassDefinition(List<PythonDecorator> decoratorList,
+                                 AstString name,
+                                 List<AstString> parentClasses,
+                                 AstElement content,
+                                 ParserContext context) {
+        super(AST_ELEMENT_TYPE_CLASS_DEFINITION, context);
         this.name = name;
         this.decorators = decoratorList.stream().toArray(PythonDecorator[]::new);
         this.parentClasses = parentClasses.stream().toArray(AstString[]::new);

@@ -22,6 +22,7 @@ public class TreeSitterUtils {
 
     public static List<Node> getNodesFromType(Node rootNode, String nodeType) {
         List<Node> result = new ArrayList<>();
+
         getNodesFromTypeRec(rootNode, nodeType, result);
         return result;
     }

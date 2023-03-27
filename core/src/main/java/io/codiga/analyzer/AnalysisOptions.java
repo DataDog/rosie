@@ -9,9 +9,11 @@ public class AnalysisOptions {
 
     @Getter
     @Setter
+    @Builder.Default
     private boolean logOutput = false;
 
     @Setter
     @Getter
+    @Builder.Default
     private boolean useTreeSitter = false;
 }
