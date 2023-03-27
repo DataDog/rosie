@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.python.antlr;
 
+import io.codiga.model.ast.python.PythonExpression;
 import io.codiga.model.ast.python.PythonForStatement;
 import io.codiga.parser.antlr.python.gen.PythonParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ForStmtToPythonForStatementCallTest extends PythonTestUtils {
 
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {
@@ -46,7 +47,7 @@ public class ForStmtToPythonForStatementCallTest extends PythonTestUtils {
             assertTrue(forStatementOptional.isPresent());
             PythonForStatement forStatement = forStatementOptional.get();
 
-            assertEquals("x", forStatement.variables[0].atom.str);
+            assertEquals("x", ((PythonExpression) forStatement.variables[0]).atom.str);
             assertEquals("range(1)", forStatement.list.str);
         }
     }

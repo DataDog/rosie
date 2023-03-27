@@ -10,10 +10,14 @@ import java.util.Optional;
 import static io.codiga.parser.treesitter.python.transformation.ArgumentList.transformArgumentListToFunctionCallArguments;
 import static io.codiga.parser.treesitter.python.transformation.AssignmentTransformation.transformAssignment;
 import static io.codiga.parser.treesitter.python.transformation.AttributeTransformation.transformAttribute;
+import static io.codiga.parser.treesitter.python.transformation.BlockTransformation.transformBlock;
 import static io.codiga.parser.treesitter.python.transformation.BreakStatementTransformation.transformBreak;
+import static io.codiga.parser.treesitter.python.transformation.ComparisonOperatorTransformation.transformComparisonOperator;
+import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinitionTransformation.transformDecoratedDefinition;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionListTransformation.transformExpressionList;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionStatementTransformation.transformExpressionStatement;
 import static io.codiga.parser.treesitter.python.transformation.FunctionCallTransformation.transformExprToFunctionCall;
+import static io.codiga.parser.treesitter.python.transformation.FunctionDefinitionTransformation.transformFunctionDefinition;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstStringWithoutCheck;
 import static io.codiga.parser.treesitter.python.transformation.KeywordArgument.keywordArgumentToFunctionCallArgument;
@@ -36,14 +40,22 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformAssignment(node, parsingContext));
             case ATTRIBUTE:
                 return convertToAstElement(transformAttribute(node, parsingContext));
+            case BLOCK:
+                return convertToAstElement(transformBlock(node, parsingContext));
             case BREAK_STATEMENT:
                 return convertToAstElement(transformBreak(node, parsingContext));
             case CALL:
                 return convertToAstElement(transformExprToFunctionCall(node, parsingContext));
+            case COMPARISON_OPERATOR:
+                return convertToAstElement(transformComparisonOperator(node, parsingContext));
+            case DECORATED_DEFINITION:
+                return convertToAstElement(transformDecoratedDefinition(node, parsingContext));
             case EXPRESSION_LIST:
                 return convertToAstElement(transformExpressionList(node, parsingContext));
             case EXPRESSION_STATEMENT:
                 return convertToAstElement(transformExpressionStatement(node, parsingContext));
+            case FUNCTION_DEFINITION:
+                return convertToAstElement(transformFunctionDefinition(node, parsingContext));
             case IDENTIFIER:
                 return convertToAstElement(transformIdentifierToAstString(node, parsingContext));
             case KEYWORD_ARGUMENT:

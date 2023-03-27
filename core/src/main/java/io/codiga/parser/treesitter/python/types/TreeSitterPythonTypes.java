@@ -14,15 +14,18 @@ public enum TreeSitterPythonTypes {
     BLOCK("block"),
     BREAK_STATEMENT("break_statement"),
     CALL("call"),
+    CLASS_DEFINITION("class_definition"),
     COMPARISON_OPERATOR("comparison_operator"),
     DOTTED_NAME("dotted_name"),
     DECORATED_DEFINITION("decorated_definition"),
     DECORATOR("decorator"),
+    ELSE_CLAUSE("else_clause"),
     EXPRESSION_LIST("expression_list"),
     EXPRESSION_STATEMENT("expression_statement"),
     EXCEPT_CLAUSE("except_clause"),
     FALSE("false"),
     FINALLY_CLAUSE("finally_clause"),
+    FOR_STATEMENT("for_statement"),
     FUNCTION_DEFINITION("function_definition"),
     IDENTIFIER("identifier"),
     IF_STATEMENT("if_statement"),
@@ -56,14 +59,17 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("block", BLOCK);
         NODE_TYPE_TO_ENUMERATION.put("break_statement", BREAK_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("call", CALL);
+        NODE_TYPE_TO_ENUMERATION.put("class_definition", CLASS_DEFINITION);
         NODE_TYPE_TO_ENUMERATION.put("comparison_operator", COMPARISON_OPERATOR);
         NODE_TYPE_TO_ENUMERATION.put("decorated_definition", DECORATED_DEFINITION);
         NODE_TYPE_TO_ENUMERATION.put("decorator", DECORATOR);
         NODE_TYPE_TO_ENUMERATION.put("dotted_name", DOTTED_NAME);
+        NODE_TYPE_TO_ENUMERATION.put("else_clause", ELSE_CLAUSE);
         NODE_TYPE_TO_ENUMERATION.put("expression_list", EXPRESSION_LIST);
         NODE_TYPE_TO_ENUMERATION.put("expression_statement", EXPRESSION_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("except_clause", EXCEPT_CLAUSE);
         NODE_TYPE_TO_ENUMERATION.put("false", FALSE);
+        NODE_TYPE_TO_ENUMERATION.put("for_statement", FOR_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("function_definition", FUNCTION_DEFINITION);
         NODE_TYPE_TO_ENUMERATION.put("finally_clause", FINALLY_CLAUSE);
         NODE_TYPE_TO_ENUMERATION.put("identifier", IDENTIFIER);

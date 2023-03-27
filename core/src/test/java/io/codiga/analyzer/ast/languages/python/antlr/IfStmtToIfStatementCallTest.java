@@ -48,8 +48,8 @@ public class IfStmtToIfStatementCallTest extends PythonTestUtils {
 
             assertEquals(((PythonComparison) ifStatement.condition).operator, "==");
             assertEquals(AST_ELEMENT_TYPE_PASS, ifStatement.statements.astType);
-            assertEquals("x", ((PythonComparison) ifStatement.condition).leftSide.expression.atom.value);
-            assertEquals("5", ((PythonComparison) ifStatement.condition).rightSide.expression.atom.str);
+            assertEquals("x", ((PythonComparison) ((PythonComparison) ifStatement.condition).leftSide).expression.atom.value);
+            assertEquals("5", ((PythonComparison) ((PythonComparison) ifStatement.condition).rightSide).expression.atom.str);
         }
     }
 
