@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class NoIfWithEqualTrueTest extends E2EBase {
+    private final Logger log = Logger.getLogger("Test");
     String pythonCodeWithError = """
         bla = 1
         if bla == True:
@@ -24,11 +25,15 @@ public class NoIfWithEqualTrueTest extends E2EBase {
             print("hello")""";
     String ruleCode = """
         function visit(node) {
-            if(node.condition && node.condition.rightSide && node.condition.rightSide.expression && node.condition.rightSide.expression.atom && node.condition.rightSide.expression.atom.str === "True"){
+                
+            if(node.condition && node.condition.leftSide && node.condition.leftSide.astType === "string" && node.condition.rightSide && node.condition.rightSide.astType === "string" && node.condition.rightSide.value === "True"){
                 const error = buildError(node.condition.start.line, node.condition.start.col, node.condition.end.line, node.condition.end.col, "do not make equal with true", "INFO", "BEST_PRACTICE");
 
-                const editReplaceCondition = buildEditUpdate(node.condition.start.line, node.condition.start.col, 
-                node.condition.rightSide.expression.atom.end.line, node.condition.rightSide.expression.atom.end.col, node.condition.leftSide.getText())
+                const editReplaceCondition = buildEditUpdate(node.condition.start.line,
+                                                             node.condition.start.col, 
+                                                             node.condition.rightSide.end.line, 
+                                                             node.condition.rightSide.end.col, 
+                                                             node.condition.leftSide.value)
 
 
                 const fix = buildFix("remove True", [editReplaceCondition]);
@@ -36,12 +41,11 @@ public class NoIfWithEqualTrueTest extends E2EBase {
             }
         }
         """;
-    private final Logger log = Logger.getLogger("Test");
 
     @Test
-    @DisplayName("Do not use eval()")
-    public void testPythonNoEval() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-if-with-equal-true", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, null, true);
+    @DisplayName("Do not use == True in an if condition")
+    public void testPythonIfTrue() throws Exception {
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-if-with-equal-true", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, null, true);
 
         log.info("response: " + response);
         assertEquals(1, response.ruleResponses.size());

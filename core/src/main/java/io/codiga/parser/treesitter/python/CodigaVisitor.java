@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Stack;
 
 import static io.codiga.parser.treesitter.python.transformation.FunctionCallTransformation.transformExprToFunctionCall;
+import static io.codiga.parser.treesitter.python.transformation.IfStatementTransformation.transformIfStatement;
 import static io.codiga.parser.treesitter.python.transformation.ImportFromStatement.transformImportFromStatement;
 import static io.codiga.parser.treesitter.python.transformation.ImportStatement.transformImportStatement;
 import static io.codiga.parser.treesitter.python.transformation.TryStatementTransformation.transformTryStatement;
@@ -107,6 +108,14 @@ public class CodigaVisitor {
                 tryStatementOptional.ifPresent(tryStatement -> {
                     tryStatement.setContext(buildContext());
                     this.tryStatements.add(tryStatement);
+                });
+            }
+
+            case IF_STATEMENT: {
+                var transformedOptional = transformIfStatement(node, parsingContext);
+                transformedOptional.ifPresent(res -> {
+                    this.ifStatements.add(res);
+                    this.visitedIfStatements.add(res);
                 });
             }
 

@@ -97,4 +97,40 @@ public class IfStmtToIfStatementCallTest extends PythonTestUtils {
 
     }
 
+
+    @Test
+    @DisplayName("regular if statement with == True in the condition")
+    public void testIfStatementWithTrueInCondition() {
+        String code = """
+            bla = 1
+            if bla == True:
+                print("hello")
+                """;
+
+
+        Node rootNode = parseCode(code);
+        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+
+        TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.IF_STATEMENT.label);
+        assertEquals(1, nodes.size());
+        Optional<PythonIfStatement> ifStatementOptional = transformIfStatement(nodes.get(0), parsingContext);
+
+
+        assertTrue(ifStatementOptional.isPresent());
+        PythonIfStatement ifStatement = ifStatementOptional.get();
+
+        assertEquals(((PythonComparison) ifStatement.condition).operator, "==");
+        assertEquals("string", ((PythonComparison) ifStatement.condition).leftSide.astType);
+        assertEquals("string", ((PythonComparison) ifStatement.condition).rightSide.astType);
+        assertEquals("bla", ((AstString) ((PythonComparison) ifStatement.condition).leftSide).value);
+        assertEquals("True", ((AstString) ((PythonComparison) ifStatement.condition).rightSide).value);
+        assertEquals("==", ((PythonComparison) ifStatement.condition).operator);
+        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, ifStatement.statements.astType);
+        Sequence seq = (Sequence) ifStatement.statements;
+        assertEquals(1, seq.elements.length);
+        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, seq.elements[0].astType);
+
+    }
 }
