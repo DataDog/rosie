@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import io.codiga.model.ast.common.FunctionCallArgument;
 import io.codiga.model.ast.common.FunctionCallArguments;
 import io.codiga.model.ast.python.PythonArgument;
+import io.codiga.model.common.Position;
 import io.codiga.parser.common.context.ParserContextTreeSitter;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
@@ -59,7 +60,8 @@ public class ArgumentList {
             }
         }
         ParserContextTreeSitter parserContext = parsingContext.getParserContextForNode(node);
-        parserContext.setStartByte(node.getChild(0).getEndByte());
+        var openingParenthesisPosition = node.getChild(0).getEndPosition();
+        parserContext.setStartPosition(new Position(openingParenthesisPosition.row + 1, openingParenthesisPosition.column + 1));
 
         return Optional.of(new FunctionCallArguments(functionArguments, parserContext));
     }
