@@ -29,6 +29,7 @@ public class DecoratorTransformation {
 
         if (node.getChildCount() == 2) {
             var decoratorIdentifier = getNodeChild(node, IDENTIFIER);
+            var attributeIdentifier = getNodeChild(node, ATTRIBUTE);
             var decoratorCallFunction = getNodeChild(node, CALL);
 
             Optional<AstString> attribute = Optional.empty();
@@ -37,6 +38,9 @@ public class DecoratorTransformation {
             // it's the form like @mydecorator
             if (decoratorIdentifier.isPresent()) {
                 attribute = transformIdentifierToAstString(decoratorIdentifier.get(), parsingContext);
+            }
+            if (attributeIdentifier.isPresent()) {
+                attribute = transformIdentifierToAstStringWithoutCheck(attributeIdentifier.get(), parsingContext);
             }
 
             // it's the form @mydecorator.foo(bar=42)
