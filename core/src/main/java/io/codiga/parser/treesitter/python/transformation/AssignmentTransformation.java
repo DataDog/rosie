@@ -20,8 +20,8 @@ public class AssignmentTransformation {
             return Optional.empty();
         }
 
-        Optional<AstElement> leftNode = parse(node.getChild(0), parsingContext);
-        Optional<AstElement> rightNode = parse(node.getChild(2), parsingContext);
+        Optional<AstElement> leftNode = Optional.ofNullable(node.getChildByFieldName("left")).flatMap(n -> parse(n, parsingContext));
+        Optional<AstElement> rightNode = Optional.ofNullable(node.getChildByFieldName("right")).flatMap(n -> parse(n, parsingContext));
 
         if (leftNode.isPresent() && rightNode.isPresent()) {
             return Optional.of(new io.codiga.model.ast.common.Assignment(leftNode.get(), rightNode.get(), parsingContext.getParserContextForNode(node)));

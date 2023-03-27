@@ -18,9 +18,9 @@ import static io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes.ATT
 import static io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes.IDENTIFIER;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 
-public class FunctionCallTransformation {
+public class CallTransformation {
 
-    private static final Logger LOGGER = Logger.getLogger(FunctionCallTransformation.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CallTransformation.class.getName());
 
 
     /**
@@ -30,7 +30,7 @@ public class FunctionCallTransformation {
      * @param parsingContext
      * @return
      */
-    public static Optional<PythonFunctionCall> transformExprToFunctionCall(Node node, TreeSitterParsingContext parsingContext) {
+    public static Optional<PythonFunctionCall> transformCall(Node node, TreeSitterParsingContext parsingContext) {
         if (!node.getType().equalsIgnoreCase(TreeSitterPythonTypes.CALL.label)) {
             return Optional.empty();
         }

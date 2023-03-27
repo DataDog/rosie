@@ -12,11 +12,11 @@ import static io.codiga.parser.treesitter.python.transformation.AssignmentTransf
 import static io.codiga.parser.treesitter.python.transformation.AttributeTransformation.transformAttribute;
 import static io.codiga.parser.treesitter.python.transformation.BlockTransformation.transformBlock;
 import static io.codiga.parser.treesitter.python.transformation.BreakStatementTransformation.transformBreak;
+import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
 import static io.codiga.parser.treesitter.python.transformation.ComparisonOperatorTransformation.transformComparisonOperator;
 import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinitionTransformation.transformDecoratedDefinition;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionListTransformation.transformExpressionList;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionStatementTransformation.transformExpressionStatement;
-import static io.codiga.parser.treesitter.python.transformation.FunctionCallTransformation.transformExprToFunctionCall;
 import static io.codiga.parser.treesitter.python.transformation.FunctionDefinitionTransformation.transformFunctionDefinition;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstStringWithoutCheck;
@@ -45,7 +45,7 @@ public class TreeSitterPythonParser {
             case BREAK_STATEMENT:
                 return convertToAstElement(transformBreak(node, parsingContext));
             case CALL:
-                return convertToAstElement(transformExprToFunctionCall(node, parsingContext));
+                return convertToAstElement(transformCall(node, parsingContext));
             case COMPARISON_OPERATOR:
                 return convertToAstElement(transformComparisonOperator(node, parsingContext));
             case DECORATED_DEFINITION:

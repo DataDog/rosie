@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.parser.treesitter.python.transformation.FunctionCallTransformation.transformExprToFunctionCall;
+import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.python.treesitter.PythonTestUtils {
@@ -53,7 +53,7 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
 
         Node node = nodes.get(0);
 
-        Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall(node, parsingContext);
+        Optional<PythonFunctionCall> functionCallOptional = transformCall(node, parsingContext);
         assertTrue(functionCallOptional.isPresent());
         PythonFunctionCall functionCall = functionCallOptional.get();
         assertEquals(((AstString) functionCall.functionName).value, "connect");
@@ -90,7 +90,7 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
 
         Node node = nodes.get(0);
 
-        Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall(node, parsingContext);
+        Optional<PythonFunctionCall> functionCallOptional = transformCall(node, parsingContext);
         assertTrue(functionCallOptional.isPresent());
         PythonFunctionCall functionCall = functionCallOptional.get();
         assertEquals(((AstString) functionCall.functionName).value, "get");
@@ -118,7 +118,7 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
         assertEquals(1, nodes.size());
 
         Node node = nodes.get(0);
-        Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall(node, parsingContext);
+        Optional<PythonFunctionCall> functionCallOptional = transformCall(node, parsingContext);
         assertTrue(functionCallOptional.isPresent());
         PythonFunctionCall functionCall = functionCallOptional.get();
         assertEquals(((AstString) functionCall.functionName).value, "get");
@@ -145,7 +145,7 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
         assertEquals(1, nodes.size());
 
         Node node = nodes.get(0);
-        Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall(node, parsingContext);
+        Optional<PythonFunctionCall> functionCallOptional = transformCall(node, parsingContext);
         assertTrue(functionCallOptional.isPresent());
         PythonFunctionCall functionCall = functionCallOptional.get();
         assertEquals(((AstString) functionCall.functionName).value, "eval");

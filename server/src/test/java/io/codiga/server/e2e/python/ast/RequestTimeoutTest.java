@@ -35,6 +35,7 @@ public class RequestTimeoutTest extends E2EBase {
             const nbArguments = node.arguments.values.length;
             const allPackages = node.context.imports.filter(i => i.packages).flatMap(i => i.packages.map(p => p.name.str));
             const useRequestsPackage = allPackages.filter(i => i === "requests").length > 0;
+            console.log(useRequestsPackage);
             if(!hasTimeout && useRequestsPackage && node.functionName.value === "get" && node.moduleOrObject.value === "requests"){
                 const error = buildError(node.start.line, node.start.col, node.end.line, node.end.col, "timeout not defined", "CRITICAL", "SAFETY");
                 const lineToInsert = arguments[arguments.length - 1].end.line;
@@ -48,8 +49,8 @@ public class RequestTimeoutTest extends E2EBase {
 
     @Test
     public void testPythonRequestTimeout() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-timeout", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
-
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-timeout", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
+        logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).start.line);

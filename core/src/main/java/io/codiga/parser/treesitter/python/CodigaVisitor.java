@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Stack;
 
 import static io.codiga.parser.treesitter.python.transformation.AssignmentTransformation.transformAssignment;
+import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
 import static io.codiga.parser.treesitter.python.transformation.ClassDeclarationTransformation.transformClassDefinition;
 import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinitionTransformation.transformDecoratedDefinition;
-import static io.codiga.parser.treesitter.python.transformation.FunctionCallTransformation.transformExprToFunctionCall;
 import static io.codiga.parser.treesitter.python.transformation.FunctionDefinitionTransformation.transformFunctionDefinition;
 import static io.codiga.parser.treesitter.python.transformation.IfStatementTransformation.transformIfStatement;
 import static io.codiga.parser.treesitter.python.transformation.ImportFromStatement.transformImportFromStatement;
@@ -113,17 +113,19 @@ public class CodigaVisitor {
                     this.assignments.add(transformedElement);
                 });
                 walkChildren(node, parsingContext);
+                break;
             }
 
 
             case CALL: {
-                var functionCallOptional = transformExprToFunctionCall(node, parsingContext);
+                var functionCallOptional = transformCall(node, parsingContext);
                 if (functionCallOptional.isPresent()) {
                     var pythonFunctionCall = functionCallOptional.get();
                     pythonFunctionCall.setContext(buildContext());
                     this.functionCalls.add(pythonFunctionCall);
                 }
                 walkChildren(node, parsingContext);
+                break;
             }
 
             case CLASS_DEFINITION: {
@@ -135,8 +137,10 @@ public class CodigaVisitor {
                     this.visitedClassDefinitions.push(classDefinition);
                     walkChildren(node, parsingContext);
                     this.visitedClassDefinitions.pop();
+                } else {
+                    walkChildren(node, parsingContext);
                 }
-                walkChildren(node, parsingContext);
+                break;
             }
 
 
@@ -165,6 +169,7 @@ public class CodigaVisitor {
                 } else {
                     walkChildren(node, parsingContext);
                 }
+                break;
             }
 
             case FUNCTION_DEFINITION: {
@@ -178,6 +183,7 @@ public class CodigaVisitor {
                 } else {
                     walkChildren(node, parsingContext);
                 }
+                break;
             }
 
             case IF_STATEMENT: {
@@ -191,6 +197,7 @@ public class CodigaVisitor {
                 } else {
                     walkChildren(node, parsingContext);
                 }
+                break;
             }
 
             case IMPORT_FROM_STATEMENT: {
@@ -200,6 +207,7 @@ public class CodigaVisitor {
                     this.visitedImportStatements.add(res);
                 });
                 walkChildren(node, parsingContext);
+                break;
             }
 
             case IMPORT_STATEMENT: {
@@ -209,6 +217,7 @@ public class CodigaVisitor {
                     this.visitedImportStatements.add(res);
                 });
                 walkChildren(node, parsingContext);
+                break;
             }
 
             case TRY_STATEMENT: {
@@ -218,10 +227,12 @@ public class CodigaVisitor {
                     this.tryStatements.add(tryStatement);
                 });
                 walkChildren(node, parsingContext);
+                break;
             }
 
             default: {
                 walkChildren(node, parsingContext);
+                break;
             }
 
         }
