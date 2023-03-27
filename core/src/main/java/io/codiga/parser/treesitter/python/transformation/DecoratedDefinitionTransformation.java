@@ -18,12 +18,13 @@ import static io.codiga.parser.treesitter.python.transformation.FunctionDefiniti
 import static io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes.DECORATED_DEFINITION;
 import static io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes.DECORATOR;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.*;
+import static io.codiga.utils.Conversions.convertToAstElement;
 
 public class DecoratedDefinitionTransformation {
 
     private static final Logger LOGGER = Logger.getLogger(DecoratedDefinitionTransformation.class.getName());
 
-    public static Optional<AstElement> transformDecoratedFunctionDefinition(Node node, TreeSitterParsingContext parsingContext) {
+    public static Optional<PythonFunctionDefinition> transformDecoratedFunctionDefinition(Node node, TreeSitterParsingContext parsingContext) {
         if (node == null || getNodeType(node) != DECORATED_DEFINITION) {
             return Optional.empty();
         }
@@ -52,7 +53,7 @@ public class DecoratedDefinitionTransformation {
         return Optional.empty();
     }
 
-    public static Optional<AstElement> transformDecoratedClassDefinition(Node node, TreeSitterParsingContext parsingContext) {
+    public static Optional<PythonClassDefinition> transformDecoratedClassDefinition(Node node, TreeSitterParsingContext parsingContext) {
         if (node == null || getNodeType(node) != DECORATED_DEFINITION) {
             return Optional.empty();
         }
@@ -85,11 +86,11 @@ public class DecoratedDefinitionTransformation {
         }
 
         if (getNodeChild(node, TreeSitterPythonTypes.FUNCTION_DEFINITION).isPresent()) {
-            return transformDecoratedFunctionDefinition(node, parsingContext);
+            return convertToAstElement(transformDecoratedFunctionDefinition(node, parsingContext));
         }
 
         if (getNodeChild(node, TreeSitterPythonTypes.CLASS_DEFINITION).isPresent()) {
-            return transformDecoratedClassDefinition(node, parsingContext);
+            return convertToAstElement(transformDecoratedClassDefinition(node, parsingContext));
         }
 
         return Optional.empty();

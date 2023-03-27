@@ -37,7 +37,7 @@ public class ClassNameTest extends E2EBase {
     @Test
     @DisplayName("class names should not contain foo - contains errors")
     public void testPythonClassNameError() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "class-name", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, null, false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "class-name", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -54,7 +54,7 @@ public class ClassNameTest extends E2EBase {
     @Test
     @DisplayName("class names should not contain foo - no errors")
     public void testPythonClassNameNoError() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "class-name", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, null, false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "class-name", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, null, false);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
     }

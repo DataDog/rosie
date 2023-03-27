@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 import static io.codiga.parser.treesitter.python.transformation.BlockTransformation.transformBlock;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
 import static io.codiga.parser.treesitter.python.transformation.ParametersTransformation.transformParameters;
-import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChild;
-import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChildren;
+import static io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes.FUNCTION_DEFINITION;
+import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.*;
 
 public class FunctionDefinitionTransformation {
 
@@ -28,6 +28,10 @@ public class FunctionDefinitionTransformation {
      * @return
      */
     public static Optional<PythonFunctionDefinition> transformFunctionDefinition(Node node, TreeSitterParsingContext parsingContext) {
+        if (getNodeType(node) != FUNCTION_DEFINITION) {
+            return Optional.empty();
+        }
+
         var isAsync = getNodeChildren(node).stream().filter(n -> n.getType().equalsIgnoreCase("async")).count() > 0;
         var nodeNameOptional = getNodeChild(node, TreeSitterPythonTypes.IDENTIFIER)
             .flatMap(n -> transformIdentifierToAstString(n, parsingContext));

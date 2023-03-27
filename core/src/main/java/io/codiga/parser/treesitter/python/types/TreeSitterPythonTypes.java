@@ -16,6 +16,7 @@ public enum TreeSitterPythonTypes {
     CALL("call"),
     CLASS_DEFINITION("class_definition"),
     COMPARISON_OPERATOR("comparison_operator"),
+    DEFAULT_PARAMETER("default_parameter"),
     DOTTED_NAME("dotted_name"),
     DECORATED_DEFINITION("decorated_definition"),
     DECORATOR("decorator"),
@@ -63,6 +64,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("comparison_operator", COMPARISON_OPERATOR);
         NODE_TYPE_TO_ENUMERATION.put("decorated_definition", DECORATED_DEFINITION);
         NODE_TYPE_TO_ENUMERATION.put("decorator", DECORATOR);
+        NODE_TYPE_TO_ENUMERATION.put("default_parameter", DEFAULT_PARAMETER);
         NODE_TYPE_TO_ENUMERATION.put("dotted_name", DOTTED_NAME);
         NODE_TYPE_TO_ENUMERATION.put("else_clause", ELSE_CLAUSE);
         NODE_TYPE_TO_ENUMERATION.put("expression_list", EXPRESSION_LIST);

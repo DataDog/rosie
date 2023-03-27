@@ -30,7 +30,7 @@ public class NoAssignmentTo42 extends E2EBase {
     @Test
     @DisplayName("Report 42 value as an error")
     public void testNo42AsValue() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-42-as-value", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-42-as-value", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

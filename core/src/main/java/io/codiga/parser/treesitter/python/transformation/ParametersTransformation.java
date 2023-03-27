@@ -38,6 +38,22 @@ public class ParametersTransformation {
                 }
                 break;
             }
+            case DEFAULT_PARAMETER: {
+                var identifierOptional = Optional.ofNullable(node.getChildByFieldName("name"))
+                    .flatMap(i -> transformIdentifierToAstString(i, parsingContext));
+                var defaultValue = Optional.ofNullable(node.getChildByFieldName("value"))
+                    .flatMap(v -> transformIdentifierToAstStringWithoutCheck(v, parsingContext));
+
+
+                if (identifierOptional.isPresent() && defaultValue.isPresent()) {
+                    return Optional.of(new FunctionDefinitionParameter(
+                        identifierOptional.get(),
+                        null,
+                        defaultValue.get(),
+                        parsingContext.getParserContextForNode(node)));
+                }
+                break;
+            }
             case TYPED_DEFAULT_PARAMETER: {
                 if (node.getChildCount() < 5) {
                     return Optional.empty();

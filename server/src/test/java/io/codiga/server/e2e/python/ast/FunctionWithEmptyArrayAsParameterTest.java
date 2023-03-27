@@ -20,7 +20,7 @@ public class FunctionWithEmptyArrayAsParameterTest extends E2EBase {
 
     String ruleCode = """
         function visit(node) {
-                
+            console.log(node.parameters.values.length);
             if (node.parameters.values) {
                 const parametersWithEmptyArray = node.parameters.values.filter(p => p && p.defaultValue && p.defaultValue.value === "[]");
             
@@ -37,7 +37,7 @@ public class FunctionWithEmptyArrayAsParameterTest extends E2EBase {
 
     @Test
     public void testfunctionWithEmptyArrrayAsParameter() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-array-default-value", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, null, true);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-array-default-value", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, null, true);
         logger.info("response:" + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

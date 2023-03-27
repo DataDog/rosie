@@ -15,7 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import static io.codiga.parser.treesitter.python.transformation.AssignmentTransformation.transformAssignment;
+import static io.codiga.parser.treesitter.python.transformation.ClassDeclarationTransformation.transformClassDefinition;
+import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinitionTransformation.transformDecoratedDefinition;
 import static io.codiga.parser.treesitter.python.transformation.FunctionCallTransformation.transformExprToFunctionCall;
+import static io.codiga.parser.treesitter.python.transformation.FunctionDefinitionTransformation.transformFunctionDefinition;
 import static io.codiga.parser.treesitter.python.transformation.IfStatementTransformation.transformIfStatement;
 import static io.codiga.parser.treesitter.python.transformation.ImportFromStatement.transformImportFromStatement;
 import static io.codiga.parser.treesitter.python.transformation.ImportStatement.transformImportStatement;
@@ -91,40 +95,111 @@ public class CodigaVisitor {
         return res;
     }
 
+    private void walkChildren(Node node, TreeSitterParsingContext parsingContext) {
+        for (int i = 0; i < node.getChildCount(); i++) {
+            walk(node.getChild(i), parsingContext);
+        }
+    }
+
     private void walk(Node node, TreeSitterParsingContext parsingContext) {
         var nodeType = getNodeType(node);
 
         switch (nodeType) {
-            case CALL: {
-                var functionCallOptional = transformExprToFunctionCall(node, parsingContext);
-                functionCallOptional.ifPresent(pythonFunctionCall -> {
-                    pythonFunctionCall.setContext(buildContext());
-                    this.functionCalls.add(pythonFunctionCall);
+
+            case ASSIGNMENT: {
+                var transformedElementOptional = transformAssignment(node, parsingContext);
+                transformedElementOptional.ifPresent(transformedElement -> {
+                    transformedElement.setContext(buildContext());
+                    this.assignments.add(transformedElement);
                 });
+                walkChildren(node, parsingContext);
             }
 
-            case TRY_STATEMENT: {
-                var tryStatementOptional = transformTryStatement(node, parsingContext);
-                tryStatementOptional.ifPresent(tryStatement -> {
-                    tryStatement.setContext(buildContext());
-                    this.tryStatements.add(tryStatement);
-                });
+
+            case CALL: {
+                var functionCallOptional = transformExprToFunctionCall(node, parsingContext);
+                if (functionCallOptional.isPresent()) {
+                    var pythonFunctionCall = functionCallOptional.get();
+                    pythonFunctionCall.setContext(buildContext());
+                    this.functionCalls.add(pythonFunctionCall);
+                }
+                walkChildren(node, parsingContext);
+            }
+
+            case CLASS_DEFINITION: {
+                var classDefinitionOptional = transformClassDefinition(node, parsingContext);
+                if (classDefinitionOptional.isPresent()) {
+                    var classDefinition = classDefinitionOptional.get();
+                    classDefinition.setContext(buildContext());
+                    this.classDefinitions.add(classDefinition);
+                    this.visitedClassDefinitions.push(classDefinition);
+                    walkChildren(node, parsingContext);
+                    this.visitedClassDefinitions.pop();
+                }
+                walkChildren(node, parsingContext);
+            }
+
+
+            case DECORATED_DEFINITION: {
+                var transformedElementOptional = transformDecoratedDefinition(node, parsingContext);
+                if (transformedElementOptional.isPresent()) {
+                    var transformedElement = transformedElementOptional.get();
+                    transformedElement.setContext(buildContext());
+
+                    if (transformedElement instanceof PythonFunctionDefinition) {
+                        PythonFunctionDefinition pythonFunctionDefinition = (PythonFunctionDefinition) transformedElement;
+                        this.functionDefinitions.add(pythonFunctionDefinition);
+                        this.visitedFunctionDefinitions.push(pythonFunctionDefinition);
+                        walkChildren(node, parsingContext);
+                        this.visitedFunctionDefinitions.pop();
+                    }
+
+                    if (transformedElement instanceof PythonClassDefinition) {
+                        PythonClassDefinition pythonClassDefinition = (PythonClassDefinition) transformedElement;
+                        this.classDefinitions.add(pythonClassDefinition);
+                        this.visitedClassDefinitions.push(pythonClassDefinition);
+                        walkChildren(node, parsingContext);
+                        this.visitedClassDefinitions.pop();
+                    }
+
+                } else {
+                    walkChildren(node, parsingContext);
+                }
+            }
+
+            case FUNCTION_DEFINITION: {
+                var transformedOptional = transformFunctionDefinition(node, parsingContext);
+                if (transformedOptional.isPresent()) {
+                    var res = transformedOptional.get();
+                    this.functionDefinitions.add(res);
+                    this.visitedFunctionDefinitions.push(res);
+                    walkChildren(node, parsingContext);
+                    this.visitedFunctionDefinitions.pop();
+                } else {
+                    walkChildren(node, parsingContext);
+                }
             }
 
             case IF_STATEMENT: {
                 var transformedOptional = transformIfStatement(node, parsingContext);
-                transformedOptional.ifPresent(res -> {
+                if (transformedOptional.isPresent()) {
+                    var res = transformedOptional.get();
                     this.ifStatements.add(res);
-                    this.visitedIfStatements.add(res);
-                });
+                    this.visitedIfStatements.push(res);
+                    walkChildren(node, parsingContext);
+                    this.visitedIfStatements.pop();
+                } else {
+                    walkChildren(node, parsingContext);
+                }
             }
 
             case IMPORT_FROM_STATEMENT: {
-                var transformationResUltOptional = transformImportFromStatement(node, parsingContext);
-                transformationResUltOptional.ifPresent(res -> {
+                var transformedElementOptional = transformImportFromStatement(node, parsingContext);
+                transformedElementOptional.ifPresent(res -> {
                     this.fromStatements.add(res);
                     this.visitedImportStatements.add(res);
                 });
+                walkChildren(node, parsingContext);
             }
 
             case IMPORT_STATEMENT: {
@@ -133,14 +208,22 @@ public class CodigaVisitor {
                     this.importStatements.add(res);
                     this.visitedImportStatements.add(res);
                 });
+                walkChildren(node, parsingContext);
             }
 
+            case TRY_STATEMENT: {
+                var tryStatementOptional = transformTryStatement(node, parsingContext);
+                tryStatementOptional.ifPresent(tryStatement -> {
+                    tryStatement.setContext(buildContext());
+                    this.tryStatements.add(tryStatement);
+                });
+                walkChildren(node, parsingContext);
+            }
 
-        }
+            default: {
+                walkChildren(node, parsingContext);
+            }
 
-
-        for (int i = 0; i < node.getChildCount(); i++) {
-            walk(node.getChild(i), parsingContext);
         }
     }
 }
