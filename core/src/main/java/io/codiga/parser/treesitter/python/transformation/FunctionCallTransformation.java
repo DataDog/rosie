@@ -38,7 +38,7 @@ public class FunctionCallTransformation {
             return Optional.empty();
         }
         Node functionName = node.getChild(0);
-        Node arguments = node.getChild(1);
+        Node arguments = node.getChildByFieldName("arguments");
 
         if (getNodeType(arguments) != TreeSitterPythonTypes.ARGUMENT_LIST) {
             return Optional.empty();

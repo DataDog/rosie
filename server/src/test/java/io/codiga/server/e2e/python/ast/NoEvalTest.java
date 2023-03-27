@@ -52,7 +52,7 @@ public class NoEvalTest extends E2EBase {
     @Test
     @DisplayName("Do not use eval()")
     public void testPythonNoEval() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-eval", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-eval", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -82,7 +82,7 @@ public class NoEvalTest extends E2EBase {
     @Test
     @DisplayName("Make sure we catch multiple instances of the issue")
     public void testPythonNoEvalMultiple() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithTwoErrors, Language.PYTHON, ruleCode, "no-eval", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithTwoErrors, Language.PYTHON, ruleCode, "no-eval", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(2, response.ruleResponses.get(0).violations.size());

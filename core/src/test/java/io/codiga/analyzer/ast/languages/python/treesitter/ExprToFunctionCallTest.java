@@ -130,7 +130,28 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
         assertEquals(((AstString) functionCall.arguments.values[1].value).value, "False");
         assertEquals(functionCall.arguments.values[2].name.value, "timeout");
         assertEquals(((AstString) functionCall.arguments.values[2].value).value, "10");
+    }
 
+    @Test
+    @DisplayName("Function call with a string as argument")
+    public void testTransformSimpleFunctionCall() {
+        String code = "eval('[1, 2, 3]')";
+
+        Node rootNode = parseCode(code);
+
+        TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.CALL.label);
+        assertEquals(1, nodes.size());
+
+        Node node = nodes.get(0);
+        Optional<PythonFunctionCall> functionCallOptional = transformExprToFunctionCall(node, parsingContext);
+        assertTrue(functionCallOptional.isPresent());
+        PythonFunctionCall functionCall = functionCallOptional.get();
+        assertEquals(((AstString) functionCall.functionName).value, "eval");
+        assertNull(functionCall.moduleOrObject);
+        assertEquals(1, functionCall.arguments.values.length);
+        assertEquals(((AstString) functionCall.arguments.values[0].value).value, "'[1, 2, 3]'");
     }
 
 }

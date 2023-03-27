@@ -82,7 +82,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("parameters", PARAMETERS);
         NODE_TYPE_TO_ENUMERATION.put("pass_statement", PASS_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("return_statement", RETURN_STATEMENT);
-        NODE_TYPE_TO_ENUMERATION.put("string", TRUE);
+        NODE_TYPE_TO_ENUMERATION.put("string", STRING);
         NODE_TYPE_TO_ENUMERATION.put("subscript", SUBSCRIPT);
         NODE_TYPE_TO_ENUMERATION.put("true", TRUE);
         NODE_TYPE_TO_ENUMERATION.put("try_statement", TRY_STATEMENT);
