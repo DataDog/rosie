@@ -188,8 +188,7 @@ public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
         assertNull(pythonFunctionDefinition.decorators[0].arguments[0].name);
         assertEquals("foo", pythonFunctionDefinition.decorators[0].arguments[0].value.str);
 
-        // FIXME
-//        assertEquals("plop.bla.plip", pythonFunctionDefinition.decorators[0].name.str);
+        assertEquals("plop.bla.plip", pythonFunctionDefinition.decorators[0].name.str);
         assertEquals("bar", pythonFunctionDefinition.name.str);
         assertEquals("bar", pythonFunctionDefinition.name.str);
         assertFalse(pythonFunctionDefinition.isAsync);

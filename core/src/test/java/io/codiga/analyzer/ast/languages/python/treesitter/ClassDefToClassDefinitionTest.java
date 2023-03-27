@@ -131,11 +131,10 @@ public class ClassDefToClassDefinitionTest extends PythonTestUtils {
         assertEquals("decorator1", pythonClassDefinition.decorators[0].name.str);
         assertEquals(0, pythonClassDefinition.decorators[0].arguments.length);
 
-        // TO FIX: decorator name
-//        assertEquals("decorator2", pythonClassDefinition.decorators[1].name.str);
-//        assertEquals(1, pythonClassDefinition.decorators[1].arguments.length);
-//        assertEquals("blo", pythonClassDefinition.decorators[1].arguments[0].value.str);
-//        assertEquals("bli", pythonClassDefinition.decorators[1].arguments[0].name.str);
+        assertEquals("decorator2", pythonClassDefinition.decorators[1].name.str);
+        assertEquals(1, pythonClassDefinition.decorators[1].arguments.length);
+        assertEquals("blo", pythonClassDefinition.decorators[1].arguments[0].value.str);
+        assertEquals("bli", pythonClassDefinition.decorators[1].arguments[0].name.str);
     }
 
     @Test

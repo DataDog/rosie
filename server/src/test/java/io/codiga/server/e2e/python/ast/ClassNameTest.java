@@ -55,10 +55,8 @@ public class ClassNameTest extends E2EBase {
     @DisplayName("class names should not contain foo - no errors")
     public void testPythonClassNameNoError() throws Exception {
         Response response = executeTest("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "class-name", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, null, false);
-
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
-
     }
 
 }
