@@ -24,25 +24,24 @@ public class ForLoopNoRangeLenIterationTest extends E2EBase {
 
     String ruleCode = """
         function visit(node, filename, code) {
-            if(node.list && node.list.str) {
-                const pattern =  /range\\(\\s*len\\(\\s*([a-zA-Z0-9]+)\\s*\\)/;
-                const found = node.list.str.match(pattern);
-                if (found && found.length === 2){
-                    const forcode = code.substring(node.statements.startIndex, node.statements.stopIndex);
-                    
-                    const listname = found[1];
-                    const forVariable = node.variables[0].atom.str;
 
-                    const toReplace = `${listname}\\[${forVariable}\\]`;
-                    
-                    const newCodeInsideFor = forcode.replaceAll(toReplace, forVariable);
-                    console.log("====");
-                    console.log(newCodeInsideFor);
-                    console.log("====");
-                    const replaceListEdit = buildEditUpdate(node.list.start.line, node.list.start.col, node.list.end.line, node.list.end.col, listname);
-                    const replaceForContentEdit = buildEditUpdate(node.statements.start.line, node.statements.start.col, node.statements.end.line, node.statements.end.col, newCodeInsideFor);
+                
+            if(node.right && node.right.astType === "functioncall" && node.right.functionName.value === "range" && node.right.arguments && node.right.arguments.values[0].value.functionName.value === "len") {
+                const arg = node.right.arguments.values[0].value.arguments.values[0].value.str;
+                const v = node.left.str;
+
+                
+
+                if (arg){
+
+                    const replaceListEdit = buildEditUpdate(node.right.start.line, node.right.start.col, node.right.end.line, node.right.end.col, arg);
+                    const replaceForContentEdit = buildEditUpdate(node.statements.elements[0].arguments.values[0].start.line, 
+                                                                  node.statements.elements[0].arguments.values[0].start.col, 
+                                                                  node.statements.elements[0].arguments.values[0].end.line, 
+                                                                  node.statements.elements[0].arguments.values[0].end.col, v);
                     const fix = buildFix("use the list directly", [replaceForContentEdit, replaceListEdit]);
-                    const error = buildError(node.list.start.line, node.list.start.col, node.list.end.line, node.list.end.col, `do not use range(len(${listname}))`, "INFO", "BEST_PRACTICE");
+                
+                    const error = buildError(node.right.start.line, node.right.start.col, node.right.end.line, node.right.end.col, `do not use range(len(${arg}))`, "INFO", "BEST_PRACTICE");
                     addError(error.addFix(fix));
                 }
                 
@@ -53,7 +52,7 @@ public class ForLoopNoRangeLenIterationTest extends E2EBase {
 
     @Test
     public void testPythonNoForWithRangeAndLen() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-for-range-len", RULE_TYPE_AST, ENTITY_CHECKED_FOR_LOOP, null, true);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-for-range-len", RULE_TYPE_AST, ENTITY_CHECKED_FOR_LOOP, null, true);
         logger.info("response:" + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

@@ -1,9 +1,11 @@
 package io.codiga.parser.treesitter.python.transformation;
 
 import ai.serenade.treesitter.Node;
+import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.FunctionCallArgument;
 import io.codiga.parser.common.context.ParserContext;
+import io.codiga.parser.treesitter.python.TreeSitterPythonParser;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 
@@ -42,10 +44,9 @@ public class Identifier {
 
     public static Optional<FunctionCallArgument> transformNodeToFunctionArgument(Node node, TreeSitterParsingContext parsingContext) {
 
-        String value = parsingContext.getStringForNode(node);
-        if (value != null) {
-            ParserContext parserContext = parsingContext.getParserContextForNode(node);
-            return Optional.of(new FunctionCallArgument(null, new AstString(value, parserContext), parserContext));
+        Optional<AstElement> argumentValue = TreeSitterPythonParser.parse(node, parsingContext);
+        if (argumentValue.isPresent()) {
+            return Optional.of(new FunctionCallArgument(null, argumentValue.get(), parsingContext.getParserContextForNode(node)));
         }
 
         return Optional.empty();

@@ -33,7 +33,7 @@ public class CommandInjectionFromVariableTest extends E2EBase {
             const firstArgumentName = node.arguments.values[0].value.value;
             
             if (node.context.currentFunction) {
-                const assignments = node.context.currentFunction.assignments.filter(a => a.left && a.left.value && a.left.value === firstArgumentName);
+                const assignments = node.context.currentFunction.content.elements.filter(e => e.astType === "assignment").filter(a => a.left && a.left.value && a.left.value === firstArgumentName);
                 if(assignments.length > 0) {
                     const assignment = assignments[0];
                     if (assignment.right.value.startsWith('f"')) {
@@ -47,7 +47,7 @@ public class CommandInjectionFromVariableTest extends E2EBase {
     @Test
     @DisplayName("Detect injection with a variable")
     public void testInjectionThroughVariable() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "shell-injection", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "shell-injection", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
         logger.info("response:" + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

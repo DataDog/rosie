@@ -47,7 +47,7 @@ public class AnyElementTypeChecked extends E2EBase {
     @Test
     @DisplayName("Do not use eval()")
     public void testPythonNoEval() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-eval", RULE_TYPE_AST, ENTITY_CHECKED_ANY, null, false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-eval", RULE_TYPE_AST, ENTITY_CHECKED_ANY, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

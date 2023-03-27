@@ -19,6 +19,7 @@ import static io.codiga.parser.treesitter.python.transformation.AssignmentTransf
 import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
 import static io.codiga.parser.treesitter.python.transformation.ClassDeclarationTransformation.transformClassDefinition;
 import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinitionTransformation.transformDecoratedDefinition;
+import static io.codiga.parser.treesitter.python.transformation.ForStatementTransformation.transformForStatement;
 import static io.codiga.parser.treesitter.python.transformation.FunctionDefinitionTransformation.transformFunctionDefinition;
 import static io.codiga.parser.treesitter.python.transformation.IfStatementTransformation.transformIfStatement;
 import static io.codiga.parser.treesitter.python.transformation.ImportFromStatement.transformImportFromStatement;
@@ -169,6 +170,17 @@ public class CodigaVisitor {
                 } else {
                     walkChildren(node, parsingContext);
                 }
+                break;
+            }
+
+
+            case FOR_STATEMENT: {
+                var transformedOptional = transformForStatement(node, parsingContext);
+                if (transformedOptional.isPresent()) {
+                    var res = transformedOptional.get();
+                    this.forStatements.add(res);
+                }
+                walkChildren(node, parsingContext);
                 break;
             }
 

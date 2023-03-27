@@ -43,7 +43,7 @@ public class ArgumentList {
             /**
              * For the arguments that can be simply converted as a string, do it
              */
-            if (ARGUMENTS_TYPES.contains(childType)) {
+            if (childType != TreeSitterPythonTypes.UNKNOWN && childType != TreeSitterPythonTypes.KEYWORD_ARGUMENT) {
                 argumentOptional = transformNodeToFunctionArgument(child, parsingContext);
 
             }
