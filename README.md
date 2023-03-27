@@ -18,3 +18,8 @@ directory).
 To update the submodules: `git submodule update --init --recursive` (first time)
 and `git submodule update --recursive --remote`
 
+## Run
+
+```bash
+./gradlew cli:run --args="--directory /Users/julien/git/ci-backend-executor/backend_lib/ -t true -r rules.json -o plop.json"
+```

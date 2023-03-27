@@ -59,6 +59,8 @@ public class Main {
             .longOpt("rules").hasArg(true).desc("rules to use (path to JSON file)").build();
         Option optionDebug = Option.builder().required(false).option("d")
             .longOpt("debug").hasArg(true).desc("enable debug mode (true/false)").build();
+        Option optionTreeSitter = Option.builder().required(false).option("t")
+            .longOpt("tree-sitter").hasArg(true).desc("enable tree-sitter (true/false)").build();
         Option optionOutput = Option.builder().required(true).option("o")
             .longOpt("output").hasArg(true).desc("output file (path to file)").build();
 
@@ -66,6 +68,7 @@ public class Main {
         options.addOption(optionRules);
         options.addOption(optionDebug);
         options.addOption(optionOutput);
+        options.addOption(optionTreeSitter);
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -82,27 +85,30 @@ public class Main {
         String directory = cmd.getOptionValue(optionDirectory);
         String rulesFile = cmd.getOptionValue(optionRules);
         String debugString = cmd.getOptionValue(optionDebug);
+        String useTreeSitterString = cmd.getOptionValue(optionTreeSitter);
         String output = cmd.getOptionValue(optionOutput);
         boolean debug = debugString != null && debugString.equalsIgnoreCase("true");
+        boolean useTreeSitter = useTreeSitterString != null && useTreeSitterString.equalsIgnoreCase("true");
 
         System.out.println("Configuration");
         System.out.println("=============");
-        System.out.println(String.format("Version     : %s", Version.CURRENT_VERSION));
-        System.out.println(String.format("# cores     : %s", Runtime.getRuntime().availableProcessors()));
-        System.out.println(String.format("Debug       : %s", debug));
-        System.out.println(String.format("Directory   : %s", directory));
-        System.out.println(String.format("Rules file  : %s", rulesFile));
-        System.out.println(String.format("Debug       : %s", debugString));
-        System.out.println(String.format("Output file : %s", output));
+        System.out.printf("Version     : %s%n", Version.CURRENT_VERSION);
+        System.out.printf("# cores     : %s%n", Runtime.getRuntime().availableProcessors());
+        System.out.printf("Debug       : %s%n", debug);
+        System.out.printf("Directory   : %s%n", directory);
+        System.out.printf("Rules file  : %s%n", rulesFile);
+        System.out.printf("Debug       : %s%n", debugString);
+        System.out.printf("Tree-Sitter : %s%n", useTreeSitter);
+        System.out.printf("Output file : %s%n", output);
 
 
         if (!Files.isDirectory(Paths.get(directory))) {
-            System.err.println(String.format("%s is not a directory", directory));
+            System.err.printf("%s is not a directory%n", directory);
             System.exit(1);
         }
 
         if (!Files.isReadable(Paths.get(rulesFile)) || !Files.isRegularFile(Paths.get(rulesFile))) {
-            System.err.println(String.format("%s is not a readable file", rulesFile));
+            System.err.printf("%s is not a readable file%n", rulesFile);
             System.exit(1);
         }
 
@@ -111,7 +117,7 @@ public class Main {
         try {
             rules = getRulesFromFile(rulesFile);
         } catch (IOException e) {
-            System.err.println(String.format("Error when trying to read the rules from file %s: %s", rulesFile, e.getMessage()));
+            System.err.printf("Error when trying to read the rules from file %s: %s%n", rulesFile, e.getMessage());
             e.printStackTrace();
             System.exit(1);
         }
@@ -123,7 +129,7 @@ public class Main {
         try {
             filesToAnalyze = Files.walk(Paths.get(directory)).filter(Files::isRegularFile).collect(Collectors.toList());
         } catch (IOException e) {
-            System.err.println(String.format("Error when getting the list of files"));
+            System.err.println("Error when getting the list of files");
             System.exit(1);
         }
 
@@ -146,12 +152,14 @@ public class Main {
         int parallelism = cpus > 1 ? cpus - 1 : cpus;
 
         // Analysis options
-        AnalysisOptions analysisOptions = AnalysisOptions.builder().build();
+        AnalysisOptions analysisOptions = AnalysisOptions.builder()
+            .useTreeSitter(useTreeSitter)
+            .build();
 
         // For each language, we get the list of file for this language and get the violations
         for (Map.Entry<Language, List<String>> entry : LANGUAGE_EXTENSIONS.entrySet()) {
             if (debug) {
-                System.out.println(String.format("Processing %s", entry.getKey()));
+                System.out.printf("Processing %s%n", entry.getKey());
             }
 
             // Get the list of files to analyze
@@ -171,12 +179,12 @@ public class Main {
                     // put the rule to execute for each core
                     List<List<AnalyzerRule>> subList = separateRules(rulesForLanguage, parallelism);
                     if (debug) {
-                        System.out.println(String.format("Number of rules %s", rulesForLanguage.size()));
-                        System.out.println(String.format("List size %s", subList.size()));
+                        System.out.printf("Number of rules %s%n", rulesForLanguage.size());
+                        System.out.printf("List size %s%n", subList.size());
                         for (int i = 0; i < subList.size(); i++) {
-                            System.out.println(String.format("sublist %s, size %s", i, subList.get(i).size()));
+                            System.out.printf("sublist %s, size %s%n", i, subList.get(i).size());
                             subList.get(i).forEach(r -> {
-                                System.out.println(String.format("   %s", r.name()));
+                                System.out.printf("   %s%n", r.name());
                             });
                         }
                     }
@@ -191,13 +199,13 @@ public class Main {
                         List<ViolationWithFilename> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> new ViolationWithFilename(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath, ruleResult.identifier()))).toList();
                         analysisResult.ruleResults().forEach(ruleResult -> {
                             if (debug) {
-                                System.out.println(String.format("rule %s on file %s took %s ms", ruleResult.identifier(), relativePath, ruleResult.executionTimeMs()));
+                                System.out.printf("rule %s on file %s took %s ms%n", ruleResult.identifier(), relativePath, ruleResult.executionTimeMs());
                             }
                             if (ruleResult.errors().size() > 0) {
-                                System.out.println(String.format("rule %s on file %s reported errors %s", ruleResult.identifier(), relativePath, String.join(",", ruleResult.errors())));
+                                System.out.printf("rule %s on file %s reported errors %s%n", ruleResult.identifier(), relativePath, String.join(",", ruleResult.errors()));
                             }
                             if (ruleResult.executionError() != null) {
-                                System.out.println(String.format("rule %s on file %s execution error: %s", ruleResult.identifier(), relativePath, ruleResult.executionError()));
+                                System.out.printf("rule %s on file %s execution error: %s%n", ruleResult.identifier(), relativePath, ruleResult.executionError());
                             }
                         });
                         allViolations.addAll(violations);
@@ -205,7 +213,7 @@ public class Main {
                     });
 
                 } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
-                    System.err.println(String.format("Error while reading file %s", fullPath));
+                    System.err.printf("Error while reading file %s%n", fullPath);
                     e.printStackTrace();
                 }
             }
@@ -214,12 +222,12 @@ public class Main {
         try {
             writeViolationsToFile(Paths.get(output), new Result(allViolations, ruleResultsWithError));
         } catch (IOException e) {
-            System.err.println(String.format("Failed to write result into file %s", output));
+            System.err.printf("Failed to write result into file %s%n", output);
             System.exit(1);
         }
         long endTimeMs = System.currentTimeMillis();
 
-        System.out.println(String.format("Analysis took %sms", endTimeMs - startTimeMs));
+        System.out.printf("Analysis took %sms%n", endTimeMs - startTimeMs);
 
         System.exit(0);
 
