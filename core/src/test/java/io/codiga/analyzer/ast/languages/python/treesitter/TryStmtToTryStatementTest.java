@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import static io.codiga.parser.treesitter.python.transformation.TryStatementTransformation.transformTryStatement;
+import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChildren;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TryStmtToTryStatementTest extends PythonTestUtils {
@@ -99,7 +100,7 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
         Node rootNode = parseCode(code);
 //        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
-        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.TRY_STATEMENT.label);
+        List<Node> nodes = getNodeChildren(rootNode, TreeSitterPythonTypes.TRY_STATEMENT);
         assertEquals(1, nodes.size());
 
         Optional<TryStatement> tryStatementOptional = transformTryStatement(nodes.get(0), parsingContext);
@@ -145,5 +146,61 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
         assertEquals("sequence", tryStatement.exceptClauses[1].content.astType);
         assertEquals("sequence", tryStatement.finallyClause.content.astType);
         assertEquals("break", ((Sequence) tryStatement.finallyClause.content).elements[0].astType);
+    }
+
+
+    @Test
+    @DisplayName("Transform a simple exception with an alias")
+    public void testSimpleGeneralExceptionWithAlias() {
+        String code = """
+            a = 2
+            b = 0
+            try:
+                c = a /b
+            except Exception as e:
+                pass""";
+
+        Node rootNode = parseCode(code);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+        TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.TRY_STATEMENT.label);
+        assertEquals(1, nodes.size());
+
+        Optional<TryStatement> tryStatementOptional = transformTryStatement(nodes.get(0), parsingContext);
+
+        assertTrue(tryStatementOptional.isPresent());
+        TryStatement tryStatement = tryStatementOptional.get();
+        assertNotNull(tryStatement.exceptClauses);
+        assertNotNull(tryStatement.exceptClauses[0].as);
+        assertEquals("e", tryStatement.exceptClauses[0].as.value);
+        assertEquals(1, tryStatement.exceptClauses[0].exceptions.length);
+        assertEquals("Exception", tryStatement.exceptClauses[0].exceptions[0].value);
+    }
+
+    @Test
+    @DisplayName("Transform a simple exception without an alias")
+    public void testSimpleGeneralExceptionWithoutAlias() {
+        String code = """
+            a = 2
+            b = 0
+            try:
+                c = a /b
+            except Exception:
+                pass""";
+
+        Node rootNode = parseCode(code);
+//        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+        TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.TRY_STATEMENT.label);
+        assertEquals(1, nodes.size());
+
+        Optional<TryStatement> tryStatementOptional = transformTryStatement(nodes.get(0), parsingContext);
+
+        assertTrue(tryStatementOptional.isPresent());
+        TryStatement tryStatement = tryStatementOptional.get();
+        assertNotNull(tryStatement.exceptClauses);
+        assertNull(tryStatement.exceptClauses[0].as);
+        assertEquals(1, tryStatement.exceptClauses[0].exceptions.length);
+        assertEquals("Exception", tryStatement.exceptClauses[0].exceptions[0].value);
     }
 }

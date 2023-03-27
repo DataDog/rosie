@@ -18,6 +18,7 @@ import java.util.Stack;
 import static io.codiga.parser.treesitter.python.transformation.FunctionCallTransformation.transformExprToFunctionCall;
 import static io.codiga.parser.treesitter.python.transformation.ImportFromStatement.transformImportFromStatement;
 import static io.codiga.parser.treesitter.python.transformation.ImportStatement.transformImportStatement;
+import static io.codiga.parser.treesitter.python.transformation.TryStatementTransformation.transformTryStatement;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 
 public class CodigaVisitor {
@@ -101,11 +102,11 @@ public class CodigaVisitor {
                 });
             }
 
-            case IMPORT_STATEMENT: {
-                var transformationResUltOptional = transformImportStatement(node, parsingContext);
-                transformationResUltOptional.ifPresent(res -> {
-                    this.importStatements.add(res);
-                    this.visitedImportStatements.add(res);
+            case TRY_STATEMENT: {
+                var tryStatementOptional = transformTryStatement(node, parsingContext);
+                tryStatementOptional.ifPresent(tryStatement -> {
+                    tryStatement.setContext(buildContext());
+                    this.tryStatements.add(tryStatement);
                 });
             }
 
@@ -116,6 +117,16 @@ public class CodigaVisitor {
                     this.visitedImportStatements.add(res);
                 });
             }
+
+            case IMPORT_STATEMENT: {
+                var transformationResUltOptional = transformImportStatement(node, parsingContext);
+                transformationResUltOptional.ifPresent(res -> {
+                    this.importStatements.add(res);
+                    this.visitedImportStatements.add(res);
+                });
+            }
+
+
         }
 
 

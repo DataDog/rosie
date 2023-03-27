@@ -44,7 +44,7 @@ public class ExceptClauseTransformation {
                     .map(n -> n.get())
                     .collect(Collectors.toList());
             } else {
-                exceptionsNames = getNodeChildren(node, TreeSitterPythonTypes.IDENTIFIER)
+                exceptionsNames = getNodeChildren(asPattern, TreeSitterPythonTypes.IDENTIFIER)
                     .stream()
                     .map(n -> transformIdentifierToAstString(n, parsingContext))
                     .filter(n -> n.isPresent())

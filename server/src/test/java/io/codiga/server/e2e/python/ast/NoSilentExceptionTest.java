@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class NoSilentExceptionTest extends E2EBase {
+    private final Logger log = Logger.getLogger("Test");
     String pythonCodeWithError = """
         a = 2
         b = 0
@@ -31,19 +32,18 @@ public class NoSilentExceptionTest extends E2EBase {
             pass""";
     String ruleCode = """
         function visit(node, filename, code) {
-            const allClausesWithPass = node.exceptClauses.filter(e => e.getCodeBlock() && e.getCodeBlock() === "pass");
+            const allClausesWithPass = node.exceptClauses.filter(e => e.content && e.content.elements && e.content.elements.length === 1 &&  e.content.elements[0].astType === "pass");
             allClausesWithPass.forEach(c => {
                 const error = buildError(c.start.line, c.start.col, c.end.line, c.end.col, "silent exception", "WARNING", "BEST_PRACTICES");
                 addError(error);
             });
         }
         """;
-    private final Logger log = Logger.getLogger("Test");
 
     @Test
     @DisplayName("Do not use pass to ignore exceptions")
     public void testSilentExceptionFail() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-no-silent-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, null, true);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-no-silent-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, null, true);
         log.info("response: " + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -58,7 +58,7 @@ public class NoSilentExceptionTest extends E2EBase {
     @Test
     @DisplayName("Do not use pass to ignore exceptions - do not fail")
     public void testSilentExceptionFailNoError() throws Exception {
-        Response response = executeTest("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "python-no-silent-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, null, true);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "python-no-silent-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, null, true);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
