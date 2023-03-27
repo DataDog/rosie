@@ -13,7 +13,7 @@ import static io.codiga.utils.EnvironmentUtils.getEnvironmentValueAsNumber;
 public class AnalyzerFuturePool {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Analyzer.class);
-    private final static int DEFAULT_THREADS = Runtime.getRuntime().availableProcessors();
+    private final static int DEFAULT_THREADS = Runtime.getRuntime().availableProcessors() > 2 ? Runtime.getRuntime().availableProcessors() : 1;
     private static AnalyzerFuturePool _INSTANCE;
     public ExecutorService service;
 

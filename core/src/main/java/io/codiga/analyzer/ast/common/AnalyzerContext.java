@@ -38,6 +38,7 @@ public class AnalyzerContext {
             entityCheckedToAstElements.put(entityChecked, new ArrayList<>());
         });
 
+        // FIXME, remove the engine.WarnInterpreterOnly
         this.engine = Engine.newBuilder("js")
             .allowExperimentalOptions(true)
             .option("engine.WarnInterpreterOnly", "false") // no warning when we are attempting to run the engine
