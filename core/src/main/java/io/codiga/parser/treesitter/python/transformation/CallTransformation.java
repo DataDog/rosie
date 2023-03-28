@@ -56,7 +56,6 @@ public class CallTransformation {
 
         Optional<FunctionCallArguments> functionCallArgumentsOptional = transformArgumentListToFunctionCallArguments(arguments, parsingContext);
 
-
         if (functionCallNameOptional.isPresent() && functionCallArgumentsOptional.isPresent()) {
             ParserContextTreeSitter parserContext = parsingContext.getParserContextForNode(node);
 

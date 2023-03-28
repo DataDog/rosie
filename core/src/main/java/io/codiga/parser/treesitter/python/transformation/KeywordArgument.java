@@ -26,11 +26,12 @@ public class KeywordArgument {
             return Optional.empty();
         }
 
-        Node name = node.getChild(0);
-        Node value = node.getChild(2);
+        Optional<AstString> nameOptional = Optional.ofNullable(node.getChildByFieldName("name"))
+            .flatMap(n -> transformIdentifierToAstString(n, parsingContext));
 
-        Optional<AstString> nameOptional = transformIdentifierToAstString(name, parsingContext);
-        Optional<AstElement> valueOptional = TreeSitterPythonParser.parse(value, parsingContext);
+        Optional<AstElement> valueOptional = Optional.ofNullable(node.getChildByFieldName("value"))
+            .flatMap(n -> TreeSitterPythonParser.parse(n, parsingContext));
+
 
         if (nameOptional.isPresent() && valueOptional.isPresent()) {
             ParserContext parserContext = parsingContext.getParserContextForNode(node);

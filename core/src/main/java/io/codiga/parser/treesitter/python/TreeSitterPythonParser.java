@@ -15,6 +15,7 @@ import static io.codiga.parser.treesitter.python.transformation.BreakStatementTr
 import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
 import static io.codiga.parser.treesitter.python.transformation.ComparisonOperatorTransformation.transformComparisonOperator;
 import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinitionTransformation.transformDecoratedDefinition;
+import static io.codiga.parser.treesitter.python.transformation.DictionaryTransformation.transformDictionary;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionListTransformation.transformExpressionList;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionStatementTransformation.transformExpressionStatement;
 import static io.codiga.parser.treesitter.python.transformation.FunctionDefinitionTransformation.transformFunctionDefinition;
@@ -50,6 +51,8 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformComparisonOperator(node, parsingContext));
             case DECORATED_DEFINITION:
                 return convertToAstElement(transformDecoratedDefinition(node, parsingContext));
+            case DICTIONARY:
+                return convertToAstElement(transformDictionary(node, parsingContext));
             case EXPRESSION_LIST:
                 return convertToAstElement(transformExpressionList(node, parsingContext));
             case EXPRESSION_STATEMENT:

@@ -43,6 +43,8 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_EXPRESSION = "expression";
     public static final String AST_ELEMENT_TYPE_ARGUMENT = "argument";
     public static final String AST_ELEMENT_TYPE_DECORATOR = "decorator";
+    public static final String AST_ELEMENT_TYPE_DICTIONARY = "dictionary";
+    public static final String AST_ELEMENT_TYPE_DICTIONARY_ELEMENT = "dictionaryelement";
     public static final String AST_ELEMENT_IF_STATEMENT = "ifstatement";
     public static final String AST_ELEMENT_FOR_STATEMENT = "forstatement";
     public static final String AST_ELEMENT_ELIF_STATEMENT = "elifstatement";

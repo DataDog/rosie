@@ -20,6 +20,7 @@ public enum TreeSitterPythonTypes {
     DOTTED_NAME("dotted_name"),
     DECORATED_DEFINITION("decorated_definition"),
     DECORATOR("decorator"),
+    DICTIONARY("dictionary"),
     ELSE_CLAUSE("else_clause"),
     EXPRESSION_LIST("expression_list"),
     EXPRESSION_STATEMENT("expression_statement"),
@@ -34,6 +35,7 @@ public enum TreeSitterPythonTypes {
     IMPORT_STATEMENT("import_statement"),
     INTEGER("integer"),
     KEYWORD_ARGUMENT("keyword_argument"),
+    PAIR("pair"),
     PATTERN_LIST("pattern_list"),
     PARAMETERS("parameters"),
     PASS_STATEMENT("pass_statement"),
@@ -65,6 +67,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("decorated_definition", DECORATED_DEFINITION);
         NODE_TYPE_TO_ENUMERATION.put("decorator", DECORATOR);
         NODE_TYPE_TO_ENUMERATION.put("default_parameter", DEFAULT_PARAMETER);
+        NODE_TYPE_TO_ENUMERATION.put("dictionary", DICTIONARY);
         NODE_TYPE_TO_ENUMERATION.put("dotted_name", DOTTED_NAME);
         NODE_TYPE_TO_ENUMERATION.put("else_clause", ELSE_CLAUSE);
         NODE_TYPE_TO_ENUMERATION.put("expression_list", EXPRESSION_LIST);
@@ -80,6 +83,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("import_statement", IMPORT_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("integer", INTEGER);
         NODE_TYPE_TO_ENUMERATION.put("keyword_argument", KEYWORD_ARGUMENT);
+        NODE_TYPE_TO_ENUMERATION.put("pair", PAIR);
         NODE_TYPE_TO_ENUMERATION.put("pattern_list", PATTERN_LIST);
         NODE_TYPE_TO_ENUMERATION.put("parameters", PARAMETERS);
         NODE_TYPE_TO_ENUMERATION.put("pass_statement", PASS_STATEMENT);
