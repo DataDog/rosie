@@ -151,16 +151,16 @@ public class CodigaVisitor {
                     var transformedElement = transformedElementOptional.get();
                     transformedElement.setContext(buildContext());
 
-                    if (transformedElement instanceof PythonFunctionDefinition) {
-                        PythonFunctionDefinition pythonFunctionDefinition = (PythonFunctionDefinition) transformedElement;
+                    if (transformedElement instanceof PythonFunctionDefinition pythonFunctionDefinition) {
+                        pythonFunctionDefinition.setContext(buildContext());
                         this.functionDefinitions.add(pythonFunctionDefinition);
                         this.visitedFunctionDefinitions.push(pythonFunctionDefinition);
                         walkChildren(node, parsingContext);
                         this.visitedFunctionDefinitions.pop();
                     }
 
-                    if (transformedElement instanceof PythonClassDefinition) {
-                        PythonClassDefinition pythonClassDefinition = (PythonClassDefinition) transformedElement;
+                    if (transformedElement instanceof PythonClassDefinition pythonClassDefinition) {
+                        pythonClassDefinition.setContext(buildContext());
                         this.classDefinitions.add(pythonClassDefinition);
                         this.visitedClassDefinitions.push(pythonClassDefinition);
                         walkChildren(node, parsingContext);
