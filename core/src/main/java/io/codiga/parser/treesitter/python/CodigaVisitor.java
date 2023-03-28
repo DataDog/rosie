@@ -149,7 +149,6 @@ public class CodigaVisitor {
                 var transformedElementOptional = transformDecoratedDefinition(node, parsingContext);
                 if (transformedElementOptional.isPresent()) {
                     var transformedElement = transformedElementOptional.get();
-                    transformedElement.setContext(buildContext());
 
                     if (transformedElement instanceof PythonFunctionDefinition pythonFunctionDefinition) {
                         pythonFunctionDefinition.setContext(buildContext());
@@ -178,6 +177,7 @@ public class CodigaVisitor {
                 var transformedOptional = transformForStatement(node, parsingContext);
                 if (transformedOptional.isPresent()) {
                     var res = transformedOptional.get();
+                    res.setContext(buildContext());
                     this.forStatements.add(res);
                 }
                 walkChildren(node, parsingContext);
@@ -188,6 +188,7 @@ public class CodigaVisitor {
                 var transformedOptional = transformFunctionDefinition(node, parsingContext);
                 if (transformedOptional.isPresent()) {
                     var res = transformedOptional.get();
+                    res.setContext(buildContext());
                     this.functionDefinitions.add(res);
                     this.visitedFunctionDefinitions.push(res);
                     walkChildren(node, parsingContext);
@@ -202,6 +203,7 @@ public class CodigaVisitor {
                 var transformedOptional = transformIfStatement(node, parsingContext);
                 if (transformedOptional.isPresent()) {
                     var res = transformedOptional.get();
+                    res.setContext(buildContext());
                     this.ifStatements.add(res);
                     this.visitedIfStatements.push(res);
                     walkChildren(node, parsingContext);
@@ -215,6 +217,7 @@ public class CodigaVisitor {
             case IMPORT_FROM_STATEMENT: {
                 var transformedElementOptional = transformImportFromStatement(node, parsingContext);
                 transformedElementOptional.ifPresent(res -> {
+                    res.setContext(buildContext());
                     this.fromStatements.add(res);
                     this.visitedImportStatements.add(res);
                 });
@@ -225,6 +228,7 @@ public class CodigaVisitor {
             case IMPORT_STATEMENT: {
                 var transformationResUltOptional = transformImportStatement(node, parsingContext);
                 transformationResUltOptional.ifPresent(res -> {
+                    res.setContext(buildContext());
                     this.importStatements.add(res);
                     this.visitedImportStatements.add(res);
                 });
