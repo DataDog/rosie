@@ -32,6 +32,8 @@ import static io.codiga.metrics.MetricsName.*;
 import static io.codiga.model.utils.ModelUtils.*;
 import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
 import static io.codiga.server.response.ResponseErrors.*;
+import static io.codiga.utils.EnvironmentUtils.FORCE_TREE_SITTER;
+import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
 import static io.codiga.utils.Version.CURRENT_VERSION;
 import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 
@@ -41,6 +43,8 @@ public class ServerMainController {
     final InjectorService injectorService;
     private final MetricsInterface metrics;
     private final ErrorReportingInterface errorReporting;
+    private final boolean forceTreeSitter = getEnvironmentValue(FORCE_TREE_SITTER)
+        .map(v -> v.equalsIgnoreCase("true")).orElse(false);
     Logger logger = LoggerFactory.getLogger(ServerMainController.class);
     private Analyzer analyzer = null;
 
@@ -52,6 +56,14 @@ public class ServerMainController {
         this.injectorService = injectorService;
 
         warmupAnalyzer(this.analyzer, WARMUP_LOOPS);
+    }
+
+    private boolean shouldUseTreeSitter(Request request) {
+        if (forceTreeSitter) {
+            return true;
+        }
+        return request.options != null && request.options.useTreeSitter;
+
     }
 
     /**
@@ -141,7 +153,7 @@ public class ServerMainController {
         }
         AnalysisOptions options = AnalysisOptions.builder()
             .logOutput(request.options != null && request.options.logOutput)
-            .useTreeSitter(request.options != null && request.options.useTreeSitter)
+            .useTreeSitter(shouldUseTreeSitter(request))
             .build();
         CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language), request.filename, decodedCode, rules, options);
 
