@@ -4,6 +4,7 @@ import ai.serenade.treesitter.Node;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.python.PythonDictionary;
 import io.codiga.model.ast.python.PythonFunctionCall;
+import io.codiga.model.ast.python.PythonList;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 import org.junit.jupiter.api.AfterAll;
@@ -210,4 +211,30 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
         assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, functionCall.arguments.values[0].value.astType);
         assertEquals("format", ((AstString) ((PythonFunctionCall) functionCall.arguments.values[0].value).functionName).value);
     }
+
+    @Test
+    @DisplayName("Function with array as parameter value")
+    public void testFunctionArgumentArray() {
+        String code = """
+            StringField('name', validators=[DataRequired()])
+                                                                                 """;
+
+        Node rootNode = parseCode(code);
+
+        TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.CALL.label);
+        assertEquals(2, nodes.size());
+
+        Node node = nodes.get(0);
+        Optional<PythonFunctionCall> functionCallOptional = transformCall(node, parsingContext);
+        assertTrue(functionCallOptional.isPresent());
+        PythonFunctionCall functionCall = functionCallOptional.get();
+        assertEquals(2, functionCall.arguments.values.length);
+        assertEquals("validators", functionCall.arguments.values[1].name.value);
+        assertEquals("list", functionCall.arguments.values[1].value.astType);
+        assertEquals("functioncall", ((PythonList) functionCall.arguments.values[1].value).elements[0].astType);
+    }
+
+
 }

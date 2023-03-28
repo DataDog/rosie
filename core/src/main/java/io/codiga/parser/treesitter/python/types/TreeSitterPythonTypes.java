@@ -36,6 +36,7 @@ public enum TreeSitterPythonTypes {
     IMPORT_STATEMENT("import_statement"),
     INTEGER("integer"),
     KEYWORD_ARGUMENT("keyword_argument"),
+    LIST("list"),
     PAIR("pair"),
     PATTERN_LIST("pattern_list"),
     PARAMETERS("parameters"),
@@ -85,6 +86,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("import_statement", IMPORT_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("integer", INTEGER);
         NODE_TYPE_TO_ENUMERATION.put("keyword_argument", KEYWORD_ARGUMENT);
+        NODE_TYPE_TO_ENUMERATION.put("list", LIST);
         NODE_TYPE_TO_ENUMERATION.put("pair", PAIR);
         NODE_TYPE_TO_ENUMERATION.put("pattern_list", PATTERN_LIST);
         NODE_TYPE_TO_ENUMERATION.put("parameters", PARAMETERS);
