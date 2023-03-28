@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_CONTINUE;
 import static io.codiga.parser.treesitter.python.transformation.TryStatementTransformation.transformTryStatement;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChildren;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TryStmtToTryStatementTest extends PythonTestUtils {
 
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {
@@ -186,7 +187,7 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
             try:
                 c = a /b
             except Exception:
-                pass""";
+                continue""";
 
         Node rootNode = parseCode(code);
 //        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
@@ -200,6 +201,7 @@ public class TryStmtToTryStatementTest extends PythonTestUtils {
         TryStatement tryStatement = tryStatementOptional.get();
         assertNotNull(tryStatement.exceptClauses);
         assertNull(tryStatement.exceptClauses[0].as);
+        assertEquals(AST_ELEMENT_TYPE_CONTINUE, ((Sequence) tryStatement.exceptClauses[0].content).elements[0].astType);
         assertEquals(1, tryStatement.exceptClauses[0].exceptions.length);
         assertEquals("Exception", tryStatement.exceptClauses[0].exceptions[0].value);
     }

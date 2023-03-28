@@ -14,6 +14,7 @@ import static io.codiga.parser.treesitter.python.transformation.BlockTransformat
 import static io.codiga.parser.treesitter.python.transformation.BreakStatementTransformation.transformBreak;
 import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
 import static io.codiga.parser.treesitter.python.transformation.ComparisonOperatorTransformation.transformComparisonOperator;
+import static io.codiga.parser.treesitter.python.transformation.ContinueStatementTransformation.transformContinue;
 import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinitionTransformation.transformDecoratedDefinition;
 import static io.codiga.parser.treesitter.python.transformation.DictionaryTransformation.transformDictionary;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionListTransformation.transformExpressionList;
@@ -49,6 +50,8 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformCall(node, parsingContext));
             case COMPARISON_OPERATOR:
                 return convertToAstElement(transformComparisonOperator(node, parsingContext));
+            case CONTINUE_STATEMENT:
+                return convertToAstElement(transformContinue(node, parsingContext));
             case DECORATED_DEFINITION:
                 return convertToAstElement(transformDecoratedDefinition(node, parsingContext));
             case DICTIONARY:
