@@ -14,6 +14,7 @@ import io.codiga.model.error.AnalysisResult;
 import io.codiga.server.request.Request;
 import io.codiga.server.response.*;
 import io.codiga.server.services.InjectorService;
+import io.codiga.utils.EnvironmentUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,6 @@ import static io.codiga.metrics.MetricsName.*;
 import static io.codiga.model.utils.ModelUtils.*;
 import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
 import static io.codiga.server.response.ResponseErrors.*;
-import static io.codiga.utils.EnvironmentUtils.FORCE_TREE_SITTER;
 import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
 import static io.codiga.utils.Version.CURRENT_VERSION;
 import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
@@ -43,7 +43,7 @@ public class ServerMainController {
     final InjectorService injectorService;
     private final MetricsInterface metrics;
     private final ErrorReportingInterface errorReporting;
-    private final boolean forceTreeSitter = getEnvironmentValue(FORCE_TREE_SITTER)
+    private final boolean PYTHON_FORCE_ANTLR = getEnvironmentValue(EnvironmentUtils.PYTHON_FORCE_ANTLR)
         .map(v -> v.equalsIgnoreCase("true")).orElse(false);
     Logger logger = LoggerFactory.getLogger(ServerMainController.class);
     private Analyzer analyzer = null;
@@ -59,11 +59,16 @@ public class ServerMainController {
     }
 
     private boolean shouldUseTreeSitter(Request request) {
-        if (forceTreeSitter) {
+        if (languageFromString(request.language) == Language.PYTHON) {
+            if (PYTHON_FORCE_ANTLR) {
+                return false;
+            }
+            if (request.options != null) {
+                return request.options.useTreeSitter;
+            }
             return true;
         }
-        return request.options != null && request.options.useTreeSitter;
-
+        return false;
     }
 
     /**

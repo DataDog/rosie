@@ -11,7 +11,7 @@ public class EnvironmentUtils {
     public final static String DATADOG_HOSTNAME = "localhost";
     public final static String DATADOG_PORT = "8125";
 
-    public final static String FORCE_TREE_SITTER = "FORCE_TREE_SITTER";
+    public final static String PYTHON_FORCE_ANTLR = "PYTHON_FORCE_ANTLR";
 
     public final static String METRICS_PREFIX = "METRIX_PREFIX";
     public final static String ROLLBAR_ENVIRONMENT = "ROLLBAR_ENVIRONMENT";
