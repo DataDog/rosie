@@ -9,6 +9,7 @@ public enum TreeSitterPythonTypes {
     ARGUMENT_LIST("argument_list"),
     AS_PATTERN("as_pattern"),
     AS_PATTERN_TARGET("as_pattern_target"),
+    ASSERT("assert_statement"),
     ASSIGNMENT("assignment"),
     ATTRIBUTE("attribute"),
     BINARY_OPERATOR("binary_operator"),
@@ -38,6 +39,7 @@ public enum TreeSitterPythonTypes {
     INTEGER("integer"),
     KEYWORD_ARGUMENT("keyword_argument"),
     LIST("list"),
+    NONE("none"),
     PAIR("pair"),
     PATTERN_LIST("pattern_list"),
     PARAMETERS("parameters"),
@@ -60,6 +62,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("argument_list", ARGUMENT_LIST);
         NODE_TYPE_TO_ENUMERATION.put("as_pattern", AS_PATTERN);
         NODE_TYPE_TO_ENUMERATION.put("as_pattern_target", AS_PATTERN_TARGET);
+        NODE_TYPE_TO_ENUMERATION.put("assert_statement", ASSERT);
         NODE_TYPE_TO_ENUMERATION.put("assignment", ASSIGNMENT);
         NODE_TYPE_TO_ENUMERATION.put("attribute", ATTRIBUTE);
         NODE_TYPE_TO_ENUMERATION.put("binary_operator", BINARY_OPERATOR);
@@ -89,6 +92,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("integer", INTEGER);
         NODE_TYPE_TO_ENUMERATION.put("keyword_argument", KEYWORD_ARGUMENT);
         NODE_TYPE_TO_ENUMERATION.put("list", LIST);
+        NODE_TYPE_TO_ENUMERATION.put("none", NONE);
         NODE_TYPE_TO_ENUMERATION.put("pair", PAIR);
         NODE_TYPE_TO_ENUMERATION.put("pattern_list", PATTERN_LIST);
         NODE_TYPE_TO_ENUMERATION.put("parameters", PARAMETERS);

@@ -18,10 +18,14 @@ public class AstElement {
     public static final String AST_ELEMENT_TYPE_OBJECT = "object";
     public static final String AST_ELEMENT_TYPE_OBJECT_ELEMENT = "object_element";
     public static final String AST_ELEMENT_TYPE_ASSIGNMENT = "assignment";
+    public static final String AST_ELEMENT_TYPE_ASSERT = "assert";
     public static final String AST_ELEMENT_TYPE_VARIABLE_INDEX = "variableindex";
     public static final String AST_ELEMENT_TYPE_ASSIGNMENTS = "assignments";
     public static final String AST_ELEMENT_TYPE_CONTAINER = "container";
     public static final String AST_ELEMENT_TYPE_RETURN = "return";
+
+    public static final String AST_ELEMENT_TYPE_TUPLE = "tuple";
+    public static final String AST_ELEMENT_TYPE_NONE = "none";
     public static final String AST_ELEMENT_TYPE_BREAK = "break";
     public static final String AST_ELEMENT_TYPE_CONTINUE = "continue";
     public static final String AST_ELEMENT_TYPE_SWITCH = "switch";

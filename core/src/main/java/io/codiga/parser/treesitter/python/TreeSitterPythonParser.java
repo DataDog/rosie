@@ -8,6 +8,7 @@ import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 import java.util.Optional;
 
 import static io.codiga.parser.treesitter.python.transformation.ArgumentList.transformArgumentListToFunctionCallArguments;
+import static io.codiga.parser.treesitter.python.transformation.AssertTransformation.transformAssert;
 import static io.codiga.parser.treesitter.python.transformation.AssignmentTransformation.transformAssignment;
 import static io.codiga.parser.treesitter.python.transformation.AttributeTransformation.transformAttribute;
 import static io.codiga.parser.treesitter.python.transformation.BinaryOperatorTransformation.transformBinaryOperator;
@@ -25,10 +26,12 @@ import static io.codiga.parser.treesitter.python.transformation.Identifier.trans
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstStringWithoutCheck;
 import static io.codiga.parser.treesitter.python.transformation.KeywordArgument.keywordArgumentToFunctionCallArgument;
 import static io.codiga.parser.treesitter.python.transformation.ListTransformation.transformList;
+import static io.codiga.parser.treesitter.python.transformation.NoneTransformation.transformNone;
 import static io.codiga.parser.treesitter.python.transformation.PassTransformation.transformPassStatement;
 import static io.codiga.parser.treesitter.python.transformation.PatternListTransformation.transformPatternList;
 import static io.codiga.parser.treesitter.python.transformation.ReturnTransformation.transformReturn;
 import static io.codiga.parser.treesitter.python.transformation.SubscriptTransformation.transformSubscript;
+import static io.codiga.parser.treesitter.python.transformation.TupleTransformation.transformTuple;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 import static io.codiga.utils.Conversions.convertToAstElement;
 
@@ -40,6 +43,8 @@ public class TreeSitterPythonParser {
         switch (nodeType) {
             case ARGUMENT_LIST:
                 return convertToAstElement(transformArgumentListToFunctionCallArguments(node, parsingContext));
+            case ASSERT:
+                return convertToAstElement(transformAssert(node, parsingContext));
             case ASSIGNMENT:
                 return convertToAstElement(transformAssignment(node, parsingContext));
             case ATTRIBUTE:
@@ -72,6 +77,8 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(keywordArgumentToFunctionCallArgument(node, parsingContext));
             case LIST:
                 return convertToAstElement(transformList(node, parsingContext));
+            case NONE:
+                return convertToAstElement(transformNone(node, parsingContext));
             case PATTERN_LIST:
                 return convertToAstElement(transformPatternList(node, parsingContext));
             case PASS_STATEMENT:
@@ -80,6 +87,8 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformReturn(node, parsingContext));
             case SUBSCRIPT:
                 return convertToAstElement(transformSubscript(node, parsingContext));
+            case TUPLE:
+                return convertToAstElement(transformTuple(node, parsingContext));
             case INTEGER:
             case FALSE:
             case STRING:

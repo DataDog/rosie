@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import static io.codiga.parser.treesitter.python.transformation.AssertTransformation.transformAssert;
 import static io.codiga.parser.treesitter.python.transformation.AssignmentTransformation.transformAssignment;
 import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
 import static io.codiga.parser.treesitter.python.transformation.ClassDeclarationTransformation.transformClassDefinition;
@@ -33,6 +34,7 @@ public class CodigaVisitor {
     private final String code;
     // List of all AST elements
     public List<Assignment> assignments;
+    public List<PythonAssertStatement> assertStatements;
     public List<FromStatement> fromStatements;
     public List<ImportStatement> importStatements;
     public List<PythonIfStatement> ifStatements;
@@ -53,6 +55,7 @@ public class CodigaVisitor {
         this.code = code;
 
         // Initialize the list of all elements being visited
+        assertStatements = new ArrayList<>();
         assignments = new ArrayList<>();
         fromStatements = new ArrayList<>();
         importStatements = new ArrayList<>();
@@ -112,6 +115,16 @@ public class CodigaVisitor {
                 transformedElementOptional.ifPresent(transformedElement -> {
                     transformedElement.setContext(buildContext());
                     this.assignments.add(transformedElement);
+                });
+                walkChildren(node, parsingContext);
+                break;
+            }
+
+            case ASSERT: {
+                var transformedElementOptional = transformAssert(node, parsingContext);
+                transformedElementOptional.ifPresent(transformedElement -> {
+                    transformedElement.setContext(buildContext());
+                    this.assertStatements.add(transformedElement);
                 });
                 walkChildren(node, parsingContext);
                 break;

@@ -17,7 +17,7 @@ import java.util.List;
 public class PythonAnalyzerContext extends AnalyzerContext {
 
 
-    private Logger logger = LoggerFactory.getLogger(PythonAnalyzerContext.class);
+    private final Logger logger = LoggerFactory.getLogger(PythonAnalyzerContext.class);
 
     public PythonAnalyzerContext(Language language, String filename, String code, List<AnalyzerRule> rules, AnalysisOptions analysisOptions) {
         super(language, filename, code, rules, analysisOptions);
@@ -42,6 +42,8 @@ public class PythonAnalyzerContext extends AnalyzerContext {
 
             // Add all entities to the ANY type
             addAllEntityToAny();
+            // Add additional entities to the ANY type
+            this.entityCheckedToAstElements.get(EntityChecked.ANY).addAll(codigaVisitor.assertStatements);
         } else {
             io.codiga.parser.antlr.python.CodigaVisitor codigaVisitor = new io.codiga.parser.antlr.python.CodigaVisitor(code);
             codigaVisitor.visit(parser.root());
@@ -58,7 +60,7 @@ public class PythonAnalyzerContext extends AnalyzerContext {
             // Add all entities to the ANY type
             addAllEntityToAny();
         }
-        
+
     }
 }
 
