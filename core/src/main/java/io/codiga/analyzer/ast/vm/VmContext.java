@@ -64,7 +64,8 @@ public class VmContext {
 """,
         """
   function findVariableFromFunctionCall(assignments, module, functionName) {
-    const filtered = assignments.filter(a => a.right.astType === "functioncall" && a.right.moduleOrObject === module && a.right.name.value === functionName);
+    const filtered = assignments
+			.filter(a => a.right.astType === "functioncall" && a.right.moduleOrObject.value === module && a.right.functionName.value === functionName);
     if (filtered.length > 0) {
       return filtered[0];
     }
@@ -125,7 +126,6 @@ public class VmContext {
             .allowExperimentalOptions(true)
             .allowValueSharing(true)
             .allowIO(false)
-            .option("engine.Mode", "latency")
             .resourceLimits(ResourceLimits.newBuilder().statementLimit(MAX_STATEMENTS, null).build())
             .logHandler(OutputStream.nullOutputStream());
 
