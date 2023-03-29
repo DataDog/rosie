@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 import static io.codiga.parser.treesitter.python.transformation.ImportFromStatement.transformImportFromStatement;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FromStmtToFromStatementTest extends PythonTestUtils {
+public class ImportFromTest extends PythonTestUtils {
 
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {

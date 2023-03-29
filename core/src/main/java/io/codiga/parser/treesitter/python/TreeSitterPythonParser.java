@@ -10,6 +10,7 @@ import java.util.Optional;
 import static io.codiga.parser.treesitter.python.transformation.ArgumentList.transformArgumentListToFunctionCallArguments;
 import static io.codiga.parser.treesitter.python.transformation.AssignmentTransformation.transformAssignment;
 import static io.codiga.parser.treesitter.python.transformation.AttributeTransformation.transformAttribute;
+import static io.codiga.parser.treesitter.python.transformation.BinaryOperatorTransformation.transformBinaryOperator;
 import static io.codiga.parser.treesitter.python.transformation.BlockTransformation.transformBlock;
 import static io.codiga.parser.treesitter.python.transformation.BreakStatementTransformation.transformBreak;
 import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
@@ -43,6 +44,8 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformAssignment(node, parsingContext));
             case ATTRIBUTE:
                 return convertToAstElement(transformAttribute(node, parsingContext));
+            case BINARY_OPERATOR:
+                return convertToAstElement(transformBinaryOperator(node, parsingContext));
             case BLOCK:
                 return convertToAstElement(transformBlock(node, parsingContext));
             case BREAK_STATEMENT:

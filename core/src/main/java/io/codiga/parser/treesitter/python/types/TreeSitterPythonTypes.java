@@ -11,6 +11,7 @@ public enum TreeSitterPythonTypes {
     AS_PATTERN_TARGET("as_pattern_target"),
     ASSIGNMENT("assignment"),
     ATTRIBUTE("attribute"),
+    BINARY_OPERATOR("binary_operator"),
     BLOCK("block"),
     BREAK_STATEMENT("break_statement"),
     CALL("call"),
@@ -61,6 +62,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("as_pattern_target", AS_PATTERN_TARGET);
         NODE_TYPE_TO_ENUMERATION.put("assignment", ASSIGNMENT);
         NODE_TYPE_TO_ENUMERATION.put("attribute", ATTRIBUTE);
+        NODE_TYPE_TO_ENUMERATION.put("binary_operator", BINARY_OPERATOR);
         NODE_TYPE_TO_ENUMERATION.put("block", BLOCK);
         NODE_TYPE_TO_ENUMERATION.put("break_statement", BREAK_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("call", CALL);

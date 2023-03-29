@@ -22,7 +22,7 @@ import static io.codiga.parser.treesitter.python.transformation.AssignmentTransf
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SimpleStmtToAssignmentTest extends PythonTestUtils {
+public class AssignmentTest extends PythonTestUtils {
 
     private final Logger log = Logger.getLogger("Test");
 

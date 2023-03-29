@@ -20,9 +20,9 @@ import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_FUNCTION_CA
 import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.python.treesitter.PythonTestUtils {
+public class CallTest extends io.codiga.analyzer.ast.languages.python.treesitter.PythonTestUtils {
 
-    private static final Logger LOGGER = Logger.getLogger(ExprToFunctionCallTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CallTest.class.getName());
 
     @BeforeAll
     public static void init() {
@@ -236,5 +236,45 @@ public class ExprToFunctionCallTest extends io.codiga.analyzer.ast.languages.pyt
         assertEquals("functioncall", ((PythonList) functionCall.arguments.values[1].value).elements[0].astType);
     }
 
+
+    @Test
+    @DisplayName("Function with array as parameter value")
+    public void testArgument() {
+        String code = """
+             import boto3
+                                    
+            DYNAMO_CLIENT = boto3.client('dynamodb', config=config)
+                       
+            DYNAMO_CLIENT.scan(
+                FilterExpression= username + " = :u AND password = :p", # username is user-controlled
+                ExpressionAttributeValues={
+                    ":u": { 'S': username },
+                    ":p": { 'S': password }
+                 },
+                ProjectionExpression="username, password",
+                TableName="users"
+            ) # Noncompliant)
+            """;
+
+        Node rootNode = parseCode(code);
+
+        TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.CALL.label);
+        assertEquals(2, nodes.size());
+
+        Node node = nodes.get(1);
+        Optional<PythonFunctionCall> functionCallOptional = transformCall(node, parsingContext);
+        assertTrue(functionCallOptional.isPresent());
+        PythonFunctionCall functionCall = functionCallOptional.get();
+        assertEquals("DYNAMO_CLIENT", functionCall.moduleOrObject.value);
+        assertEquals("scan", ((AstString) functionCall.functionName).value);
+        assertEquals(4, functionCall.arguments.values.length);
+        assertEquals("FilterExpression", functionCall.arguments.values[0].name.value);
+        assertEquals("operation", functionCall.arguments.values[0].value.astType);
+        assertEquals("ExpressionAttributeValues", functionCall.arguments.values[1].name.value);
+        assertEquals("dictionary", functionCall.arguments.values[1].value.astType);
+        assertEquals(2, ((PythonDictionary) functionCall.arguments.values[1].value).elements.length);
+    }
 
 }

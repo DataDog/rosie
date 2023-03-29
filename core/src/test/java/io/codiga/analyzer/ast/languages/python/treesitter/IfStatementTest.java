@@ -21,7 +21,7 @@ import static io.codiga.parser.treesitter.python.transformation.IfStatementTrans
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class IfStmtToIfStatementCallTest extends PythonTestUtils {
+public class IfStatementTest extends PythonTestUtils {
 
     private final Logger log = Logger.getLogger("Test");
 

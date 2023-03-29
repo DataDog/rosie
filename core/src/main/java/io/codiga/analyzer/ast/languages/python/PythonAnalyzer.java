@@ -22,7 +22,7 @@ import static io.codiga.metrics.MetricsName.METRIC_DISTRIBUTION_PARSING_TIME_PER
 public class PythonAnalyzer extends AnalyzerCommon {
 
 
-    private Logger logger = LoggerFactory.getLogger(PythonAnalyzer.class);
+    private final Logger logger = LoggerFactory.getLogger(PythonAnalyzer.class);
 
 
     public PythonAnalyzer(MetricsInterface metrics, ErrorReportingInterface errorReporting, AnalyzerConfiguration configuration) {

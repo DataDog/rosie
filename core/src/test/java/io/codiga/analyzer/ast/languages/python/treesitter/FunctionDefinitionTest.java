@@ -21,7 +21,7 @@ import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinit
 import static io.codiga.parser.treesitter.python.transformation.FunctionDefinitionTransformation.transformFunctionDefinition;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FuncDefToFunctionDefinitionTest extends PythonTestUtils {
+public class FunctionDefinitionTest extends PythonTestUtils {
 
     private final Logger log = Logger.getLogger("Test");
 

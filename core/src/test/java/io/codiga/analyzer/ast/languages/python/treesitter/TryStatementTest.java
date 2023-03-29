@@ -19,7 +19,7 @@ import static io.codiga.parser.treesitter.python.transformation.TryStatementTran
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChildren;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TryStmtToTryStatementTest extends PythonTestUtils {
+public class TryStatementTest extends PythonTestUtils {
 
     private final Logger log = Logger.getLogger("Test");
 
