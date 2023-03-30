@@ -24,6 +24,7 @@ public enum TreeSitterPythonTypes {
     DECORATED_DEFINITION("decorated_definition"),
     DECORATOR("decorator"),
     DICTIONARY("dictionary"),
+    ELIF_CLAUSE("elif_clause"),
     ELSE_CLAUSE("else_clause"),
     EXPRESSION_LIST("expression_list"),
     EXPRESSION_STATEMENT("expression_statement"),
@@ -78,6 +79,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("default_parameter", DEFAULT_PARAMETER);
         NODE_TYPE_TO_ENUMERATION.put("dictionary", DICTIONARY);
         NODE_TYPE_TO_ENUMERATION.put("dotted_name", DOTTED_NAME);
+        NODE_TYPE_TO_ENUMERATION.put("elif_clause", ELIF_CLAUSE);
         NODE_TYPE_TO_ENUMERATION.put("else_clause", ELSE_CLAUSE);
         NODE_TYPE_TO_ENUMERATION.put("expression_list", EXPRESSION_LIST);
         NODE_TYPE_TO_ENUMERATION.put("expression_statement", EXPRESSION_STATEMENT);

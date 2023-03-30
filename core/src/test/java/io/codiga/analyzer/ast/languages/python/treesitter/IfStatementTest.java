@@ -163,4 +163,41 @@ public class IfStatementTest extends PythonTestUtils {
         assertEquals("string", ((PythonNot) (ifStatement.condition)).value.astType);
         assertEquals("bla", ((AstString) ((PythonNot) (ifStatement.condition)).value).value);
     }
+
+
+    @Test
+    @DisplayName("elif being parsed")
+    public void testElif() {
+        String code = """
+            bla = 1
+            if not bla:
+                pass
+            elif foo:
+                print("hello")
+            elif baz:
+                print("hello")
+            else:
+                pass
+                """;
+
+
+        Node rootNode = parseCode(code);
+        io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
+
+        TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.IF_STATEMENT.label);
+        assertEquals(1, nodes.size());
+        Optional<PythonIfStatement> ifStatementOptional = transformIfStatement(nodes.get(0), parsingContext);
+
+
+        assertTrue(ifStatementOptional.isPresent());
+        PythonIfStatement ifStatement = ifStatementOptional.get();
+        assertEquals(2, ifStatement.elifStatements.length);
+        assertEquals("foo", ((AstString) ifStatement.elifStatements[0].condition).value);
+        assertEquals("functioncall", ((Sequence) ifStatement.elifStatements[0].statements).elements[0].astType);
+        assertEquals("baz", ((AstString) ifStatement.elifStatements[1].condition).value);
+        assertEquals("functioncall", ((Sequence) ifStatement.elifStatements[1].statements).elements[0].astType);
+
+    }
 }
