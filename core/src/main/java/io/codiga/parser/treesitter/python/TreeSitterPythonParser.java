@@ -21,9 +21,11 @@ import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinit
 import static io.codiga.parser.treesitter.python.transformation.DictionaryTransformation.transformDictionary;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionListTransformation.transformExpressionList;
 import static io.codiga.parser.treesitter.python.transformation.ExpressionStatementTransformation.transformExpressionStatement;
+import static io.codiga.parser.treesitter.python.transformation.ForStatementTransformation.transformForStatement;
 import static io.codiga.parser.treesitter.python.transformation.FunctionDefinitionTransformation.transformFunctionDefinition;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstString;
 import static io.codiga.parser.treesitter.python.transformation.Identifier.transformIdentifierToAstStringWithoutCheck;
+import static io.codiga.parser.treesitter.python.transformation.IfStatementTransformation.transformIfStatement;
 import static io.codiga.parser.treesitter.python.transformation.KeywordArgument.keywordArgumentToFunctionCallArgument;
 import static io.codiga.parser.treesitter.python.transformation.ListTransformation.transformList;
 import static io.codiga.parser.treesitter.python.transformation.NoneTransformation.transformNone;
@@ -70,10 +72,14 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformExpressionList(node, parsingContext));
             case EXPRESSION_STATEMENT:
                 return convertToAstElement(transformExpressionStatement(node, parsingContext));
+            case FOR_STATEMENT:
+                return convertToAstElement(transformForStatement(node, parsingContext));
             case FUNCTION_DEFINITION:
                 return convertToAstElement(transformFunctionDefinition(node, parsingContext));
             case IDENTIFIER:
                 return convertToAstElement(transformIdentifierToAstString(node, parsingContext));
+            case IF_STATEMENT:
+                return convertToAstElement(transformIfStatement(node, parsingContext));
             case KEYWORD_ARGUMENT:
                 return convertToAstElement(keywordArgumentToFunctionCallArgument(node, parsingContext));
             case LIST:
