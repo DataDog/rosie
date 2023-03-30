@@ -53,7 +53,7 @@ public class AstElement {
     public static final String AST_ELEMENT_IF_STATEMENT = "ifstatement";
     public static final String AST_ELEMENT_FOR_STATEMENT = "forstatement";
     public static final String AST_ELEMENT_ELIF_STATEMENT = "elifstatement";
-    public static final String AST_ELEMENT_ELSE_STATEMENT = "elifstatement";
+    public static final String AST_ELEMENT_ELSE_STATEMENT = "elsestatement";
     public static final String AST_ELEMENT_TYPE_FROM_STATEMENT = "fromstatement";
     public static final String AST_ELEMENT_TYPE_TRY_STATEMENT = "trystatement";
     public static final String AST_ELEMENT_TYPE_CATCH_STATEMENT = "catchstatement";
