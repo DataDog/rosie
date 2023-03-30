@@ -27,6 +27,7 @@ import static io.codiga.parser.treesitter.python.transformation.Identifier.trans
 import static io.codiga.parser.treesitter.python.transformation.KeywordArgument.keywordArgumentToFunctionCallArgument;
 import static io.codiga.parser.treesitter.python.transformation.ListTransformation.transformList;
 import static io.codiga.parser.treesitter.python.transformation.NoneTransformation.transformNone;
+import static io.codiga.parser.treesitter.python.transformation.NotOperatorTransformation.transformNot;
 import static io.codiga.parser.treesitter.python.transformation.PassTransformation.transformPassStatement;
 import static io.codiga.parser.treesitter.python.transformation.PatternListTransformation.transformPatternList;
 import static io.codiga.parser.treesitter.python.transformation.ReturnTransformation.transformReturn;
@@ -79,6 +80,8 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformList(node, parsingContext));
             case NONE:
                 return convertToAstElement(transformNone(node, parsingContext));
+            case NOT_OPERATOR:
+                return convertToAstElement(transformNot(node, parsingContext));
             case PATTERN_LIST:
                 return convertToAstElement(transformPatternList(node, parsingContext));
             case PASS_STATEMENT:

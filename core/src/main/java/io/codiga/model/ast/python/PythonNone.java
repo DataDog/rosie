@@ -5,7 +5,6 @@ import io.codiga.parser.common.context.ParserContext;
 
 public class PythonNone extends AstElement {
 
-    public AstElement[] elements;
 
     public String value = "None";
 

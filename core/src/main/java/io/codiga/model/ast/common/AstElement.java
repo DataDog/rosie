@@ -26,6 +26,7 @@ public class AstElement {
 
     public static final String AST_ELEMENT_TYPE_TUPLE = "tuple";
     public static final String AST_ELEMENT_TYPE_NONE = "none";
+    public static final String AST_ELEMENT_TYPE_NOT = "not";
     public static final String AST_ELEMENT_TYPE_BREAK = "break";
     public static final String AST_ELEMENT_TYPE_CONTINUE = "continue";
     public static final String AST_ELEMENT_TYPE_SWITCH = "switch";

@@ -40,6 +40,7 @@ public enum TreeSitterPythonTypes {
     KEYWORD_ARGUMENT("keyword_argument"),
     LIST("list"),
     NONE("none"),
+    NOT_OPERATOR("not_operator"),
     PAIR("pair"),
     PATTERN_LIST("pattern_list"),
     PARAMETERS("parameters"),
@@ -93,6 +94,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("keyword_argument", KEYWORD_ARGUMENT);
         NODE_TYPE_TO_ENUMERATION.put("list", LIST);
         NODE_TYPE_TO_ENUMERATION.put("none", NONE);
+        NODE_TYPE_TO_ENUMERATION.put("not_operator", NOT_OPERATOR);
         NODE_TYPE_TO_ENUMERATION.put("pair", PAIR);
         NODE_TYPE_TO_ENUMERATION.put("pattern_list", PATTERN_LIST);
         NODE_TYPE_TO_ENUMERATION.put("parameters", PARAMETERS);
