@@ -150,8 +150,7 @@ public class ServerMainController {
                     Language language = languageFromString(r.language);
                     EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
                     RuleType ruleType = ruleTypeFromString(r.type);
-                    Map<String, String> variables = r.variables;
-                    AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern, variables);
+                    AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern, r.variables);
                     return analyzerRule;
                 }).toList();
         } catch (IllegalArgumentException iae) {
