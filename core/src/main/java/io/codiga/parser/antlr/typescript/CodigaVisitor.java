@@ -10,7 +10,6 @@ import io.codiga.model.ast.typescript.TypeScriptInterface;
 import io.codiga.model.context.JavaScriptNodeContext;
 import io.codiga.parser.antlr.typescript.gen.TypeScriptParser;
 import io.codiga.parser.antlr.typescript.gen.TypeScriptParserBaseVisitor;
-import jnr.ffi.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
