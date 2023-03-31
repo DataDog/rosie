@@ -46,7 +46,7 @@ public class PatternMatcherTest extends PythonTestUtils {
     @DisplayName("Extract the variables from the pattern")
     public void testVariablesExtraction() {
         String pattern = "open(${file}, \"r\")";
-        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
+        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern, null);
         PatternMatcher patternMatcher = new PatternMatcher(code, rule);
 
         List<PatternVariable> variables = patternMatcher.getVariablesFromPattern(pattern);
@@ -60,7 +60,7 @@ public class PatternMatcherTest extends PythonTestUtils {
     @DisplayName("Correctly transform the pattern into regular expression")
     public void testRegularExpressionGeneration() {
         String pattern = "open(${file}, \"${mode}\")";
-        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
+        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern, null);
         PatternMatcher patternMatcher = new PatternMatcher(code, rule);
 
         List<PatternVariable> variables = patternMatcher.getVariablesFromPattern(pattern);
@@ -72,7 +72,7 @@ public class PatternMatcherTest extends PythonTestUtils {
     public void testPatternObjectOneLine() {
         String pattern = "open(${file}, \"${mode}\")";
         String localCode = "open(\"foo\", \"r\")";
-        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
+        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern, null);
         PatternMatcher patternMatcher = new PatternMatcher(localCode, rule);
         List<PatternObject> patternObjects = patternMatcher.getPatternObjects();
         assertEquals(patternObjects.size(), 1);
@@ -101,7 +101,7 @@ public class PatternMatcherTest extends PythonTestUtils {
     public void testPatternObjectTwoLines() {
         String pattern = "open(${file}, \"${mode}\")";
         String localCode = "bla\nbli open(\"foo\", \"r\")";
-        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern);
+        AnalyzerRule rule = new AnalyzerRule("myrule", Language.PYTHON, RuleType.PATTERN, null, ruleCode, pattern, null);
         PatternMatcher patternMatcher = new PatternMatcher(localCode, rule);
         List<PatternObject> patternObjects = patternMatcher.getPatternObjects();
         assertEquals(1, patternObjects.size());
