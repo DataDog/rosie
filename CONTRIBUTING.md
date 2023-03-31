@@ -3,7 +3,7 @@
 ## Run all tests
 
 ```bash
-./gradlew tests
+./gradlew test
 ```
 
 ## Run a single test
