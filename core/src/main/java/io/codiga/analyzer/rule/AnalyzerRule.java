@@ -4,8 +4,10 @@ import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 
+import java.util.Map;
+
 public record AnalyzerRule(String name, Language language, RuleType ruleType, EntityChecked entityChecked, String code,
-                           String pattern) {
+                           String pattern, Map<String, String> variables) {
     /**
      * Indicate is a rule is valid for a given language (or not)
      *
