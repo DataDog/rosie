@@ -81,4 +81,15 @@ public class RulesUtilsTest {
         assertEquals(rule.variables().get("key2"), "value2");
         assertEquals(rule.variables().get("key3"), null);
     }
+
+    @Test
+    @DisplayName("Parse empty variables from a rule")
+    public void testRulesWithNoVariables() throws IOException {
+        String file = "src/test/resources/rules-with-no-variables.json";
+        List<AnalyzerRule> rules = getRulesFromFile(file);
+        assert (rules.size() == 1);
+        AnalyzerRule rule = rules.stream().findFirst().get();
+        assert(rule.variables().size() == 0);
+        assertEquals(rule.variables().get("santaClaus"), null);
+    }
 }
