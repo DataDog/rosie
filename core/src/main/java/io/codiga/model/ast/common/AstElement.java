@@ -56,6 +56,7 @@ public class AstElement {
     public static final String AST_ELEMENT_ELSE_STATEMENT = "elsestatement";
     public static final String AST_ELEMENT_TYPE_FROM_STATEMENT = "fromstatement";
     public static final String AST_ELEMENT_TYPE_TRY_STATEMENT = "trystatement";
+    public static final String AST_ELEMENT_TYPE_RAISE_STATEMENT = "raisestatement";
     public static final String AST_ELEMENT_TYPE_CATCH_STATEMENT = "catchstatement";
     public static final String AST_ELEMENT_TYPE_VARIABLE_DECLARATION = "variabledeclaration";
     public static final String AST_ELEMENT_TYPE_MEMBER = "member";

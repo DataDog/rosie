@@ -46,6 +46,7 @@ public enum TreeSitterPythonTypes {
     PATTERN_LIST("pattern_list"),
     PARAMETERS("parameters"),
     PASS_STATEMENT("pass_statement"),
+    RAISE_STATEMENT("raise_statement"),
     RETURN_STATEMENT("return_statement"),
     STRING("string"),
     SUBSCRIPT("subscript"),
@@ -101,6 +102,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("pattern_list", PATTERN_LIST);
         NODE_TYPE_TO_ENUMERATION.put("parameters", PARAMETERS);
         NODE_TYPE_TO_ENUMERATION.put("pass_statement", PASS_STATEMENT);
+        NODE_TYPE_TO_ENUMERATION.put("raise_statement", RAISE_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("return_statement", RETURN_STATEMENT);
         NODE_TYPE_TO_ENUMERATION.put("string", STRING);
         NODE_TYPE_TO_ENUMERATION.put("subscript", SUBSCRIPT);
