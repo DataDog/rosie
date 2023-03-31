@@ -68,4 +68,17 @@ public class RulesUtilsTest {
         assertEquals(rules.get(3).language(), Language.JAVASCRIPT);
 
     }
+
+    @Test
+    @DisplayName("Parse all variables from a rule")
+    public void testRulesWithVariables() throws IOException {
+        String file = "src/test/resources/rules-with-variables.json";
+        List<AnalyzerRule> rules = getRulesFromFile(file);
+        assert (rules.size() == 1);
+        AnalyzerRule rule = rules.stream().findFirst().get();
+        assert(rule.variables().size() == 2);
+        assertEquals(rule.variables().get("key1"), "value1");
+        assertEquals(rule.variables().get("key2"), "value2");
+        assertEquals(rule.variables().get("key3"), null);
+    }
 }
