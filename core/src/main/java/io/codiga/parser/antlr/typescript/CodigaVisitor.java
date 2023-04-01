@@ -275,8 +275,8 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
         if (classDeclarationOptional.isPresent()) {
             ClassDeclarationOneParent classDeclaration = classDeclarationOptional.get();
             classDeclaration.setContext(buildContext());
-            this.classDefinitions.add(classDeclarationOptional.get());
-            this.visitedClassDefinitions.push(classDeclarationOptional.get());
+            this.classDefinitions.add(classDeclaration);
+            this.visitedClassDefinitions.push(classDeclaration);
             Object res = visitChildren(ctx);
             this.visitedClassDefinitions.pop();
             return res;

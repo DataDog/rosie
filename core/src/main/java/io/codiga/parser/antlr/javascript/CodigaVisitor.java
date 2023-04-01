@@ -260,7 +260,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         if (htmlElementOptional.isPresent()) {
             JavaScriptHtmlElement htmlElement = htmlElementOptional.get();
             htmlElement.setContext(buildContext());
-            this.htmlElements.add(htmlElementOptional.get());
+            this.htmlElements.add(htmlElement);
 
             // If there is one visited html elements, add it to the list
             if (visitedHtmlElements.size() > 0) {
