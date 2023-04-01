@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
@@ -33,9 +32,7 @@ public class GetVariablesTest extends E2EBase {
 
     @Test
     public void testGetVariables() throws Exception {
-        Map<String, String> variables = new HashMap<>();
-        variables.put("foo", "bar");
-        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "get-variables-rule", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, variables, true);
+        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "get-variables-rule", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, Map.of("foo", "bar"), true);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals("foo=bar\nsantaClaus=null\n", response.ruleResponses.get(0).output);

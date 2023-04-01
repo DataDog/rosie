@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_DEFINITION;
@@ -50,9 +49,7 @@ public class MaxParametersFunctionDefinitionTest extends E2EBase {
     @Test
     @DisplayName("Check that the number of parameters is below the max set")
     public void testMaxParametersInFunctionAcceptable() throws Exception {
-        Map<String, String> variables = new HashMap<>();
-        variables.put("maxParams", "4");
-        Response response = executeTestWithTreeSitter("bla.ts", javascriptCode, Language.TYPESCRIPT, ruleCode, "max-params-function-def", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, null, variables, true);
+        Response response = executeTestWithTreeSitter("bla.ts", javascriptCode, Language.TYPESCRIPT, ruleCode, "max-params-function-def", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, null, Map.of("maxParams", "4"), true);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
         assertEquals(0, response.ruleResponses.get(0).errors.size());
@@ -62,9 +59,7 @@ public class MaxParametersFunctionDefinitionTest extends E2EBase {
     @Test
     @DisplayName("Catch violations for the number of parameters when the maxParams variable is set")
     public void testMaxParametersInFunctionLowerMaxParams() throws Exception {
-        Map<String, String> variables = new HashMap<>();
-        variables.put("maxParams", "3");
-        Response response = executeTestWithTreeSitter("bla.ts", javascriptCode, Language.TYPESCRIPT, ruleCode, "max-params-function-def", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, null, variables, true);
+        Response response = executeTestWithTreeSitter("bla.ts", javascriptCode, Language.TYPESCRIPT, ruleCode, "max-params-function-def", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, null, Map.of("maxParams", "3"), true);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).errors.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
