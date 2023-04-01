@@ -4,7 +4,6 @@ import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public record AnalyzerRule(String name, Language language, RuleType ruleType, EntityChecked entityChecked, String code,
@@ -21,14 +20,5 @@ public record AnalyzerRule(String name, Language language, RuleType ruleType, En
             return true;
         }
         return codeLanguage == language;
-    }
-
-    @Override
-    public Map<String, String> variables() {
-        if(this.variables == null) {
-            return new HashMap<>();
-        } else {
-            return this.variables;
-        }
     }
 }

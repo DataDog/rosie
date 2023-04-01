@@ -76,7 +76,8 @@ public abstract class AnalyzerCommon {
     }
 
     public static void addVariablesToElements(List<AstElement> elements, Map<String, String> variables) {
-        elements.forEach(astElement -> astElement.context.setVariables(variables));
+        Map<String, String> variablesToInject = variables == null ? Map.of() : variables;
+        elements.forEach(astElement -> astElement.context.setVariables(variablesToInject));
     }
 
     public String getCommentsSymbol(Language language) {
