@@ -8,6 +8,7 @@ import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.Language;
+import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.error.AnalysisResult;
 import io.codiga.model.error.RuleResult;
 import io.codiga.model.error.Violation;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -73,6 +75,9 @@ public abstract class AnalyzerCommon {
 
     }
 
+    public static void addVariablesToElements(List<AstElement> elements, Map<String, String> variables) {
+        elements.forEach(astElement -> astElement.context.setVariables(variables));
+    }
 
     public String getCommentsSymbol(Language language) {
         if (language == Language.PYTHON) {
