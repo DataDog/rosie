@@ -89,7 +89,6 @@ public class RulesUtilsTest {
         List<AnalyzerRule> rules = getRulesFromFile(file);
         assert (rules.size() == 1);
         AnalyzerRule rule = rules.stream().findFirst().get();
-        assert(rule.variables().size() == 0);
-        assertEquals(rule.variables().get("santaClaus"), null);
+        assert(rule.variables() == null);
     }
 }
