@@ -56,7 +56,8 @@ public enum TreeSitterPythonTypes {
     TYPE("type"),
     TYPED_PARAMETER("typed_parameter"),
     TYPED_DEFAULT_PARAMETER("typed_default_parameter"),
-    UNKNOWN("unknown");
+    UNKNOWN("unknown"),
+    WHILE_STATEMENT("while_statement");
 
     public static Map<String, TreeSitterPythonTypes> NODE_TYPE_TO_ENUMERATION = new HashMap<>();
 
@@ -113,6 +114,7 @@ public enum TreeSitterPythonTypes {
         NODE_TYPE_TO_ENUMERATION.put("typed_parameter", TYPED_PARAMETER);
         NODE_TYPE_TO_ENUMERATION.put("typed_default_parameter", TYPED_DEFAULT_PARAMETER);
         NODE_TYPE_TO_ENUMERATION.put("unknown", UNKNOWN);
+        NODE_TYPE_TO_ENUMERATION.put("while_statement", WHILE_STATEMENT);
     }
 
     public final String label;
