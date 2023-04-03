@@ -75,6 +75,11 @@ public abstract class AnalyzerCommon {
 
     }
 
+    /**
+     * Inject rule variables into an AST node's context
+     * @param elements
+     * @param variables
+     */
     public static void addVariablesToElements(List<AstElement> elements, Map<String, String> variables) {
         Map<String, String> variablesToInject = variables == null ? Map.of() : variables;
         elements.forEach(astElement -> astElement.context.setVariables(variablesToInject));
