@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static io.codiga.constants.Languages.SUPPORTED_LANGUAGES;
@@ -149,7 +150,7 @@ public class ServerMainController {
                     Language language = languageFromString(r.language);
                     EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
                     RuleType ruleType = ruleTypeFromString(r.type);
-                    AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern);
+                    AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern, r.variables);
                     return analyzerRule;
                 }).toList();
         } catch (IllegalArgumentException iae) {

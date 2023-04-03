@@ -1,5 +1,7 @@
 package io.codiga.server.request;
 
+import java.util.Map;
+
 public class RuleBuilder {
     private String id;
     private String language;
@@ -7,6 +9,7 @@ public class RuleBuilder {
     private String entityChecked;
     private String pattern;
     private String contentBase64;
+    private Map<String, String> variables;
 
     public RuleBuilder setId(String id) {
         this.id = id;
@@ -38,7 +41,12 @@ public class RuleBuilder {
         return this;
     }
 
+    public RuleBuilder setVariables(Map<String, String> variables) {
+        this.variables = variables;
+        return this;
+    }
+
     public Rule createRule() {
-        return new Rule(id, language, type, entityChecked, pattern, contentBase64);
+        return new Rule(id, language, type, entityChecked, pattern, contentBase64, variables);
     }
 }

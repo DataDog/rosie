@@ -5,6 +5,7 @@ import io.codiga.model.ast.common.AstElement;
 import lombok.Builder;
 
 import java.util.List;
+import java.util.Map;
 
 public class JavaScriptNodeContext extends Context {
     public AstElement currentFunction;
@@ -22,8 +23,9 @@ public class JavaScriptNodeContext extends Context {
                                  AstElement currentClass,
                                  List<AstElement> importsList,
                                  List<Assignment> assignmentsList,
-                                 String code) {
-        super(code);
+                                 String code,
+                                 Map<String, String> variables) {
+        super(code, variables);
         this.currentFunction = currentFunction;
         this.currentTryBlock = currentTryBlock;
         this.currentClass = currentClass;

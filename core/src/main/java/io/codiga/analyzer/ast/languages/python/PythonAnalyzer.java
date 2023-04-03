@@ -56,6 +56,8 @@ public class PythonAnalyzer extends AnalyzerCommon {
 
         List<AstElement> astElements = context.getElementsToCheck(rule.entityChecked());
 
+        addVariablesToElements(astElements, rule.variables());
+
         // no object to analyze, return directly and do not waste resource allocating a VM
         if (astElements.isEmpty()) {
             return new RuleResult(rule.name(), List.of(), List.of(), null, null, 0);

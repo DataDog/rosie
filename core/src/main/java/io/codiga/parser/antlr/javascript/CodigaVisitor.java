@@ -176,8 +176,10 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
     public Object visitClassDeclaration(JavaScriptParser.ClassDeclarationContext ctx) {
         Optional<ClassDeclarationOneParent> classDeclarationOptional = transformClassDeclaration(ctx, root);
         if (classDeclarationOptional.isPresent()) {
-            this.classDefinitions.add(classDeclarationOptional.get());
-            this.visitedClassDefinitions.push(classDeclarationOptional.get());
+            ClassDeclarationOneParent classDefinition = classDeclarationOptional.get();
+            classDefinition.setContext(buildContext());
+            this.classDefinitions.add(classDefinition);
+            this.visitedClassDefinitions.push(classDefinition);
             Object res = visitChildren(ctx);
             this.visitedClassDefinitions.pop();
             return res;
@@ -258,7 +260,7 @@ public class CodigaVisitor extends JavaScriptParserBaseVisitor<Object> {
         if (htmlElementOptional.isPresent()) {
             JavaScriptHtmlElement htmlElement = htmlElementOptional.get();
             htmlElement.setContext(buildContext());
-            this.htmlElements.add(htmlElementOptional.get());
+            this.htmlElements.add(htmlElement);
 
             // If there is one visited html elements, add it to the list
             if (visitedHtmlElements.size() > 0) {

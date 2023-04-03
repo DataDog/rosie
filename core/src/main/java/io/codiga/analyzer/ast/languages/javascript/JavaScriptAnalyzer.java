@@ -56,6 +56,8 @@ public class JavaScriptAnalyzer extends AnalyzerCommon {
 
         List<AstElement> astElements = context.getElementsToCheck(rule.entityChecked());
 
+        addVariablesToElements(astElements, rule.variables());
+
         // no object to analyze, return directly and do not waste resource allocating a VM
         if (astElements.isEmpty()) {
             return new RuleResult(rule.name(), List.of(), List.of(), null, null, 0);
@@ -63,7 +65,6 @@ public class JavaScriptAnalyzer extends AnalyzerCommon {
 
         vmContext.prepareForExecution(analyzerContext, astElements);
         vmContext.execute(rule);
-
 
         // Get the output BEFORE we shutdown the VM
         String finalOutput = vmContext.getOutput();

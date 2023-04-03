@@ -101,7 +101,10 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
     public Object visitVariableStatement(TypeScriptParser.VariableStatementContext ctx) {
         List<VariableDeclaration> variableDeclarationList = transformVariableStatementToVariableDeclaration(ctx, root);
         if (variableDeclarationList.size() > 0) {
-            this.variableDeclarations.addAll(variableDeclarationList);
+            variableDeclarationList.forEach(c -> {
+                c.setContext(buildContext());
+                this.variableDeclarations.add(c);
+            });
         }
         return visitChildren(ctx);
     }
@@ -270,8 +273,10 @@ public class CodigaVisitor extends TypeScriptParserBaseVisitor<Object> {
     public Object visitClassDeclaration(TypeScriptParser.ClassDeclarationContext ctx) {
         Optional<ClassDeclarationOneParent> classDeclarationOptional = transformClassDeclaration(ctx, root);
         if (classDeclarationOptional.isPresent()) {
-            this.classDefinitions.add(classDeclarationOptional.get());
-            this.visitedClassDefinitions.push(classDeclarationOptional.get());
+            ClassDeclarationOneParent classDeclaration = classDeclarationOptional.get();
+            classDeclaration.setContext(buildContext());
+            this.classDefinitions.add(classDeclaration);
+            this.visitedClassDefinitions.push(classDeclaration);
             Object res = visitChildren(ctx);
             this.visitedClassDefinitions.pop();
             return res;

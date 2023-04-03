@@ -18,6 +18,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import static io.codiga.model.utils.ModelUtils.stringFromLanguage;
@@ -52,6 +53,7 @@ public class E2EBase {
                                 String ruleType,
                                 String entityChecked,
                                 String pattern,
+                                Map<String, String> variables,
                                 boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
@@ -69,6 +71,43 @@ public class E2EBase {
                         .setType(ruleType)
                         .setEntityChecked(entityChecked)
                         .setPattern(pattern)
+                        .setVariables(variables)
+                        .createRule()
+                )
+            ).createRequest();
+        Response response = this.restTemplate.postForObject(
+            "http://localhost:" + port + "/analyze", request,
+            Response.class);
+        return response;
+    }
+
+    public Response executeTestWithTreeSitter(String filename,
+                                              String code,
+                                              Language language,
+                                              String ruleCode,
+                                              String ruleName,
+                                              String ruleType,
+                                              String entityChecked,
+                                              String pattern,
+                                              Map<String, String> variables,
+                                              boolean logOutput) {
+        RequestOptions requestOptions = new RequestOptions(logOutput, true);
+        Request request = new RequestBuilder()
+            .setFilename(filename)
+            .setLanguage(stringFromLanguage(language))
+            .setFileEncoding("utf-8")
+            .setCodeBase64(encodeBase64(code))
+            .setOptions(requestOptions)
+            .setRules(
+                List.of(
+                    new RuleBuilder()
+                        .setId(ruleName)
+                        .setContentBase64(encodeBase64(ruleCode))
+                        .setLanguage(stringFromLanguage(language))
+                        .setType(ruleType)
+                        .setEntityChecked(entityChecked)
+                        .setPattern(pattern)
+                        .setVariables(variables)
                         .createRule()
                 )
             ).createRequest();
@@ -87,10 +126,36 @@ public class E2EBase {
                                               String entityChecked,
                                               String pattern,
                                               boolean logOutput) {
-        RequestOptions requestOptions = new RequestOptions(logOutput, true);
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, pattern, null, logOutput);
+    }
+
+    public Response executeTest(String filename,
+                                String code,
+                                Language language,
+                                String ruleCode,
+                                String ruleName,
+                                String ruleType,
+                                String entityChecked,
+                                String pattern,
+                                boolean logOutput) {
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, pattern, null, logOutput);
+    }
+
+    public Response executeTest(String filename,
+                                String code,
+                                Language codeLanguage,
+                                Language ruleLanguage,
+                                String ruleCode,
+                                String ruleName,
+                                String ruleType,
+                                String entityChecked,
+                                String pattern,
+                                Map<String, String> variables,
+                                boolean logOutput) {
+        RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
             .setFilename(filename)
-            .setLanguage(stringFromLanguage(language))
+            .setLanguage(stringFromLanguage(codeLanguage))
             .setFileEncoding("utf-8")
             .setCodeBase64(encodeBase64(code))
             .setOptions(requestOptions)
@@ -99,10 +164,11 @@ public class E2EBase {
                     new RuleBuilder()
                         .setId(ruleName)
                         .setContentBase64(encodeBase64(ruleCode))
-                        .setLanguage(stringFromLanguage(language))
+                        .setLanguage(stringFromLanguage(ruleLanguage))
                         .setType(ruleType)
                         .setEntityChecked(entityChecked)
                         .setPattern(pattern)
+                        .setVariables(variables)
                         .createRule()
                 )
             ).createRequest();
@@ -122,29 +188,7 @@ public class E2EBase {
                                 String entityChecked,
                                 String pattern,
                                 boolean logOutput) {
-        RequestOptions requestOptions = new RequestOptions(logOutput, false);
-        Request request = new RequestBuilder()
-            .setFilename(filename)
-            .setLanguage(stringFromLanguage(codeLanguage))
-            .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(code))
-            .setOptions(requestOptions)
-            .setRules(
-                List.of(
-                    new RuleBuilder()
-                        .setId(ruleName)
-                        .setContentBase64(encodeBase64(ruleCode))
-                        .setLanguage(stringFromLanguage(ruleLanguage))
-                        .setType(ruleType)
-                        .setEntityChecked(entityChecked)
-                        .setPattern(pattern)
-                        .createRule()
-                )
-            ).createRequest();
-        Response response = this.restTemplate.postForObject(
-            "http://localhost:" + port + "/analyze", request,
-            Response.class);
-        return response;
+        return executeTest(filename, code, codeLanguage, ruleLanguage, ruleCode, ruleName, ruleType, entityChecked, pattern, null, logOutput);
     }
 
 

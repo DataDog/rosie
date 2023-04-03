@@ -18,9 +18,8 @@ public class RulesUtils {
     public static List<AnalyzerRule> getRulesFromFile(String path) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(new File(path), Rules.class).rules.stream().map(r -> {
-//            System.out.println(r);
             String decodedCode = new String(Base64.getDecoder().decode(r.code()));
-            return new AnalyzerRule(r.name(), r.language(), r.ruleType(), r.entityChecked(), decodedCode, r.pattern());
+            return new AnalyzerRule(r.name(), r.language(), r.ruleType(), r.entityChecked(), decodedCode, r.pattern(), r.variables());
         }).collect(Collectors.toList());
     }
 
