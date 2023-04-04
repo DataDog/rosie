@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class AnyElementTypeChecked extends E2EBase {
+public class AnyElementTypeCheckedTest extends E2EBase {
 
     String pythonCodeWithError = """
         print("bla")

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class NoAssignmentTo42 extends E2EBase {
+public class NoAssignmentTo42Test extends E2EBase {
 
     String pythonCodeWithError = """
         v = 42
