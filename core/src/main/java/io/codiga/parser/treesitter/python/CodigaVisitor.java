@@ -26,6 +26,7 @@ import static io.codiga.parser.treesitter.python.transformation.IfStatementTrans
 import static io.codiga.parser.treesitter.python.transformation.ImportFromStatement.transformImportFromStatement;
 import static io.codiga.parser.treesitter.python.transformation.ImportStatement.transformImportStatement;
 import static io.codiga.parser.treesitter.python.transformation.TryStatementTransformation.transformTryStatement;
+import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChildren;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 
 public class CodigaVisitor {
@@ -167,7 +168,15 @@ public class CodigaVisitor {
                         pythonFunctionDefinition.setContext(buildContext());
                         this.functionDefinitions.add(pythonFunctionDefinition);
                         this.visitedFunctionDefinitions.push(pythonFunctionDefinition);
-                        walkChildren(node, parsingContext);
+
+                        /*
+                         * We do not walk the direct children of the decorated function. Otherwise, we would
+                         * re-analyze the function definition without the decorator. For this reason, we bypass
+                         * the decorated element and walk through its children.
+                         */
+                        getNodeChildren(node).forEach(n -> walkChildren(n, parsingContext));
+
+
                         this.visitedFunctionDefinitions.pop();
                     }
 
@@ -175,7 +184,14 @@ public class CodigaVisitor {
                         pythonClassDefinition.setContext(buildContext());
                         this.classDefinitions.add(pythonClassDefinition);
                         this.visitedClassDefinitions.push(pythonClassDefinition);
-                        walkChildren(node, parsingContext);
+
+                        /*
+                         * We do not walk the direct children of the decorated class. Otherwise, we would
+                         * re-analyze the class definition without the decorator. For this reason, we bypass
+                         * the decorated element and walk through its children.
+                         */
+                        getNodeChildren(node).forEach(n -> walkChildren(n, parsingContext));
+
                         this.visitedClassDefinitions.pop();
                     }
 

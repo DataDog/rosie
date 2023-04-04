@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class NoAssertTuple extends E2EBase {
+public class NoAssertTupleTest extends E2EBase {
 
     String pythonCodeErrors = """
         assert (1, 2)
