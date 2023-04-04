@@ -47,7 +47,6 @@ public class ClassInitMethodRequiredTest extends E2EBase {
     @DisplayName("Detect missing __init__ function for a regular class")
     public void testViolation() throws Exception {
         Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "init-required", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, null, true);
-        logger.info("response:" + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
     }
@@ -56,7 +55,6 @@ public class ClassInitMethodRequiredTest extends E2EBase {
     @DisplayName("Do not report any violation when there is a decorator on the class")
     public void testNoViolation() throws Exception {
         Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "init-required", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, null, true);
-        logger.info("response:" + response);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
     }
