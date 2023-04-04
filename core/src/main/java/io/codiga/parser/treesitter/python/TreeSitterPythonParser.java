@@ -36,6 +36,7 @@ import static io.codiga.parser.treesitter.python.transformation.RaiseStatementTr
 import static io.codiga.parser.treesitter.python.transformation.ReturnTransformation.transformReturn;
 import static io.codiga.parser.treesitter.python.transformation.SubscriptTransformation.transformSubscript;
 import static io.codiga.parser.treesitter.python.transformation.TupleTransformation.transformTuple;
+import static io.codiga.parser.treesitter.python.transformation.WhileStatementTransformation.transformWhileStatement;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
 import static io.codiga.utils.Conversions.convertToAstElement;
 
@@ -101,6 +102,8 @@ public class TreeSitterPythonParser {
                 return convertToAstElement(transformSubscript(node, parsingContext));
             case TUPLE:
                 return convertToAstElement(transformTuple(node, parsingContext));
+            case WHILE_STATEMENT:
+                return convertToAstElement(transformWhileStatement(node, parsingContext));
             case INTEGER:
             case FALSE:
             case STRING:
