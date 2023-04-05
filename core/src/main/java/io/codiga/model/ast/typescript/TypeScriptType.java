@@ -1,6 +1,7 @@
 package io.codiga.model.ast.typescript;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ public class TypeScriptType extends AstElement {
         ParserRuleContext parserRuleContext,
         ParserRuleContext root
     ) {
-        super(AST_ELEMENT_TYPE_TYPE, parserRuleContext, root);
+        super(AstElementTypes.TYPE, parserRuleContext, root);
         this.name = name;
     }
 

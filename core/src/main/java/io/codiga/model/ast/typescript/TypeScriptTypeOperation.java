@@ -1,6 +1,7 @@
 package io.codiga.model.ast.typescript;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class TypeScriptTypeOperation extends AstElement {
         ParserRuleContext parserRuleContext,
         ParserRuleContext root
     ) {
-        super(AST_ELEMENT_TYPE_TYPE_OPERATION, parserRuleContext, root);
+        super(AstElementTypes.TYPE_OPERATION, parserRuleContext, root);
         this.left = left;
         this.right = right;
         this.operand = operand;

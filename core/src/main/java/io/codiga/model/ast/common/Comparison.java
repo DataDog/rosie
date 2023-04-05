@@ -12,7 +12,7 @@ public class Comparison extends AstElement {
                       AstElement rightSide,
                       ParserRuleContext parserRuleContext,
                       ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_COMPARISON, parserRuleContext, root);
+        super(AstElementTypes.COMPARISON, parserRuleContext, root);
         this.leftSide = leftSide;
         this.rightSide = rightSide;
         this.operator = operator;

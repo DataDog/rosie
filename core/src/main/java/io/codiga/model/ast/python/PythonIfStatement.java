@@ -1,6 +1,7 @@
 package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.parser.antlr.python.gen.PythonParser;
 import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -19,7 +20,7 @@ public class PythonIfStatement extends AstElement {
                              PythonElseStatement elseStatements,
                              PythonParser.If_stmtContext parserRuleContext,
                              ParserRuleContext root) {
-        super(AST_ELEMENT_IF_STATEMENT, parserRuleContext, root);
+        super(AstElementTypes.IF_STATEMENT, parserRuleContext, root);
         this.condition = condition;
         this.statements = statements;
         this.elseStatements = elseStatements;
@@ -31,7 +32,7 @@ public class PythonIfStatement extends AstElement {
                              List<PythonElifStatement> elifStatements,
                              PythonElseStatement elseStatements,
                              ParserContext context) {
-        super(AST_ELEMENT_IF_STATEMENT, context);
+        super(AstElementTypes.IF_STATEMENT, context);
         this.condition = condition;
         this.statements = statements;
         this.elseStatements = elseStatements;

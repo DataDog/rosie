@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.languages.python.treesitter;
 
 import ai.serenade.treesitter.Node;
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.python.PythonFunctionDefinition;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.*;
 import static io.codiga.parser.treesitter.python.transformation.DecoratedDefinitionTransformation.transformDecoratedDefinition;
 import static io.codiga.parser.treesitter.python.transformation.FunctionDefinitionTransformation.transformFunctionDefinition;
 import static org.junit.jupiter.api.Assertions.*;
@@ -230,11 +230,11 @@ public class FunctionDefinitionTest extends PythonTestUtils {
         PythonFunctionDefinition functionDefinition = (PythonFunctionDefinition) astElement;
 
         assertEquals("hello", functionDefinition.name.str);
-        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, functionDefinition.content.astType);
+        assertEquals(AstElementTypes.SEQUENCE.label, functionDefinition.content.astType);
         assertEquals(3, ((Sequence) functionDefinition.content).elements.length);
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, ((Sequence) functionDefinition.content).elements[0].astType);
-        assertEquals(AST_ELEMENT_TYPE_ASSIGNMENT, ((Sequence) functionDefinition.content).elements[1].astType);
-        assertEquals(AST_ELEMENT_TYPE_RETURN, ((Sequence) functionDefinition.content).elements[2].astType);
+        assertEquals(AstElementTypes.FUNCTION_CALL.label, ((Sequence) functionDefinition.content).elements[0].astType);
+        assertEquals(AstElementTypes.ASSIGNMENT.label, ((Sequence) functionDefinition.content).elements[1].astType);
+        assertEquals(AstElementTypes.RETURN.label, ((Sequence) functionDefinition.content).elements[2].astType);
 
     }
 }

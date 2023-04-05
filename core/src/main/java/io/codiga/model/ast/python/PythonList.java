@@ -1,6 +1,7 @@
 package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -14,14 +15,14 @@ public class PythonList extends AstElement {
                       ParserRuleContext ruleContext,
                       ParserRuleContext root) {
 
-        super(AST_ELEMENT_TYPE_LIST, ruleContext, root);
+        super(AstElementTypes.LIST, ruleContext, root);
         this.elements = new AstElement[listElements.size()];
         this.elements = listElements.toArray(elements);
     }
 
     public PythonList(List<? extends AstElement> listElements, ParserContext parserContext) {
 
-        super(AST_ELEMENT_TYPE_LIST, parserContext);
+        super(AstElementTypes.LIST, parserContext);
         this.elements = new AstElement[listElements.size()];
         this.elements = listElements.toArray(elements);
     }

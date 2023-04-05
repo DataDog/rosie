@@ -11,7 +11,7 @@ public class Switch extends AstElement {
 
 
     public Switch(AstElement expression, List<SwitchCase> switchCaseList, SwitchCase defaultCase, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_SWITCH, parserRuleContext, root);
+        super(AstElementTypes.SWITCH, parserRuleContext, root);
         this.expression = expression;
         this.defaultCase = defaultCase;
         this.cases = new SwitchCase[switchCaseList.size()];

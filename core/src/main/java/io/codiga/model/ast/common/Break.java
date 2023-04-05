@@ -7,10 +7,10 @@ public class Break extends AstElement {
 
 
     public Break(ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_BREAK, parserRuleContext, root);
+        super(AstElementTypes.BREAK, parserRuleContext, root);
     }
 
     public Break(ParserContext context) {
-        super(AST_ELEMENT_TYPE_BREAK, context);
+        super(AstElementTypes.BREAK, context);
     }
 }

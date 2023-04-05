@@ -2,6 +2,7 @@ package io.codiga.analyzer.ast.languages.python.treesitter;
 
 import ai.serenade.treesitter.Node;
 import io.codiga.model.ast.common.Assignment;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.VariableIndex;
 import io.codiga.model.ast.python.PythonFunctionCall;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_FUNCTION_CALL;
 import static io.codiga.parser.treesitter.python.transformation.AssignmentTransformation.transformAssignment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -114,7 +114,7 @@ public class AssignmentTest extends PythonTestUtils {
         assertTrue(assignmentOptional.isPresent());
         Assignment assignment = assignmentOptional.get();
         assertEquals("v", ((AstString) assignment.left).str);
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, assignment.right.astType);
+        assertEquals(AstElementTypes.FUNCTION_CALL.label, assignment.right.astType);
         PythonFunctionCall functionCall = (PythonFunctionCall) assignment.right;
         assertEquals("format", ((AstString) functionCall.functionName).value);
         assertEquals("\"SELECT foo FROM bar WHERE plop={0}\"", functionCall.moduleOrObject.str);

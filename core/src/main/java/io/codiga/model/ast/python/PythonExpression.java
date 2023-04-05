@@ -1,6 +1,7 @@
 package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class PythonExpression extends AstElement {
@@ -12,7 +13,7 @@ public class PythonExpression extends AstElement {
                             String expressionType,
                             ParserRuleContext parserRuleContext,
                             ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_EXPRESSION, parserRuleContext, root);
+        super(AstElementTypes.EXPRESSION, parserRuleContext, root);
         this.expressionType = expressionType;
         this.atom = atom;
     }

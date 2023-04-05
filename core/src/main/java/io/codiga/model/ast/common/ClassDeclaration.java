@@ -11,7 +11,7 @@ public class ClassDeclaration extends AstElement {
     public ClassDeclaration(AstString name,
                             ParserRuleContext ruleContext,
                             ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_CLASS_DEFINITION, ruleContext, root);
+        super(AstElementTypes.CLASS_DEFINITION, ruleContext, root);
         this.name = name;
         this.content = null;
     }
@@ -21,7 +21,7 @@ public class ClassDeclaration extends AstElement {
                             AstElement content,
                             ParserRuleContext ruleContext,
                             ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_CLASS_DEFINITION, ruleContext, root);
+        super(AstElementTypes.CLASS_DEFINITION, ruleContext, root);
         this.name = name;
         this.content = content;
     }

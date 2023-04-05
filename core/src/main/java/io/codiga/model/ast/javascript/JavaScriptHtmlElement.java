@@ -1,6 +1,7 @@
 package io.codiga.model.ast.javascript;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class JavaScriptHtmlElement extends AstElement {
                                  List<AstElement> contentList,
                                  ParserRuleContext parserRuleContext,
                                  ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_HTML_ELEMENT, parserRuleContext, root);
+        super(AstElementTypes.HTML_ELEMENT, parserRuleContext, root);
         this.tag = tag;
         this.attributes = attributeList.stream().toArray(JavaScriptHtmlAttribute[]::new);
         this.content = contentList.stream().toArray(AstElement[]::new);

@@ -1,6 +1,7 @@
 package io.codiga.model.ast.typescript;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,7 @@ public class TypeScriptInterfaceProperty extends AstElement {
         ParserRuleContext parserRuleContext,
         ParserRuleContext root
     ) {
-        super(AST_ELEMENT_TYPE_INTERFACE_PROPERTY, parserRuleContext, root);
+        super(AstElementTypes.INTERFACE_PROPERTY, parserRuleContext, root);
         this.name = name;
         this.value = value;
         this.readOnly = readOnly;

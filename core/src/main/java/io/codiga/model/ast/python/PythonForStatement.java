@@ -1,6 +1,7 @@
 package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.parser.antlr.python.gen.PythonParser;
 import io.codiga.parser.common.context.ParserContext;
@@ -25,7 +26,7 @@ public class PythonForStatement extends AstElement {
                               PythonElseStatement elseStatement,
                               PythonParser.For_stmtContext parserRuleContext,
                               ParserRuleContext root) {
-        super(AST_ELEMENT_FOR_STATEMENT, parserRuleContext, root);
+        super(AstElementTypes.FOR_STATEMENT, parserRuleContext, root);
         this.variables = variables.stream().toArray(PythonExpression[]::new);
         this.list = list;
         this.statements = statements;
@@ -37,7 +38,7 @@ public class PythonForStatement extends AstElement {
                               AstElement right,
                               AstElement statements,
                               ParserContext context) {
-        super(AST_ELEMENT_FOR_STATEMENT, context);
+        super(AstElementTypes.FOR_STATEMENT, context);
         this.left = left;
         this.right = right;
         this.statements = statements;

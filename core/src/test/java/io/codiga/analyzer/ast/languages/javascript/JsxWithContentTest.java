@@ -1,9 +1,6 @@
 package io.codiga.analyzer.ast.languages.javascript;
 
-import io.codiga.model.ast.common.AstExpression;
-import io.codiga.model.ast.common.AstString;
-import io.codiga.model.ast.common.IfStatement;
-import io.codiga.model.ast.common.Sequence;
+import io.codiga.model.ast.common.*;
 import io.codiga.model.ast.javascript.JavaScriptHtmlElement;
 import io.codiga.parser.antlr.javascript.gen.JavaScriptParser;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -16,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.*;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptHtmlElementTransformation.transformJavaScriptHtmlElement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -56,7 +52,7 @@ public class JsxWithContentTest extends JavaScriptTestUtils {
         assertTrue(elementOptional.isPresent());
         JavaScriptHtmlElement element = elementOptional.get();
         assertEquals(1, element.content.length);
-        assertEquals(AST_ELEMENT_TYPE_EXPRESSION, element.content[0].astType);
+        assertEquals(AstElementTypes.EXPRESSION.label, element.content[0].astType);
         AstExpression astExpression = (AstExpression) element.content[0];
         assertEquals("||", ((AstString) astExpression.operator).value);
         assertEquals("elements", ((AstString) astExpression.left).value);
@@ -85,7 +81,7 @@ public class JsxWithContentTest extends JavaScriptTestUtils {
         assertTrue(elementOptional.isPresent());
         JavaScriptHtmlElement element = elementOptional.get();
         assertEquals(1, element.content.length);
-        assertEquals(AST_ELEMENT_TYPE_EXPRESSION, element.content[0].astType);
+        assertEquals(AstElementTypes.EXPRESSION.label, element.content[0].astType);
         AstExpression astExpression = (AstExpression) element.content[0];
         assertEquals("&&", ((AstString) astExpression.operator).value);
         assertEquals("elements", ((AstString) astExpression.left).value);
@@ -116,13 +112,13 @@ public class JsxWithContentTest extends JavaScriptTestUtils {
         assertTrue(elementOptional.isPresent());
         JavaScriptHtmlElement element = elementOptional.get();
         assertEquals(1, element.content.length);
-        assertEquals(AST_ELEMENT_IF_STATEMENT, element.content[0].astType);
+        assertEquals(AstElementTypes.IF_STATEMENT.label, element.content[0].astType);
         IfStatement ifStatement = (IfStatement) element.content[0];
         assertEquals("elements", ((AstString) ifStatement.condition).value);
         assertEquals("sequence", ifStatement.statements.astType);
-        assertEquals(AST_ELEMENT_TYPE_HTML_ELEMENT, ((Sequence) ifStatement.statements).elements[0].astType);
+        assertEquals(AstElementTypes.HTML_ELEMENT.label, ((Sequence) ifStatement.statements).elements[0].astType);
         assertEquals("sequence", ifStatement.elseStatements.astType);
-        assertEquals(AST_ELEMENT_TYPE_HTML_ELEMENT, ((Sequence) ifStatement.elseStatements).elements[0].astType);
+        assertEquals(AstElementTypes.HTML_ELEMENT.label, ((Sequence) ifStatement.elseStatements).elements[0].astType);
     }
 
     @Test
@@ -151,10 +147,10 @@ public class JsxWithContentTest extends JavaScriptTestUtils {
         assertTrue(elementOptional.isPresent());
         JavaScriptHtmlElement element = elementOptional.get();
         assertEquals(2, element.content.length);
-        assertEquals(AST_ELEMENT_TYPE_EXPRESSION, element.content[1].astType);
+        assertEquals(AstElementTypes.EXPRESSION.label, element.content[1].astType);
         AstExpression expression = (AstExpression) element.content[1];
         assertEquals("true", ((AstString) expression.left).value);
-        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, expression.right.astType);
+        assertEquals(AstElementTypes.SEQUENCE.label, expression.right.astType);
         assertEquals(1, ((Sequence) expression.right).elements.length);
     }
 }

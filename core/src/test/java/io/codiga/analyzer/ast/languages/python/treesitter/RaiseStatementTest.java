@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.python.treesitter;
 
 import ai.serenade.treesitter.Node;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.python.PythonFunctionCall;
 import io.codiga.model.ast.python.RaiseStatement;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_FUNCTION_CALL;
 import static io.codiga.parser.treesitter.python.transformation.RaiseStatementTransformation.transformRaiseStatement;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,7 +55,7 @@ public class RaiseStatementTest extends PythonTestUtils {
         // first statement
         raiseStatementOptional = transformRaiseStatement(nodes.get(0), parsingContext);
         assertTrue(raiseStatementOptional.isPresent());
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, raiseStatementOptional.get().exception.astType);
+        assertEquals(AstElementTypes.FUNCTION_CALL.label, raiseStatementOptional.get().exception.astType);
         assertEquals("MyException", ((AstString) ((PythonFunctionCall) raiseStatementOptional.get().exception).functionName).value);
         assertEquals(0, ((PythonFunctionCall) raiseStatementOptional.get().exception).arguments.values.length);
         assertNull(raiseStatementOptional.get().as);
@@ -64,7 +64,7 @@ public class RaiseStatementTest extends PythonTestUtils {
         // second statement
         raiseStatementOptional = transformRaiseStatement(nodes.get(1), parsingContext);
         assertTrue(raiseStatementOptional.isPresent());
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, raiseStatementOptional.get().exception.astType);
+        assertEquals(AstElementTypes.FUNCTION_CALL.label, raiseStatementOptional.get().exception.astType);
         assertEquals("MyException", ((AstString) ((PythonFunctionCall) raiseStatementOptional.get().exception).functionName).value);
         assertEquals(2, ((PythonFunctionCall) raiseStatementOptional.get().exception).arguments.values.length);
         assertNull(raiseStatementOptional.get().as);

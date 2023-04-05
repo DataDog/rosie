@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.python.treesitter;
 
 import ai.serenade.treesitter.Node;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.common.WhileStatement;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_PASS;
 import static io.codiga.parser.treesitter.python.transformation.WhileStatementTransformation.transformWhileStatement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -54,7 +54,7 @@ public class WhileStatementTest extends PythonTestUtils {
         WhileStatement whileStatement = whileStatementOptional.get();
 
         assertEquals("True", ((AstString) whileStatement.condition).value);
-        assertEquals(AST_ELEMENT_TYPE_PASS, ((Sequence) whileStatement.statements).elements[0].astType);
+        assertEquals(AstElementTypes.PASS.label, ((Sequence) whileStatement.statements).elements[0].astType);
     }
 
 

@@ -12,69 +12,6 @@ import static io.codiga.analyzer.ast.AstUtils.getEndPosition;
 import static io.codiga.analyzer.ast.AstUtils.getStartPosition;
 
 public class AstElement {
-    public static final String AST_ELEMENT_TYPE_STRING = "string";
-    public static final String AST_ELEMENT_TYPE_LIST = "list";
-    public static final String AST_ELEMENT_TYPE_ARRAY = "array";
-    public static final String AST_ELEMENT_TYPE_OBJECT = "object";
-    public static final String AST_ELEMENT_TYPE_OBJECT_ELEMENT = "object_element";
-    public static final String AST_ELEMENT_TYPE_ASSIGNMENT = "assignment";
-    public static final String AST_ELEMENT_TYPE_ASSERT = "assert";
-    public static final String AST_ELEMENT_TYPE_VARIABLE_INDEX = "variableindex";
-    public static final String AST_ELEMENT_TYPE_ASSIGNMENTS = "assignments";
-    public static final String AST_ELEMENT_TYPE_CONTAINER = "container";
-    public static final String AST_ELEMENT_TYPE_RETURN = "return";
-
-    public static final String AST_ELEMENT_TYPE_TUPLE = "tuple";
-    public static final String AST_ELEMENT_TYPE_NONE = "none";
-    public static final String AST_ELEMENT_TYPE_NOT = "not";
-    public static final String AST_ELEMENT_TYPE_BREAK = "break";
-    public static final String AST_ELEMENT_TYPE_CONTINUE = "continue";
-    public static final String AST_ELEMENT_TYPE_SWITCH = "switch";
-    public static final String AST_ELEMENT_TYPE_SWITCH_CASE = "switchcase";
-    public static final String AST_ELEMENT_TYPE_SEQUENCE = "sequence";
-    public static final String AST_ELEMENT_TYPE_OPERATION = "operation";
-    public static final String AST_ELEMENT_TYPE_FUNCTION_CALL = "functioncall";
-    public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION_PARAMETERS = "functiondefinitionparameters";
-    public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION_PARAMETER = "functiondefinitionparameter";
-    public static final String AST_ELEMENT_TYPE_FUNCTION_EXCEPT_CLAUSE = "exceptclause";
-    public static final String AST_ELEMENT_TYPE_FUNCTION_FINALLY_CLAUSE = "finallyclause";
-    public static final String AST_ELEMENT_TYPE_FUNCTION_DEFINITION = "functiondefinition";
-    public static final String AST_ELEMENT_TYPE_FUNCTION_EXPRESSION = "functionexpression";
-
-    public static final String AST_ELEMENT_TYPE_CLASS_DEFINITION = "classdefinition";
-    public static final String AST_ELEMENT_TYPE_IMPORT_STATEMENT = "importstatement";
-    public static final String AST_ELEMENT_TYPE_IMPORTED_NAME = "importedname";
-    public static final String AST_ELEMENT_TYPE_COMPARISON = "comparison";
-    public static final String AST_ELEMENT_TYPE_EXPRESSION = "expression";
-    public static final String AST_ELEMENT_TYPE_ARGUMENT = "argument";
-    public static final String AST_ELEMENT_TYPE_DECORATOR = "decorator";
-    public static final String AST_ELEMENT_TYPE_DICTIONARY = "dictionary";
-    public static final String AST_ELEMENT_TYPE_DICTIONARY_ELEMENT = "dictionaryelement";
-    public static final String AST_ELEMENT_IF_STATEMENT = "ifstatement";
-    public static final String AST_ELEMENT_FOR_STATEMENT = "forstatement";
-    public static final String AST_ELEMENT_ELIF_STATEMENT = "elifstatement";
-    public static final String AST_ELEMENT_ELSE_STATEMENT = "elsestatement";
-    public static final String AST_ELEMENT_TYPE_FROM_STATEMENT = "fromstatement";
-    public static final String AST_ELEMENT_TYPE_TRY_STATEMENT = "trystatement";
-    public static final String AST_ELEMENT_TYPE_RAISE_STATEMENT = "raisestatement";
-    public static final String AST_ELEMENT_TYPE_CATCH_STATEMENT = "catchstatement";
-    public static final String AST_ELEMENT_TYPE_VARIABLE_DECLARATION = "variabledeclaration";
-    public static final String AST_ELEMENT_TYPE_MEMBER = "member";
-    public static final String AST_ELEMENT_TYPE_HTML_ELEMENT = "htmlelement";
-    public static final String AST_ELEMENT_TYPE_HTML_TAG = "htmltag";
-    public static final String AST_ELEMENT_TYPE_HTML_ATTRIBUTE = "htmlattribute";
-    public static final String AST_ELEMENT_TYPE_HTML_DATA = "htmldata";
-
-    public static final String AST_ELEMENT_TYPE_FROM_ELEMENT = "fromelement";
-    public static final String AST_ELEMENT_TYPE_PASS = "pass";
-    public static final String AST_ELEMENT_TYPE_IMPORT_PACKAGE = "importpackage";
-    public static final String AST_ELEMENT_TYPE_ARGUMENTS = "arguments";
-    public static final String AST_ELEMENT_TYPE_TYPE = "type";
-    public static final String AST_ELEMENT_TYPE_INTERFACE = "interface";
-    public static final String AST_ELEMENT_TYPE_INTERFACE_PROPERTY = "interfaceproperty";
-    public static final String AST_ELEMENT_TYPE_INTERFACE_INDEX_SIGNATURE = "indexsignature";
-    public static final String AST_ELEMENT_TYPE_TYPE_OPERATION = "typeoperation";
-    public static final String AST_ELEMENT_WHILE_STATEMENT = "whilestatement";
     @HostAccess.Export
     public Position start;
     @HostAccess.Export
@@ -90,10 +27,10 @@ public class AstElement {
     protected ParserRuleContext parserRuleContext = null;
     protected ParserRuleContext root = null;
 
-    public AstElement(String astType,
+    public AstElement(AstElementTypes astType,
                       ParserRuleContext parserRuleContext,
                       ParserRuleContext root) {
-        this.astType = astType;
+        this.astType = astType.label;
         this.start = getStartPosition(parserRuleContext);
         this.end = getEndPosition(parserRuleContext);
         this.startIndex = parserRuleContext.start.getStartIndex();
@@ -103,9 +40,9 @@ public class AstElement {
         this.context = null;
     }
 
-    public AstElement(String astType,
+    public AstElement(AstElementTypes astType,
                       ParserContext parserContext) {
-        this.astType = astType;
+        this.astType = astType.label;
         this.start = parserContext.getStartPosition();
         this.end = parserContext.getEndPosition();
         this.startIndex = parserContext.getStartIndex();
@@ -113,10 +50,10 @@ public class AstElement {
         this.context = null;
     }
 
-    public AstElement(String astType,
+    public AstElement(AstElementTypes astType,
                       Token token,
                       ParserRuleContext root) {
-        this.astType = astType;
+        this.astType = astType.label;
         this.startIndex = token.getStartIndex();
         this.endIndex = token.getStopIndex();
         this.start = getStartPosition(token);
@@ -126,12 +63,12 @@ public class AstElement {
         this.context = null;
     }
 
-    public AstElement(String astType,
+    public AstElement(AstElementTypes astType,
                       Position startPosition,
                       Position endPosition,
                       ParserRuleContext parserRuleContext,
                       ParserRuleContext root) {
-        this.astType = astType;
+        this.astType = astType.label;
         this.start = startPosition;
         this.end = endPosition;
         this.startIndex = parserRuleContext.start.getStartIndex();

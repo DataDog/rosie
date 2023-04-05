@@ -9,13 +9,13 @@ public class Assignment extends AstElement {
 
 
     public Assignment(AstElement left, AstElement right, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_ASSIGNMENT, parserRuleContext, root);
+        super(AstElementTypes.ASSIGNMENT, parserRuleContext, root);
         this.left = left;
         this.right = right;
     }
 
     public Assignment(AstElement left, AstElement right, ParserContext context) {
-        super(AST_ELEMENT_TYPE_ASSIGNMENT, context);
+        super(AstElementTypes.ASSIGNMENT, context);
         this.left = left;
         this.right = right;
     }

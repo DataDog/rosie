@@ -9,13 +9,13 @@ public class FunctionCallArgument extends AstElement {
     public AstElement value;
 
     public FunctionCallArgument(AstString name, AstElement value, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_ARGUMENT, parserRuleContext, root);
+        super(AstElementTypes.ARGUMENT, parserRuleContext, root);
         this.name = name;
         this.value = value;
     }
 
     public FunctionCallArgument(AstString name, AstElement value, ParserContext parserContext) {
-        super(AST_ELEMENT_TYPE_ARGUMENT, parserContext);
+        super(AstElementTypes.ARGUMENT, parserContext);
         this.name = name;
         this.value = value;
     }

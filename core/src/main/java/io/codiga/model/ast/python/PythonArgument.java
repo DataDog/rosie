@@ -1,6 +1,7 @@
 package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.parser.antlr.python.gen.PythonParser;
 import io.codiga.parser.common.context.ParserContext;
@@ -14,13 +15,13 @@ public class PythonArgument extends AstElement {
     public AstString value;
 
     public PythonArgument(PythonString name, PythonString value, PythonParser.ArgumentContext context, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_ARGUMENT, context, root);
+        super(AstElementTypes.ARGUMENT, context, root);
         this.name = name;
         this.value = value;
     }
 
     public PythonArgument(AstString name, AstString value, ParserContext parserContext) {
-        super(AST_ELEMENT_TYPE_ARGUMENT, parserContext);
+        super(AstElementTypes.ARGUMENT, parserContext);
         this.name = name;
         this.value = value;
     }
