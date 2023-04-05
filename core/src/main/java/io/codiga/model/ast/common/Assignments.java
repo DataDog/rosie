@@ -9,7 +9,7 @@ public class Assignments extends AstElement {
 
 
     public Assignments(List<Assignment> assignmentList, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_ASSIGNMENTS, parserRuleContext, root);
+        super(AstElementTypes.ASSIGNMENTS, parserRuleContext, root);
         this.values = new Assignment[assignmentList.size()];
         this.values = assignmentList.toArray(values);
     }

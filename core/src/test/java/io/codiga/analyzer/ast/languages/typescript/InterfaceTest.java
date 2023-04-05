@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript;
 
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.typescript.TypeScriptInterface;
 import io.codiga.model.ast.typescript.TypeScriptInterfaceIndexSignature;
@@ -15,8 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_INTERFACE_INDEX_SIGNATURE;
-import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_INTERFACE_PROPERTY;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptInterfaceTransformation.transformInterfaceDeclaration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -54,7 +53,7 @@ public class InterfaceTest extends TypeScriptTestUtils {
         assertTrue(interfaceOptional.isPresent());
         assertEquals("LabeledValue", ((AstString) interfaceOptional.get().name).value);
         assertEquals(1, interfaceOptional.get().members.length);
-        assertEquals(AST_ELEMENT_TYPE_INTERFACE_PROPERTY, interfaceOptional.get().members[0].astType);
+        assertEquals(AstElementTypes.INTERFACE_PROPERTY.label, interfaceOptional.get().members[0].astType);
         TypeScriptInterfaceProperty typeScriptInterfaceProperty = (TypeScriptInterfaceProperty) interfaceOptional.get().members[0];
 
         assertEquals("label", ((AstString) typeScriptInterfaceProperty.name).value);
@@ -82,7 +81,7 @@ public class InterfaceTest extends TypeScriptTestUtils {
         assertTrue(interfaceOptional.isPresent());
         assertEquals("StringByString", ((AstString) interfaceOptional.get().name).value);
         assertEquals(1, interfaceOptional.get().members.length);
-        assertEquals(AST_ELEMENT_TYPE_INTERFACE_INDEX_SIGNATURE, interfaceOptional.get().members[0].astType);
+        assertEquals(AstElementTypes.INTERFACE_INDEX_SIGNATURE.label, interfaceOptional.get().members[0].astType);
         TypeScriptInterfaceIndexSignature typeScriptInterfaceIndexSignature = (TypeScriptInterfaceIndexSignature) interfaceOptional.get().members[0];
 
         assertEquals("key", ((AstString) typeScriptInterfaceIndexSignature.keyName).value);

@@ -13,13 +13,13 @@ public class Sequence extends AstElement {
 
 
     public Sequence(List<AstElement> elementsList, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_SEQUENCE, parserRuleContext, root);
+        super(AstElementTypes.SEQUENCE, parserRuleContext, root);
         this.elements = new AstElement[elementsList.size()];
         this.elements = elementsList.toArray(elements);
     }
 
     public Sequence(List<AstElement> elementsList, ParserContext context) {
-        super(AST_ELEMENT_TYPE_SEQUENCE, context);
+        super(AstElementTypes.SEQUENCE, context);
         this.elements = new AstElement[elementsList.size()];
         this.elements = elementsList.toArray(elements);
     }

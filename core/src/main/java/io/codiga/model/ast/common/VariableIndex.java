@@ -9,13 +9,13 @@ public class VariableIndex extends AstElement {
 
 
     public VariableIndex(AstElement variable, AstElement index, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_VARIABLE_INDEX, parserRuleContext, root);
+        super(AstElementTypes.VARIABLE_INDEX, parserRuleContext, root);
         this.variable = variable;
         this.index = index;
     }
 
     public VariableIndex(AstElement variable, AstElement index, ParserContext context) {
-        super(AST_ELEMENT_TYPE_VARIABLE_INDEX, context);
+        super(AstElementTypes.VARIABLE_INDEX, context);
         this.variable = variable;
         this.index = index;
     }

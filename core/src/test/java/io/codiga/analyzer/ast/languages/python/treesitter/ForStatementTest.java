@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.python.treesitter;
 
 import ai.serenade.treesitter.Node;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.python.PythonForStatement;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.*;
 import static io.codiga.parser.treesitter.python.transformation.ForStatementTransformation.transformForStatement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -54,9 +54,9 @@ public class ForStatementTest extends PythonTestUtils {
         PythonForStatement forStatement = forStatementOptional.get();
 
         assertEquals("x", ((AstString) forStatement.left).value);
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, forStatement.right.astType);
-        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, forStatement.statements.astType);
-        assertEquals(AST_ELEMENT_TYPE_PASS, ((Sequence) forStatement.statements).elements[0].astType);
+        assertEquals(AstElementTypes.FUNCTION_CALL.label, forStatement.right.astType);
+        assertEquals(AstElementTypes.SEQUENCE.label, forStatement.statements.astType);
+        assertEquals(AstElementTypes.PASS.label, ((Sequence) forStatement.statements).elements[0].astType);
     }
 
 

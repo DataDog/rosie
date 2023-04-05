@@ -1,6 +1,7 @@
 package io.codiga.model.ast.javascript;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -16,7 +17,7 @@ public class JavaScriptImport extends AstElement {
                             ParserRuleContext ruleContext,
                             ParserRuleContext root) {
 
-        super(AST_ELEMENT_TYPE_IMPORT_STATEMENT, ruleContext, root);
+        super(AstElementTypes.IMPORT_STATEMENT, ruleContext, root);
         this.importedNames = new JavaScriptImportedName[importedNames.size()];
         this.importedNames = importedNames.toArray(this.importedNames);
         this.pkg = pkg;

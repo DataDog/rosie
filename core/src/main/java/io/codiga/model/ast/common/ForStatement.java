@@ -15,7 +15,7 @@ public class ForStatement extends AstElement {
                         ParserRuleContext parserRuleContext,
                         ParserRuleContext root
     ) {
-        super(AST_ELEMENT_FOR_STATEMENT, parserRuleContext, root);
+        super(AstElementTypes.FOR_STATEMENT, parserRuleContext, root);
         this.init = init;
         this.test = test;
         this.update = update;

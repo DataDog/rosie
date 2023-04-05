@@ -1,6 +1,7 @@
 package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.parser.antlr.python.gen.PythonParser;
 import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -17,7 +18,7 @@ public class PythonComparison extends AstElement {
                             PythonExpression expression,
                             PythonParser.ComparisonContext parserRuleContext,
                             ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_COMPARISON, parserRuleContext, root);
+        super(AstElementTypes.COMPARISON, parserRuleContext, root);
         this.leftSide = leftSide;
         this.rightSide = rightSide;
         this.operator = operator;
@@ -29,7 +30,7 @@ public class PythonComparison extends AstElement {
                             AstElement rightSide,
                             PythonExpression expression,
                             ParserContext parserContext) {
-        super(AST_ELEMENT_TYPE_COMPARISON, parserContext);
+        super(AstElementTypes.COMPARISON, parserContext);
         this.leftSide = leftSide;
         this.rightSide = rightSide;
         this.operator = operator;

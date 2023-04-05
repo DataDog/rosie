@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.typescript;
 
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.common.Switch;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.*;
 import static io.codiga.parser.antlr.typescript.transformations.TypeScriptSwitchStatement.transformSwitchStatement;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,16 +67,16 @@ public class SwitchTest extends TypeScriptTestUtils {
         Switch switchStatement = switchOptional.get();
         assertEquals(5, switchStatement.cases.length);
         assertNotNull(switchStatement.defaultCase);
-        assertEquals(AST_ELEMENT_TYPE_STRING, switchStatement.expression.astType);
+        assertEquals(AstElementTypes.STRING.label, switchStatement.expression.astType);
         assertEquals("expr", ((AstString) switchStatement.expression).value);
-        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, switchStatement.defaultCase.content.astType);
+        assertEquals(AstElementTypes.SEQUENCE.label, switchStatement.defaultCase.content.astType);
         assertEquals(1, ((Sequence) switchStatement.defaultCase.content).elements.length);
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, ((Sequence) switchStatement.defaultCase.content).elements[0].astType);
+        assertEquals(AstElementTypes.FUNCTION_CALL.label, ((Sequence) switchStatement.defaultCase.content).elements[0].astType);
 
-        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, switchStatement.cases[4].content.astType);
+        assertEquals(AstElementTypes.SEQUENCE.label, switchStatement.cases[4].content.astType);
         assertEquals(3, ((Sequence) switchStatement.cases[4].content).elements.length);
-        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, switchStatement.cases[4].content.astType);
-        assertEquals(AST_ELEMENT_TYPE_BREAK, ((Sequence) switchStatement.cases[4].content).elements[2].astType);
+        assertEquals(AstElementTypes.SEQUENCE.label, switchStatement.cases[4].content.astType);
+        assertEquals(AstElementTypes.BREAK.label, ((Sequence) switchStatement.cases[4].content).elements[2].astType);
     }
 
 

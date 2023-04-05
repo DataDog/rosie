@@ -14,7 +14,7 @@ public class AstExpression extends AstElement {
                          AstElement right,
                          ParserRuleContext ruleContext,
                          ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_EXPRESSION, ruleContext, root);
+        super(AstElementTypes.EXPRESSION, ruleContext, root);
         this.left = left;
         this.operator = operator;
         this.right = right;

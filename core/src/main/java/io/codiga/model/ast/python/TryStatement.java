@@ -1,6 +1,7 @@
 package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -17,7 +18,7 @@ public class TryStatement extends AstElement {
                         FinallyClause finallyClause,
                         ParserRuleContext parserRuleContext,
                         ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_TRY_STATEMENT, parserRuleContext, root);
+        super(AstElementTypes.TRY_STATEMENT, parserRuleContext, root);
         this.content = content;
         this.finallyClause = finallyClause;
         this.exceptClauses = exceptClauses.stream().toArray(ExceptClause[]::new);
@@ -28,7 +29,7 @@ public class TryStatement extends AstElement {
                         List<ExceptClause> exceptClauses,
                         FinallyClause finallyClause,
                         ParserContext context) {
-        super(AST_ELEMENT_TYPE_TRY_STATEMENT, context);
+        super(AstElementTypes.TRY_STATEMENT, context);
         this.content = content;
         this.finallyClause = finallyClause;
         this.exceptClauses = exceptClauses.stream().toArray(ExceptClause[]::new);

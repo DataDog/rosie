@@ -11,7 +11,7 @@ public class VariableDeclaration extends AstElement {
 
     public VariableDeclaration(AstString modifier, AstElement name, AstElement type, AstElement value,
                                ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, parserRuleContext, root);
+        super(AstElementTypes.VARIABLE_DECLARATION, parserRuleContext, root);
         this.modifier = modifier;
         this.name = name;
         this.type = type;

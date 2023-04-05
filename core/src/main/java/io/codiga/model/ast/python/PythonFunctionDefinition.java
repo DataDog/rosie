@@ -1,9 +1,6 @@
 package io.codiga.model.ast.python;
 
-import io.codiga.model.ast.common.Assignment;
-import io.codiga.model.ast.common.AstElement;
-import io.codiga.model.ast.common.AstString;
-import io.codiga.model.ast.common.FunctionDefinitionParameters;
+import io.codiga.model.ast.common.*;
 import io.codiga.parser.common.context.ParserContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -31,7 +28,7 @@ public class PythonFunctionDefinition extends AstElement {
                                     AstElement content,
                                     ParserRuleContext ruleContext,
                                     ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, ruleContext, root);
+        super(AstElementTypes.FUNCTION_DEFINITION, ruleContext, root);
         this.isAsync = isAsync;
         this.content = content;
         this.parameters = functionDefinitionParameters;
@@ -49,7 +46,7 @@ public class PythonFunctionDefinition extends AstElement {
                                     AstString returnType,
                                     AstElement content,
                                     ParserContext context) {
-        super(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, context);
+        super(AstElementTypes.FUNCTION_DEFINITION, context);
         this.isAsync = isAsync;
         this.content = content;
         this.parameters = functionDefinitionParameters;

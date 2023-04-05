@@ -1,6 +1,7 @@
 package io.codiga.model.ast.python;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.parser.antlr.python.gen.PythonParser;
 import io.codiga.parser.common.context.ParserContext;
@@ -16,13 +17,13 @@ public class PythonDecorator extends AstElement {
     public AstString name;
 
     public PythonDecorator(PythonString name, List<PythonArgument> argumentList, PythonParser.DecoratorContext context, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_DECORATOR, context, root);
+        super(AstElementTypes.DECORATOR, context, root);
         this.name = name;
         this.arguments = argumentList.stream().toArray(PythonArgument[]::new);
     }
 
     public PythonDecorator(AstString name, List<PythonArgument> argumentList, ParserContext parserContext) {
-        super(AST_ELEMENT_TYPE_DECORATOR, parserContext);
+        super(AstElementTypes.DECORATOR, parserContext);
         this.name = name;
         this.arguments = argumentList.stream().toArray(PythonArgument[]::new);
     }

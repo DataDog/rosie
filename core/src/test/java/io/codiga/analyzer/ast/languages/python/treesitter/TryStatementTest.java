@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.python.treesitter;
 
 import ai.serenade.treesitter.Node;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.python.TryStatement;
 import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_CONTINUE;
 import static io.codiga.parser.treesitter.python.transformation.TryStatementTransformation.transformTryStatement;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChildren;
 import static org.junit.jupiter.api.Assertions.*;
@@ -201,7 +201,7 @@ public class TryStatementTest extends PythonTestUtils {
         TryStatement tryStatement = tryStatementOptional.get();
         assertNotNull(tryStatement.exceptClauses);
         assertNull(tryStatement.exceptClauses[0].as);
-        assertEquals(AST_ELEMENT_TYPE_CONTINUE, ((Sequence) tryStatement.exceptClauses[0].content).elements[0].astType);
+        assertEquals(AstElementTypes.CONTINUE.label, ((Sequence) tryStatement.exceptClauses[0].content).elements[0].astType);
         assertEquals(1, tryStatement.exceptClauses[0].exceptions.length);
         assertEquals("Exception", tryStatement.exceptClauses[0].exceptions[0].value);
     }

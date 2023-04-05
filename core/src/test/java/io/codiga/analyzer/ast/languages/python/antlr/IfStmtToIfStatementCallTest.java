@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.python.antlr;
 
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.python.PythonComparison;
 import io.codiga.model.ast.python.PythonIfStatement;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.*;
 import static io.codiga.parser.antlr.python.transformations.IfStmtToIfStatement.transformIfStatement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,7 +47,7 @@ public class IfStmtToIfStatementCallTest extends PythonTestUtils {
             PythonIfStatement ifStatement = ifStatementOptional.get();
 
             assertEquals(((PythonComparison) ifStatement.condition).operator, "==");
-            assertEquals(AST_ELEMENT_TYPE_PASS, ifStatement.statements.astType);
+            assertEquals(AstElementTypes.PASS.label, ifStatement.statements.astType);
             assertEquals("x", ((PythonComparison) ((PythonComparison) ifStatement.condition).leftSide).expression.atom.value);
             assertEquals("5", ((PythonComparison) ((PythonComparison) ifStatement.condition).rightSide).expression.atom.str);
         }
@@ -75,13 +75,13 @@ public class IfStmtToIfStatementCallTest extends PythonTestUtils {
             PythonIfStatement ifStatement = ifStatementOptional.get();
 
             assertEquals(((PythonComparison) ifStatement.condition).operator, "==");
-            assertEquals(AST_ELEMENT_TYPE_SEQUENCE, ifStatement.statements.astType);
+            assertEquals(AstElementTypes.SEQUENCE.label, ifStatement.statements.astType);
             Sequence seq = (Sequence) ifStatement.statements;
             assertEquals(2, seq.elements.length);
-            assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, seq.elements[0].astType);
-            assertEquals(AST_ELEMENT_TYPE_ASSIGNMENT, seq.elements[1].astType);
-            assertEquals(AST_ELEMENT_TYPE_SEQUENCE, ifStatement.elseStatements.statements.astType);
-            assertEquals(AST_ELEMENT_TYPE_PASS, ((Sequence) ifStatement.elseStatements.statements).elements[0].astType);
+            assertEquals(AstElementTypes.FUNCTION_CALL.label, seq.elements[0].astType);
+            assertEquals(AstElementTypes.ASSIGNMENT.label, seq.elements[1].astType);
+            assertEquals(AstElementTypes.SEQUENCE.label, ifStatement.elseStatements.statements.astType);
+            assertEquals(AstElementTypes.PASS.label, ((Sequence) ifStatement.elseStatements.statements).elements[0].astType);
 
         }
     }

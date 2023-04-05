@@ -7,10 +7,10 @@ public class Continue extends AstElement {
 
 
     public Continue(ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_CONTINUE, parserRuleContext, root);
+        super(AstElementTypes.CONTINUE, parserRuleContext, root);
     }
 
     public Continue(ParserContext parserContext) {
-        super(AST_ELEMENT_TYPE_CONTINUE, parserContext);
+        super(AstElementTypes.CONTINUE, parserContext);
     }
 }

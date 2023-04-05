@@ -1,9 +1,6 @@
 package io.codiga.analyzer.ast.languages.javascript;
 
-import io.codiga.model.ast.common.Assignment;
-import io.codiga.model.ast.common.AstArray;
-import io.codiga.model.ast.common.AstString;
-import io.codiga.model.ast.common.Sequence;
+import io.codiga.model.ast.common.*;
 import io.codiga.model.ast.javascript.AstStringWithSpreadOperator;
 import io.codiga.model.ast.javascript.JavaScriptFunctionExpression;
 import io.codiga.model.ast.javascript.JavaScriptObject;
@@ -18,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.*;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptSingleExpressionTransformation.transformJavaScriptAssignmentExpressionToAssignment;
 import static io.codiga.parser.antlr.javascript.transformations.JavaScriptVariableDeclarationToAssignment.transformVariableDeclarationToAssignment;
 import static org.junit.jupiter.api.Assertions.*;
@@ -144,7 +140,7 @@ public class AssignmentTest extends JavaScriptTestUtils {
         assertTrue(assignmentOptional.isPresent());
         Assignment assignment = assignmentOptional.get();
         assertEquals("c", ((AstString) assignment.left).value);
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_EXPRESSION, assignment.right.astType);
+        assertEquals(AstElementTypes.FUNCTION_EXPRESSION.label, assignment.right.astType);
     }
 
 
@@ -178,9 +174,9 @@ public class AssignmentTest extends JavaScriptTestUtils {
         Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment(firstVariableDeclaration, null);
         assertTrue(assignmentOptional.isPresent());
         Assignment assignment = assignmentOptional.get();
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_EXPRESSION, assignment.right.astType);
+        assertEquals(AstElementTypes.FUNCTION_EXPRESSION.label, assignment.right.astType);
         JavaScriptFunctionExpression functionExpression = (JavaScriptFunctionExpression) assignment.right;
-        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, functionExpression.content.astType);
+        assertEquals(AstElementTypes.SEQUENCE.label, functionExpression.content.astType);
         Sequence seq = (Sequence) functionExpression.content;
         assertEquals(5, seq.elements.length);
     }
@@ -213,9 +209,9 @@ public class AssignmentTest extends JavaScriptTestUtils {
         Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment(firstVariableDeclaration, null);
         assertTrue(assignmentOptional.isPresent());
         Assignment assignment = assignmentOptional.get();
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_EXPRESSION, assignment.right.astType);
+        assertEquals(AstElementTypes.FUNCTION_EXPRESSION.label, assignment.right.astType);
         JavaScriptFunctionExpression functionExpression = (JavaScriptFunctionExpression) assignment.right;
-        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, functionExpression.content.astType);
+        assertEquals(AstElementTypes.SEQUENCE.label, functionExpression.content.astType);
         Sequence seq = (Sequence) functionExpression.content;
         assertEquals(4, seq.elements.length);
     }
@@ -255,15 +251,15 @@ public class AssignmentTest extends JavaScriptTestUtils {
         Optional<Assignment> assignmentOptional = transformVariableDeclarationToAssignment(firstVariableDeclaration, null);
         assertTrue(assignmentOptional.isPresent());
         Assignment assignment = assignmentOptional.get();
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_EXPRESSION, assignment.right.astType);
+        assertEquals(AstElementTypes.FUNCTION_EXPRESSION.label, assignment.right.astType);
         JavaScriptFunctionExpression functionExpression = (JavaScriptFunctionExpression) assignment.right;
-        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, functionExpression.content.astType);
+        assertEquals(AstElementTypes.SEQUENCE.label, functionExpression.content.astType);
         Sequence seq = (Sequence) functionExpression.content;
         assertEquals(5, seq.elements.length);
-        assertEquals(AST_ELEMENT_IF_STATEMENT, seq.elements[0].astType);
-        assertEquals(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, seq.elements[1].astType);
-        assertEquals(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, seq.elements[2].astType);
-        assertEquals(AST_ELEMENT_TYPE_VARIABLE_DECLARATION, seq.elements[3].astType);
-        assertEquals(AST_ELEMENT_TYPE_RETURN, seq.elements[4].astType);
+        assertEquals(AstElementTypes.IF_STATEMENT.label, seq.elements[0].astType);
+        assertEquals(AstElementTypes.VARIABLE_DECLARATION.label, seq.elements[1].astType);
+        assertEquals(AstElementTypes.VARIABLE_DECLARATION.label, seq.elements[2].astType);
+        assertEquals(AstElementTypes.VARIABLE_DECLARATION.label, seq.elements[3].astType);
+        assertEquals(AstElementTypes.RETURN.label, seq.elements[4].astType);
     }
 }

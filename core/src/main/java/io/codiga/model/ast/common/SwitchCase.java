@@ -7,7 +7,7 @@ public class SwitchCase extends AstElement {
     public AstElement content;
 
     public SwitchCase(AstElement condition, AstElement content, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_SWITCH_CASE, parserRuleContext, root);
+        super(AstElementTypes.SWITCH_CASE, parserRuleContext, root);
         this.condition = condition;
         this.content = content;
     }

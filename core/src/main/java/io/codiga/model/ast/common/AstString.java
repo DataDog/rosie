@@ -19,14 +19,14 @@ public class AstString extends AstElement {
     public AstString(String value,
                      ParserRuleContext ruleContext,
                      ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_STRING, ruleContext, root);
+        super(AstElementTypes.STRING, ruleContext, root);
         this.value = value;
         this.str = value;
     }
 
     public AstString(String value,
                      ParserContext parserContext) {
-        super(AST_ELEMENT_TYPE_STRING, parserContext);
+        super(AstElementTypes.STRING, parserContext);
         this.value = value;
         this.str = value;
     }
@@ -34,7 +34,7 @@ public class AstString extends AstElement {
     public AstString(String value,
                      Token token,
                      ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_STRING, token, root);
+        super(AstElementTypes.STRING, token, root);
         this.value = value;
         this.str = value;
     }
@@ -45,7 +45,7 @@ public class AstString extends AstElement {
                      ParserRuleContext endingContext,
                      ParserRuleContext ruleContext,
                      ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_STRING, getStartPosition(startingContext), getEndPosition(endingContext), ruleContext, root);
+        super(AstElementTypes.STRING, getStartPosition(startingContext), getEndPosition(endingContext), ruleContext, root);
         this.value = value;
         this.str = value;
     }

@@ -14,7 +14,7 @@ public class WhileStatement extends AstElement {
                           AstElement statements,
                           ParserContext parserContext
     ) {
-        super(AST_ELEMENT_WHILE_STATEMENT, parserContext);
+        super(AstElementTypes.WHILE_STATEMENT, parserContext);
         this.condition = condition;
         this.statements = statements;
     }

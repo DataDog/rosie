@@ -1,5 +1,6 @@
 package io.codiga.analyzer.ast.languages.python.antlr;
 
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.Sequence;
 import io.codiga.model.ast.python.PythonClassDefinition;
 import io.codiga.parser.antlr.python.gen.PythonParser;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.*;
 import static io.codiga.parser.antlr.python.transformations.ClassOrFuncDefTransformation.isClassDefinition;
 import static io.codiga.parser.antlr.python.transformations.ClassOrFuncDefTransformation.transformClassOrFuncDefToClassDefinition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -138,12 +138,12 @@ public class ClassDefToClassDefinitionTest extends PythonTestUtils {
         var optionalClass = transformClassOrFuncDefToClassDefinition(funcdefContext, null);
         assertTrue(optionalClass.isPresent());
         var classDefinition = optionalClass.get();
-        assertEquals(AST_ELEMENT_TYPE_CLASS_DEFINITION, classDefinition.astType);
-        assertEquals(AST_ELEMENT_TYPE_SEQUENCE, classDefinition.content.astType);
+        assertEquals(AstElementTypes.CLASS_DEFINITION.label, classDefinition.astType);
+        assertEquals(AstElementTypes.SEQUENCE.label, classDefinition.content.astType);
         Sequence seq = (Sequence) classDefinition.content;
         assertEquals(2, seq.elements.length);
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, seq.elements[0].astType);
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_DEFINITION, seq.elements[1].astType);
+        assertEquals(AstElementTypes.FUNCTION_DEFINITION.label, seq.elements[0].astType);
+        assertEquals(AstElementTypes.FUNCTION_DEFINITION.label, seq.elements[1].astType);
     }
 
 }

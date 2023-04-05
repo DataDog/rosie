@@ -10,14 +10,14 @@ public class Operation extends AstElement {
 
 
     public Operation(AstElement left, AstString operator, AstElement right, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_OPERATION, parserRuleContext, root);
+        super(AstElementTypes.OPERATION, parserRuleContext, root);
         this.left = left;
         this.right = right;
         this.operator = operator;
     }
 
     public Operation(AstElement left, AstString operator, AstElement right, ParserContext parserContext) {
-        super(AST_ELEMENT_TYPE_OPERATION, parserContext);
+        super(AstElementTypes.OPERATION, parserContext);
         this.left = left;
         this.right = right;
         this.operator = operator;

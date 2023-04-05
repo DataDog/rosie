@@ -12,7 +12,7 @@ public class AstArray extends AstElement {
                     ParserRuleContext ruleContext,
                     ParserRuleContext root) {
 
-        super(AST_ELEMENT_TYPE_ARRAY, ruleContext, root);
+        super(AstElementTypes.ARRAY, ruleContext, root);
         this.elements = new AstElement[listElements.size()];
         this.elements = listElements.toArray(elements);
     }

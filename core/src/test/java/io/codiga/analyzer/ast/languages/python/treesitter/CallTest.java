@@ -1,6 +1,7 @@
 package io.codiga.analyzer.ast.languages.python.treesitter;
 
 import ai.serenade.treesitter.Node;
+import io.codiga.model.ast.common.AstElementTypes;
 import io.codiga.model.ast.common.AstString;
 import io.codiga.model.ast.python.PythonDictionary;
 import io.codiga.model.ast.python.PythonFunctionCall;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static io.codiga.model.ast.common.AstElement.AST_ELEMENT_TYPE_FUNCTION_CALL;
 import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -208,7 +208,7 @@ public class CallTest extends io.codiga.analyzer.ast.languages.python.treesitter
         assertEquals(functionCall.moduleOrObject.value, "cursor");
         assertEquals(((AstString) functionCall.functionName).value, "execute");
         assertEquals(1, functionCall.arguments.values.length);
-        assertEquals(AST_ELEMENT_TYPE_FUNCTION_CALL, functionCall.arguments.values[0].value.astType);
+        assertEquals(AstElementTypes.FUNCTION_CALL.label, functionCall.arguments.values[0].value.astType);
         assertEquals("format", ((AstString) ((PythonFunctionCall) functionCall.arguments.values[0].value).functionName).value);
     }
 

@@ -9,7 +9,7 @@ public class Block extends AstElement {
 
 
     public Block(List<AstElement> statementsList, ParserRuleContext parserRuleContext, ParserRuleContext root) {
-        super(AST_ELEMENT_TYPE_CONTAINER, parserRuleContext, root);
+        super(AstElementTypes.CONTAINER, parserRuleContext, root);
         this.statements = new Assignment[statementsList.size()];
         this.statements = statementsList.toArray(statements);
     }
