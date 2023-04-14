@@ -3,6 +3,7 @@ plugins {
     id("application")
     // Disabled for now, see https://github.com/graalvm/graal-js-jdk11-gradle-demo
     // id("org.graalvm.plugin.compiler") version "0.1.0-alpha2"
+    id("io.freefair.lombok") version "6.5.1"
 }
 
 group = "io.codiga"
@@ -42,6 +43,8 @@ dependencies {
 dependencies {
     implementation(project(":core"))
     testImplementation(project(":core"))
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.2")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.14.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
     implementation("com.google.inject:guice:5.1.0")
     implementation("commons-cli:commons-cli:1.5.0")

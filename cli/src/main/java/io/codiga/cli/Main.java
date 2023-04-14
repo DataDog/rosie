@@ -6,6 +6,7 @@ import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.errorreporting.ErrorReportingDummy;
 import io.codiga.cli.metrics.MetricsDummy;
+import io.codiga.cli.model.OutputFormat;
 import io.codiga.cli.model.Result;
 import io.codiga.cli.model.ViolationWithFilename;
 import io.codiga.model.Language;
@@ -29,8 +30,8 @@ import java.util.stream.Collectors;
 
 import static io.codiga.cli.CliConstants.WARMUP_LOOPS;
 import static io.codiga.cli.FileUtils.*;
-import static io.codiga.cli.RulesUtils.getRulesFromFile;
-import static io.codiga.cli.RulesUtils.separateRules;
+import static io.codiga.cli.utils.RulesUtils.getRulesFromFile;
+import static io.codiga.cli.utils.RulesUtils.separateRules;
 import static io.codiga.constants.Languages.LANGUAGE_EXTENSIONS;
 import static io.codiga.utils.CompletableFutureUtils.sequence;
 import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
@@ -47,28 +48,41 @@ public class Main {
         });
     }
 
+    static OutputFormat getOuputFormatFromString(String fmt) {
+        if (fmt == null) {
+            return OutputFormat.JSON;
+        }
+
+        if (fmt.equalsIgnoreCase("sarif")) {
+            return OutputFormat.SARIF;
+        }
+        return OutputFormat.JSON;
+    }
+
     public static void main(String[] args) {
 
         AnalyzerConfiguration configuration = new AnalyzerConfiguration(DEFAULT_TIMEOUT_MS);
-
         Options options = new Options();
 
         Option optionDirectory = Option.builder().required(true).option("i")
-            .longOpt("directory").hasArg(true).desc("directory to scan (valid existing directory)").build();
+                .longOpt("directory").hasArg(true).desc("directory to scan (valid existing directory)").build();
         Option optionRules = Option.builder().required(true).option("r")
-            .longOpt("rules").hasArg(true).desc("rules to use (path to JSON file)").build();
+                .longOpt("rules").hasArg(true).desc("rules to use (path to JSON file)").build();
         Option optionDebug = Option.builder().required(false).option("d")
-            .longOpt("debug").hasArg(true).desc("enable debug mode (true/false)").build();
+                .longOpt("debug").hasArg(true).desc("enable debug mode (true/false)").build();
         Option optionTreeSitter = Option.builder().required(false).option("t")
-            .longOpt("tree-sitter").hasArg(true).desc("enable tree-sitter (true/false)").build();
+                .longOpt("tree-sitter").hasArg(true).desc("enable tree-sitter (true/false)").build();
         Option optionOutput = Option.builder().required(true).option("o")
-            .longOpt("output").hasArg(true).desc("output file (path to file)").build();
+                .longOpt("output").hasArg(true).desc("output file (path to file)").build();
+        Option optionOutputFormat = Option.builder().required(false).option("f")
+                .longOpt("format").hasArg(true).desc("output format (json/sarif)").build();
 
         options.addOption(optionDirectory);
         options.addOption(optionRules);
         options.addOption(optionDebug);
         options.addOption(optionOutput);
         options.addOption(optionTreeSitter);
+        options.addOption(optionOutputFormat);
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -87,19 +101,22 @@ public class Main {
         String debugString = cmd.getOptionValue(optionDebug);
         String useTreeSitterString = cmd.getOptionValue(optionTreeSitter);
         String output = cmd.getOptionValue(optionOutput);
+        String outputFormatString = cmd.getOptionValue(optionOutputFormat);
         boolean debug = debugString != null && debugString.equalsIgnoreCase("true");
         boolean useTreeSitter = useTreeSitterString != null && useTreeSitterString.equalsIgnoreCase("true");
+        OutputFormat outputFormat = getOuputFormatFromString(outputFormatString);
 
         System.out.println("Configuration");
-        System.out.println("=============");
-        System.out.printf("Version     : %s%n", Version.CURRENT_VERSION);
-        System.out.printf("# cores     : %s%n", Runtime.getRuntime().availableProcessors());
-        System.out.printf("Debug       : %s%n", debug);
-        System.out.printf("Directory   : %s%n", directory);
-        System.out.printf("Rules file  : %s%n", rulesFile);
-        System.out.printf("Debug       : %s%n", debugString);
-        System.out.printf("Tree-Sitter : %s%n", useTreeSitter);
-        System.out.printf("Output file : %s%n", output);
+        System.out.println("===================");
+        System.out.printf("Version       : %s%n", Version.CURRENT_VERSION);
+        System.out.printf("# cores       : %s%n", Runtime.getRuntime().availableProcessors());
+        System.out.printf("Debug         : %s%n", debug);
+        System.out.printf("Directory     : %s%n", directory);
+        System.out.printf("Rules file    : %s%n", rulesFile);
+        System.out.printf("Debug         : %s%n", debugString);
+        System.out.printf("Tree-Sitter   : %s%n", useTreeSitter);
+        System.out.printf("Output file   : %s%n", output);
+        System.out.printf("Output format : %s%n", outputFormat.name());
 
 
         if (!Files.isDirectory(Paths.get(directory))) {
@@ -153,8 +170,8 @@ public class Main {
 
         // Analysis options
         AnalysisOptions analysisOptions = AnalysisOptions.builder()
-            .useTreeSitter(useTreeSitter)
-            .build();
+                .useTreeSitter(useTreeSitter)
+                .build();
 
         // For each language, we get the list of file for this language and get the violations
         for (Map.Entry<Language, List<String>> entry : LANGUAGE_EXTENSIONS.entrySet()) {
@@ -220,9 +237,14 @@ public class Main {
         }
 
         try {
-            writeViolationsToFile(Paths.get(output), new Result(allViolations, ruleResultsWithError));
+            if (outputFormat == OutputFormat.SARIF) {
+                writeSarifReport(Paths.get(output), rules, filesToAnalyze, allViolations, ruleResultsWithError);
+            } else {
+                writeViolationsToFile(Paths.get(output), new Result(allViolations, ruleResultsWithError));
+            }
         } catch (IOException e) {
             System.err.printf("Failed to write result into file %s%n", output);
+            e.printStackTrace();
             System.exit(1);
         }
         long endTimeMs = System.currentTimeMillis();

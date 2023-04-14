@@ -1,4 +1,4 @@
-package io.codiga.cli;
+package io.codiga.cli.utils;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
