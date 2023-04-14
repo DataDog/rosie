@@ -8,12 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class TsQueryTest extends E2EBase {
+public class TsQueryWithVariableTest extends E2EBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(TsQueryTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TsQueryWithVariableTest.class);
 
     String code = """
             def foo(arg1):
@@ -34,13 +36,14 @@ public class TsQueryTest extends E2EBase {
 
     String ruleCodeUpdate = """
             function visit(node, filename, code) {
-                    
+                const newname = node.context.variables.get("newname");
                 const functionName = node.captures["name"];
+
                 if(functionName) {
                     const error = buildError(functionName.start.line, functionName.start.col, functionName.end.line, functionName.end.col, 
                                              "invalid name", "CRITICAL", "security");
 
-                    const edit = buildEdit(functionName.start.line, functionName.start.col, functionName.end.line, functionName.end.col, "update", "bar");
+                    const edit = buildEdit(functionName.start.line, functionName.start.col, functionName.end.line, functionName.end.col, "update", newname);
                     const fix = buildFix("use bar", [edit]);
                     addError(error.addFix(fix));
                 }            
@@ -49,8 +52,8 @@ public class TsQueryTest extends E2EBase {
 
 
     @Test
-    @DisplayName("Test basic tree-sitter query")
-    public void testBasicTreeSitterQuery() throws Exception {
+    @DisplayName("Test basic tree-sitter query with a variable")
+    public void testTsQueryWithVariable() throws Exception {
         Response response = executeTestTsQuery(
                 "bla.py",
                 code,
@@ -58,6 +61,7 @@ public class TsQueryTest extends E2EBase {
                 ruleCodeUpdate,
                 "ts-query-test",
                 tsQuery,
+                Map.of("newname", "bar"),
                 true);
         logger.info(response.toString());
 

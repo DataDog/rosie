@@ -17,7 +17,9 @@ import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.Language;
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.context.Context;
 import io.codiga.model.error.RuleResult;
+import io.codiga.model.tsquery.TsPatternMatch;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+import static io.codiga.model.RuleErrorCode.ERROR_RULE_INVALID_QUERY;
 import static io.codiga.utils.TreeSitterUtils.getAstElement;
 import static io.codiga.utils.TreeSitterUtils.languageToTreeSitterLanguage;
 
@@ -43,13 +46,16 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
     @Override
     public RuleResult execute(AnalyzerContext analyzerContext, AnalyzerRule rule) {
         long startTimestamp = System.currentTimeMillis();
+        Context ruleContext = new io.codiga.model.context.Context(analyzerContext.getCode(), rule.variables());
+
+        Optional<String> error = Optional.empty(); // put the error if any
         Optional<Long> treeSitterLanguage = languageToTreeSitterLanguage(rule.language());
 
         // Language is not supported
         if (treeSitterLanguage.isEmpty()) {
             return new RuleResult(rule.name(), List.of(), List.of(), null, null, 0);
         }
-        
+
         VmContext vmContext = new VmContext(analyzerContext);
         vmContext.initializeRule(rule);
 
@@ -60,7 +66,7 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
                     List<QueryCapture> captures = query.getCaptures();
                     QueryCursor queryCursor = query.execute(tree.getRootNode());
                     QueryMatch queryMatch = queryCursor.nextMatch();
-                    List<Map<String, AstElement>> matches = new ArrayList<>();
+                    List<TsPatternMatch> matches = new ArrayList<>();
                     TreeSitterParsingContext treeSitterParsingContext = new TreeSitterParsingContext(analyzerContext.getCode(), tree.getRootNode());
 
                     /**
@@ -77,7 +83,7 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
                             Optional<AstElement> astElementOptional = getAstElement(node, rule.language(), treeSitterParsingContext);
                             match.put(name, astElementOptional.orElse(null));
                         }
-                        matches.add(match);
+                        matches.add(new TsPatternMatch(match, ruleContext));
                         queryMatch = queryCursor.nextMatch();
                     }
 
@@ -88,7 +94,7 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
                     vmContext.prepareForExecution(analyzerContext, matches);
                     vmContext.execute(rule);
                 } catch (QueryException e) {
-                    throw new RuntimeException(e);
+                    error = Optional.of(ERROR_RULE_INVALID_QUERY);
                 }
             } catch (UnsupportedEncodingException e) {
                 logger.info("error when decoding the code");
@@ -100,6 +106,11 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
 
         long endTimestamp = System.currentTimeMillis();
         long executionTimeMs = endTimestamp - startTimestamp;
+
+        // if there is an error, we return an rule with the error and no violation
+        if (error.isPresent()) {
+            return new RuleResult(rule.name(), List.of(), error.stream().toList(), null, output, executionTimeMs);
+        }
         return new RuleResult(rule.name(), vmContext.getViolations(), List.of(), null, output, executionTimeMs);
     }
 

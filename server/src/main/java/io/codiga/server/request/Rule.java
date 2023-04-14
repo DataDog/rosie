@@ -8,7 +8,7 @@ public class Rule {
     public String language;
     public String type;
     public String entityChecked;
-    public String tsQuery;
+    public String tsQueryBase64;
     public String pattern;
     public Map<String, String> variables;
 
@@ -20,7 +20,7 @@ public class Rule {
                 String language,
                 String type,
                 String entityChecked,
-                String tsQuery,
+                String tsQueryBase64,
                 String pattern,
                 String contentBase64,
                 Map<String, String> variables) {
@@ -30,7 +30,7 @@ public class Rule {
         this.type = type;
         this.entityChecked = entityChecked;
         this.pattern = pattern;
-        this.tsQuery = tsQuery;
+        this.tsQueryBase64 = tsQueryBase64;
         this.variables = variables;
     }
 

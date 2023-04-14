@@ -9,5 +9,6 @@ public class RuleErrorCode {
     public static final String ERROR_RULE_PARSING = "rule-parsing";
     public static final String ERROR_INVALID_PATTERN = "invalid-pattern";
     public static final String ERROR_RULE_UNKNOWN = "error-unknown";
+    public static final String ERROR_RULE_INVALID_QUERY = "error-invalid-query";
     public static final String ERROR_RULE_EXECUTION = "error-execution";
 }

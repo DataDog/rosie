@@ -8,12 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static io.codiga.model.RuleErrorCode.ERROR_RULE_INVALID_QUERY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class TsQueryTest extends E2EBase {
+public class TsQueryInvalidTest extends E2EBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(TsQueryTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TsQueryInvalidTest.class);
 
     String code = """
             def foo(arg1):
@@ -27,15 +28,14 @@ public class TsQueryTest extends E2EBase {
 
     String tsQuery = """
                 (function_definition
-                	name: (identifier) @name
-                  parameters: (parameters) @params
+                	name: (identifi @rams
                 )
             """;
 
     String ruleCodeUpdate = """
             function visit(node, filename, code) {
                     
-                const functionName = node.captures["name"];
+                const functionName = node.get("name");
                 if(functionName) {
                     const error = buildError(functionName.start.line, functionName.start.col, functionName.end.line, functionName.end.col, 
                                              "invalid name", "CRITICAL", "security");
@@ -49,7 +49,7 @@ public class TsQueryTest extends E2EBase {
 
 
     @Test
-    @DisplayName("Test basic tree-sitter query")
+    @DisplayName("Test an invalid query")
     public void testBasicTreeSitterQuery() throws Exception {
         Response response = executeTestTsQuery(
                 "bla.py",
@@ -62,7 +62,8 @@ public class TsQueryTest extends E2EBase {
         logger.info(response.toString());
 
         assertEquals(1, response.ruleResponses.size());
-        assertEquals(fixedCode, applyFix(code, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
+        assertEquals(1, response.ruleResponses.get(0).errors.size());
+        assertEquals(ERROR_RULE_INVALID_QUERY, response.ruleResponses.get(0).errors.get(0));
     }
 
 }
