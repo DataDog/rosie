@@ -58,27 +58,27 @@ public class E2EBase {
                                 boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
-            .setFilename(filename)
-            .setLanguage(stringFromLanguage(language))
-            .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(code))
-            .setOptions(requestOptions)
-            .setRules(
-                List.of(
-                    new RuleBuilder()
-                        .setId(ruleName)
-                        .setContentBase64(encodeBase64(ruleCode))
-                        .setLanguage(stringFromLanguage(language))
-                        .setType(ruleType)
-                        .setEntityChecked(entityChecked)
-                        .setPattern(pattern)
-                        .setVariables(variables)
-                        .createRule()
-                )
-            ).createRequest();
+                .setFilename(filename)
+                .setLanguage(stringFromLanguage(language))
+                .setFileEncoding("utf-8")
+                .setCodeBase64(encodeBase64(code))
+                .setOptions(requestOptions)
+                .setRules(
+                        List.of(
+                                new RuleBuilder()
+                                        .setId(ruleName)
+                                        .setContentBase64(encodeBase64(ruleCode))
+                                        .setLanguage(stringFromLanguage(language))
+                                        .setType(ruleType)
+                                        .setEntityChecked(entityChecked)
+                                        .setPattern(pattern)
+                                        .setVariables(variables)
+                                        .createRule()
+                        )
+                ).createRequest();
         Response response = this.restTemplate.postForObject(
-            "http://localhost:" + port + "/analyze", request,
-            Response.class);
+                "http://localhost:" + port + "/analyze", request,
+                Response.class);
         return response;
     }
 
@@ -90,33 +90,33 @@ public class E2EBase {
                                               String ruleType,
                                               String entityChecked,
                                               String pattern,
-                                              String tsQuery,
+                                              String tsQueryBase64,
                                               Map<String, String> variables,
                                               boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, true);
         Request request = new RequestBuilder()
-            .setFilename(filename)
-            .setLanguage(stringFromLanguage(language))
-            .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(code))
-            .setOptions(requestOptions)
-            .setRules(
-                List.of(
-                    new RuleBuilder()
-                        .setId(ruleName)
-                        .setContentBase64(encodeBase64(ruleCode))
-                        .setLanguage(stringFromLanguage(language))
-                        .setType(ruleType)
-                        .setEntityChecked(entityChecked)
-                        .setPattern(pattern)
-                        .setTsQuery(tsQuery)
-                        .setVariables(variables)
-                        .createRule()
-                )
-            ).createRequest();
+                .setFilename(filename)
+                .setLanguage(stringFromLanguage(language))
+                .setFileEncoding("utf-8")
+                .setCodeBase64(encodeBase64(code))
+                .setOptions(requestOptions)
+                .setRules(
+                        List.of(
+                                new RuleBuilder()
+                                        .setId(ruleName)
+                                        .setContentBase64(encodeBase64(ruleCode))
+                                        .setLanguage(stringFromLanguage(language))
+                                        .setType(ruleType)
+                                        .setEntityChecked(entityChecked)
+                                        .setPattern(pattern)
+                                        .setTsQueryBase64(tsQueryBase64)
+                                        .setVariables(variables)
+                                        .createRule()
+                        )
+                ).createRequest();
         Response response = this.restTemplate.postForObject(
-            "http://localhost:" + port + "/analyze", request,
-            Response.class);
+                "http://localhost:" + port + "/analyze", request,
+                Response.class);
         return response;
     }
 
@@ -164,7 +164,20 @@ public class E2EBase {
                                        String ruleName,
                                        String tsQuery,
                                        boolean logOutput) {
-        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, RULE_TYPE_TREE_SITTER_QUERY, null, null, tsQuery, null, logOutput);
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, RULE_TYPE_TREE_SITTER_QUERY,
+                null, null, encodeBase64(tsQuery), null, logOutput);
+    }
+
+    public Response executeTestTsQuery(String filename,
+                                       String code,
+                                       Language language,
+                                       String ruleCode,
+                                       String ruleName,
+                                       String tsQuery,
+                                       Map<String, String> variables,
+                                       boolean logOutput) {
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, RULE_TYPE_TREE_SITTER_QUERY,
+                null, null, encodeBase64(tsQuery), variables, logOutput);
     }
 
     public Response executeTest(String filename,
@@ -180,27 +193,27 @@ public class E2EBase {
                                 boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
-            .setFilename(filename)
-            .setLanguage(stringFromLanguage(codeLanguage))
-            .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(code))
-            .setOptions(requestOptions)
-            .setRules(
-                List.of(
-                    new RuleBuilder()
-                        .setId(ruleName)
-                        .setContentBase64(encodeBase64(ruleCode))
-                        .setLanguage(stringFromLanguage(ruleLanguage))
-                        .setType(ruleType)
-                        .setEntityChecked(entityChecked)
-                        .setPattern(pattern)
-                        .setVariables(variables)
-                        .createRule()
-                )
-            ).createRequest();
+                .setFilename(filename)
+                .setLanguage(stringFromLanguage(codeLanguage))
+                .setFileEncoding("utf-8")
+                .setCodeBase64(encodeBase64(code))
+                .setOptions(requestOptions)
+                .setRules(
+                        List.of(
+                                new RuleBuilder()
+                                        .setId(ruleName)
+                                        .setContentBase64(encodeBase64(ruleCode))
+                                        .setLanguage(stringFromLanguage(ruleLanguage))
+                                        .setType(ruleType)
+                                        .setEntityChecked(entityChecked)
+                                        .setPattern(pattern)
+                                        .setVariables(variables)
+                                        .createRule()
+                        )
+                ).createRequest();
         Response response = this.restTemplate.postForObject(
-            "http://localhost:" + port + "/analyze", request,
-            Response.class);
+                "http://localhost:" + port + "/analyze", request,
+                Response.class);
         return response;
     }
 
@@ -225,16 +238,16 @@ public class E2EBase {
                                          boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
-            .setFilename(filename)
-            .setLanguage(stringFromLanguage(language))
-            .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(code))
-            .setOptions(requestOptions)
-            .setRules(rules)
-            .createRequest();
+                .setFilename(filename)
+                .setLanguage(stringFromLanguage(language))
+                .setFileEncoding("utf-8")
+                .setCodeBase64(encodeBase64(code))
+                .setOptions(requestOptions)
+                .setRules(rules)
+                .createRequest();
         Response response = this.restTemplate.postForObject(
-            "http://localhost:" + port + "/analyze", request,
-            Response.class);
+                "http://localhost:" + port + "/analyze", request,
+                Response.class);
         return response;
     }
 

@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static io.codiga.constants.Languages.SUPPORTED_LANGUAGES;
@@ -45,7 +44,7 @@ public class ServerMainController {
     private final MetricsInterface metrics;
     private final ErrorReportingInterface errorReporting;
     private final boolean PYTHON_FORCE_ANTLR = getEnvironmentValue(EnvironmentUtils.PYTHON_FORCE_ANTLR)
-        .map(v -> v.equalsIgnoreCase("true")).orElse(false);
+            .map(v -> v.equalsIgnoreCase("true")).orElse(false);
     Logger logger = LoggerFactory.getLogger(ServerMainController.class);
     private Analyzer analyzer = null;
 
@@ -56,7 +55,7 @@ public class ServerMainController {
         this.analyzer = new Analyzer(errorReporting, metrics, configuration);
         this.injectorService = injectorService;
 
-//        warmupAnalyzer(this.analyzer, WARMUP_LOOPS);
+        warmupAnalyzer(this.analyzer, WARMUP_LOOPS);
     }
 
     private boolean shouldUseTreeSitter(Request request) {
@@ -120,14 +119,14 @@ public class ServerMainController {
         if (!request.isValid()) {
             metrics.incrementMetric(METRIC_INVALID_REQUEST);
             return CompletableFuture.completedFuture(
-                new Response(List.of(), List.of(ERROR_INVALID_REQUEST)));
+                    new Response(List.of(), List.of(ERROR_INVALID_REQUEST)));
         }
-        
+
         if (!SUPPORTED_LANGUAGES.contains(request.language)) {
             logger.info("language not supported");
             metrics.incrementMetric(METRIC_INVALID_LANGUAGE);
             return CompletableFuture.completedFuture(
-                new Response(List.of(), List.of(ERROR_LANGUAGE_NOT_SUPPORTED)));
+                    new Response(List.of(), List.of(ERROR_LANGUAGE_NOT_SUPPORTED)));
         }
 
         List<AnalyzerRule> rules = null;
@@ -142,53 +141,58 @@ public class ServerMainController {
 
         try {
             rules = request.rules.stream()
-                .filter(r -> r.contentBase64 != null && r.language != null)
-                .map(r -> {
-                    String decodedRuleCode = new String(Base64.getDecoder().decode(r.contentBase64.getBytes()));
-                    Language language = languageFromString(r.language);
-                    EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
-                    RuleType ruleType = ruleTypeFromString(r.type);
-                    AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern, r.tsQuery, r.variables);
-                    return analyzerRule;
-                }).toList();
+                    .filter(r -> r.contentBase64 != null && r.language != null)
+                    .map(r -> {
+                        String decodedRuleCode = new String(Base64.getDecoder().decode(r.contentBase64.getBytes()));
+                        String tsQuery = null;
+
+                        if (r.tsQueryBase64 != null) {
+                            tsQuery = new String(Base64.getDecoder().decode(r.tsQueryBase64.getBytes()));
+                        }
+
+                        Language language = languageFromString(r.language);
+                        EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
+                        RuleType ruleType = ruleTypeFromString(r.type);
+                        return new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern, tsQuery, r.variables);
+                    }).toList();
         } catch (IllegalArgumentException iae) {
             logger.error("rule is not base64: " + request.rules);
             return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_RULE_NOT_BASE64)));
         }
         AnalysisOptions options = AnalysisOptions.builder()
-            .logOutput(request.options != null && request.options.logOutput)
-            .useTreeSitter(shouldUseTreeSitter(request))
-            .build();
+                .logOutput(request.options != null && request.options.logOutput)
+                .useTreeSitter(shouldUseTreeSitter(request))
+                .build();
         CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language), request.filename, decodedCode, rules, options);
 
 
         return violationsFuture.thenApply(analysisResult -> {
-                List<io.codiga.server.response.RuleResponse> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
-                    List<Violation> violations = ruleResult.violations().stream().map(ruleViolation -> {
-                        List<ViolationFix> fixes = ruleViolation.fixes.stream().map(fix -> {
-                            List<ViolationFixEdit> edits = fix.edits.stream().map(edit -> new ViolationFixEdit(
-                                edit.start,
-                                edit.end,
-                                editTypeToString(edit.editType),
-                                edit.content
-                            )).toList();
-                            return new ViolationFix(fix.description, edits);
+                    List<io.codiga.server.response.RuleResponse> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
+                        List<Violation> violations = ruleResult.violations().stream().map(ruleViolation -> {
+                            List<ViolationFix> fixes = ruleViolation.fixes.stream().map(fix -> {
+                                List<ViolationFixEdit> edits = fix.edits.stream().map(edit -> new ViolationFixEdit(
+                                        edit.start,
+                                        edit.end,
+                                        editTypeToString(edit.editType),
+                                        edit.content
+                                )).toList();
+                                return new ViolationFix(fix.description, edits);
+
+                            }).toList();
+
+                            return new Violation(ruleViolation.start, ruleViolation.end, ruleViolation.message,
+                                    ruleViolation.severity.toString(), ruleViolation.category.toString(), fixes);
 
                         }).toList();
-
-                        return new Violation(ruleViolation.start, ruleViolation.end, ruleViolation.message,
-                            ruleViolation.severity.toString(), ruleViolation.category.toString(), fixes);
-
+                        return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output(), ruleResult.executionTimeMs());
                     }).toList();
-                    return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output(), ruleResult.executionTimeMs());
-                }).toList();
-                return new Response(rulesReponses, List.of());
-            })
-            .exceptionally(ex -> {
-                metrics.incrementMetric(METRIC_ANALYSIS_EXCEPTION);
-                errorReporting.reportError(ex, "error when analyzing");
-                return new Response(List.of(), List.of(ERROR_ANALYSIS_ERROR));
-            });
+                    return new Response(rulesReponses, List.of());
+                })
+                .exceptionally(ex -> {
+                    metrics.incrementMetric(METRIC_ANALYSIS_EXCEPTION);
+                    errorReporting.reportError(ex, "error when analyzing");
+                    return new Response(List.of(), List.of(ERROR_ANALYSIS_ERROR));
+                });
 
     }
 }

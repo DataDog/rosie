@@ -9,7 +9,7 @@ public class RuleBuilder {
     private String entityChecked;
     private String pattern;
     private String contentBase64;
-    private String tsQuery;
+    private String tsQueryBase64;
     private Map<String, String> variables;
 
     public RuleBuilder setId(String id) {
@@ -42,8 +42,8 @@ public class RuleBuilder {
         return this;
     }
 
-    public RuleBuilder setTsQuery(String tsQuery) {
-        this.tsQuery = tsQuery;
+    public RuleBuilder setTsQueryBase64(String tsQueryBase64) {
+        this.tsQueryBase64 = tsQueryBase64;
         return this;
     }
 
@@ -53,6 +53,6 @@ public class RuleBuilder {
     }
 
     public Rule createRule() {
-        return new Rule(id, language, type, entityChecked, tsQuery, pattern, contentBase64, variables);
+        return new Rule(id, language, type, entityChecked, tsQueryBase64, pattern, contentBase64, variables);
     }
 }
