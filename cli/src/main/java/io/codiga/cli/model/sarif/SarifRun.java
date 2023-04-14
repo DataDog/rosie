@@ -14,16 +14,17 @@ public class SarifRun {
     public List<SarifArtifact> artifacts;
     public List<SarifResult> results;
 
+
     public static SarifRun generate(List<AnalyzerRule> rules,
                                     List<Path> filesToAnalyze,
                                     List<ViolationWithFilename> violations,
                                     List<RuleResult> rulesWithError) {
         return SarifRun
-                .builder()
-                .tool(SarifTool.fromRules(rules))
-                .artifacts(filesToAnalyze.stream().map(SarifArtifact::generate).toList())
-                .results(violations.stream().map(SarifResult::generate).toList())
-                .build();
+            .builder()
+            .tool(SarifTool.fromRules(rules))
+            .artifacts(filesToAnalyze.stream().map(SarifArtifact::generate).toList())
+            .results(violations.stream().map(SarifResult::generate).toList())
+            .build();
     }
 
 }

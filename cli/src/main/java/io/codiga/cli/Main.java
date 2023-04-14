@@ -77,6 +77,7 @@ public class Main {
         Option optionOutputFormat = Option.builder().required(false).option("f")
             .longOpt("format").hasArg(true).desc("output format (json/sarif)").build();
 
+
         options.addOption(optionDirectory);
         options.addOption(optionRules);
         options.addOption(optionDebug);
