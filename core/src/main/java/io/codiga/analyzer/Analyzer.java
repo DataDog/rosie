@@ -7,6 +7,7 @@ import io.codiga.analyzer.ast.languages.typescript.TypeScriptAnalyzer;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.pattern.PatternAnalyzer;
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.analyzer.treesitterpm.TreeSitterPatternMatching;
 import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.Language;
@@ -39,11 +40,13 @@ public class Analyzer {
     JavaScriptAnalyzer javaScriptAnalyzer;
     TypeScriptAnalyzer typeScriptAnalyzer;
     PatternAnalyzer patternAnalyzer;
+    TreeSitterPatternMatching treeSitterPatternMatching;
 
     public Analyzer(ErrorReportingInterface errorReporting, MetricsInterface metrics, AnalyzerConfiguration configuration) {
         this.errorReporting = errorReporting;
         this.metrics = metrics;
         this.patternAnalyzer = new PatternAnalyzer(this.metrics, this.errorReporting, configuration);
+        this.treeSitterPatternMatching = new TreeSitterPatternMatching(this.metrics, this.errorReporting, configuration);
         this.pythonAnalyzer = new PythonAnalyzer(this.metrics, this.errorReporting, configuration);
         this.javaScriptAnalyzer = new JavaScriptAnalyzer(this.metrics, this.errorReporting, configuration);
         this.typeScriptAnalyzer = new TypeScriptAnalyzer(this.metrics, this.errorReporting, configuration);
@@ -62,6 +65,9 @@ public class Analyzer {
         List<AnalyzerRule> rulesWithValidLanguage = rules.stream().filter(f -> f.validForLanguage(language)).toList();
         List<AnalyzerRule> rulesWithValidLanguageForAst = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.AST_CHECK).toList();
         List<AnalyzerRule> rulesWithValidLanguageForPattern = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.PATTERN && r.pattern() != null).toList();
+        List<AnalyzerRule> rulesWithValidLanguageForTreeSitterPatternMatching = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.TREE_SITTER_QUERY && r.treeSitterQuery() != null).toList();
+
+
         List<AnalyzerRule> rulesWithInvalidLanguage = rules.stream().filter(f -> !f.validForLanguage(language)).toList();
         CompletableFuture<AnalysisResult> completedResultForAst;
 
@@ -85,7 +91,10 @@ public class Analyzer {
         // Second, pattern analysis
         CompletableFuture<AnalysisResult> patternAnalysis = patternAnalyzer.analyze(language, filename, code, rulesWithValidLanguageForPattern, options);
 
-        CompletableFuture<List<AnalysisResult>> allFutures = sequence(List.of(patternAnalysis, completedResultForAst));
+        // Finally, tree sitter pattern matching
+        CompletableFuture<AnalysisResult> treeSitterPatternMatchingAnalysis = treeSitterPatternMatching.analyze(language, filename, code, rulesWithValidLanguageForTreeSitterPatternMatching, options);
+
+        CompletableFuture<List<AnalysisResult>> allFutures = sequence(List.of(patternAnalysis, completedResultForAst, treeSitterPatternMatchingAnalysis));
 
         // Return an error for the rule with an invalid language
         return allFutures.thenApply(result -> {

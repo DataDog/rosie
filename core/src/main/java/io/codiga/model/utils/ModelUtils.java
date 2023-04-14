@@ -82,6 +82,9 @@ public class ModelUtils {
         if (ruleType.equalsIgnoreCase(RULE_TYPE_PATTERN)) {
             return RuleType.PATTERN;
         }
+        if (ruleType.equalsIgnoreCase(RULE_TYPE_TREE_SITTER_QUERY)) {
+            return RuleType.TREE_SITTER_QUERY;
+        }
         return RuleType.UNKNOWN;
     }
 
