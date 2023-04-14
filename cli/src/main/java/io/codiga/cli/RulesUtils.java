@@ -19,7 +19,7 @@ public class RulesUtils {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(new File(path), Rules.class).rules.stream().map(r -> {
             String decodedCode = new String(Base64.getDecoder().decode(r.code()));
-            return new AnalyzerRule(r.name(), r.language(), r.ruleType(), r.entityChecked(), decodedCode, r.pattern(), r.variables());
+            return new AnalyzerRule(r.name(), r.language(), r.ruleType(), r.entityChecked(), decodedCode, r.pattern(), r.treeSitterQuery(), r.variables());
         }).collect(Collectors.toList());
     }
 

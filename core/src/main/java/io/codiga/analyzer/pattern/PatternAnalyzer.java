@@ -21,11 +21,7 @@ import java.util.List;
 
 public class PatternAnalyzer extends AnalyzerCommon {
 
-    private AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
 
-    private Logger logger = LoggerFactory.getLogger(PatternAnalyzer.class);
-
-    private Engine engine = Engine.create("js");
 
     public PatternAnalyzer(MetricsInterface metrics, ErrorReportingInterface errorReporting, AnalyzerConfiguration configuration) {
         super(metrics, errorReporting, configuration);

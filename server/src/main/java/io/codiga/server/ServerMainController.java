@@ -56,7 +56,7 @@ public class ServerMainController {
         this.analyzer = new Analyzer(errorReporting, metrics, configuration);
         this.injectorService = injectorService;
 
-        warmupAnalyzer(this.analyzer, WARMUP_LOOPS);
+//        warmupAnalyzer(this.analyzer, WARMUP_LOOPS);
     }
 
     private boolean shouldUseTreeSitter(Request request) {
@@ -148,7 +148,7 @@ public class ServerMainController {
                     Language language = languageFromString(r.language);
                     EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
                     RuleType ruleType = ruleTypeFromString(r.type);
-                    AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern, r.variables);
+                    AnalyzerRule analyzerRule = new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern, r.tsQuery, r.variables);
                     return analyzerRule;
                 }).toList();
         } catch (IllegalArgumentException iae) {
