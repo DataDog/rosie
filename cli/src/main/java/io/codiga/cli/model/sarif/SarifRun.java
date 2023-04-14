@@ -12,6 +12,7 @@ import java.util.List;
 public class SarifRun {
     public SarifTool tool;
     public List<SarifArtifact> artifacts;
+    public List<SarifResult> results;
 
     public static SarifRun generate(List<AnalyzerRule> rules,
                                     List<Path> filesToAnalyze,
@@ -21,6 +22,7 @@ public class SarifRun {
                 .builder()
                 .tool(SarifTool.fromRules(rules))
                 .artifacts(filesToAnalyze.stream().map(SarifArtifact::generate).toList())
+                .results(violations.stream().map(SarifResult::generate).toList())
                 .build();
     }
 
