@@ -48,7 +48,7 @@ public class Main {
         });
     }
 
-    static OutputFormat getOuputFormatFromString(String fmt) {
+    static OutputFormat getOutputFormatFromString(String fmt) {
         if (fmt == null) {
             return OutputFormat.JSON;
         }
@@ -65,17 +65,17 @@ public class Main {
         Options options = new Options();
 
         Option optionDirectory = Option.builder().required(true).option("i")
-                .longOpt("directory").hasArg(true).desc("directory to scan (valid existing directory)").build();
+            .longOpt("directory").hasArg(true).desc("directory to scan (valid existing directory)").build();
         Option optionRules = Option.builder().required(true).option("r")
-                .longOpt("rules").hasArg(true).desc("rules to use (path to JSON file)").build();
+            .longOpt("rules").hasArg(true).desc("rules to use (path to JSON file)").build();
         Option optionDebug = Option.builder().required(false).option("d")
-                .longOpt("debug").hasArg(true).desc("enable debug mode (true/false)").build();
+            .longOpt("debug").hasArg(true).desc("enable debug mode (true/false)").build();
         Option optionTreeSitter = Option.builder().required(false).option("t")
-                .longOpt("tree-sitter").hasArg(true).desc("enable tree-sitter (true/false)").build();
+            .longOpt("tree-sitter").hasArg(true).desc("enable tree-sitter (true/false)").build();
         Option optionOutput = Option.builder().required(true).option("o")
-                .longOpt("output").hasArg(true).desc("output file (path to file)").build();
+            .longOpt("output").hasArg(true).desc("output file (path to file)").build();
         Option optionOutputFormat = Option.builder().required(false).option("f")
-                .longOpt("format").hasArg(true).desc("output format (json/sarif)").build();
+            .longOpt("format").hasArg(true).desc("output format (json/sarif)").build();
 
         options.addOption(optionDirectory);
         options.addOption(optionRules);
@@ -104,7 +104,7 @@ public class Main {
         String outputFormatString = cmd.getOptionValue(optionOutputFormat);
         boolean debug = debugString != null && debugString.equalsIgnoreCase("true");
         boolean useTreeSitter = useTreeSitterString != null && useTreeSitterString.equalsIgnoreCase("true");
-        OutputFormat outputFormat = getOuputFormatFromString(outputFormatString);
+        OutputFormat outputFormat = getOutputFormatFromString(outputFormatString);
 
         System.out.println("Configuration");
         System.out.println("===================");
@@ -170,8 +170,8 @@ public class Main {
 
         // Analysis options
         AnalysisOptions analysisOptions = AnalysisOptions.builder()
-                .useTreeSitter(useTreeSitter)
-                .build();
+            .useTreeSitter(useTreeSitter)
+            .build();
 
         // For each language, we get the list of file for this language and get the violations
         for (Map.Entry<Language, List<String>> entry : LANGUAGE_EXTENSIONS.entrySet()) {
