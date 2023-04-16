@@ -33,8 +33,22 @@ public class AnalyzerWarmup {
 
                     String decodedCode = new String(Base64.getDecoder().decode(analyzerWarmupCodeData.codeBase64.getBytes()));
                     AnalysisOptions options = AnalysisOptions.builder().build();
-                    CompletableFuture<AnalysisResult> futureResult = analyzer.analyze(analyzerWarmupCodeData.language, analyzerWarmupCodeData.filename,
-                        decodedCode, analyzerWarmupCodeData.analyzerRuleList.stream().map(analyzerRule -> new AnalyzerRule(analyzerRule.name(), analyzerRule.language(), analyzerRule.ruleType(), analyzerRule.entityChecked(), new String(Base64.getDecoder().decode(analyzerRule.code())), analyzerRule.pattern(), analyzerRule.variables())).collect(Collectors.toList()), options);
+                    CompletableFuture<AnalysisResult> futureResult = analyzer.analyze(
+                            analyzerWarmupCodeData.language,
+                            analyzerWarmupCodeData.filename,
+                            decodedCode,
+                            analyzerWarmupCodeData
+                                    .analyzerRuleList
+                                    .stream()
+                                    .map(analyzerRule ->
+                                            new AnalyzerRule(
+                                                    analyzerRule.name(),
+                                                    analyzerRule.language(),
+                                                    analyzerRule.ruleType(),
+                                                    analyzerRule.entityChecked(),
+                                                    new String(Base64.getDecoder().decode(analyzerRule.code())), analyzerRule.pattern(), null, analyzerRule.variables())
+                                    ).collect(Collectors.toList()),
+                            options);
                     AnalysisResult analysisResult = futureResult.join();
                     int nbViolations = analysisResult.ruleResults().stream().flatMap(r -> r.violations().stream()).toList().size();
 //                    int nbErrors = analysisResult.ruleResults().stream().flatMap(r -> r.errors().stream()).toList().size();
