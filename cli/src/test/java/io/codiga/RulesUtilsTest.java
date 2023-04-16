@@ -12,14 +12,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static io.codiga.cli.RulesUtils.getRulesFromFile;
+import static io.codiga.cli.utils.RulesUtils.getRulesFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
 public class RulesUtilsTest {
 
     ClassLoader classLoader = getClass().getClassLoader();
-    private Logger log = Logger.getLogger("Test");
+    private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
     public static void init() {
@@ -76,10 +77,10 @@ public class RulesUtilsTest {
         List<AnalyzerRule> rules = getRulesFromFile(file);
         assert (rules.size() == 1);
         AnalyzerRule rule = rules.stream().findFirst().get();
-        assert(rule.variables().size() == 2);
+        assert (rule.variables().size() == 2);
         assertEquals(rule.variables().get("key1"), "value1");
         assertEquals(rule.variables().get("key2"), "value2");
-        assertEquals(rule.variables().get("key3"), null);
+        assertNull(rule.variables().get("key3"));
     }
 
     @Test
@@ -89,6 +90,6 @@ public class RulesUtilsTest {
         List<AnalyzerRule> rules = getRulesFromFile(file);
         assert (rules.size() == 1);
         AnalyzerRule rule = rules.stream().findFirst().get();
-        assert(rule.variables() == null);
+        assert (rule.variables() == null);
     }
 }
