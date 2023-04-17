@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SarifUtilsTest {
 
-    private static final String SARIF_SCHEMA_PATH = "src/test/resources/sarif-standard/sarif-2.1.0-rtm.4";
+    private static final String SARIF_SCHEMA_PATH = "src/test/resources/sarif-standard/sarif-schema-2.1.0.json";
     private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
