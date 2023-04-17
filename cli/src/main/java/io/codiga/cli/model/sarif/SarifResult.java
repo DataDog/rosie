@@ -18,11 +18,11 @@ public class SarifResult {
 
     public static SarifResult generate(ViolationWithFilename violation) {
         return SarifResult
-                .builder()
-                .level(severityToSarifLevel(violation.severity))
-                .message(SarifResultMessage.builder().text(violation.message).build())
-                .locations(List.of(SarifResultLocation.generate(violation.filename)))
-                .ruleId(violation.rule)
-                .build();
+            .builder()
+            .level(severityToSarifLevel(violation.severity))
+            .message(SarifResultMessage.builder().text(violation.message).build())
+            .locations(List.of(SarifResultLocation.generate(violation)))
+            .ruleId(violation.rule)
+            .build();
     }
 }

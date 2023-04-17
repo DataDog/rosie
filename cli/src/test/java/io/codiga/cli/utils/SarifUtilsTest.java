@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import static io.codiga.cli.utils.SarifUtils.generateReport;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SarifUtilsTest {
@@ -76,7 +77,18 @@ public class SarifUtilsTest {
             generateReport(
                 List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
-                List.of(new ViolationWithFilename(new Position(0, 1), new Position(1, 2), "error message", Severity.CRITICAL, Category.BEST_PRACTICE, "myfile", "myrule")),
+                List.of(new ViolationWithFilename(new Position(1, 2), new Position(2, 3), "error message", Severity.CRITICAL, Category.BEST_PRACTICE, "myfile", "myrule")),
+                List.of())));
+    }
+
+    @Test
+    @DisplayName("Violations that starts at line 0 are invalid")
+    public void testInvalidLineNumbers() {
+        assertFalse(checkCompliance(
+            generateReport(
+                List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new File("foo/bar").toPath()),
+                List.of(new ViolationWithFilename(new Position(0, 2), new Position(2, 3), "error message", Severity.CRITICAL, Category.BEST_PRACTICE, "myfile", "myrule")),
                 List.of())));
     }
 }
