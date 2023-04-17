@@ -11,10 +11,12 @@ import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.AnalysisResult;
+import io.codiga.server.request.GetTreeSitterAstRequest;
 import io.codiga.server.request.Request;
 import io.codiga.server.response.*;
 import io.codiga.server.services.InjectorService;
 import io.codiga.utils.EnvironmentUtils;
+import io.codiga.utils.TreeSitterUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,7 @@ import static io.codiga.model.utils.ModelUtils.*;
 import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
 import static io.codiga.server.response.ResponseErrors.*;
 import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
+import static io.codiga.utils.TreeSitterUtils.getFullAstTree;
 import static io.codiga.utils.Version.CURRENT_VERSION;
 import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 
@@ -194,5 +197,39 @@ public class ServerMainController {
                     return new Response(List.of(), List.of(ERROR_ANALYSIS_ERROR));
                 });
 
+    }
+
+    @PostMapping("/get-treesitter-ast")
+    @CrossOrigin(origins = "*")
+    @Async
+    public GetTreeSitterAstResponse getTreeSitterAst(@RequestBody GetTreeSitterAstRequest request) {
+        metrics.incrementMetric(METRIC_TREESITTER_AST_REQUEST);
+
+        if (!request.isValid()) {
+            metrics.incrementMetric(METRIC_INVALID_TREESITTER_AST_REQUEST);
+            return new GetTreeSitterAstResponse(null, List.of(ERROR_INVALID_REQUEST));
+        }
+
+        if (!SUPPORTED_LANGUAGES.contains(request.language)) {
+            metrics.incrementMetric(METRIC_INVALID_TREESITTER_AST_LANGUAGE);
+            return new GetTreeSitterAstResponse(null, List.of(ERROR_LANGUAGE_NOT_SUPPORTED));
+        }
+
+        String decodedCode = null;
+
+        try {
+            decodedCode = new String(Base64.getDecoder().decode(request.codeBase64.getBytes()));
+        } catch (IllegalArgumentException iae) {
+            logger.info("code is not base64");
+            return new GetTreeSitterAstResponse(null, List.of(ERROR_CODE_NOT_BASE64));
+        }
+
+        var result = getFullAstTree(decodedCode, request.language);
+
+        if(result.isEmpty()) {
+            return new GetTreeSitterAstResponse(null, List.of(ERROR_NO_ROOT_NODE));
+        }
+
+        return new GetTreeSitterAstResponse(result.get(), List.of());
     }
 }
