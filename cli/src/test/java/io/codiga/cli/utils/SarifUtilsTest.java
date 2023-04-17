@@ -36,11 +36,12 @@ public class SarifUtilsTest {
 
     @BeforeAll
     public static void init() {
+        // Nothing to initialize
     }
 
     @AfterAll
     public static void done() {
-
+        // Nothing to clean up.
     }
 
     private boolean checkCompliance(SarifReport sarifReport) {
