@@ -13,6 +13,7 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     mavenLocal()
+    maven("https://jitpack.io")
 }
 
 
@@ -51,6 +52,7 @@ dependencies {
     implementation("com.rollbar:rollbar-java:1.10.0")
     implementation("ch.qos.logback:logback-classic:1.4.6")
 
+    testImplementation("net.jimblackler.jsonschemafriend:core:0.11.4")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }

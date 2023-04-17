@@ -5,6 +5,7 @@ import com.google.common.io.Files;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.model.Result;
 import io.codiga.cli.model.ViolationWithFilename;
+import io.codiga.cli.utils.SarifUtils;
 import io.codiga.model.error.RuleResult;
 
 import java.io.IOException;
@@ -49,9 +50,9 @@ public class FileUtils {
                                         List<Path> filesToAnalyze,
                                         List<ViolationWithFilename> violations,
                                         List<RuleResult> rulesWithError) throws IOException {
-        
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(reportPath.toFile(), generateReport(rules, filesToAnalyze, violations, rulesWithError));
+        SarifUtils
+            .getSarifObjectMapper()
+            .writeValue(reportPath.toFile(), generateReport(rules, filesToAnalyze, violations, rulesWithError));
     }
 
 }
