@@ -1,5 +1,6 @@
 package io.codiga.cli.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.model.ViolationWithFilename;
 import io.codiga.cli.model.sarif.SarifReport;
@@ -46,5 +47,17 @@ public class SarifUtils {
                                              List<ViolationWithFilename> violations,
                                              List<RuleResult> rulesWithError) {
         return SarifReport.generate(rules, filesToAnalyze, violations, rulesWithError);
+    }
+
+    /**
+     * Get the object mapper for SARIF. This object mapper should be the one
+     * used to map all SARIF objects. Having this function ensures the same
+     * mapper is used/called between the code and the tests
+     *
+     * @return the object mapper used to serialized the SARIF data.
+     */
+    public static ObjectMapper getSarifObjectMapper() {
+        // Just return the default mapper and add customization if needed.
+        return new ObjectMapper();
     }
 }
