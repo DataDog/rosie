@@ -16,7 +16,6 @@ import io.codiga.server.request.Request;
 import io.codiga.server.response.*;
 import io.codiga.server.services.InjectorService;
 import io.codiga.utils.EnvironmentUtils;
-import io.codiga.utils.TreeSitterUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -202,17 +201,17 @@ public class ServerMainController {
     @PostMapping("/get-treesitter-ast")
     @CrossOrigin(origins = "*")
     @Async
-    public GetTreeSitterAstResponse getTreeSitterAst(@RequestBody GetTreeSitterAstRequest request) {
+    public CompletableFuture<GetTreeSitterAstResponse> getTreeSitterAst(@RequestBody GetTreeSitterAstRequest request) {
         metrics.incrementMetric(METRIC_TREESITTER_AST_REQUEST);
 
         if (!request.isValid()) {
             metrics.incrementMetric(METRIC_INVALID_TREESITTER_AST_REQUEST);
-            return new GetTreeSitterAstResponse(null, List.of(ERROR_INVALID_REQUEST));
+            return CompletableFuture.completedFuture(new GetTreeSitterAstResponse(null, List.of(ERROR_INVALID_REQUEST)));
         }
 
         if (!SUPPORTED_LANGUAGES.contains(request.language)) {
             metrics.incrementMetric(METRIC_INVALID_TREESITTER_AST_LANGUAGE);
-            return new GetTreeSitterAstResponse(null, List.of(ERROR_LANGUAGE_NOT_SUPPORTED));
+            return CompletableFuture.completedFuture(new GetTreeSitterAstResponse(null, List.of(ERROR_LANGUAGE_NOT_SUPPORTED)));
         }
 
         String decodedCode = null;
@@ -221,15 +220,15 @@ public class ServerMainController {
             decodedCode = new String(Base64.getDecoder().decode(request.codeBase64.getBytes()));
         } catch (IllegalArgumentException iae) {
             logger.info("code is not base64");
-            return new GetTreeSitterAstResponse(null, List.of(ERROR_CODE_NOT_BASE64));
+            return CompletableFuture.completedFuture(new GetTreeSitterAstResponse(null, List.of(ERROR_CODE_NOT_BASE64)));
         }
 
         var result = getFullAstTree(decodedCode, request.language);
 
-        if(result.isEmpty()) {
-            return new GetTreeSitterAstResponse(null, List.of(ERROR_NO_ROOT_NODE));
+        if (result.isEmpty()) {
+            return CompletableFuture.completedFuture(new GetTreeSitterAstResponse(null, List.of(ERROR_NO_ROOT_NODE)));
         }
 
-        return new GetTreeSitterAstResponse(result.get(), List.of());
+        return CompletableFuture.completedFuture(new GetTreeSitterAstResponse(result.get(), List.of()));
     }
 }
