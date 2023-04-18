@@ -1,16 +1,23 @@
 package io.codiga.server.request;
 
-import java.util.List;
+import lombok.Builder;
 
+/**
+ * The request structure and utils needed to get a TreeSitter AST
+ */
+@Builder
 public class GetTreeSitterAstRequest {
     public String language;
     public String fileEncoding;
     public String codeBase64;
 
-    public GetTreeSitterAstRequest(String language, String fileEncoding, String codeBase64) {
-        this.language = language;
-        this.fileEncoding = fileEncoding;
-        this.codeBase64 = codeBase64;
+    public static GetTreeSitterAstRequest create(String language, String fileEncoding, String codeBase64) {
+        return GetTreeSitterAstRequest
+                .builder()
+                .language(language)
+                .fileEncoding(fileEncoding)
+                .codeBase64(codeBase64)
+                .build();
     }
 
     public boolean isValid() {

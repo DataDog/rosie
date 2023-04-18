@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("application")
     id("org.springframework.boot") version "2.7.3"
+    id("io.freefair.lombok") version "6.5.1"
 }
 
 group = "io.codiga"

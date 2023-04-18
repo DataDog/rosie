@@ -87,7 +87,7 @@ public class TreeSitterUtils {
                  * https://tree-sitter.github.io/tree-sitter/using-parsers#named-vs-anonymous-nodes
                  */
                 if (nodeType != TreeSitterPythonTypes.UNKNOWN) {
-                    current = new TreeSitterAstElement(nodeType.label, currentNode.getStartPosition(), currentNode.getEndPosition(), treeCursor.getCurrentFieldName(), new ArrayList<>(), parent);
+                    current = new TreeSitterAstElement(currentNode.getType(), currentNode.getStartPosition(), currentNode.getEndPosition(), treeCursor.getCurrentFieldName(), new ArrayList<>(), parent);
                     if (parent != null) {
                         parent.children.add(current);
                     }

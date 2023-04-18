@@ -4,6 +4,9 @@ import io.codiga.model.ast.common.TreeSitterAstElement;
 
 import java.util.List;
 
+/**
+ * The response structure for a request to get a TreeSitter AST
+ */
 public class GetTreeSitterAstResponse {
     public TreeSitterAstElement result;
     public List<String> errors;

@@ -5,13 +5,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
+/**
+ * Represents a TreeSitter AST element
+ */
 public class TreeSitterAstElement {
     public String astType;
     public io.codiga.model.common.Position start;
     public io.codiga.model.common.Position end;
     public String fieldName;
     public List<TreeSitterAstElement> children;
-    @JsonIgnore public TreeSitterAstElement parent;
+    @JsonIgnore public TreeSitterAstElement parent; // only used while traversing a tree; don't return in API requests
 
     public TreeSitterAstElement() {
         // leave empty for tests
