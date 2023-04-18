@@ -29,7 +29,7 @@ public class MetricsDatadog implements MetricsInterface {
             logger.info(String.format("Initializing metrics with prefix %s", metrixPrefix.get()));
             builder = builder.prefix(metrixPrefix.get());
         } else {
-            logger.info(String.format("No prefix to set for datadog metrics"));
+            logger.info("No prefix to set for datadog metrics");
         }
         builder = builder
             .hostname(getEnvironmentValue(DATADOG_HOSTNAME).orElse(DEFAULT_HOST))
@@ -40,7 +40,6 @@ public class MetricsDatadog implements MetricsInterface {
 
     @Override
     public void incrementMetric(String metricName) {
-//        logger.info(String.format("incrementing metric %s", metricName));
         this.datadogClient.increment(metricName);
     }
 
