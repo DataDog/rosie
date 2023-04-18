@@ -4,6 +4,8 @@ import lombok.Builder;
 
 import java.nio.file.Path;
 
+import static io.codiga.cli.utils.SarifUtils.stripLeadingSlash;
+
 @Builder
 public class SarifResultArtifactLocation {
     public String uri;
@@ -17,14 +19,9 @@ public class SarifResultArtifactLocation {
     }
 
     public static SarifResultArtifactLocation generate(String uri) {
-        String finalUri = uri;
-        if (uri.startsWith("/")) {
-            finalUri = uri.substring(1);
-        }
-
         return SarifResultArtifactLocation
             .builder()
-            .uri(finalUri)
+            .uri(stripLeadingSlash(uri))
             .build();
     }
 }
