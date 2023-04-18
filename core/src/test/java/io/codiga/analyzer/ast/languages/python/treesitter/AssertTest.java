@@ -42,7 +42,7 @@ public class AssertTest extends PythonTestUtils {
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
 
         io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
-        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSERT.label);
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSERT_STATEMENT.label);
         assertEquals(1, nodes.size());
 
         Node node = nodes.get(0);
@@ -63,7 +63,7 @@ public class AssertTest extends PythonTestUtils {
         TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
 
         io.codiga.analyzer.ast.utils.TreeSitterUtils.printTree(rootNode);
-        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSERT.label);
+        List<Node> nodes = io.codiga.analyzer.ast.utils.TreeSitterUtils.getNodesFromType(rootNode, TreeSitterPythonTypes.ASSERT_STATEMENT.label);
         assertEquals(1, nodes.size());
 
         Node node = nodes.get(0);

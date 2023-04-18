@@ -121,7 +121,7 @@ public class CodigaVisitor {
                 break;
             }
 
-            case ASSERT: {
+            case ASSERT_STATEMENT: {
                 var transformedElementOptional = transformAssert(node, parsingContext);
                 transformedElementOptional.ifPresent(transformedElement -> {
                     transformedElement.setContext(buildContext());
