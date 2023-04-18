@@ -20,6 +20,16 @@ and `git submodule update --recursive --remote`
 
 ## Run
 
+
+### CLI
+
 ```bash
 ./gradlew cli:run --args="--directory /Users/julien/git/ci-backend-executor/backend_lib/ -t true -r rules.json -o plop.json"
+```
+
+
+### Server
+
+```bash
+./gradlew server:bootRun
 ```
