@@ -75,6 +75,7 @@ public class TreeSitterUtils {
                         parent = current;
                     }
                     isFinished = true;
+                    treeCursor.close();
                 }
             } else {
                 var currentNode = treeCursor.getCurrentNode();
