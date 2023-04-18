@@ -5,6 +5,8 @@ import io.codiga.model.Language;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.TreeSitterAstElement;
 import io.codiga.parser.treesitter.python.TreeSitterPythonParser;
+import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
+import io.codiga.parser.treesitter.utils.TreeSitterNodeUtils;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,9 +75,51 @@ public class TreeSitterUtils {
             return Optional.empty();
         }
 
-        var currentNode = treeCursor.getCurrentNode();
-        var result = new TreeSitterAstElement(currentNode.getType(), currentNode.getStartPosition(), currentNode.getEndPosition(), treeCursor.getCurrentFieldName(), new ArrayList<>());
+        var visitedChildren = false;
+        var isFinished = false;
+        TreeSitterAstElement current = null;
+        TreeSitterAstElement parent = null;
 
-        return Optional.of(result);
+        while (!isFinished) {
+
+            if (visitedChildren) {
+                if (treeCursor.gotoNextSibling()) {
+                    visitedChildren = false;
+                } else if (treeCursor.gotoParent() && parent != null && parent.parent != null) {
+                    parent = parent.parent;
+                    visitedChildren = true;
+                } else {
+                    if (parent == null && current != null) {
+                        parent = current;
+                    }
+                    isFinished = true;
+                }
+            } else {
+                var currentNode = treeCursor.getCurrentNode();
+                var nodeType = TreeSitterNodeUtils.getNodeType(currentNode);
+
+                /*
+                 * check whether the node type is named
+                 * TODO @dastrong - transition to use native isNamed method when/if supported
+                 * https://tree-sitter.github.io/tree-sitter/using-parsers#named-vs-anonymous-nodes
+                 */
+                if (nodeType != TreeSitterPythonTypes.UNKNOWN) {
+                    current = new TreeSitterAstElement(nodeType.label, currentNode.getStartPosition(), currentNode.getEndPosition(), treeCursor.getCurrentFieldName(), new ArrayList<>(), parent);
+                    if (parent != null) {
+                        parent.children.add(current);
+                    }
+                }
+
+                if (treeCursor.gotoFirstChild()) {
+                    parent = current;
+                    visitedChildren = false;
+                } else {
+                    visitedChildren = true;
+                }
+            }
+
+        }
+
+        return Optional.of(parent);
     }
 }
