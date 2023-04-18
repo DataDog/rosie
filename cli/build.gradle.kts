@@ -49,8 +49,10 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
     implementation("com.google.inject:guice:5.1.0")
     implementation("commons-cli:commons-cli:1.5.0")
-    implementation("com.rollbar:rollbar-java:1.10.0")
     implementation("ch.qos.logback:logback-classic:1.4.6")
+
+    implementation("org.slf4j:slf4j-api:2.0.7")
+    implementation("org.slf4j:slf4j-simple:2.0.7")
 
     testImplementation("net.jimblackler.jsonschemafriend:core:0.11.4")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
