@@ -14,7 +14,7 @@ public class SarifResult {
     public SarifResultMessage message;
     public List<SarifResultLocation> locations;
     public String ruleId;
-
+    public List<SarifResultFix> fixes;
 
     public static SarifResult generate(ViolationWithFilename violation) {
         return SarifResult
@@ -23,6 +23,7 @@ public class SarifResult {
             .message(SarifResultMessage.builder().text(violation.message).build())
             .locations(List.of(SarifResultLocation.generate(violation)))
             .ruleId(violation.rule)
+            .fixes(violation.fixes == null ? List.of() : violation.fixes.stream().map(f -> SarifResultFix.generate(f, violation.filename)).toList())
             .build();
     }
 }
