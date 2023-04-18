@@ -48,7 +48,7 @@ public class TreeSitterPythonParser {
         switch (nodeType) {
             case ARGUMENT_LIST:
                 return convertToAstElement(transformArgumentListToFunctionCallArguments(node, parsingContext));
-            case ASSERT:
+            case ASSERT_STATEMENT:
                 return convertToAstElement(transformAssert(node, parsingContext));
             case ASSIGNMENT:
                 return convertToAstElement(transformAssignment(node, parsingContext));

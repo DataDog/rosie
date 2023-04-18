@@ -32,7 +32,7 @@ java.targetCompatibility = JavaVersion.VERSION_17
 
 
 dependencies {
-
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.2")
     implementation("com.google.inject:guice:5.1.0")
     implementation("com.datadoghq:java-dogstatsd-client:4.2.0")
     implementation("com.datadoghq:dd-trace-api:1.10.0")

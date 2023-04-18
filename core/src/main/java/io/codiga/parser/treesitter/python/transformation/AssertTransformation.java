@@ -16,7 +16,7 @@ public class AssertTransformation {
     private static final Logger LOGGER = Logger.getLogger(AssertTransformation.class.getName());
 
     public static Optional<PythonAssertStatement> transformAssert(Node node, TreeSitterParsingContext parsingContext) {
-        if (node == null || getNodeType(node) != TreeSitterPythonTypes.ASSERT || node.getChildCount() < 2) {
+        if (node == null || getNodeType(node) != TreeSitterPythonTypes.ASSERT_STATEMENT || node.getChildCount() < 2) {
             return Optional.empty();
         }
         var element = TreeSitterPythonParser.parse(node.getChild(1), parsingContext);

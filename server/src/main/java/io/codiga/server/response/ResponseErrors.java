@@ -6,4 +6,5 @@ public class ResponseErrors {
     public final static String ERROR_CODE_NOT_BASE64 = "code-not-base64";
     public final static String ERROR_RULE_NOT_BASE64 = "rule-not-base64";
     public final static String ERROR_ANALYSIS_ERROR = "analysis-error";
+    public final static String ERROR_NO_ROOT_NODE = "no-root-node";
 }

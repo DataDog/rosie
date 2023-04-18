@@ -4,6 +4,7 @@ import io.codiga.model.Language;
 import io.codiga.server.ServerMainController;
 import io.codiga.server.configuration.ServerTestConfiguration;
 import io.codiga.server.request.*;
+import io.codiga.server.response.GetTreeSitterAstResponse;
 import io.codiga.server.response.Response;
 import io.codiga.server.response.ViolationFix;
 import io.codiga.server.response.ViolationFixEdit;
@@ -248,6 +249,22 @@ public class E2EBase {
         Response response = this.restTemplate.postForObject(
                 "http://localhost:" + port + "/analyze", request,
                 Response.class);
+        return response;
+    }
+
+    public GetTreeSitterAstResponse executeTreesitterAstTest(String decodedCode,
+                                             Language language,
+                                             String fileEncoding) {
+        GetTreeSitterAstRequest request = GetTreeSitterAstRequest
+                .builder()
+                .language(stringFromLanguage(language))
+                .fileEncoding(fileEncoding)
+                .codeBase64(encodeBase64(decodedCode))
+                .build();
+
+        GetTreeSitterAstResponse response = this.restTemplate.postForObject(
+                "http://localhost:" + port + "/get-treesitter-ast", request,
+                GetTreeSitterAstResponse.class);
         return response;
     }
 
