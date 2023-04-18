@@ -214,7 +214,18 @@ public class Main {
                     List<AnalysisResult> analysisResultList = sequence(futures).get(configuration.analysisTimeoutMs, TimeUnit.MILLISECONDS);
 
                     analysisResultList.forEach(analysisResult -> {
-                        List<ViolationWithFilename> violations = analysisResult.ruleResults().stream().flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> new ViolationWithFilename(violation.start, violation.end, violation.message, violation.severity, violation.category, relativePath, ruleResult.identifier()))).toList();
+                        List<ViolationWithFilename> violations = analysisResult.ruleResults().stream()
+                            .flatMap(ruleResult -> ruleResult.violations().stream().map(violation -> {
+                                return ViolationWithFilename.builder()
+                                    .start(violation.start)
+                                    .end(violation.end)
+                                    .message(violation.message)
+                                    .severity(violation.severity)
+                                    .category(violation.category)
+                                    .filename(relativePath)
+                                    .fixes(violation.fixes)
+                                    .build();
+                            })).toList();
                         analysisResult.ruleResults().forEach(ruleResult -> {
                             if (debug) {
                                 System.out.printf("rule %s on file %s took %s ms%n", ruleResult.identifier(), relativePath, ruleResult.executionTimeMs());

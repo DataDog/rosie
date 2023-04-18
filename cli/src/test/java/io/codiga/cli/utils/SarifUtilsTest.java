@@ -8,8 +8,7 @@ import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.common.Position;
-import io.codiga.model.error.Category;
-import io.codiga.model.error.Severity;
+import io.codiga.model.error.*;
 import net.jimblackler.jsonschemafriend.Schema;
 import net.jimblackler.jsonschemafriend.SchemaException;
 import net.jimblackler.jsonschemafriend.SchemaStore;
@@ -73,22 +72,118 @@ public class SarifUtilsTest {
     @Test
     @DisplayName("Check reports with all entries are correct")
     public void testNormalReport() {
+        var violation = ViolationWithFilename.builder()
+            .start(new Position(1, 2))
+            .end(new Position(2, 3))
+            .message("error message")
+            .severity(Severity.CRITICAL)
+            .category(Category.BEST_PRACTICE)
+            .filename("myfile")
+            .rule("myrule")
+            .build();
+
         assertTrue(checkCompliance(
             generateReport(
                 List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
-                List.of(new ViolationWithFilename(new Position(1, 2), new Position(2, 3), "error message", Severity.CRITICAL, Category.BEST_PRACTICE, "myfile", "myrule")),
+                List.of(violation),
+                List.of())));
+    }
+
+    @Test
+    @DisplayName("Check a report with a violation and an addition")
+    public void textFixAddition() {
+        var violation = ViolationWithFilename.builder()
+            .start(new Position(1, 2))
+            .end(new Position(2, 3))
+            .message("error message")
+            .severity(Severity.CRITICAL)
+            .category(Category.BEST_PRACTICE)
+            .filename("myfile")
+            .rule("myrule")
+            .fixes(
+                List.of(
+                    new Fix("my fix", List.of(new Edit(new Position(1, 2), null, EditType.ADD, "mycode"))))
+            )
+            .build();
+
+        assertTrue(checkCompliance(
+            generateReport(
+                List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new File("foo/bar").toPath()),
+                List.of(violation),
+                List.of())));
+    }
+
+    @Test
+    @DisplayName("Check a report with a violation and an update")
+    public void textFixUpdate() {
+        var violation = ViolationWithFilename.builder()
+            .start(new Position(1, 2))
+            .end(new Position(2, 3))
+            .message("error message")
+            .severity(Severity.CRITICAL)
+            .category(Category.BEST_PRACTICE)
+            .filename("myfile")
+            .rule("myrule")
+            .fixes(
+                List.of(
+                    new Fix("my fix", List.of(new Edit(new Position(1, 2), new Position(2, 4), EditType.UPDATE, "mycode"))))
+            )
+            .build();
+
+        assertTrue(checkCompliance(
+            generateReport(
+                List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new File("foo/bar").toPath()),
+                List.of(violation),
+                List.of())));
+    }
+
+
+    @Test
+    @DisplayName("Check a report with a violation and one deletion")
+    public void textFixDelete() {
+        var violation = ViolationWithFilename.builder()
+            .start(new Position(1, 2))
+            .end(new Position(2, 3))
+            .message("error message")
+            .severity(Severity.CRITICAL)
+            .category(Category.BEST_PRACTICE)
+            .filename("myfile")
+            .rule("myrule")
+            .fixes(
+                List.of(
+                    new Fix("my fix", List.of(new Edit(new Position(1, 2), new Position(2, 4), EditType.REMOVE, null))))
+            )
+            .build();
+
+        assertTrue(checkCompliance(
+            generateReport(
+                List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new File("foo/bar").toPath()),
+                List.of(violation),
                 List.of())));
     }
 
     @Test
     @DisplayName("Violations that starts at line 0 are invalid")
     public void testInvalidLineNumbers() {
+        var violation = ViolationWithFilename.builder()
+            .start(new Position(0, 2))
+            .end(new Position(2, 3))
+            .message("error message")
+            .severity(Severity.CRITICAL)
+            .category(Category.BEST_PRACTICE)
+            .filename("myfile")
+            .rule("myrule")
+            .build();
+
         assertFalse(checkCompliance(
             generateReport(
                 List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
-                List.of(new ViolationWithFilename(new Position(0, 2), new Position(2, 3), "error message", Severity.CRITICAL, Category.BEST_PRACTICE, "myfile", "myrule")),
+                List.of(violation),
                 List.of())));
     }
 }

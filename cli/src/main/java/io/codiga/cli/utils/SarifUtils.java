@@ -60,4 +60,19 @@ public class SarifUtils {
         // Just return the default mapper and add customization if needed.
         return new ObjectMapper();
     }
+
+
+    /**
+     * Remove the leading slash in path to have a clean path
+     * without a leading slash
+     *
+     * @param s the initial path
+     * @return the path without the leading path
+     */
+    public static String stripLeadingSlash(String s) {
+        if (s.startsWith("/")) {
+            return s.substring(1);
+        }
+        return s;
+    }
 }
