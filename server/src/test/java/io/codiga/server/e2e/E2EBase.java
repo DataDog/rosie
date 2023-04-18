@@ -255,7 +255,12 @@ public class E2EBase {
     public GetTreeSitterAstResponse executeTreesitterAstTest(String decodedCode,
                                              Language language,
                                              String fileEncoding) {
-        GetTreeSitterAstRequest request = GetTreeSitterAstRequest.create(stringFromLanguage(language), fileEncoding, encodeBase64(decodedCode));
+        GetTreeSitterAstRequest request = GetTreeSitterAstRequest
+                .builder()
+                .language(stringFromLanguage(language))
+                .fileEncoding(fileEncoding)
+                .codeBase64(encodeBase64(decodedCode))
+                .build();
 
         GetTreeSitterAstResponse response = this.restTemplate.postForObject(
                 "http://localhost:" + port + "/get-treesitter-ast", request,
