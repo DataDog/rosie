@@ -10,11 +10,11 @@ import static io.codiga.model.error.EditType.ADD;
 import static io.codiga.model.error.EditType.UPDATE;
 
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SarifReplacement {
     // The region of the artifact to delete.
     public SarifRegion deletedRegion;
     // The content to insert at the location specified by the 'deletedRegion' property.
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public SarifArtifactContent insertedContent;
 
     public static Optional<SarifReplacement> generate(Edit edit) {
