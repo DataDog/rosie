@@ -79,7 +79,7 @@ public class TreeSitterUtils {
                 }
             } else {
                 if (treeCursor.getCurrentNode().isNamed()) {
-                    current = new TreeSitterAstElement(treeCursor.getCurrentNode().getType(), treeCursor.getCurrentNode().getStartPosition(), treeCursor.getCurrentNode().getEndPosition(), treeCursor.getCurrentFieldName(), new ArrayList<>(), parent);
+                    current = TreeSitterAstElement.create(treeCursor.getCurrentNode(), treeCursor.getCurrentFieldName(), new ArrayList<>(), parent);
                     if (parent != null) {
                         parent.children.add(current);
                     }
