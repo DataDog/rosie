@@ -78,16 +78,8 @@ public class TreeSitterUtils {
                     treeCursor.close();
                 }
             } else {
-                var currentNode = treeCursor.getCurrentNode();
-                var nodeType = TreeSitterNodeUtils.getNodeType(currentNode);
-
-                /*
-                 * check whether the node type is named
-                 * TODO @dastrong - transition to use native isNamed method when/if supported
-                 * https://tree-sitter.github.io/tree-sitter/using-parsers#named-vs-anonymous-nodes
-                 */
-                if (nodeType != TreeSitterPythonTypes.UNKNOWN) {
-                    current = new TreeSitterAstElement(currentNode.getType(), currentNode.getStartPosition(), currentNode.getEndPosition(), treeCursor.getCurrentFieldName(), new ArrayList<>(), parent);
+                if (treeCursor.getCurrentNode().isNamed()) {
+                    current = TreeSitterAstElement.create(treeCursor.getCurrentNode(), treeCursor.getCurrentFieldName(), new ArrayList<>(), parent);
                     if (parent != null) {
                         parent.children.add(current);
                     }

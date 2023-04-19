@@ -1,13 +1,18 @@
 package io.codiga.model.ast.common;
 
-import ai.serenade.treesitter.Position;
+import ai.serenade.treesitter.Node;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.codiga.model.common.Position;
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
 /**
  * Represents a TreeSitter AST element
  */
+@Builder
+@Jacksonized // allows Jackson to deserialize on the builder class
 public class TreeSitterAstElement {
     public String astType;
     public io.codiga.model.common.Position start;
@@ -16,16 +21,15 @@ public class TreeSitterAstElement {
     public List<TreeSitterAstElement> children;
     @JsonIgnore public TreeSitterAstElement parent; // only used while traversing a tree; don't return in API requests
 
-    public TreeSitterAstElement() {
-        // leave empty for tests
-    }
-
-    public TreeSitterAstElement(String astType, Position start, Position end, String fieldName, List<TreeSitterAstElement> children, TreeSitterAstElement parent) {
-        this.astType = astType;
-        this.start = new io.codiga.model.common.Position(start.row, start.column);
-        this.end = new io.codiga.model.common.Position(end.row, end.column);
-        this.fieldName = fieldName;
-        this.children = children;
-        this.parent = parent;
+    public static TreeSitterAstElement create(Node node, String fieldName, List<TreeSitterAstElement> children, TreeSitterAstElement parent) {
+        return TreeSitterAstElement
+                .builder()
+                .astType(node.getType())
+                .start(new Position(node.getStartPosition().row, node.getStartPosition().column))
+                .end(new Position(node.getEndPosition().row, node.getEndPosition().column))
+                .fieldName(fieldName)
+                .children(children)
+                .parent(parent)
+                .build();
     }
 }
