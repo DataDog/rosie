@@ -7,6 +7,11 @@ import java.util.List;
 
 import static io.codiga.cli.utils.SarifUtils.severityToSarifLevel;
 
+/**
+ * A result produced by an analysis tool.
+ * <br>
+ * <a href="https://github.com/DataDog/datadog-ci/blob/master/src/commands/sarif/json-schema/sarif-schema-2.1.0.json#L2038">See in the SARIF JSON Schema</a>
+ */
 @Builder
 public class SarifResult {
     public String level;

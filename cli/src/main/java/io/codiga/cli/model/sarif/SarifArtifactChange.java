@@ -6,6 +6,11 @@ import lombok.Builder;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A change to a single artifact.
+ * <br>
+ * <a href="https://github.com/DataDog/datadog-ci/blob/master/src/commands/sarif/json-schema/sarif-schema-2.1.0.json#L230">See in the SARIF JSON Schema</a>
+ */
 @Builder
 public class SarifArtifactChange {
     public SarifArtifactLocation artifactLocation;
