@@ -17,5 +17,7 @@ public class ViolationWithFilename {
     public Category category;
     public String filename;
     public String rule;
+
+    @Builder.Default
     public List<Fix> fixes = List.of();
 }
