@@ -10,6 +10,11 @@ import java.util.List;
 
 import static io.codiga.cli.utils.SarifUtils.SARIF_VERSION;
 
+/**
+ * The standard format for the output of static analysis tools.
+ * <br>
+ * <a href="https://github.com/DataDog/datadog-ci/blob/master/src/commands/sarif/json-schema/sarif-schema-2.1.0.json#L8">See in the SARIF JSON Schema</a>
+ */
 @Builder
 public class SarifReport {
     public String version;

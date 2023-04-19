@@ -8,6 +8,11 @@ import lombok.Builder;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * Describes a single run of an analysis tool, and contains the reported output of that run.
+ * <br>
+ * <a href="https://github.com/DataDog/datadog-ci/blob/master/src/commands/sarif/json-schema/sarif-schema-2.1.0.json#L2339">See in the SARIF JSON Schema</a>
+ */
 @Builder
 public class SarifRun {
     public SarifTool tool;

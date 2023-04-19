@@ -9,6 +9,11 @@ import java.util.Optional;
 import static io.codiga.model.error.EditType.ADD;
 import static io.codiga.model.error.EditType.UPDATE;
 
+/**
+ * The replacement of a single region of an artifact.
+ * <br>
+ * <a href="https://github.com/DataDog/datadog-ci/blob/master/src/commands/sarif/json-schema/sarif-schema-2.1.0.json#L1789">See in the SARIF JSON Schema</a>
+ */
 @Builder
 public class SarifReplacement {
     // The region of the artifact to delete.
