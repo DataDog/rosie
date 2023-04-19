@@ -22,7 +22,6 @@ public class SarifResultFix {
         return SarifResultFix
             .builder()
             .description(new SarifResultMessage(fix.description))
-//            .description(SarifResultMessage.builder().text(fix.description).build())
             .artifactChanges(fix.edits == null ? List.of() : List.of(SarifArtifactChange.generate(fix, filename)))
             .build();
     }

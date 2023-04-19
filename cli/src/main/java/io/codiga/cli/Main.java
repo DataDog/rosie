@@ -219,6 +219,7 @@ public class Main {
                                 return ViolationWithFilename.builder()
                                     .start(violation.start)
                                     .end(violation.end)
+                                    .rule(ruleResult.identifier())
                                     .message(violation.message)
                                     .severity(violation.severity)
                                     .category(violation.category)
