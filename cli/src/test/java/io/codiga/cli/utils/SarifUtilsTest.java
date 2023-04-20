@@ -26,8 +26,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import static io.codiga.cli.utils.SarifUtils.generateReport;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SarifUtilsTest {
 
@@ -138,6 +137,56 @@ public class SarifUtilsTest {
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
+    }
+
+    @Test
+    @DisplayName("Check the correct position of ruleIndex")
+    public void testCheckRuleIndex() {
+        var violation1 = ViolationWithFilename.builder()
+            .start(new Position(1, 2))
+            .end(new Position(2, 3))
+            .message("error message")
+            .severity(Severity.CRITICAL)
+            .category(Category.BEST_PRACTICE)
+            .filename("myfile")
+            .rule("myrule2")
+            .fixes(
+                List.of(
+                    new Fix("my fix", List.of(new Edit(new Position(1, 2), new Position(2, 4), EditType.UPDATE, "mycode"))))
+            )
+            .build();
+
+        var violation2 = ViolationWithFilename.builder()
+            .start(new Position(1, 2))
+            .end(new Position(2, 3))
+            .message("error message")
+            .severity(Severity.CRITICAL)
+            .category(Category.BEST_PRACTICE)
+            .filename("myfile")
+            .rule("myrule3")
+            .fixes(
+                List.of(
+                    new Fix("my fix", List.of(new Edit(new Position(1, 2), new Position(2, 4), EditType.UPDATE, "mycode"))))
+            )
+            .build();
+
+        SarifReport sarifReport = generateReport(
+            List.of(
+                new AnalyzerRule("myrule1", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of()),
+                new AnalyzerRule("myrule2", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+            List.of(new File("foo/bar").toPath()),
+            List.of(violation1, violation2),
+            List.of());
+
+        assertEquals("myrule1", sarifReport.runs.get(0).tool.driver.rules.get(0).id);
+        assertEquals("myrule2", sarifReport.runs.get(0).tool.driver.rules.get(1).id);
+
+        assertEquals("myrule2", sarifReport.runs.get(0).results.get(0).ruleId);
+        assertEquals(1, sarifReport.runs.get(0).results.get(0).ruleIndex);
+
+        assertEquals("myrule3", sarifReport.runs.get(0).results.get(1).ruleId);
+        assertEquals(-1, sarifReport.runs.get(0).results.get(1).ruleIndex);
+
     }
 
 

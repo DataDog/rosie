@@ -38,13 +38,13 @@ public class SarifReplacement {
      * The tag added is to indicate in the SARIF format if the edit is an add, update or remove.
      * This function generates the tag.
      * <p>
-     * The tag is in the form rosieEditType:ADD
+     * The tag is in the form type:ADD
      *
      * @param edit - the edit for the tag
      * @return a string that represents the tag we are generating
      */
     public static String generateRosieEditTag(Edit edit) {
-        return String.format("rosieEditType:%s", edit.editType.toString().toUpperCase());
+        return String.format("type:%s", edit.editType.toString().toUpperCase());
     }
 
     public static Optional<SarifRegion> getRegionForDeleteRegion(Edit edit) {
@@ -65,7 +65,7 @@ public class SarifReplacement {
             }
 
             case UPDATE, REMOVE -> {
-                /**
+                /*
                  * Update and remove: just put whatever section we have to update
                  * or remove
                  */
