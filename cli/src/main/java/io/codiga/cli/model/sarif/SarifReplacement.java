@@ -44,7 +44,7 @@ public class SarifReplacement {
      * @return a string that represents the tag we are generating
      */
     public static String generateRosieEditTag(Edit edit) {
-        return String.format("rosieEditType:%s", edit.editType.toString().toUpperCase());
+        return String.format("type:%s", edit.editType.toString().toUpperCase());
     }
 
     public static Optional<SarifRegion> getRegionForDeleteRegion(Edit edit) {
@@ -65,7 +65,7 @@ public class SarifReplacement {
             }
 
             case UPDATE, REMOVE -> {
-                /**
+                /*
                  * Update and remove: just put whatever section we have to update
                  * or remove
                  */
