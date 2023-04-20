@@ -38,7 +38,7 @@ public class SarifReplacement {
      * The tag added is to indicate in the SARIF format if the edit is an add, update or remove.
      * This function generates the tag.
      * <p>
-     * The tag is in the form rosieEditType:ADD
+     * The tag is in the form type:ADD
      *
      * @param edit - the edit for the tag
      * @return a string that represents the tag we are generating
