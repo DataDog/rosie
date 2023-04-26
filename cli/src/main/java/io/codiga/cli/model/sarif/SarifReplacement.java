@@ -1,14 +1,13 @@
 package io.codiga.cli.model.sarif;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.codiga.model.error.Edit;
-import lombok.Builder;
-
-import java.util.List;
-import java.util.Optional;
-
 import static io.codiga.model.error.EditType.ADD;
 import static io.codiga.model.error.EditType.UPDATE;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.codiga.model.error.Edit;
+import java.util.List;
+import java.util.Optional;
+import lombok.Builder;
 
 /**
  * The replacement of a single region of an artifact.
@@ -22,6 +21,7 @@ public class SarifReplacement {
     // The content to insert at the location specified by the 'deletedRegion' property.
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public SarifArtifactContent insertedContent;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public SarifPropertyBag properties;
 
     public static Optional<SarifReplacement> generate(Edit edit) {
@@ -30,21 +30,8 @@ public class SarifReplacement {
             .builder()
             .deletedRegion(sarifRegion)
             .insertedContent(getContentToInsert(edit))
-            .properties(SarifPropertyBag.builder().tags(List.of(generateRosieEditTag(edit))).build())
+            .properties(SarifPropertyBag.builder().tags(List.of()).build())
             .build());
-    }
-
-    /**
-     * The tag added is to indicate in the SARIF format if the edit is an add, update or remove.
-     * This function generates the tag.
-     * <p>
-     * The tag is in the form type:ADD
-     *
-     * @param edit - the edit for the tag
-     * @return a string that represents the tag we are generating
-     */
-    public static String generateRosieEditTag(Edit edit) {
-        return String.format("type:%s", edit.editType.toString().toUpperCase());
     }
 
     public static Optional<SarifRegion> getRegionForDeleteRegion(Edit edit) {
