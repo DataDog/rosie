@@ -1,5 +1,16 @@
 package io.codiga.cli;
 
+import static io.codiga.cli.CliConstants.WARMUP_LOOPS;
+import static io.codiga.cli.FileUtils.filterFilesByExtensions;
+import static io.codiga.cli.FileUtils.getFileContent;
+import static io.codiga.cli.FileUtils.writeSarifReport;
+import static io.codiga.cli.FileUtils.writeViolationsToFile;
+import static io.codiga.cli.utils.RulesUtils.getRulesFromFile;
+import static io.codiga.cli.utils.RulesUtils.separateRules;
+import static io.codiga.constants.Languages.LANGUAGE_EXTENSIONS;
+import static io.codiga.utils.CompletableFutureUtils.sequence;
+import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
+
 import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
@@ -13,8 +24,6 @@ import io.codiga.model.Language;
 import io.codiga.model.error.AnalysisResult;
 import io.codiga.model.error.RuleResult;
 import io.codiga.utils.Version;
-import org.apache.commons.cli.*;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,14 +36,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-
-import static io.codiga.cli.CliConstants.WARMUP_LOOPS;
-import static io.codiga.cli.FileUtils.*;
-import static io.codiga.cli.utils.RulesUtils.getRulesFromFile;
-import static io.codiga.cli.utils.RulesUtils.separateRules;
-import static io.codiga.constants.Languages.LANGUAGE_EXTENSIONS;
-import static io.codiga.utils.CompletableFutureUtils.sequence;
-import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 public class Main {
 
@@ -119,8 +127,9 @@ public class Main {
         System.out.printf("Output file   : %s%n", output);
         System.out.printf("Output format : %s%n", outputFormat.name());
 
+        Path directoryPath = Paths.get(directory);
 
-        if (!Files.isDirectory(Paths.get(directory))) {
+        if (!Files.isDirectory(directoryPath)) {
             System.err.printf("%s is not a directory%n", directory);
             System.exit(1);
         }
@@ -188,9 +197,9 @@ public class Main {
 
             // For each file
             for (Path path : filesForLanguage) {
-                String fullPath = path.toString();
-                String relativePath = fullPath.replace(directory, "");
+                String relativePath = directoryPath.relativize(path).toString();
                 String basename = path.getFileName().toString();
+
                 try {
                     final String code = getFileContent(path);
 
@@ -243,7 +252,7 @@ public class Main {
                     });
 
                 } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
-                    System.err.printf("Error while reading file %s%n", fullPath);
+                    System.err.printf("Error while reading file %s%n", path);
                     e.printStackTrace();
                 }
             }
