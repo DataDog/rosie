@@ -4,13 +4,10 @@ import io.codiga.model.common.Position;
 import io.codiga.model.error.Category;
 import io.codiga.model.error.Fix;
 import io.codiga.model.error.Severity;
-import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.List;
+
 @Builder
 public class ViolationWithFilename {
     public Position start;

@@ -1,9 +1,8 @@
 package io.codiga.model.error;
 
 import io.codiga.model.common.Position;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+
 public class Edit {
     public Position start;
     public Position end;

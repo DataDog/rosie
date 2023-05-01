@@ -2,9 +2,8 @@ package io.codiga.model.error;
 
 
 import java.util.List;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+
 public class Fix {
     public String description;
     public List<Edit> edits;
