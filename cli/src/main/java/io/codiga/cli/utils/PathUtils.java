@@ -1,26 +1,10 @@
 package io.codiga.cli.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.codiga.cli.model.IgnorePaths;
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
 
 public class PathUtils {
-    /**
-     * Get a list of paths to ignore
-     * 
-     * @param path
-     * @return
-     * @throws IOException
-     */
-    public static List<String> getPathsFromIgnorePaths(String path) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(new File(path), IgnorePaths.class).ignorePaths.stream().toList();
-    }
-
     /**
      * Determine if a file path is valid within a glob/non-glob string path
      *

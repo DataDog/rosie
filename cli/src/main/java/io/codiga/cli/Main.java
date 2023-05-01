@@ -6,7 +6,6 @@ import static io.codiga.cli.FileUtils.getFileContent;
 import static io.codiga.cli.FileUtils.writeSarifReport;
 import static io.codiga.cli.FileUtils.writeViolationsToFile;
 import static io.codiga.cli.utils.PathUtils.checkIfPathMatches;
-import static io.codiga.cli.utils.PathUtils.getPathsFromIgnorePaths;
 import static io.codiga.cli.utils.RulesUtils.getRulesFromFile;
 import static io.codiga.cli.utils.RulesUtils.separateRules;
 import static io.codiga.constants.Languages.LANGUAGE_EXTENSIONS;
@@ -31,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -123,13 +123,13 @@ public class Main {
             .hasArg(true)
             .desc("output format (json/sarif)")
             .build();
-    Option optionIgnorePaths =
+    Option optionIgnorePath =
         Option.builder()
             .required(false)
             .option("p")
-            .longOpt("ignore-paths")
+            .longOpt("ignore-path")
             .hasArg(true)
-            .desc("paths to ignore (path to JSON file)")
+            .desc("paths to ignore")
             .build();
     Option optionTestMode =
         Option.builder()
@@ -146,8 +146,8 @@ public class Main {
     options.addOption(optionOutput);
     options.addOption(optionTreeSitter);
     options.addOption(optionOutputFormat);
-    options.addOption(optionIgnorePaths);
     options.addOption(optionTestMode);
+    options.addOption(optionIgnorePath);
 
     CommandLineParser parser = new DefaultParser();
     HelpFormatter formatter = new HelpFormatter();
@@ -167,8 +167,11 @@ public class Main {
     String useTreeSitterString = cmd.getOptionValue(optionTreeSitter);
     String output = cmd.getOptionValue(optionOutput);
     String outputFormatString = cmd.getOptionValue(optionOutputFormat);
-    String ignorePathsFile = cmd.getOptionValue(optionIgnorePaths);
     String testModeString = cmd.getOptionValue(optionTestMode);
+    String[] ignorePathValues = cmd.getOptionValues(optionIgnorePath);
+    List<String> ignorePaths =
+        ignorePathValues == null ? List.of() : Arrays.stream(ignorePathValues).toList();
+
     boolean debug = debugString != null && debugString.equalsIgnoreCase("true");
     boolean useTreeSitter =
         useTreeSitterString != null && useTreeSitterString.equalsIgnoreCase("true");
@@ -177,17 +180,17 @@ public class Main {
 
     System.out.println("Configuration");
     System.out.println("===================");
-    System.out.printf("Version           : %s%n", Version.CURRENT_VERSION);
-    System.out.printf("# cores           : %s%n", Runtime.getRuntime().availableProcessors());
-    System.out.printf("Debug             : %s%n", debug);
-    System.out.printf("Directory         : %s%n", directory);
-    System.out.printf("Rules file        : %s%n", rulesFile);
-    System.out.printf("Debug             : %s%n", debugString);
-    System.out.printf("Tree-Sitter       : %s%n", useTreeSitter);
-    System.out.printf("Output file       : %s%n", output);
-    System.out.printf("Output format     : %s%n", outputFormat.name());
-    System.out.printf("Ignore paths file : %s%n", ignorePathsFile);
-    System.out.printf("Test mode         : %s%n", inTestMode);
+    System.out.printf("Version       : %s%n", Version.CURRENT_VERSION);
+    System.out.printf("# cores       : %s%n", Runtime.getRuntime().availableProcessors());
+    System.out.printf("Debug         : %s%n", debug);
+    System.out.printf("Directory     : %s%n", directory);
+    System.out.printf("Rules file    : %s%n", rulesFile);
+    System.out.printf("Debug         : %s%n", debugString);
+    System.out.printf("Tree-Sitter   : %s%n", useTreeSitter);
+    System.out.printf("Output file   : %s%n", output);
+    System.out.printf("Output format : %s%n", outputFormat.name());
+    System.out.printf("Ignore paths  : %s%n", String.join(",", ignorePaths));
+    System.out.printf("Test mode     : %s%n", inTestMode);
 
     Path directoryPath = Paths.get(directory);
 
@@ -200,31 +203,6 @@ public class Main {
       System.err.printf("%s is not a readable file%n", rulesFile);
       System.exit(1);
     }
-
-    if (ignorePathsFile != null
-        && (!Files.isReadable(Paths.get(ignorePathsFile))
-            || !Files.isRegularFile(Paths.get(ignorePathsFile)))) {
-      System.err.printf("%s is not a readable file%n", ignorePathsFile);
-      System.exit(1);
-    }
-
-    // read the ignore paths
-    List<String> ignorePaths = List.of();
-    try {
-      // this file path is NOT required, so we should only try to read the file if a path was given
-      if (ignorePathsFile != null) {
-        ignorePaths = getPathsFromIgnorePaths(ignorePathsFile);
-      }
-    } catch (IOException e) {
-      System.err.printf(
-          "Error when trying to read the ignore paths from file %s: %s%n",
-          ignorePathsFile, e.getMessage());
-      e.printStackTrace();
-      System.exit(1);
-    }
-    // Reassigned as it's used within a lambda below and
-    // "Variable used in lambda expression should be final or effectively final"
-    List<String> finalIgnorePaths = ignorePaths;
 
     // read the rules
     List<AnalyzerRule> rules = List.of();
@@ -244,7 +222,10 @@ public class Main {
     try {
       filesToAnalyze =
           Files.walk(Paths.get(directory))
-              .filter(Files::isRegularFile)
+              .filter(
+                  path ->
+                      Files.isRegularFile(path)
+                          && !checkIfPathMatches(ignorePaths, directoryPath.relativize(path)))
               .collect(Collectors.toList());
     } catch (IOException e) {
       System.err.println("Error when getting the list of files");
@@ -368,13 +349,7 @@ public class Main {
                                 ruleResult.identifier(), relativePath, ruleResult.executionError());
                           }
                         });
-                List<ViolationWithFilename> allNonIgnoredViolations =
-                    violations.stream()
-                        .filter(
-                            violation ->
-                                !checkIfPathMatches(finalIgnorePaths, Path.of(violation.filename)))
-                        .toList();
-                allViolations.addAll(allNonIgnoredViolations);
+                allViolations.addAll(violations);
                 ruleResultsWithError.addAll(
                     analysisResult.ruleResults().stream()
                         .filter(r -> r.errors().size() > 0)

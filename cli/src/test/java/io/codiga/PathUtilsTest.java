@@ -1,8 +1,6 @@
 package io.codiga;
 
 import static io.codiga.cli.utils.PathUtils.checkIfPathMatches;
-import static io.codiga.cli.utils.PathUtils.getPathsFromIgnorePaths;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,15 +25,6 @@ public class PathUtilsTest {
   public static void done() {}
 
   @Test
-  @DisplayName("Parse a list of ignored paths")
-  public void testIgnorePathsParsing() throws IOException {
-    String file = "src/test/resources/ignore-paths/single.json";
-    List<String> ignorePaths = getPathsFromIgnorePaths(file);
-    assertEquals(1, ignorePaths.size());
-    assertEquals("foo/bar/baz", ignorePaths.get(0));
-  }
-  
-  @Test
   @DisplayName("Check that non glob paths are compared correctly")
   public void testNonGlobPaths() throws IOException {
     Path path = Path.of("foo/bar/baz.py");
@@ -44,6 +33,15 @@ public class PathUtilsTest {
     assertTrue(checkIfPathMatches("foo/bar/baz.py", path));
     assertFalse(checkIfPathMatches("bar/baz.py", path));
     assertFalse(checkIfPathMatches("baz.py", path));
+  }
+
+  @Test
+  @DisplayName("Check that multiple non glob paths are compared correctly")
+  public void testMultipleNonGlobPaths() throws IOException {
+    Path path = Path.of("foo/bar/baz.py");
+    assertTrue(checkIfPathMatches(List.of("food", "foo"), path));
+    assertTrue(checkIfPathMatches(List.of("food", "foo/bar"), path));
+    assertFalse(checkIfPathMatches(List.of("food", "bar"), path));
   }
 
   @Test

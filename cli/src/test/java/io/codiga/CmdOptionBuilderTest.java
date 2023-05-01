@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.codiga.cli.model.OutputFormat;
 import java.io.IOException;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,10 +30,10 @@ public class CmdOptionBuilderTest {
             .outputFormat(OutputFormat.SARIF)
             .rulesPath("/rules.json")
             .treeSitter(true)
-            .ignorePaths("foo/bar")
+            .ignorePaths(List.of("foo/bar"))
             .build();
     assertEquals(
-        "--directory / --format SARIF --ignore-paths foo/bar --output /output.sarif --rules /rules.json --tree-sitter true",
+        "--directory / --format SARIF --ignore-path foo/bar --output /output.sarif --rules /rules.json --tree-sitter true",
         getCmdAsString(cmd));
 
     var cmd2 =
@@ -41,10 +42,10 @@ public class CmdOptionBuilderTest {
             .outputPath("/output.json")
             .rulesPath("/rules.json")
             .treeSitter(false)
-            .ignorePaths("bar")
+            .ignorePaths(List.of("bar"))
             .build();
     assertEquals(
-        "--directory /foo --ignore-paths bar --output /output.json --rules /rules.json --tree-sitter false",
+        "--directory /foo --ignore-path bar --output /output.json --rules /rules.json --tree-sitter false",
         getCmdAsString(cmd2));
   }
 
@@ -127,13 +128,10 @@ public class CmdOptionBuilderTest {
   }
 
   @Test
-  @DisplayName("Test that the ignore paths path show up correctly")
+  @DisplayName("Test that the ignore paths show up correctly")
   public void testCmdOptionBuilderIgnorePaths() throws IOException {
-    var cmd = new CmdOptionBuilder().ignorePaths("/ignore-paths.json").build();
-    assertEquals("--ignore-paths /ignore-paths.json", getCmdAsString(cmd));
-    
-    var cmdEmptyString = new CmdOptionBuilder().ignorePaths("").build();
-    assertEquals("", getCmdAsString(cmdEmptyString));
+    var cmd = new CmdOptionBuilder().ignorePaths(List.of("foo/bar")).build();
+    assertEquals("--ignore-path foo/bar", getCmdAsString(cmd));
 
     var cmdNull = new CmdOptionBuilder().ignorePaths(null).build();
     assertEquals("", getCmdAsString(cmdNull));

@@ -1,6 +1,7 @@
 package io.codiga;
 
 import io.codiga.cli.model.OutputFormat;
+import java.util.List;
 import java.util.StringJoiner;
 
 /**
@@ -70,11 +71,11 @@ public class CmdOptionBuilder {
         return this;
     }
 
-    public CmdOptionBuilder ignorePaths(String ignorePathsPath) {
-    if (ignorePathsPath == null || ignorePathsPath.equals("")) {
+    public CmdOptionBuilder ignorePaths(List<String> ignorePaths) {
+        if (ignorePaths == null) {
             this.ignorePaths = null;
         } else {
-            this.ignorePaths = "--ignore-paths " + ignorePathsPath;
+            this.ignorePaths = "--ignore-path " + String.join(" --ignore-path ", ignorePaths);
         }
         return this;
     }

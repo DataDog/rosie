@@ -1,6 +1,0 @@
-{
-  "ignorePaths": [
-    "foo/**/baz",
-    "*/*.py"
-  ]
-}

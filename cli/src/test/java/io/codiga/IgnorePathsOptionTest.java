@@ -9,6 +9,7 @@ import io.codiga.cli.model.Result;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -62,7 +63,7 @@ public class IgnorePathsOptionTest {
             .directoryPath("src/test/resources/python-project")
             .rulesPath("src/test/resources/rules.json")
             .outputPath(outputLocation)
-            .ignorePaths("src/test/resources/ignore-paths/single.json")
+            .ignorePaths(List.of("foo/bar/baz"))
             .treeSitter(true)
             .testMode(true)
             .build());
@@ -78,14 +79,14 @@ public class IgnorePathsOptionTest {
 
   @Test
   @DisplayName("Test ignoring a multiple directories")
-  public void testIgnorePathOptionMultiple() throws IOException {
+  public void wtestIgnorePathOptionMultiple() throws IOException {
     String outputLocation = tempDir.toAbsolutePath() + "/output.json";
     Main.main(
         new CmdOptionBuilder()
             .directoryPath("src/test/resources/python-project")
             .rulesPath("src/test/resources/rules.json")
             .outputPath(outputLocation)
-            .ignorePaths("src/test/resources/ignore-paths/multiple.json")
+            .ignorePaths(List.of("foo/bar/baz", "food"))
             .treeSitter(true)
             .testMode(true)
             .build());
@@ -109,7 +110,7 @@ public class IgnorePathsOptionTest {
             .directoryPath("src/test/resources/python-project")
             .rulesPath("src/test/resources/rules.json")
             .outputPath(outputLocation)
-            .ignorePaths("src/test/resources/ignore-paths/question-mark-glob.json")
+            .ignorePaths(List.of("foo?/**"))
             .treeSitter(true)
             .testMode(true)
             .build());
@@ -132,7 +133,7 @@ public class IgnorePathsOptionTest {
             .directoryPath("src/test/resources/python-project")
             .rulesPath("src/test/resources/rules.json")
             .outputPath(outputLocation)
-            .ignorePaths("src/test/resources/ignore-paths/star.json")
+            .ignorePaths(List.of("foo/**/baz", "*/*.py"))
             .treeSitter(true)
             .testMode(true)
             .build());
@@ -148,7 +149,7 @@ public class IgnorePathsOptionTest {
   }
 
   @Test
-  @DisplayName("Test ignoring a directory with a star glob")
+  @DisplayName("Test ignoring a directory with a square bracket glob")
   public void testIgnorePathOptionSquareBracket() throws IOException {
     String outputLocation = tempDir.toAbsolutePath() + "/output.json";
     Main.main(
@@ -156,7 +157,7 @@ public class IgnorePathsOptionTest {
             .directoryPath("src/test/resources/python-project")
             .rulesPath("src/test/resources/rules.json")
             .outputPath(outputLocation)
-            .ignorePaths("src/test/resources/ignore-paths/square-brackets.json")
+            .ignorePaths(List.of("**/[b-c]ar/**"))
             .treeSitter(true)
             .testMode(true)
             .build());
@@ -172,7 +173,7 @@ public class IgnorePathsOptionTest {
   }
 
   @Test
-  @DisplayName("Test ignoring a directory with a star glob")
+  @DisplayName("Test ignoring a directory with a curly brackets glob")
   public void testIgnorePathOptionCurlyBracket() throws IOException {
     String outputLocation = tempDir.toAbsolutePath() + "/output.json";
     Main.main(
@@ -180,7 +181,7 @@ public class IgnorePathsOptionTest {
             .directoryPath("src/test/resources/python-project")
             .rulesPath("src/test/resources/rules.json")
             .outputPath(outputLocation)
-            .ignorePaths("src/test/resources/ignore-paths/curly-brackets.json")
+            .ignorePaths(List.of("**/{bar,car}/**"))
             .treeSitter(true)
             .testMode(true)
             .build());
