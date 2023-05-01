@@ -225,7 +225,7 @@ public class Main {
               .filter(
                   path ->
                       Files.isRegularFile(path)
-                          && !checkIfPathMatches(ignorePaths, directoryPath.relativize(path)))
+                          && !checkIfPathMatches(ignorePaths, directoryPath.relativize(path).toString()))
               .collect(Collectors.toList());
     } catch (IOException e) {
       System.err.println("Error when getting the list of files");

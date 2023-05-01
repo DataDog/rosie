@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterAll;
@@ -25,20 +24,27 @@ public class PathUtilsTest {
   public static void done() {}
 
   @Test
-  @DisplayName("Check that non glob paths are compared correctly")
+  @DisplayName("Leading slashes are removed")
+  public void testLeadingSlashPaths() throws IOException {
+    String path = "/foo/bar/baz.py";
+    assertTrue(checkIfPathMatches("/foo", path));
+    assertTrue(checkIfPathMatches("/foo/bar", path));
+    assertTrue(checkIfPathMatches("/foo/bar/baz.py", path));
+  }
+
+  @Test
+  @DisplayName("Handle path edge cases")
   public void testNonGlobPaths() throws IOException {
-    Path path = Path.of("foo/bar/baz.py");
-    assertTrue(checkIfPathMatches("foo", path));
-    assertTrue(checkIfPathMatches("foo/bar", path));
-    assertTrue(checkIfPathMatches("foo/bar/baz.py", path));
-    assertFalse(checkIfPathMatches("bar/baz.py", path));
-    assertFalse(checkIfPathMatches("baz.py", path));
+    String path = "foo/bar/baz.py";
+    assertFalse(checkIfPathMatches("./foo", path));
+    assertFalse(checkIfPathMatches("foo/../foo/bar", path));
+    assertFalse(checkIfPathMatches("foo/bar/.py", path));
   }
 
   @Test
   @DisplayName("Check that multiple non glob paths are compared correctly")
   public void testMultipleNonGlobPaths() throws IOException {
-    Path path = Path.of("foo/bar/baz.py");
+    String path = "foo/bar/baz.py";
     assertTrue(checkIfPathMatches(List.of("food", "foo"), path));
     assertTrue(checkIfPathMatches(List.of("food", "foo/bar"), path));
     assertFalse(checkIfPathMatches(List.of("food", "bar"), path));
@@ -47,7 +53,7 @@ public class PathUtilsTest {
   @Test
   @DisplayName("Check that star (*) glob paths are compared correctly")
   public void testStarGlobPaths() throws IOException {
-    Path path = Path.of("foo/bar/baz.py");
+    String path = "foo/bar/baz.py";
     assertTrue(checkIfPathMatches("foo/bar/*.py", path));
     assertTrue(checkIfPathMatches("foo/**/*.py", path));
     assertTrue(checkIfPathMatches("foo/*/*.py", path));
@@ -59,7 +65,7 @@ public class PathUtilsTest {
   @Test
   @DisplayName("Check that square bracket ([]) glob paths are compared correctly")
   public void testSquareBracketGlobPaths() throws IOException {
-    Path path = Path.of("foo/bar/baz.py");
+    String path = "foo/bar/baz.py";
     assertTrue(checkIfPathMatches("**/[a-z]az.py", path));
     assertFalse(checkIfPathMatches("**/[c-z]az.py", path));
     assertTrue(checkIfPathMatches("**/[!c-z]az.py", path));
@@ -69,7 +75,7 @@ public class PathUtilsTest {
   @Test
   @DisplayName("Check that curly bracket ({}) glob paths are compared correctly")
   public void testCurlyBracketGlobPaths() throws IOException {
-    Path path = Path.of("foo/bar/baz.py");
+    String path = "foo/bar/baz.py";
     assertTrue(checkIfPathMatches("**/{foo,bar}/**", path));
     assertFalse(checkIfPathMatches("**/{hello,world}/**", path));
     assertTrue(checkIfPathMatches("**/*.{py,py3}", path));
@@ -79,7 +85,7 @@ public class PathUtilsTest {
   @Test
   @DisplayName("Check that question marks (?) glob paths are compared correctly")
   public void testQuestionMarkGlobPaths() throws IOException {
-    Path path = Path.of("foo/bar/baz.py");
+    String path = "foo/bar/baz.py";
     assertTrue(checkIfPathMatches("foo/?ar/*.py", path));
     assertFalse(checkIfPathMatches("foo/?ar/*.py?", path));
   }
