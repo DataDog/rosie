@@ -34,7 +34,7 @@ antlr4 -o gen -no-listener -visitor -package io.codiga.parser.typescript.gen Typ
 javac *.java
 ```
 
-### Visualize a file
+### Visualize a file's AST
 
 ```bash
 grun Python root <python-file> -gui
@@ -46,6 +46,6 @@ grun Python root <python-file> -gui
 ./gradlew cli:run --args='--debug true --directory /Users/julien/git/ci-backend-executor/backend_lib/ --output /tmp/bla.json --rules /Users/julien/git/rosie/cli/src/test/resources/20rules.json'
 ```
 
-### Custom span tracer in datadog
+### Custom span tracer in Datadog
 
 https://docs.datadoghq.com/tracing/trace_collection/custom_instrumentation/java/
