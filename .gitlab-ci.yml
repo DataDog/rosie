@@ -3,6 +3,7 @@ image: 486234852809.dkr.ecr.us-east-1.amazonaws.com/java:corretto-17
 stages:
   - test
   - build
+  - release
 
 before_script:
 #  - echo `pwd` # debug
@@ -34,6 +35,21 @@ test:
     - ./gradlew check
   tags:
     - arch:arm64
+
+trigger_internal_operator_image:
+  stage: release
+  trigger:
+    project: DataDog/images
+    branch: master
+    strategy: depend
+  variables:
+    IMAGE_VERSION: tmpl-v1
+    IMAGE_NAME: rosie
+    RELEASE_TAG: ${CI_COMMIT_REF_SLUG}
+    BUILD_TAG: ${CI_COMMIT_REF_SLUG}
+    TMPL_SRC_IMAGE: v${CI_PIPELINE_ID}-${CI_COMMIT_SHORT_SHA}
+    RELEASE_STAGING: "true"
+    RELEASE_PROD: "true"
 
 after_script:
   - echo "End CI"
