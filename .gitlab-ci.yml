@@ -1,4 +1,4 @@
-image: amazoncorretto:17
+image: 486234852809.dkr.ecr.us-east-1.amazonaws.com/java:corretto-17
 
 stages:
   - build
