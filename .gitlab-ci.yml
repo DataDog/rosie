@@ -29,6 +29,8 @@ test:
   stage: test
   script:
     - ./gradlew check
+  tags:
+    - arch:arm64
 
 after_script:
   - echo "End CI"
