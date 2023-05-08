@@ -1,6 +1,7 @@
 # rosie
 
-Rosie code analyzer from Datadog
+Rosie code analyzer from Datadog.
+
 
 ## Install tree-sitter
 
