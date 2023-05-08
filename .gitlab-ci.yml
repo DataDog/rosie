@@ -23,7 +23,9 @@ build:
       - build/libs/*.jar
     expire_in: 1 week
   only:
-    - main
+    - juli1/STAT-81
+  tags:
+    - arch:arm64
 
 test:
   stage: test
