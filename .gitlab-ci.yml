@@ -14,16 +14,17 @@ cache:
     - .gradle/wrapper
     - .gradle/caches
 
-build:
+build-cli:
   stage: build
   script:
-    - ./gradlew assemble
-  artifacts:
-    paths:
-      - build/libs/*.jar
-    expire_in: 1 week
-  only:
-    - juli1/STAT-81
+    - ./gradlew cli:build
+  tags:
+    - arch:arm64
+
+build-server:
+  stage: build
+  script:
+    - ./gradlew server:build
   tags:
     - arch:arm64
 
