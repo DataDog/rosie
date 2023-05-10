@@ -5,6 +5,9 @@ import static io.codiga.cli.FileUtils.filterFilesByExtensions;
 import static io.codiga.cli.FileUtils.getFileContent;
 import static io.codiga.cli.FileUtils.writeSarifReport;
 import static io.codiga.cli.FileUtils.writeViolationsToFile;
+import static io.codiga.cli.config.Configuration.DATADOG_CONFIGURATION_FILE;
+import static io.codiga.cli.config.ConfigurationUtils.getConfigurationFromFile;
+import static io.codiga.cli.utils.DatadogUtils.getRulesFromDatadog;
 import static io.codiga.cli.utils.PathUtils.checkIfPathMatches;
 import static io.codiga.cli.utils.RulesUtils.getRulesFromFile;
 import static io.codiga.cli.utils.RulesUtils.separateRules;
@@ -16,6 +19,7 @@ import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.Analyzer;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.cli.config.Configuration;
 import io.codiga.cli.errorreporting.ErrorReportingDummy;
 import io.codiga.cli.metrics.MetricsDummy;
 import io.codiga.cli.model.OutputFormat;
@@ -25,6 +29,7 @@ import io.codiga.model.Language;
 import io.codiga.model.error.AnalysisResult;
 import io.codiga.model.error.RuleResult;
 import io.codiga.utils.Version;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -85,7 +91,7 @@ public class Main {
             .build();
     Option optionRules =
         Option.builder()
-            .required(true)
+            .required(false)
             .option("r")
             .longOpt("rules")
             .hasArg(true)
@@ -199,19 +205,50 @@ public class Main {
       System.exit(1);
     }
 
-    if (!Files.isReadable(Paths.get(rulesFile)) || !Files.isRegularFile(Paths.get(rulesFile))) {
-      System.err.printf("%s is not a readable file%n", rulesFile);
+    // read the datadog configuration
+    Optional<Configuration> configurationFile = Optional.empty();
+    Path configurationPath = Paths.get(directory, DATADOG_CONFIGURATION_FILE);
+    System.out.println(configurationPath);
+    if (Files.isReadable(configurationPath) && Files.isRegularFile(configurationPath)) {
+      configurationFile = getConfigurationFromFile(new File(configurationPath.toUri()));
+    }
+
+    // no configuration and no rule file = no analysis
+    if (rulesFile == null && configurationFile.isEmpty()) {
+      System.err.println("no valid rule file specified and no configuration file");
+      System.exit(1);
+    }
+
+    // ignore paths and configuration specified = no analysis
+    if (!ignorePaths.isEmpty() && configurationFile.isPresent()) {
+      System.err.println("cannot specify ignore path when a configuration file is detected");
       System.exit(1);
     }
 
     // read the rules
     List<AnalyzerRule> rules = List.of();
-    try {
-      rules = getRulesFromFile(rulesFile);
-    } catch (IOException e) {
-      System.err.printf(
-          "Error when trying to read the rules from file %s: %s%n", rulesFile, e.getMessage());
-      e.printStackTrace();
+
+    if (rulesFile != null) {
+      try {
+        Path rulesFilePath = Paths.get(rulesFile);
+        if (!Files.isReadable(rulesFilePath) || !Files.isRegularFile(rulesFilePath)) {
+          System.err.printf("%s is not a readable file%n", rulesFile);
+          System.exit(1);
+        }
+        rules = getRulesFromFile(rulesFile);
+      } catch (IOException e) {
+        System.err.printf(
+            "Error when trying to read the rules from file %s: %s%n", rulesFile, e.getMessage());
+        e.printStackTrace();
+        System.exit(1);
+      }
+    } else {
+      rules = getRulesFromDatadog(configurationFile.get());
+    }
+
+    // if no rule, do not analyze anything
+    if (rules.isEmpty()) {
+      System.err.println("no rule found");
       System.exit(1);
     }
 
@@ -225,7 +262,8 @@ public class Main {
               .filter(
                   path ->
                       Files.isRegularFile(path)
-                          && !checkIfPathMatches(ignorePaths, directoryPath.relativize(path).toString()))
+                          && !checkIfPathMatches(
+                              ignorePaths, directoryPath.relativize(path).toString()))
               .collect(Collectors.toList());
     } catch (IOException e) {
       System.err.println("Error when getting the list of files");

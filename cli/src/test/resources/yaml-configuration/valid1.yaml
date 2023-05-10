@@ -1,0 +1,9 @@
+rulesets:
+  - ruleset1
+  - ruleset2:
+      foo: bar
+  - ruleset3:
+ignore-paths:
+  - path/to/ignore
+  - it/can/be/a/file
+  - or/a/glob/for/*/multiple/directories
