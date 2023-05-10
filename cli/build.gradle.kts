@@ -51,6 +51,8 @@ dependencies {
     implementation("commons-cli:commons-cli:1.5.0")
     implementation("ch.qos.logback:logback-classic:1.4.6")
 
+    implementation("org.yaml:snakeyaml:2.0")
+
     implementation("org.slf4j:slf4j-api:2.0.7")
     implementation("org.slf4j:slf4j-simple:2.0.7")
 
