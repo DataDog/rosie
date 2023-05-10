@@ -43,11 +43,9 @@ public class DatadogUtils {
                 return Optional.empty();
             }
 
-            System.err.println(res);
             String code = node.get("content").asText();
             if (code != null) {
                 String decodedCode = new String(Base64.getDecoder().decode(code));
-                System.out.println("returning rule");
                 return Optional.of(
                     new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), res.language(), res.ruleType(), res.entityChecked(), decodedCode, res.pattern(), res.treeSitterQuery(), res.variables())
                 );
@@ -55,7 +53,6 @@ public class DatadogUtils {
         } catch (IllegalArgumentException e) {
             System.err.println(String.format("error when trying to convert rule from ruleset %s", rulesetName));
         }
-        System.err.println("end;");
         return Optional.empty();
     }
 
@@ -133,7 +130,6 @@ public class DatadogUtils {
             try {
                 var response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 if (response.statusCode() == 200) {
-                    System.out.println(response.body());
                     result.addAll(getRulesFromApiResponse(response.body()));
                 } else {
                     System.err.println(String.format("Error when fetching rule %s", ruleset));

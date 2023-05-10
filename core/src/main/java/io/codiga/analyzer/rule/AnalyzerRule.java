@@ -5,7 +5,6 @@ import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import java.util.Map;
 
-
 public record AnalyzerRule(String name,
                            Language language,
                            RuleType ruleType,
