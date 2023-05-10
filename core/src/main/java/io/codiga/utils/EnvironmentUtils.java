@@ -13,6 +13,7 @@ public class EnvironmentUtils {
     public static final String DATADOG_API_KEY = "DD_API_KEY";
     public static final String DATADOG_APP_KEY = "DD_APP_KEY";
     public static final String DATADOG_SITE = "DD_SITE";
+    public static final String OPENAI_API_KEY = "OPENAI_API_KEY";
 
     public final static String PYTHON_FORCE_ANTLR = "PYTHON_FORCE_ANTLR";
 
