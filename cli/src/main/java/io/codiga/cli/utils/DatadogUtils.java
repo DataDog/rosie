@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public class DatadogUtils {
 
-    public final static String DEFAULT_SITE = "app.datadoghq.com";
+    public final static String DEFAULT_SITE = "datadoghq.com";
 
     /**
      * Decode a rule from JSON. If the mapping does not work, return Optional.empty()
@@ -121,7 +121,7 @@ public class DatadogUtils {
 
 
             var request = HttpRequest.newBuilder(
-                    URI.create(String.format("https://%s/api/v2/static-analysis/rulesets/%s", site, ruleset)))
+                    URI.create(String.format("https://api.%s/api/v2/static-analysis/rulesets/%s", site, ruleset)))
                 .header("accept", "application/json")
                 .header("dd-api-key", apiKey.get())
                 .header("dd-application-key", appKey.get())
