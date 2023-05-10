@@ -5,10 +5,8 @@ import static io.codiga.cli.config.Configuration.RULESET_KEY;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +34,7 @@ public class ConfigurationUtils {
             }
 
 
-            // handle rulesets first
+            // handle rulesets first 
             List<Object> rulesets = mainHashmap.get(RULESET_KEY);
             for(Object ruleset: rulesets){
                 if (ruleset instanceof String) {

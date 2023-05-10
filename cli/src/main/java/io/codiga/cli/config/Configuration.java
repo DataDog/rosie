@@ -11,7 +11,7 @@ import lombok.Getter;
 @Builder
 public class Configuration {
 
-    public static final String RULESET_KEY = "rulesets";
+    public static final String RULESET_KEY = "rulesets"; 
     public static final String IGNORE_PATHS_KEY = "ignore-paths";
     public static final String DATADOG_CONFIGURATION_FILE = "static-analysis.datadog.yml";
 

@@ -19,7 +19,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
-
 public class DatadogUtils {
 
     public final static String DEFAULT_SITE = "app.datadoghq.com";
@@ -114,7 +113,7 @@ public class DatadogUtils {
             System.err.println(String.format("Variable %s not defined", EnvironmentUtils.DATADOG_API_KEY));
             System.exit(2);
         }
-
+ 
         if (appKey.isEmpty()) {
             System.err.println(String.format("Variable %s not defined", EnvironmentUtils.DATADOG_APP_KEY));
             System.exit(2);
