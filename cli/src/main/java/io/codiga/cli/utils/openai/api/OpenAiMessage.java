@@ -1,4 +1,4 @@
-package io.codiga.cli.utils.openai;
+package io.codiga.cli.utils.openai.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OpenAiResponseChoice {
-    public OpenAiMessage message;
-    public String finishReason;
-    public int index;
-
+public class OpenAiMessage {
+  public String role;
+  public String content;
 }

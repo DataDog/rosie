@@ -23,6 +23,7 @@ import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.config.Configuration;
 import io.codiga.cli.errorreporting.ErrorReportingDummy;
 import io.codiga.cli.metrics.MetricsDummy;
+import io.codiga.cli.model.OpenAiSuggestionMode;
 import io.codiga.cli.model.OutputFormat;
 import io.codiga.cli.model.Result;
 import io.codiga.cli.model.ViolationWithFilename;
@@ -195,7 +196,17 @@ public class Main {
         useTreeSitterString != null && useTreeSitterString.equalsIgnoreCase("true");
     OutputFormat outputFormat = getOutputFormatFromString(outputFormatString);
     boolean inTestMode = testModeString != null && testModeString.equalsIgnoreCase("true");
-    boolean genFixesOpenAi = genFixes != null && genFixes.equalsIgnoreCase("true");
+    boolean genFixesOpenAi = genFixes != null && ! genFixes.equalsIgnoreCase("false");
+    OpenAiSuggestionMode genFixesMode = OpenAiSuggestionMode.PLAIN_ENGLISH;
+    if (genFixes != null && genFixes.equalsIgnoreCase("english")) {
+      genFixesMode = OpenAiSuggestionMode.PLAIN_ENGLISH;
+    }
+    if (genFixes != null && genFixes.equalsIgnoreCase("diff")) {
+      genFixesMode = OpenAiSuggestionMode.DIFF;
+    }
+    if (genFixes != null && genFixes.equalsIgnoreCase("file")) {
+      genFixesMode = OpenAiSuggestionMode.FIXED_FILE;
+    }
 
     System.out.println("Configuration");
     System.out.println("===================");
@@ -421,7 +432,7 @@ public class Main {
     }
 
     if (genFixesOpenAi && openaiApiKeyDefined) {
-      violationsWithAugmentedFixes = generateMissingFixes(allViolations, directory);
+      violationsWithAugmentedFixes = generateMissingFixes(allViolations, directory, genFixesMode);
     } else {
       violationsWithAugmentedFixes = allViolations;
     }
