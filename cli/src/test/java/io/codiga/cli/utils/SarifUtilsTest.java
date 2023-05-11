@@ -1,5 +1,8 @@
 package io.codiga.cli.utils;
 
+import static io.codiga.cli.utils.SarifUtils.generateReport;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.model.ViolationWithFilename;
@@ -9,6 +12,12 @@ import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.common.Position;
 import io.codiga.model.error.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 import net.jimblackler.jsonschemafriend.Schema;
 import net.jimblackler.jsonschemafriend.SchemaException;
 import net.jimblackler.jsonschemafriend.SchemaStore;
@@ -17,16 +26,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import static io.codiga.cli.utils.SarifUtils.generateReport;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class SarifUtilsTest {
 
@@ -137,6 +136,32 @@ public class SarifUtilsTest {
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
+    }
+
+    @Test
+    @DisplayName("One violation with a fix but no edit")
+    public void testFixNoEdit() {
+        var violation = ViolationWithFilename.builder()
+            .start(new Position(1, 2))
+            .end(new Position(2, 3))
+            .message("error message")
+            .severity(Severity.CRITICAL)
+            .category(Category.BEST_PRACTICE)
+            .filename("myfile")
+            .rule("myrule")
+            .fixes(
+                List.of(
+                    new Fix("my fix", List.of()))
+            )
+            .build();
+        SarifReport sarifReport = generateReport(
+            List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+            List.of(new File("foo/bar").toPath()),
+            List.of(violation),
+            List.of());
+        assertTrue(checkCompliance(sarifReport));
+        assertEquals(0, sarifReport.runs.get(0).results.get(0).fixes.size());
+        assertEquals(1, sarifReport.runs.get(0).results.get(0).properties.tags.size());
     }
 
     @Test

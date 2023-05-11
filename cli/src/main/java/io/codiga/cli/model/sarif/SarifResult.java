@@ -1,11 +1,11 @@
 package io.codiga.cli.model.sarif;
 
-import io.codiga.cli.model.ViolationWithFilename;
-import lombok.Builder;
-
-import java.util.List;
-
 import static io.codiga.cli.utils.SarifUtils.severityToSarifLevel;
+
+import io.codiga.cli.model.ViolationWithFilename;
+import io.codiga.model.error.Fix;
+import java.util.List;
+import lombok.Builder;
 
 /**
  * A result produced by an analysis tool.
@@ -21,16 +21,23 @@ public class SarifResult {
     public String ruleId;
     public int ruleIndex;
     public List<SarifResultFix> fixes;
+    public SarifPropertyBag properties;
 
     public static SarifResult generate(ViolationWithFilename violation, int ruleIndex) {
-        return SarifResult
-            .builder()
-            .level(severityToSarifLevel(violation.severity))
-            .message(SarifResultMessage.builder().text(violation.message).build())
-            .locations(List.of(SarifResultLocation.generate(violation)))
-            .ruleId(violation.rule)
-            .ruleIndex(ruleIndex)
-            .fixes(violation.fixes == null ? List.of() : violation.fixes.stream().map(f -> SarifResultFix.generate(f, violation.filename)).toList())
-            .build();
+        List<Fix> fixesWithEdits = violation.fixes == null ? List.of() : violation.fixes.stream().filter(f -> !f.edits.isEmpty()).toList();
+        List<Fix> fixesWithoutEdits = violation.fixes == null ? List.of() : violation.fixes.stream().filter(f -> f.edits.isEmpty()).toList();
+        List<SarifResultFix> fixes = fixesWithEdits.stream().map(f -> SarifResultFix.generate(f, violation.filename)).toList();
+
+        List<String> fixesAsProperties = fixesWithoutEdits.stream().map(f -> String.format("fix:%s", f.description)).toList();
+
+    return SarifResult.builder()
+        .level(severityToSarifLevel(violation.severity))
+        .message(SarifResultMessage.builder().text(violation.message).build())
+        .locations(List.of(SarifResultLocation.generate(violation)))
+        .ruleId(violation.rule)
+        .ruleIndex(ruleIndex)
+        .fixes(fixes)
+        .properties(SarifPropertyBag.builder().tags(fixesAsProperties).build())
+        .build();
     }
 }
