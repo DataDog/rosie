@@ -38,6 +38,8 @@ test:
 
 trigger_internal_operator_image:
   stage: release
+  only:
+    - main
   trigger:
     project: DataDog/images
     branch: master
