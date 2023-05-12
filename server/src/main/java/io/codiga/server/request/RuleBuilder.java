@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class RuleBuilder {
     private String id;
+    private String description;
     private String language;
     private String type;
     private String entityChecked;
@@ -14,6 +15,11 @@ public class RuleBuilder {
 
     public RuleBuilder setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public RuleBuilder setDescription(String description) {
+        this.description = description;
         return this;
     }
 
@@ -53,6 +59,6 @@ public class RuleBuilder {
     }
 
     public Rule createRule() {
-        return new Rule(id, language, type, entityChecked, tsQueryBase64, pattern, contentBase64, variables);
+        return new Rule(id, description, language, type, entityChecked, tsQueryBase64, pattern, contentBase64, variables);
     }
 }

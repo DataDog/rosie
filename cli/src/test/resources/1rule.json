@@ -2,6 +2,7 @@
   "rules": [
     {
       "name": "myrule/bla",
+      "description": "bXlydWxlZGVzY3JpcHRpb24=",
       "language": "PYTHON",
       "ruleType": "AST_CHECK",
       "entityChecked": "FUNCTION_CALL",

@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class Rule {
     public String id;
+    public String description;
     public String contentBase64;
     public String language;
     public String type;
@@ -17,6 +18,7 @@ public class Rule {
     }
 
     public Rule(String id,
+                String description,
                 String language,
                 String type,
                 String entityChecked,
@@ -25,6 +27,7 @@ public class Rule {
                 String contentBase64,
                 Map<String, String> variables) {
         this.id = id;
+        this.description = description;
         this.contentBase64 = contentBase64;
         this.language = language;
         this.type = type;
@@ -35,6 +38,6 @@ public class Rule {
     }
 
     public String toString() {
-        return String.format("%s %s %s %s %s %s", id, language, type, entityChecked, pattern, variables);
+        return String.format("%s %s %s %s %s %s %s", id, description, language, type, entityChecked, pattern, variables);
     }
 }

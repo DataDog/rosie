@@ -1,5 +1,6 @@
 package io.codiga.cli.model.sarif;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import lombok.Builder;
 
@@ -11,11 +12,14 @@ import lombok.Builder;
 @Builder
 public class SarifToolDriverRule {
     public String id;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public SarifMultiformatMessage fullDescription;
     public String helpUri;
 
     public static SarifToolDriverRule fromAnalyzerRule(AnalyzerRule analyzerRule) {
         return SarifToolDriverRule
                 .builder()
+                .fullDescription(SarifMultiformatMessage.from(analyzerRule.description()))
                 .helpUri(String.format("https://static-analysis.datadoghq.com/%s", analyzerRule.name()))
                 .id(analyzerRule.name())
                 .build();
