@@ -155,7 +155,12 @@ public class ServerMainController {
                         Language language = languageFromString(r.language);
                         EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
                         RuleType ruleType = ruleTypeFromString(r.type);
-                        return new AnalyzerRule(r.id, language, ruleType, entityChecked, decodedRuleCode, r.pattern, tsQuery, r.variables);
+
+                        String description = null;
+                        if (r.description != null) {
+                            description = new String(Base64.getDecoder().decode(r.description.getBytes()));
+                        }
+                        return new AnalyzerRule(r.id, description, language, ruleType, entityChecked, decodedRuleCode, r.pattern, tsQuery, r.variables);
                     }).toList();
         } catch (IllegalArgumentException iae) {
             logger.error("rule is not base64: " + request.rules);

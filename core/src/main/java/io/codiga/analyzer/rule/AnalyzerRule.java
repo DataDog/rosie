@@ -6,6 +6,7 @@ import io.codiga.model.RuleType;
 import java.util.Map;
 
 public record AnalyzerRule(String name,
+                           String description,
                            Language language,
                            RuleType ruleType,
                            EntityChecked entityChecked, // defined/used only when ruleType is an AST rule

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SarifUtilsTest {
 
     private static final String SARIF_SCHEMA_PATH = "src/test/resources/sarif-standard/sarif-schema-2.1.0.json";
+    private static final String ENCODED_DESCRIPTION = new String(Base64.getEncoder().encode("myruledescription".getBytes()));
     private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
@@ -83,7 +85,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule", ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -108,7 +110,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule", ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -133,7 +135,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule",ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -172,14 +174,16 @@ public class SarifUtilsTest {
 
         SarifReport sarifReport = generateReport(
             List.of(
-                new AnalyzerRule("myrule1", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of()),
-                new AnalyzerRule("myrule2", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                new AnalyzerRule("myrule1",ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of()),
+                new AnalyzerRule("myrule2",ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
             List.of(new File("foo/bar").toPath()),
             List.of(violation1, violation2),
             List.of());
 
         assertEquals("myrule1", sarifReport.runs.get(0).tool.driver.rules.get(0).id);
+        assertEquals("myruledescription", sarifReport.runs.get(0).tool.driver.rules.get(0).fullDescription.text);
         assertEquals("myrule2", sarifReport.runs.get(0).tool.driver.rules.get(1).id);
+        assertEquals("myruledescription", sarifReport.runs.get(0).tool.driver.rules.get(1).fullDescription.text);
 
         assertEquals("myrule2", sarifReport.runs.get(0).results.get(0).ruleId);
         assertEquals(1, sarifReport.runs.get(0).results.get(0).ruleIndex);
@@ -209,7 +213,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule",ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -230,7 +234,7 @@ public class SarifUtilsTest {
 
         assertFalse(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule", ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));

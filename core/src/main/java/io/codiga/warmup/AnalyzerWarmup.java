@@ -43,6 +43,7 @@ public class AnalyzerWarmup {
                                     .map(analyzerRule ->
                                             new AnalyzerRule(
                                                     analyzerRule.name(),
+                                                    analyzerRule.description(),
                                                     analyzerRule.language(),
                                                     analyzerRule.ruleType(),
                                                     analyzerRule.entityChecked(),
