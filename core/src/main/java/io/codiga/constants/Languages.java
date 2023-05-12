@@ -34,6 +34,4 @@ public class Languages {
         JAVASCRIPT, List.of("js", "jsx"),
         TYPESCRIPT, List.of("ts", "tsx")
     );
-    public List<Language> allLanguages = List.of(PYTHON);
-
 }
