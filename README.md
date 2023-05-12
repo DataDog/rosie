@@ -2,7 +2,6 @@
 
 Rosie code analyzer from Datadog.
 
-
 ## Install tree-sitter
 
 In the [java-tree-sitter](https://github.com/serenadeai/java-tree-sitter) project (once cloned), issue the following
