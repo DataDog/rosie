@@ -1,135 +1,105 @@
 package io.codiga.model.utils;
 
-
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.EditType;
 
-import static io.codiga.constants.Languages.*;
-import static io.codiga.model.error.EditType.*;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_ANY;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_ASSIGNMENT;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_CLASS_DEFINITION;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_FOR_LOOP;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_DEFINITION;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_EXPRESSION;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_HTML_ELEMENT;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_IF_CONDITION;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_IMPORT;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_INTERFACE;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_TRY_BLOCK;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_TYPE;
+import static io.codiga.constants.Languages.ENTITY_CHECKED_VARIABLE_DECLARATION;
+import static io.codiga.constants.Languages.RULE_TYPE_AST;
+import static io.codiga.constants.Languages.RULE_TYPE_PATTERN;
+import static io.codiga.constants.Languages.RULE_TYPE_TREE_SITTER_QUERY;
 
 public class ModelUtils {
 
-    public static String editTypeToString(EditType editType) {
-        if (editType == null) {
-            return "unknown";
+    public static Language languageFromString(String languageString) {
+        if (languageString == null) {
+            return Language.UNKNOWN;
         }
-        switch (editType) {
-            case ADD:
-                return "add";
-            case REMOVE:
-                return "remove";
-            case UPDATE:
-                return "update";
-        }
-        return "unknown";
-    }
-
-
-    public static EditType editTypeFromString(String editType) {
-        if (editType == null) {
-            return UNKNOWN;
-        }
-        if (editType.equalsIgnoreCase("add")) {
-            return ADD;
-        }
-        if (editType.equalsIgnoreCase("remove")) {
-            return REMOVE;
-        }
-        if (editType.equalsIgnoreCase("update")) {
-            return UPDATE;
-        }
-        if (editType.equalsIgnoreCase("replace")) {
-            return UPDATE;
-        }
-        return UNKNOWN;
-    }
-
-    public static Language languageFromString(String language) {
-        if (language.equalsIgnoreCase(LANGUAGE_PYTHON)) {
-            return Language.PYTHON;
-        }
-        if (language.equalsIgnoreCase(LANGUAGE_JAVASCRIPT)) {
-            return Language.JAVASCRIPT;
-        }
-        if (language.equalsIgnoreCase(LANGUAGE_TYPESCRIPT)) {
-            return Language.TYPESCRIPT;
-        }
-        return Language.UNKNOWN;
+        return switch(languageString.toLowerCase()) {
+            case "python" -> Language.PYTHON;
+            case "javascript" -> Language.JAVASCRIPT;
+            case "typescript" -> Language.TYPESCRIPT;
+            default -> Language.UNKNOWN;
+        };
     }
 
     public static String stringFromLanguage(Language language) {
-        switch (language) {
-            case PYTHON:
-                return LANGUAGE_PYTHON;
-            case JAVASCRIPT:
-                return LANGUAGE_JAVASCRIPT;
-            case TYPESCRIPT:
-                return LANGUAGE_TYPESCRIPT;
-            default:
-                return "unknown";
-        }
+        return switch(language) {
+            case PYTHON -> "python";
+            case JAVASCRIPT -> "javascript";
+            case TYPESCRIPT -> "typescript";
+            default -> "unknown";
+        };
     }
 
-    public static RuleType ruleTypeFromString(String ruleType) {
-        if (ruleType == null) {
+    public static RuleType ruleTypeFromString(String ruleTypeString) {
+        if (ruleTypeString == null) {
             return RuleType.UNKNOWN;
         }
-        if (ruleType.equalsIgnoreCase(RULE_TYPE_AST)) {
-            return RuleType.AST_CHECK;
-        }
-        if (ruleType.equalsIgnoreCase(RULE_TYPE_PATTERN)) {
-            return RuleType.PATTERN;
-        }
-        if (ruleType.equalsIgnoreCase(RULE_TYPE_TREE_SITTER_QUERY)) {
-            return RuleType.TREE_SITTER_QUERY;
-        }
-        return RuleType.UNKNOWN;
+        return switch(ruleTypeString.toLowerCase()) {
+            case RULE_TYPE_AST -> RuleType.AST_CHECK;
+            case RULE_TYPE_PATTERN, "regex_pattern" -> RuleType.PATTERN;
+            case RULE_TYPE_TREE_SITTER_QUERY, "tree_sitter_pattern" -> RuleType.TREE_SITTER_QUERY;
+            default -> RuleType.UNKNOWN;
+        };
     }
 
-    public static EntityChecked entityCheckedFromString(String entityChecked) {
-        if (entityChecked == null) {
+    public static EntityChecked entityCheckedFromString(String entityCheckedString) {
+        if (entityCheckedString == null) {
             return EntityChecked.UNKNOWN;
         }
+        return switch (entityCheckedString.toLowerCase()) {
+            case ENTITY_CHECKED_ANY -> EntityChecked.ANY;
+            case ENTITY_CHECKED_ASSIGNMENT, "assignment" -> EntityChecked.ASSIGNMENT;  // note: different naming
+            case ENTITY_CHECKED_CLASS_DEFINITION, "class_definition" -> EntityChecked.CLASS_DEFINITION;
+            case ENTITY_CHECKED_FOR_LOOP, "for_loop" -> EntityChecked.FOR_LOOP;
+            case ENTITY_CHECKED_FUNCTION_CALL, "function_call" -> EntityChecked.FUNCTION_CALL;
+            case ENTITY_CHECKED_FUNCTION_DEFINITION, "function_definition" -> EntityChecked.FUNCTION_DEFINITION;
+            case ENTITY_CHECKED_FUNCTION_EXPRESSION, "function_expression" -> EntityChecked.FUNCTION_EXPRESSION;
+            case ENTITY_CHECKED_HTML_ELEMENT, "html_element" -> EntityChecked.HTML_ELEMENT;
+            case ENTITY_CHECKED_IF_CONDITION, "if_condition" -> EntityChecked.IF_STATEMENT; // note: different naming
+            case ENTITY_CHECKED_IMPORT -> EntityChecked.IMPORT_STATEMENT; // note: different naming
+            case ENTITY_CHECKED_INTERFACE -> EntityChecked.INTERFACE;
+            case ENTITY_CHECKED_TRY_BLOCK, "try_block" -> EntityChecked.TRY_BLOCK;
+            case ENTITY_CHECKED_TYPE -> EntityChecked.TYPE;
+            case ENTITY_CHECKED_VARIABLE_DECLARATION, "variable_declaration" -> EntityChecked.VARIABLE_DECLARATION;
+            default -> EntityChecked.UNKNOWN;
+        };
+    }
 
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_ANY)) {
-            return EntityChecked.ANY;
+    public static EditType editTypeFromString(String editTypeString) {
+        if (editTypeString == null) {
+            return EditType.UNKNOWN;
         }
+        return switch (editTypeString.toLowerCase()) {
+            case "add" -> EditType.ADD;
+            case "remove" -> EditType.REMOVE;
+            case "update", "replace" -> EditType.UPDATE; // replace is used in old rule, but is deprecated now
+            default -> EditType.UNKNOWN;
+        };
+    }
 
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FUNCTION_CALL)) {
-            return EntityChecked.FUNCTION_CALL;
-        }
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FUNCTION_DEFINITION)) {
-            return EntityChecked.FUNCTION_DEFINITION;
-        }
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_IF_CONDITION)) {
-            return EntityChecked.IF_STATEMENT;
-        }
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_INTERFACE)) {
-            return EntityChecked.INTERFACE;
-        }
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_TRY_BLOCK)) {
-            return EntityChecked.TRY_BLOCK;
-        }
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_FOR_LOOP)) {
-            return EntityChecked.FOR_LOOP;
-        }
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_CLASS_DEFINITION)) {
-            return EntityChecked.CLASS_DEFINITION;
-        }
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_HTML_ELEMENT)) {
-            return EntityChecked.HTML_ELEMENT;
-        }
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_IMPORT)) {
-            return EntityChecked.IMPORT_STATEMENT;
-        }
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_ASSIGNMENT)) {
-            return EntityChecked.ASSIGNMENT;
-        }
-        if (entityChecked.equalsIgnoreCase(ENTITY_CHECKED_VARIABLE_DECLARATION)) {
-            return EntityChecked.VARIABLE_DECLARATION;
-        }
-        return EntityChecked.UNKNOWN;
+    public static String editTypeToString(EditType editType) {
+        return switch (editType) {
+            case ADD -> "add";
+            case REMOVE -> "remove";
+            case UPDATE -> "update";
+            default -> "unknown";
+        };
     }
 }
+

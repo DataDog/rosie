@@ -31,8 +31,6 @@ public class DatadogUtils {
      * @return
      */
     public static Optional<AnalyzerRule> getRuleFromJson(JsonNode node, String rulesetName) {
-        System.out.println(node.toString());
-
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
@@ -42,16 +40,15 @@ public class DatadogUtils {
                 System.err.println("Error when decoding the rule");
                 return Optional.empty();
             }
-
-            String code = node.get("content").asText();
+            String code = res.code();
             if (code != null) {
                 String decodedCode = new String(Base64.getDecoder().decode(code));
                 return Optional.of(
-                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), res.description(), res.language(), res.ruleType(), res.entityChecked(), decodedCode, res.pattern(), res.treeSitterQuery(), res.variables())
+                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), res.description(), res.language(), res.ruleType(), res.entityChecked(), decodedCode, res.pattern(), res.treeSitterQuery(), res.variables())   
                 );
             }
         } catch (IllegalArgumentException e) {
-            System.err.println(String.format("error when trying to convert rule from ruleset %s", rulesetName));
+            System.err.println(String.format("error when trying to convert rule from ruleset %s %s", rulesetName, e));
         }
         return Optional.empty();
     }
@@ -81,7 +78,6 @@ public class DatadogUtils {
 
         var name = attributesNode.get("name").asText();
         var rules = (ArrayNode) attributesNode.get("rules");
-
 
         for (JsonNode rule : rules) {
             var r = getRuleFromJson(rule, name);
@@ -118,8 +114,7 @@ public class DatadogUtils {
 
         for (String ruleset : configuration.getRulesets()) {
             var client = HttpClient.newHttpClient();
-
-
+            
             var request = HttpRequest.newBuilder(
                     URI.create(String.format("https://api.%s/api/v2/static-analysis/rulesets/%s", site, ruleset)))
                 .header("accept", "application/json")
@@ -133,6 +128,7 @@ public class DatadogUtils {
                     result.addAll(getRulesFromApiResponse(response.body()));
                 } else {
                     System.err.println(String.format("Error when fetching rule %s", ruleset));
+                    System.err.println(String.format("Error when fetching rule %s", response.body()));
                 }
 
             } catch (IOException | InterruptedException e) {
