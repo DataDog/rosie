@@ -1,27 +1,11 @@
 package io.codiga.model.utils;
 
+import static io.codiga.constants.Languages.*;
+
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.EditType;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_ANY;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_ASSIGNMENT;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_CLASS_DEFINITION;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FOR_LOOP;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_DEFINITION;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_EXPRESSION;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_HTML_ELEMENT;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_IF_CONDITION;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_IMPORT;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_INTERFACE;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_TRY_BLOCK;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_TYPE;
-import static io.codiga.constants.Languages.ENTITY_CHECKED_VARIABLE_DECLARATION;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static io.codiga.constants.Languages.RULE_TYPE_PATTERN;
-import static io.codiga.constants.Languages.RULE_TYPE_TREE_SITTER_QUERY;
 
 public class ModelUtils {
 
