@@ -1,13 +1,13 @@
 package io.codiga.model.utils;
 
 
+import static io.codiga.constants.Languages.*;
+import static io.codiga.model.error.EditType.*;
+
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.EditType;
-
-import static io.codiga.constants.Languages.*;
-import static io.codiga.model.error.EditType.*;
 
 public class ModelUtils {
 
@@ -22,6 +22,10 @@ public class ModelUtils {
                 return "remove";
             case UPDATE:
                 return "update";
+            case FILE_REPLACEMENT:
+                return "file_replacement";
+            case DIFF:
+                return "diff";
         }
         return "unknown";
     }

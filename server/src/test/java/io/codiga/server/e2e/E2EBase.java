@@ -1,5 +1,9 @@
 package io.codiga.server.e2e;
 
+import static io.codiga.constants.Languages.RULE_TYPE_TREE_SITTER_QUERY;
+import static io.codiga.model.utils.ModelUtils.stringFromLanguage;
+import static io.codiga.utils.Base64Utils.encodeBase64;
+
 import io.codiga.model.Language;
 import io.codiga.server.ServerMainController;
 import io.codiga.server.configuration.ServerTestConfiguration;
@@ -8,6 +12,10 @@ import io.codiga.server.response.GetTreeSitterAstResponse;
 import io.codiga.server.response.Response;
 import io.codiga.server.response.ViolationFix;
 import io.codiga.server.response.ViolationFixEdit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +24,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-
-import static io.codiga.constants.Languages.RULE_TYPE_TREE_SITTER_QUERY;
-import static io.codiga.model.utils.ModelUtils.stringFromLanguage;
-import static io.codiga.utils.Base64Utils.encodeBase64;
 
 /**
  * Base class for all tests.
@@ -57,7 +56,7 @@ public class E2EBase {
                                 String pattern,
                                 Map<String, String> variables,
                                 boolean logOutput) {
-        RequestOptions requestOptions = new RequestOptions(logOutput, false);
+        RequestOptions requestOptions = new RequestOptions(logOutput, false, null);
         Request request = new RequestBuilder()
                 .setFilename(filename)
                 .setLanguage(stringFromLanguage(language))
@@ -94,7 +93,7 @@ public class E2EBase {
                                               String tsQueryBase64,
                                               Map<String, String> variables,
                                               boolean logOutput) {
-        RequestOptions requestOptions = new RequestOptions(logOutput, true);
+        RequestOptions requestOptions = new RequestOptions(logOutput, true, null);
         Request request = new RequestBuilder()
                 .setFilename(filename)
                 .setLanguage(stringFromLanguage(language))
@@ -192,7 +191,7 @@ public class E2EBase {
                                 String pattern,
                                 Map<String, String> variables,
                                 boolean logOutput) {
-        RequestOptions requestOptions = new RequestOptions(logOutput, false);
+        RequestOptions requestOptions = new RequestOptions(logOutput, false, null);
         Request request = new RequestBuilder()
                 .setFilename(filename)
                 .setLanguage(stringFromLanguage(codeLanguage))
@@ -237,7 +236,7 @@ public class E2EBase {
                                          Language language,
                                          List<Rule> rules,
                                          boolean logOutput) {
-        RequestOptions requestOptions = new RequestOptions(logOutput, false);
+        RequestOptions requestOptions = new RequestOptions(logOutput, false, null);
         Request request = new RequestBuilder()
                 .setFilename(filename)
                 .setLanguage(stringFromLanguage(language))

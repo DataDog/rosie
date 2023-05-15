@@ -111,7 +111,7 @@ public class OpenAiUtils {
     return mapper.readValue(response.body(), OpenAiResponse.class);
   }
 
-  public static OpenAiFix getOpenAiFix(String code, String filename, Violation violation)
+  public static OpenAiFix getOpenAiFixPlainEnglishChat(String code, String filename, Violation violation)
       throws IOException, InterruptedException {
     System.out.println("requesting a single fix");
     String systemPromptText = """
@@ -152,6 +152,115 @@ You are a coding assistant that is fixing bugs in code.
     if (!openAiResponse.choices.isEmpty()) {
       var choice = openAiResponse.choices.get(0);
       return OpenAiFix.builder().description(choice.message.content).build();
+    }
+
+    return null;
+  }
+
+  public static OpenAiFix getOpenAiFixFullFileChat(String code, String filename, Violation violation)
+      throws IOException, InterruptedException {
+    System.out.println("requesting a complete file");
+    String systemPromptText = """
+You are a coding assistant that is fixing bugs in code.
+
+1. You are only working with Python
+2. You only fix the issues we are reporting.
+3. We indicate the bug and the line
+4. Please provide the complete fixed code. Do not put any explanation.
+5. If you cannot fix the bug, please write "I cannot fix the bug"
+6. You should never add any explanation and you must just write the code.
+""";
+
+    String question =
+        String.format(
+            """
+    Fix the issue on line %s: %s
+
+    ```
+    %s
+    ```
+
+    """,
+            violation.start.line, violation.message, code);
+    var systemPrompt = OpenAiMessage.builder().role("system").content(systemPromptText).build();
+    var userPrompt = OpenAiMessage.builder().role("user").content(question).build();
+    var openAiRequest =
+        OpenAiChatRequest.builder()
+            .model("gpt-4-32k")
+            .temperature(0.7f)
+            .messages(List.of(systemPrompt, userPrompt))
+            .build();
+
+    var openAiResponse = requestChat(openAiRequest);
+
+    if (openAiResponse == null) {
+      return null;
+    }
+    if (!openAiResponse.choices.isEmpty()) {
+      var choice = openAiResponse.choices.get(0);
+      return OpenAiFix.builder().file(choice.message.content).build();
+    }
+
+    return null;
+  }
+
+
+  public static OpenAiFix getOpenAiFixDiffChat(String code, String filename, Violation violation)
+      throws IOException, InterruptedException {
+    System.out.println("requesting a diff");
+    String systemPromptText = """
+You are a coding assistant that is fixing bugs in code.
+
+1. You are only working with Python
+2. You only fix the issues we are reporting.
+3. We indicate the bug and the line
+4. Please provide the complete fixed code. Do not put any explanation.
+5. If you cannot fix the bug, please write "I cannot fix the bug"
+6. You should never add any explanation and you must just write the code.
+""";
+
+    String question =
+        String.format(
+            """
+    Fix the issue on line %s: %s
+
+    ```
+    %s
+    ```
+
+    """,
+            violation.start.line, violation.message, code);
+    var systemPrompt = OpenAiMessage.builder().role("system").content(systemPromptText).build();
+    var userPrompt = OpenAiMessage.builder().role("user").content(question).build();
+    var openAiRequest =
+        OpenAiChatRequest.builder()
+            .model("gpt-4-32k")
+            .temperature(0.7f)
+            .messages(List.of(systemPrompt, userPrompt))
+            .build();
+
+    var openAiResponse = requestChat(openAiRequest);
+
+    if (openAiResponse == null) {
+      return null;
+    }
+    if (!openAiResponse.choices.isEmpty()) {
+      var choice = openAiResponse.choices.get(0);
+      
+      var originalCodeList = Arrays.stream(code.split("\n")).toList();
+      var fixedCodeList = Arrays.stream(choice.message.content.split("\n")).toList();
+      Patch<String> diff = DiffUtils.diff(originalCodeList, fixedCodeList);
+      List<String> unifiedDiff =
+          UnifiedDiffUtils.generateUnifiedDiff(
+              String.format("%s.orig", filename),
+              filename,
+              originalCodeList,
+              diff,
+              0);
+
+      String patch = String.join("\n", unifiedDiff);
+      String patchBase64 = Base64.getEncoder().encodeToString(patch.getBytes());
+      return OpenAiFix.builder().description("see patch").diff(patchBase64).build();
     }
 
     return null;
@@ -303,17 +412,17 @@ You are a coding assistant that is fixing bugs in code.
     FixType fixType = FixType.UNKNOWN;
     switch (genFixesMode) {
       case PLAIN_ENGLISH -> {
-        openAiFix = getOpenAiFix(code, filename, violation);
+        openAiFix = getOpenAiFixPlainEnglishChat(code, filename, violation);
         fixType = FixType.OPENAI_TEXT;
         break;
       }
       case DIFF -> {
-        openAiFix = getOpenAiFixWithDiff(code, filename, violation);
+        openAiFix = getOpenAiFixDiffChat(code, filename, violation);
         fixType = FixType.OPENAI_DIFF;
         break;
       }
       case FIXED_FILE -> {
-        openAiFix = getOpenAiFixWithFullFile(code, filename, violation);
+        openAiFix = getOpenAiFixFullFileChat(code, filename, violation);
         fixType = FixType.OPENAI_FILE;
         break;
       }

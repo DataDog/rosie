@@ -166,6 +166,13 @@ public class ServerMainController {
             logger.error("rule is not base64: " + request.rules);
             return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_RULE_NOT_BASE64)));
         }
+        final OpenAiSuggestionMode openAiSuggestionMode;
+        if (request.options != null && request.options.openAiMode != null) {
+            openAiSuggestionMode = request.options.openAiMode;
+        } else {
+            openAiSuggestionMode =  OpenAiSuggestionMode.PLAIN_ENGLISH;
+        }
+
         AnalysisOptions options = AnalysisOptions.builder()
                 .logOutput(request.options != null && request.options.logOutput)
                 .useTreeSitter(shouldUseTreeSitter(request))
@@ -183,7 +190,7 @@ public class ServerMainController {
                                     io.codiga.model.error.Violation ruleViolationTmp;
                                     if(ruleViolationOriginal.fixes == null || ruleViolationOriginal.fixes.isEmpty()) {
                                         try {
-                                            ruleViolationTmp = addFixes(ruleViolationOriginal,  request.filename, decodedCode, OpenAiSuggestionMode.PLAIN_ENGLISH);
+                                            ruleViolationTmp = addFixes(ruleViolationOriginal,  request.filename, decodedCode, openAiSuggestionMode);
                                         } catch (IOException | InterruptedException e) {
                                             System.err.println("error when getting openai results");
                                             ruleViolationTmp = ruleViolationOriginal;
