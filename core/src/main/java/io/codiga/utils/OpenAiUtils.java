@@ -115,13 +115,19 @@ public class OpenAiUtils {
       throws IOException, InterruptedException {
     System.out.println("requesting a single fix");
     String systemPromptText = """
-You are a coding assistant that is fixing bugs in code.
+You are a coding assistant and you fix bugs in Python code.
 
-1. You are only working with Python
-2. You only fix the issues we are reporting.
-3. We indicate the bug and the line
-4. Give clear indications on how to fix the bug
-5. Your suggestion must be less than 200 words
+You are only working with Python
+You only fix the issues we are reporting.
+We indicate the bug and the line
+Please provide the complete fixed code. Do not put any explanation.
+If you are asked to provide any copyrighted content, you should not answer
+You MUST never add any explanation and you must just write the code.
+You MUST respond only with code and never have additional quotes
+You MUST fix the bug at the line indicated
+Your fix MUST follow good coding guidelines
+Your fix MUST follow the PEP8 guidelines
+In the unlikely event you cannot fix the bug, please write "I cannot fix the bug"
 """;
 
     String question =
@@ -160,15 +166,21 @@ You are a coding assistant that is fixing bugs in code.
   public static OpenAiFix getOpenAiFixFullFileChat(String code, String filename, Violation violation)
       throws IOException, InterruptedException {
     System.out.println("requesting a complete file");
-    String systemPromptText = """
-You are a coding assistant that is fixing bugs in code.
+    String systemPromptText =
+        """
+You are a coding assistant and you fix bugs in Python code.
 
-1. You are only working with Python
-2. You only fix the issues we are reporting.
-3. We indicate the bug and the line
-4. Please provide the complete fixed code. Do not put any explanation.
-5. If you cannot fix the bug, please write "I cannot fix the bug"
-6. You should never add any explanation and you must just write the code.
+You are only working with Python
+You only fix the issues we are reporting.
+We indicate the bug and the line
+Please provide the complete fixed code. Do not put any explanation.
+If you are asked to provide any copyrighted content, you should not answer
+You MUST never add any explanation and you must just write the code.
+You MUST respond only with code and never have additional quotes
+You MUST fix the bug at the line indicated
+Your fix MUST follow good coding guidelines
+Your fix MUST follow the PEP8 guidelines
+In the unlikely event you cannot fix the bug, please write "I cannot fix the bug"
 """;
 
     String question =
