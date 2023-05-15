@@ -61,6 +61,7 @@ public class OpenAiUtils {
     mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     String requestAsString = mapper.writeValueAsString(openAiChatRequest);
+    System.out.println(requestAsString);
 
     var client = HttpClient.newHttpClient();
 
@@ -113,28 +114,34 @@ public class OpenAiUtils {
   public static OpenAiFix getOpenAiFix(String code, String filename, Violation violation)
       throws IOException, InterruptedException {
     System.out.println("requesting a single fix");
+    String systemPromptText = """
+You are a coding assistant that is fixing bugs in code.
+
+1. You are only working with Python
+2. You only fix the issues we are reporting.
+3. We indicate the bug and the line
+4. Give clear indications on how to fix the bug
+5. Your suggestion must be less than 200 words
+""";
+
     String question =
         String.format(
             """
-    The following Python code has a problem on line %s.
-    The problem is: %s.
-    Please fix the code on line %s to fix the issue (issue: %s).
+    Fix the issue on line %s: %s
 
     ```
     %s
     ```
 
-    Your answer should be a JSON object with the following key:
-    1. description: what needs to be done to fix the error (100 words max) and escape quotes
     """,
-            violation.start.line, violation.message, violation.start.line, violation.message, code);
-
-    var message = OpenAiMessage.builder().role("user").content(question).build();
+            violation.start.line, violation.message, code);
+    var systemPrompt = OpenAiMessage.builder().role("system").content(systemPromptText).build();
+    var userPrompt = OpenAiMessage.builder().role("user").content(question).build();
     var openAiRequest =
         OpenAiChatRequest.builder()
             .model("gpt-4-32k")
             .temperature(0.7f)
-            .messages(List.of(message))
+            .messages(List.of(systemPrompt, userPrompt))
             .build();
 
     var openAiResponse = requestChat(openAiRequest);
@@ -144,9 +151,7 @@ public class OpenAiUtils {
     }
     if (!openAiResponse.choices.isEmpty()) {
       var choice = openAiResponse.choices.get(0);
-      ObjectMapper mapper = new ObjectMapper();
-      JsonNode jsonNode = mapper.readTree(choice.message.content);
-      return OpenAiFix.builder().description(jsonNode.get("description").asText()).build();
+      return OpenAiFix.builder().description(choice.message.content).build();
     }
 
     return null;
