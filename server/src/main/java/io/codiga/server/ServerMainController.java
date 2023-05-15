@@ -5,6 +5,7 @@ import static io.codiga.metrics.MetricsName.*;
 import static io.codiga.model.utils.ModelUtils.*;
 import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
 import static io.codiga.server.response.ResponseErrors.*;
+import static io.codiga.utils.CompletableFutureUtils.sequence;
 import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
 import static io.codiga.utils.OpenAiUtils.addFixes;
 import static io.codiga.utils.TreeSitterUtils.getFullAstTree;
@@ -14,6 +15,7 @@ import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 import com.fasterxml.jackson.core.JsonParseException;
 import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.Analyzer;
+import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
@@ -34,6 +36,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -170,43 +173,48 @@ public class ServerMainController {
         CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language), request.filename, decodedCode, rules, options);
 
 
-        return violationsFuture.thenApply(analysisResult -> {
-                    List<io.codiga.server.response.RuleResponse> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
-                        List<Violation> violations = ruleResult.violations().stream().map(ruleViolationOriginal -> {
-                            final io.codiga.model.error.Violation ruleViolation;
-                            io.codiga.model.error.Violation ruleViolationTmp;
+        var response = violationsFuture.thenCompose(analysisResult -> {
+                    List<CompletableFuture<RuleResponse>> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
+                        List<CompletableFuture<Violation>> violations = ruleResult.violations().stream().map(ruleViolationOriginal -> {
+                            return CompletableFuture.supplyAsync(new Supplier<Violation>() {
+                                @Override
+                                public Violation get() {
+                                    final io.codiga.model.error.Violation ruleViolation;
+                                    io.codiga.model.error.Violation ruleViolationTmp;
+                                    if(ruleViolationOriginal.fixes == null || ruleViolationOriginal.fixes.isEmpty()) {
+                                        try {
+                                            ruleViolationTmp = addFixes(ruleViolationOriginal,  request.filename, decodedCode, OpenAiSuggestionMode.PLAIN_ENGLISH);
+                                        } catch (IOException | InterruptedException e) {
+                                            System.err.println("error when getting openai results");
+                                            ruleViolationTmp = ruleViolationOriginal;
+                                        }
+                                    } else {
+                                        ruleViolationTmp = ruleViolationOriginal;
+                                    }
 
-                            if(ruleViolationOriginal.fixes == null || ruleViolationOriginal.fixes.isEmpty()) {
-                                try {
-                                    ruleViolationTmp = addFixes(ruleViolationOriginal,  request.filename, decodedCode, OpenAiSuggestionMode.PLAIN_ENGLISH);
-                                } catch (IOException | InterruptedException e) {
-                                    System.err.println("error when getting openai results");
-                                    ruleViolationTmp = ruleViolationOriginal;
+
+                                    ruleViolation = ruleViolationTmp;
+                                    List<ViolationFix> fixes = ruleViolation.fixes.stream().map(fix -> {
+                                        List<ViolationFixEdit> edits = fix.edits.stream().map(edit -> new ViolationFixEdit(
+                                            edit.start,
+                                            edit.end,
+                                            editTypeToString(edit.editType),
+                                            edit.content
+                                        )).toList();
+                                        return new ViolationFix(fix.description, edits, fix.isOpenAi, fix.type);
+
+                                    }).toList();
+
+                                    return new Violation(ruleViolation.start, ruleViolation.end, ruleViolation.message,
+                                        ruleViolation.severity.toString(), ruleViolation.category.toString(), fixes);
                                 }
-                            } else {
-                                ruleViolationTmp = ruleViolationOriginal;
-                            }
-
-
-                            ruleViolation = ruleViolationTmp;
-                            List<ViolationFix> fixes = ruleViolation.fixes.stream().map(fix -> {
-                                List<ViolationFixEdit> edits = fix.edits.stream().map(edit -> new ViolationFixEdit(
-                                        edit.start,
-                                        edit.end,
-                                        editTypeToString(edit.editType),
-                                        edit.content
-                                )).toList();
-                                return new ViolationFix(fix.description, edits, fix.isOpenAi, fix.type);
-
-                            }).toList();
-
-                            return new Violation(ruleViolation.start, ruleViolation.end, ruleViolation.message,
-                                    ruleViolation.severity.toString(), ruleViolation.category.toString(), fixes);
-
+                            }, AnalyzerFuturePool.getInstance().service);
                         }).toList();
-                        return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output(), ruleResult.executionTimeMs());
+
+                        return sequence(violations).thenApply(violations1 -> new RuleResponse(ruleResult.identifier(), violations1, ruleResult.errors(), ruleResult.executionError(), ruleResult.output(), ruleResult.executionTimeMs()));
                     }).toList();
-                    return new Response(rulesReponses, List.of());
+                    return sequence(rulesReponses).thenApply(responses -> new Response(responses, List.of()));
+//                    return new Response(rulesReponses, List.of());
                 })
                 .exceptionally(ex -> {
                     metrics.incrementMetric(METRIC_ANALYSIS_EXCEPTION);
@@ -214,6 +222,7 @@ public class ServerMainController {
                     return new Response(List.of(), List.of(ERROR_ANALYSIS_ERROR));
                 });
 
+        return response;
     }
 
     @PostMapping("/get-treesitter-ast")
