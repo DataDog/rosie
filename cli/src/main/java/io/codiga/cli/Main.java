@@ -8,7 +8,7 @@ import static io.codiga.cli.FileUtils.writeViolationsToFile;
 import static io.codiga.cli.config.Configuration.DATADOG_CONFIGURATION_FILE;
 import static io.codiga.cli.config.ConfigurationUtils.getConfigurationFromFile;
 import static io.codiga.cli.utils.DatadogUtils.getRulesFromDatadog;
-import static io.codiga.cli.utils.OpenAiUtils.generateMissingFixes;
+import static io.codiga.cli.utils.OpenAiUtils.generateMissingFixesForCli;
 import static io.codiga.cli.utils.PathUtils.checkIfPathMatches;
 import static io.codiga.cli.utils.RulesUtils.getRulesFromFile;
 import static io.codiga.cli.utils.RulesUtils.separateRules;
@@ -23,11 +23,11 @@ import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.config.Configuration;
 import io.codiga.cli.errorreporting.ErrorReportingDummy;
 import io.codiga.cli.metrics.MetricsDummy;
-import io.codiga.cli.model.OpenAiSuggestionMode;
 import io.codiga.cli.model.OutputFormat;
 import io.codiga.cli.model.Result;
 import io.codiga.cli.model.ViolationWithFilename;
 import io.codiga.model.Language;
+import io.codiga.model.OpenAiSuggestionMode;
 import io.codiga.model.error.AnalysisResult;
 import io.codiga.model.error.RuleResult;
 import io.codiga.utils.EnvironmentUtils;
@@ -196,7 +196,7 @@ public class Main {
         useTreeSitterString != null && useTreeSitterString.equalsIgnoreCase("true");
     OutputFormat outputFormat = getOutputFormatFromString(outputFormatString);
     boolean inTestMode = testModeString != null && testModeString.equalsIgnoreCase("true");
-    boolean genFixesOpenAi = genFixes != null && ! genFixes.equalsIgnoreCase("false");
+    boolean genFixesOpenAi = genFixes != null && !genFixes.equalsIgnoreCase("false");
     OpenAiSuggestionMode genFixesMode = OpenAiSuggestionMode.PLAIN_ENGLISH;
     if (genFixes != null && genFixes.equalsIgnoreCase("english")) {
       genFixesMode = OpenAiSuggestionMode.PLAIN_ENGLISH;
@@ -426,13 +426,14 @@ public class Main {
     }
 
     List<ViolationWithFilename> violationsWithAugmentedFixes;
-    boolean openaiApiKeyDefined = EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.OPENAI_API_KEY).isPresent();
+    boolean openaiApiKeyDefined =
+        EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.OPENAI_API_KEY).isPresent();
     if (genFixesOpenAi && !openaiApiKeyDefined) {
       System.err.println("Generation of fixes selected but no OpenAI API key defined");
     }
 
     if (genFixesOpenAi && openaiApiKeyDefined) {
-      violationsWithAugmentedFixes = generateMissingFixes(allViolations, directory, genFixesMode);
+      violationsWithAugmentedFixes = generateMissingFixesForCli(allViolations, directory, genFixesMode);
     } else {
       violationsWithAugmentedFixes = allViolations;
     }
@@ -440,9 +441,14 @@ public class Main {
     try {
       if (outputFormat == OutputFormat.SARIF) {
         writeSarifReport(
-            Paths.get(output), rules, filesToAnalyze, allViolations, ruleResultsWithError);
+            Paths.get(output),
+            rules,
+            filesToAnalyze,
+            violationsWithAugmentedFixes,
+            ruleResultsWithError);
       } else {
-        writeViolationsToFile(Paths.get(output), new Result(allViolations, ruleResultsWithError));
+        writeViolationsToFile(
+            Paths.get(output), new Result(violationsWithAugmentedFixes, ruleResultsWithError));
       }
     } catch (IOException e) {
       System.err.printf("Failed to write result into file %s%n", output);

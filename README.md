@@ -34,3 +34,10 @@ and `git submodule update --recursive --remote`
 ```bash
 ./gradlew server:bootRun
 ```
+
+
+#### Testing the server
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d @request.txt http://localhost:8080/analyze
+```

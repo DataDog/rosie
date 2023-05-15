@@ -1,5 +1,16 @@
 package io.codiga.server;
 
+import static io.codiga.constants.Languages.SUPPORTED_LANGUAGES;
+import static io.codiga.metrics.MetricsName.*;
+import static io.codiga.model.utils.ModelUtils.*;
+import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
+import static io.codiga.server.response.ResponseErrors.*;
+import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
+import static io.codiga.utils.OpenAiUtils.addFixes;
+import static io.codiga.utils.TreeSitterUtils.getFullAstTree;
+import static io.codiga.utils.Version.CURRENT_VERSION;
+import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.Analyzer;
@@ -9,6 +20,7 @@ import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.OpenAiSuggestionMode;
 import io.codiga.model.RuleType;
 import io.codiga.model.error.AnalysisResult;
 import io.codiga.server.request.GetTreeSitterAstRequest;
@@ -17,27 +29,17 @@ import io.codiga.server.response.*;
 import io.codiga.server.services.InjectorService;
 import io.codiga.utils.EnvironmentUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import static io.codiga.constants.Languages.SUPPORTED_LANGUAGES;
-import static io.codiga.metrics.MetricsName.*;
-import static io.codiga.model.utils.ModelUtils.*;
-import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
-import static io.codiga.server.response.ResponseErrors.*;
-import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
-import static io.codiga.utils.TreeSitterUtils.getFullAstTree;
-import static io.codiga.utils.Version.CURRENT_VERSION;
-import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 
 @RestController
 public class ServerMainController {
@@ -132,7 +134,7 @@ public class ServerMainController {
         }
 
         List<AnalyzerRule> rules = null;
-        String decodedCode = null;
+        final String decodedCode;
 
         try {
             decodedCode = new String(Base64.getDecoder().decode(request.codeBase64.getBytes()));
@@ -170,7 +172,23 @@ public class ServerMainController {
 
         return violationsFuture.thenApply(analysisResult -> {
                     List<io.codiga.server.response.RuleResponse> rulesReponses = analysisResult.ruleResults().stream().map(ruleResult -> {
-                        List<Violation> violations = ruleResult.violations().stream().map(ruleViolation -> {
+                        List<Violation> violations = ruleResult.violations().stream().map(ruleViolationOriginal -> {
+                            final io.codiga.model.error.Violation ruleViolation;
+                            io.codiga.model.error.Violation ruleViolationTmp;
+
+                            if(ruleViolationOriginal.fixes == null || ruleViolationOriginal.fixes.isEmpty()) {
+                                try {
+                                    ruleViolationTmp = addFixes(ruleViolationOriginal,  request.filename, decodedCode, OpenAiSuggestionMode.PLAIN_ENGLISH);
+                                } catch (IOException | InterruptedException e) {
+                                    System.err.println("error when getting openai results");
+                                    ruleViolationTmp = ruleViolationOriginal;
+                                }
+                            } else {
+                                ruleViolationTmp = ruleViolationOriginal;
+                            }
+
+
+                            ruleViolation = ruleViolationTmp;
                             List<ViolationFix> fixes = ruleViolation.fixes.stream().map(fix -> {
                                 List<ViolationFixEdit> edits = fix.edits.stream().map(edit -> new ViolationFixEdit(
                                         edit.start,
@@ -178,7 +196,7 @@ public class ServerMainController {
                                         editTypeToString(edit.editType),
                                         edit.content
                                 )).toList();
-                                return new ViolationFix(fix.description, edits);
+                                return new ViolationFix(fix.description, edits, fix.isOpenAi, fix.type);
 
                             }).toList();
 

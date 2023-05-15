@@ -1,4 +1,4 @@
-package io.codiga.cli.utils.openai.api;
+package io.codiga.utils.openai.api;
 
 import lombok.Builder;
 

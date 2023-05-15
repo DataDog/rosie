@@ -1,4 +1,4 @@
-package io.codiga.cli.model;
+package io.codiga.model;
 
 public enum OpenAiSuggestionMode {
     PLAIN_ENGLISH,
