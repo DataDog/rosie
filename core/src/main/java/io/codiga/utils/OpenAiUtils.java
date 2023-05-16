@@ -120,13 +120,13 @@ You are a coding assistant and you fix bugs in Python code.
 You are only working with Python
 You only fix the issues we are reporting.
 We indicate the bug and the line
-Please provide the complete fixed code. Do not put any explanation.
+Please provide steps to fix the code
 If you are asked to provide any copyrighted content, you should not answer
-You MUST never add any explanation and you must just write the code.
-You MUST respond only with code and never have additional quotes
+You NEVER write code. You JUST provide steps to fix the code in plain english.
 You MUST fix the bug at the line indicated
 Your fix MUST follow good coding guidelines
 Your fix MUST follow the PEP8 guidelines
+Your answer MUST be less than 100 words
 In the unlikely event you cannot fix the bug, please write "I cannot fix the bug"
 """;
 
@@ -210,8 +210,10 @@ In the unlikely event you cannot fix the bug, please write "I cannot fix the bug
     }
     if (!openAiResponse.choices.isEmpty()) {
       var choice = openAiResponse.choices.get(0);
-      return OpenAiFix.builder().file(choice.message.content).build();
+      String newCode = choice.message.content.replaceAll("`", "");
+      return OpenAiFix.builder().description("Apply OpenAI fix").file(Base64.getEncoder().encodeToString(newCode.getBytes())).build();
     }
+    System.out.println("no choice");
 
     return null;
   }
@@ -280,7 +282,7 @@ You are a coding assistant that is fixing bugs in code.
 
   public static OpenAiFix getOpenAiFixWithFullFile(String code, String filename, Violation violation)
       throws IOException, InterruptedException {
-    System.out.println("requesting a single fix with full file");
+    System.out.println("requesting a fix with full file");
     String instructions =
         String.format(
             "Fix the code on line %s for the violation: %s",
