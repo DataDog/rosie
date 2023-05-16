@@ -180,6 +180,7 @@ You MUST respond only with code and never have additional quotes
 You MUST fix the bug at the line indicated
 Your fix MUST follow good coding guidelines
 Your fix MUST follow the PEP8 guidelines
+Your fix MUST work with Python
 In the unlikely event you cannot fix the bug, please write "I cannot fix the bug"
 """;
 
@@ -210,7 +211,7 @@ In the unlikely event you cannot fix the bug, please write "I cannot fix the bug
     }
     if (!openAiResponse.choices.isEmpty()) {
       var choice = openAiResponse.choices.get(0);
-      String newCode = choice.message.content.replaceAll("`", "");
+      String newCode = choice.message.content.replaceAll("`python", "").replaceAll("`", "");
       return OpenAiFix.builder().description("Apply OpenAI fix").file(Base64.getEncoder().encodeToString(newCode.getBytes())).build();
     }
     System.out.println("no choice");
