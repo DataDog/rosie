@@ -1,0 +1,65 @@
+load("@com_datadoghq_cnab_tools//rules:helm.bzl", "helm_chart", "helm_cnab_installation")
+load("@com_datadoghq_cnab_tools//rules:workflow.bzl", "cnab_workflow")
+load("@com_datadoghq_datacenter_config//rules:helm.bzl", "dd_helm_cnab", "dd_helm_cnab_installation")
+load("@com_datadoghq_cnab_tools//rules/artifact:artifact_docker.bzl", "dd_container_push")
+load("@com_datadoghq_cnab_tools//rules:cli_defaults.bzl", "REGISTRY")
+
+team_domain = "static-analysis"
+
+# Define the Helm chart
+helm_chart(
+    name = "chart",
+    srcs = [
+        "Chart.yaml",
+        "values.yaml",
+        "templates/_helpers.tpl",
+        "templates/deployment.yaml",
+        "templates/nodegroup.yaml",
+    ],
+)
+
+# Define the application bundle
+dd_helm_cnab(
+    name = "rosie",
+    # The helm chart to be installed
+    chart = ":chart",
+    registry = REGISTRY,
+    # "repository" is a namespace given to an individual artifact that contains
+    # multiple versions of that artifact referenced by digest or tag
+    # Change my-repo to the name of your repository
+    repository = "rosie",
+    visibility = ["//visibility:public"],
+    with_datacenter_helm_files = False,
+)
+
+default_params = {
+    "manualJudgementSlackChannel": "static-analysis-prod",
+    # Automatically annotate for Datadog tag autodiscovery
+    "injectInstallationNameInMetrics": "true",
+    "injectCNABRevisionInMetrics": "true",
+    "dangerouslyDisableDiffPrompt": "false",
+}
+
+dd_helm_cnab_installation(
+    name = "rosie.delivery-platform.general1.us1.ddbuild.io",
+    bundle = ":rosie",
+    description = "Rosie Pause instance",
+    parameters = default_params,
+    value_files = []
+)
+
+cnab_workflow(
+    name = "rosie-workflow",
+    description = "Deploy rosie",
+    tags = [
+        "env:dev",
+        "service:rosie",
+        "team:static-analysis",
+    ],
+    parallel = True,
+    tasks = [
+        ":rosie.delivery-platform.general1.us1.ddbuild.io",
+    ],
+    visibility = ["//visibility:public"],
+)
+

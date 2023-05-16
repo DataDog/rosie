@@ -1,0 +1,21 @@
+image:
+  repository: "464622532012.dkr.ecr.us-east-1.amazonaws.com/rosie"
+  pullPolicy: IfNotPresent
+
+test:
+  image:
+    # Filled in by bazel
+    repository: "464622532012.dkr.ecr.us-east-1.amazonaws.com/rosie"
+    tag: null
+
+replicaCount: 1
+
+# if set to true, you need the provide the nodegroup values too
+createNodeGroup: false
+nodegroup:
+  name: delivery-platform
+  minSize: 1
+  aws:
+    instanceType: m5.large
+  gcp:
+    machineType: n1-standard-2

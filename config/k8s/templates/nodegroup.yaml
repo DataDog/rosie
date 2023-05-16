@@ -1,0 +1,21 @@
+{{- if .Values.createNodeGroup }}
+apiVersion: datadoghq.com/v1
+kind: NodeGroup
+metadata:
+  name: {{ .Values.nodegroup.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    team: release-engineering
+  finalizers:
+    - do-not-delete.datadoghq.com
+spec:
+  aws:
+    group:
+      minSize: {{ .Values.nodegroup.minSize }}
+    launchConfiguration:
+      instanceType: {{ .Values.nodegroup.aws.instanceType }}
+  gcp:
+    instanceTemplate:
+      properties:
+        machineType: {{ .Values.nodegroup.gcp.machineType }}
+  {{- end }}
