@@ -1,5 +1,13 @@
 package io.codiga.cli;
 
+/*
+ * Unless explicitly stated otherwise all files in this repository are licensed under the Apache
+ * License, Version 2.0 License.
+ *
+ * This product includes software developed at Datadog (https://www.datadoghq.com/ Copyright 2023
+ * Datadog, Inc.
+ */
+
 import static io.codiga.cli.CliConstants.WARMUP_LOOPS;
 import static io.codiga.cli.FileUtils.filterFilesByExtensions;
 import static io.codiga.cli.FileUtils.getFileContent;
