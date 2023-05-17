@@ -1,0 +1,22 @@
+Component,Origin,License,Copyright
+com.fasterxml.jackson.core:jackson-annotations,maven,Apache-2.0,Copyright (c) 2019 Tatu Saloranta
+com.fasterxml.jackson.core:jackson-core,maven,Apache-2.0,Copyright (c) 2019 Tatu Saloranta
+com.fasterxml.jackson.core:jackson-databind,maven,Apache-2.0,Copyright (c) 2019 Tatu Saloranta
+com.google.inject:guice,maven,Apache-2.0,Copyright 2006 Google LLC
+commons-cli:commons-cli,maven,Apache-2.0,Copyright 2002-2023 The Apache Software Foundation
+ch.qos.logback:logback-classic,maven,EPL-1.0,"Copyright (C) 1999-2015, QOS.ch. All rights reserved."
+org.slf4j:slf4j-api,maven,MIT,Copyright (c) 2004-2022 QOS.ch Sarl (Switzerland)
+org.slf4j:slf4j-simple,maven,MIT,Copyright (c) 2004-2022 QOS.ch Sarl (Switzerland)
+net.jimblackler.jsonschemafriend:core,jitpack,Apache-2.0,Copyright 2015-current Mads Kristensen
+org.junit.jupiter:junit-jupiter-api,maven,EPL-2.0,JUnit
+org.junit.jupiter:junit-jupiter-engine,maven,EPL 2.0,JUnit
+com.datadoghq:java-dogstatsd-client,maven,MIT,"Copyright (C) 2012 youDevise Ltd."
+com.datadoghq:dd-trace-api,maven,Apache-2.0,"Copyright 2017 Datadog Inc."
+org.antlr:antlr4-runtime,maven,BSD-3-Clause,Copyright 2023 ANTLR developers
+https://github.com/juli1/java-tree-sitter,Github,MIT,"Copyright (c) 2021 Serenade Labs Inc."
+org.graalvm.js,maven,MIT/UPL,"Copyright (c) 2019, Oracle and/or its affiliates."
+org.graalvm.js:js-scriptengine,maven,UPL,"Copyright (c) 2019, Oracle and/or its affiliates."
+org.springframework.boot:spring-boot-starter-web,maven,Apache-2.0,Copyright 2023 VMware Inc
+org.springframework.guice:spring-guice,maven,Apache-2.0,Copyright 2023 VMware Inc
+org.springframework.boot:spring-boot-starter-test,maven,Apache-2.0,Copyright 2023 VMware Inc
+org.yaml:snakeyaml,maven,Apache 2.0,Copyright 2017 SnakeYAML developers

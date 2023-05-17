@@ -5,7 +5,9 @@ Rosie code analyzer from Datadog.
 
 ## Install tree-sitter
 
-In the [java-tree-sitter](https://github.com/serenadeai/java-tree-sitter) project (once cloned), issue the following
+This repository relies on tree-sitter and we developed a JNI interface to use tree-sitter in Java.
+
+In the [java-tree-sitter](https://github.com/juli1/java-tree-sitter) project (once cloned), issue the following
 command:
 
 ```bash
