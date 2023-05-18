@@ -17,6 +17,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +28,10 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import static io.codiga.cli.utils.SarifUtils.generateReport;
+import static io.codiga.cli.utils.SarifUtils.uriReference;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SarifUtilsTest {
@@ -238,5 +243,20 @@ public class SarifUtilsTest {
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
+    }
+
+    public static Stream<Arguments> generateURIs() {
+        return Stream.of(
+                Arguments.of("foo/bar", "foo/bar"),
+                Arguments.of("/foo/bar","foo/bar"),
+                Arguments.of("/foo xyz/bar", "foo%20xyz/bar")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("generateURIs")
+    @DisplayName("URI-references generated are valid.")
+    public void testUriReferenceGeneration(String uri, String expectedUriReference) {
+        assertEquals(expectedUriReference, uriReference(uri).toString());
     }
 }
