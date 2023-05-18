@@ -1,3 +1,8 @@
+name: Draft Release
+
+on:
+  push
+
 jobs:
   release:
     runs-on: ubuntu-latest
