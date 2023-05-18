@@ -1,16 +1,12 @@
-name: Draft Release
+name: Release new version
 
-on:
-  push:
-    tags:
-      - 'v*'
+on: release
 
 jobs:
-  release:
+  release-github:
+    name: Build and publish on the release
     runs-on: ubuntu-latest
     steps:
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - uses: actions/checkout@v3
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -19,28 +15,9 @@ jobs:
           distribution: 'corretto'
       - name: Build with Gradle
         run: ./gradlew cli:build
-      - name: Create Draft Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Upload to release
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: ./cli/build/distributions/cli-1.0-SNAPSHOT.zip application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.RELEASE_VERSION }}
-          release_name: Rosie Release for ${{ env.RELEASE_VERSION }}
-          draft: true
-          prerelease: true
-
-      - uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./cli/build/distributions/cli-1.0-SNAPSHOT.zip
-          asset_name: rosie-cli.zip
-          asset_content_type: application/zip
-
-      - uses: eregon/publish-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_id: ${{ steps.create_release.outputs.id }}
