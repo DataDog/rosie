@@ -3,6 +3,40 @@
 Rosie code analyzer from Datadog.
 
 
+## Release new version
+
+### Step 1: create a new release
+
+Go on the project page and click on the Releases page.
+
+![GitHub Create release](doc/imgs/release/step1.jpeg)
+
+
+Click on `Draft a new release`
+
+
+![GitHub Create release Draft Button](doc/imgs/release/step2.jpeg)
+
+
+1. Set a version tag that follows `vX.Y`
+2. Branch **MUST BE** `main`
+3. Put a title and a description
+
+![GitHub Create release parameters](doc/imgs/release/step3.jpeg)
+
+
+### Step 2: once built, put the release as latest
+
+Check the [GitHub action](https://github.com/DataDog/rosie/actions): it will build a package for your release. 
+
+![GitHub Create release artifacts](doc/imgs/release/step4.jpeg)
+
+
+Once the package is available, change the release to "Latest release"
+
+![GitHub Create release set as latest](doc/imgs/release/step5.jpeg)
+
+
 ## Install tree-sitter
 
 This repository relies on tree-sitter and we developed a JNI interface to use tree-sitter in Java.
