@@ -4,7 +4,7 @@ import lombok.Builder;
 
 import java.nio.file.Path;
 
-import static io.codiga.cli.utils.SarifUtils.stripLeadingSlash;
+import static io.codiga.cli.utils.SarifUtils.uriReference;
 
 /**
  * Specifies the location of an artifact.
@@ -26,7 +26,7 @@ public class SarifArtifactLocation {
     public static SarifArtifactLocation generate(String s) {
         return SarifArtifactLocation
             .builder()
-            .uri(stripLeadingSlash(s))
+            .uri(uriReference(s).toString())
             .build();
     }
 }

@@ -7,7 +7,9 @@ import io.codiga.cli.model.sarif.SarifReport;
 import io.codiga.model.error.RuleResult;
 import io.codiga.model.error.Severity;
 
+import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -74,5 +76,16 @@ public class SarifUtils {
             return s.substring(1);
         }
         return s;
+    }
+
+    /**
+     * Generate a valid URI relativized using the working directory from an uri in String format.
+     * Typically used to generate the URI-references for the locations in the SARIF reports.
+     * @param uriStr the uri in String format
+     * @return the URI relativized from the working directory
+     */
+    public static URI uriReference(String uriStr) {
+        var uri = Paths.get(stripLeadingSlash(uriStr)).toUri();
+        return Paths.get("").toUri().relativize(uri);
     }
 }
