@@ -19,7 +19,7 @@ public class AnalyzerWarmupCode {
                     "raising-not-implemented",
                     "raising-not-implemented description",
                     Language.PYTHON,
-                    RuleType.PATTERN,
+                    RuleType.REGEX,
                     null,
                     "ZnVuY3Rpb24gdmlzaXQocGF0dGVybiwgZmlsZW5hbWUsIGNvZGUpIHsKICBjb25zdCBleGNlcHRpb25OYW1lID0gcGF0dGVybi52YXJpYWJsZXMuZ2V0KCJleGNlcHRpb25OYW1lIik7CiAgaWYgKGV4Y2VwdGlvbk5hbWUgJiYgZXhjZXB0aW9uTmFtZS52YWx1ZSA9PT0gIk5vdEltcGxlbWVudGVkIikgewogICAgY29uc3QgZXJyb3IgPSBidWlsZEVycm9yKHBhdHRlcm4uc3RhcnQubGluZSwgcGF0dGVybi5zdGFydC5jb2wsIHBhdHRlcm4uZW5kLmxpbmUsIHBhdHRlcm4uZW5kLmNvbCwgInJhaXNlIE5vdEltcGxlbWVudGVkIGlzIG5vdCBhIHZhbGlkIGVycm9yIiwgIklORk8iLCAiQkVTVF9QUkFDVElDRVMiKTsKICAgIGNvbnN0IGVkaXQgPSBidWlsZEVkaXQocGF0dGVybi5zdGFydC5saW5lLCBwYXR0ZXJuLnN0YXJ0LmNvbCwgcGF0dGVybi5lbmQubGluZSwgcGF0dGVybi5lbmQuY29sLCAidXBkYXRlIiwgInJhaXNlIE5vdEltcGxlbWVudGVkRXJyb3IiKTsKICAgIGNvbnN0IGZpeCA9IGJ1aWxkRml4KCJyYWlzZSBOb3RJbXBsZW1lbnRlZEVycm9yIiwgW2VkaXRdKTsKICAgIGFkZEVycm9yKGVycm9yLmFkZEZpeChmaXgpKTsKICB9Cn0=",
                     "raise ${exceptionName}",
