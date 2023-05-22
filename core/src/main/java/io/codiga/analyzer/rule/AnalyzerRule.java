@@ -8,7 +8,7 @@ import java.util.Map;
 public record AnalyzerRule(String name,
                            String description,
                            Language language,
-                           RuleType ruleType,
+                           RuleType type,
                            EntityChecked entityChecked, // defined/used only when ruleType is an AST rule
                            String code, // JavaScript code of the rule
                            String regex, // only defined when using a pattern

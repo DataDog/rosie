@@ -45,7 +45,7 @@ public class AnalyzerWarmup {
                                                     analyzerRule.name(),
                                                     analyzerRule.description(),
                                                     analyzerRule.language(),
-                                                    analyzerRule.ruleType(),
+                                                    analyzerRule.type(),
                                                     analyzerRule.entityChecked(),
                                                     new String(Base64.getDecoder().decode(analyzerRule.code())), analyzerRule.regex(), null, analyzerRule.variables())
                                     ).collect(Collectors.toList()),

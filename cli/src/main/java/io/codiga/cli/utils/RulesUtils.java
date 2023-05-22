@@ -20,7 +20,7 @@ public class RulesUtils {
         return mapper.readValue(new File(path), Rules.class).rules.stream().map(r -> {
             String decodedCode = new String(Base64.getDecoder().decode(r.code()));
             String decodedDescription = r.description() != null ? new String(Base64.getDecoder().decode(r.description())):"";
-            return new AnalyzerRule(r.name(), decodedDescription, r.language(), r.ruleType(), r.entityChecked(), decodedCode, r.regex(), r.treeSitterQuery(), r.variables());
+            return new AnalyzerRule(r.name(), decodedDescription, r.language(), r.type(), r.entityChecked(), decodedCode, r.regex(), r.treeSitterQuery(), r.variables());
         }).collect(Collectors.toList());
     }
 
