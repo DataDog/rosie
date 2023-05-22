@@ -31,7 +31,7 @@ public class AnalyzerWarmup {
 //                    String rules = analyzerWarmupCodeData.analyzerRuleList.stream().map(AnalyzerRule::name).collect(Collectors.joining(","));
 //                    LOGGER.info(String.format("Warming up rules: %s", rules));
 
-                    String decodedCode = new String(Base64.getDecoder().decode(analyzerWarmupCodeData.codeBase64.getBytes()));
+                    String decodedCode = new String(Base64.getDecoder().decode(analyzerWarmupCodeData.code.getBytes()));
                     AnalysisOptions options = AnalysisOptions.builder().build();
                     CompletableFuture<AnalysisResult> futureResult = analyzer.analyze(
                             analyzerWarmupCodeData.language,

@@ -135,7 +135,7 @@ public class ServerMainController {
         String decodedCode = null;
 
         try {
-            decodedCode = new String(Base64.getDecoder().decode(request.codeBase64.getBytes()));
+            decodedCode = new String(Base64.getDecoder().decode(request.code.getBytes()));
         } catch (IllegalArgumentException iae) {
             logger.info("code is not base64");
             return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_CODE_NOT_BASE64)));
@@ -222,7 +222,7 @@ public class ServerMainController {
         String decodedCode = null;
 
         try {
-            decodedCode = new String(Base64.getDecoder().decode(request.codeBase64.getBytes()));
+            decodedCode = new String(Base64.getDecoder().decode(request.code.getBytes()));
         } catch (IllegalArgumentException iae) {
             logger.info("code is not base64");
             return CompletableFuture.completedFuture(new GetTreeSitterAstResponse(null, List.of(ERROR_CODE_NOT_BASE64)));

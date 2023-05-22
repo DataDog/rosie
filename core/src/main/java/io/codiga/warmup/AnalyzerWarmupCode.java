@@ -12,7 +12,7 @@ public class AnalyzerWarmupCode {
     public final static List<AnalyzerWarmupCodeData> WARMUP_CODE = List.of(
         new AnalyzerWarmupCodeDataBuilder()
             .setFilename("pythoncode.py")
-            .setCodeBase64("YSA9IDEKYiA9IDIKcmFpc2UgTm90SW1wbGVtZW50ZWQKYyA9IDM=")
+            .setCode("YSA9IDEKYiA9IDIKcmFpc2UgTm90SW1wbGVtZW50ZWQKYyA9IDM=")
             .setLanguage(Language.PYTHON)
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(
@@ -29,7 +29,7 @@ public class AnalyzerWarmupCode {
             ).createAnalyzerWarmupCodeData(),
         new AnalyzerWarmupCodeDataBuilder()
             .setFilename("pythoncode.py")
-            .setCodeBase64("cHJpbnQoImJsYSIpCmV2YWwoJ1sxLCAyLCAzXScp")
+            .setCode("cHJpbnQoImJsYSIpCmV2YWwoJ1sxLCAyLCAzXScp")
             .setLanguage(Language.PYTHON)
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(
@@ -46,7 +46,7 @@ public class AnalyzerWarmupCode {
             ).createAnalyzerWarmupCodeData(),
         new AnalyzerWarmupCodeDataBuilder()
             .setFilename("pythoncode.py")
-            .setCodeBase64("aW1wb3J0IHJlcXVlc3RzCnIgPSByZXF1ZXN0cy5nZXQodywgdmVyaWZ5PUZhbHNlKQpyID0gcmVxdWVzdHMuZ2V0KHcsIHZlcmlmeT1GYWxzZSwgdGltZW91dD0xMCk=")
+            .setCode("aW1wb3J0IHJlcXVlc3RzCnIgPSByZXF1ZXN0cy5nZXQodywgdmVyaWZ5PUZhbHNlKQpyID0gcmVxdWVzdHMuZ2V0KHcsIHZlcmlmeT1GYWxzZSwgdGltZW91dD0xMCk=")
             .setLanguage(Language.PYTHON)
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(
@@ -63,7 +63,7 @@ public class AnalyzerWarmupCode {
             ).createAnalyzerWarmupCodeData(),
         new AnalyzerWarmupCodeDataBuilder()
             .setFilename("pythoncode.py")
-            .setCodeBase64("aW1wb3J0IHN1YnByb2Nlc3MKc3VicHJvY2Vzcy5Qb3BlbignL2Jpbi9scyAlcycgJSAoJ3NvbWV0aGluZycsKSwgc2hlbGw9VHJ1ZSk=")
+            .setCode("aW1wb3J0IHN1YnByb2Nlc3MKc3VicHJvY2Vzcy5Qb3BlbignL2Jpbi9scyAlcycgJSAoJ3NvbWV0aGluZycsKSwgc2hlbGw9VHJ1ZSk=")
             .setLanguage(Language.PYTHON)
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(

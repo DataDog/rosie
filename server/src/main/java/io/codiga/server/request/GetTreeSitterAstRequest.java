@@ -9,12 +9,12 @@ import lombok.Builder;
 public class GetTreeSitterAstRequest {
     public String language;
     public String fileEncoding;
-    public String codeBase64;
+    public String code;
 
     public boolean isValid() {
         return !(this.fileEncoding == null ||
                 this.language == null ||
-                this.codeBase64 == null);
+                this.code == null);
     }
 
     public String toString() {

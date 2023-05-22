@@ -6,8 +6,9 @@ public class Request {
     public String filename;
 
     public String language;
+
     public String fileEncoding;
-    public String codeBase64;
+    public String code;
     public List<Rule> rules;
     public RequestOptions options;
 
@@ -16,11 +17,11 @@ public class Request {
 
     }
 
-    public Request(String filename, String language, String fileEncoding, String codeBase64, List<Rule> rules, RequestOptions options) {
+    public Request(String filename, String language, String fileEncoding, String code, List<Rule> rules, RequestOptions options) {
         this.filename = filename;
         this.language = language;
         this.fileEncoding = fileEncoding;
-        this.codeBase64 = codeBase64;
+        this.code = code;
         this.rules = rules;
         this.options = options;
     }
@@ -29,7 +30,7 @@ public class Request {
         return !(this.fileEncoding == null ||
             this.filename == null ||
             this.language == null ||
-            this.codeBase64 == null ||
+            this.code == null ||
             this.rules == null ||
             this.rules.isEmpty());
     }

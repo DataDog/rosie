@@ -59,7 +59,7 @@ public class ProtocolTest {
         requestBuilder.setFilename("bla.py");
         requestBuilder.setLanguage(LANGUAGE_JAVA);
         requestBuilder.setFileEncoding("utf-8");
-        requestBuilder.setCodeBase64(encodeBase64(pythonCode));
+        requestBuilder.setCode(encodeBase64(pythonCode));
         requestBuilder.setRules(
             List.of(
                 new RuleBuilder()
@@ -87,7 +87,7 @@ public class ProtocolTest {
             .setFilename("bla.py")
             .setLanguage(LANGUAGE_PYTHON)
             .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(pythonCode))
+            .setCode(encodeBase64(pythonCode))
             .setRules(
                 List.of(
                     new RuleBuilder()
@@ -115,7 +115,7 @@ public class ProtocolTest {
             .setFilename("bla.py")
             .setLanguage(LANGUAGE_PYTHON)
             .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(pythonCode))
+            .setCode(encodeBase64(pythonCode))
             .setRules(
                 List.of(
                     new RuleBuilder()
@@ -143,7 +143,7 @@ public class ProtocolTest {
             .setFilename("bla.py")
             .setLanguage(LANGUAGE_PYTHON)
             .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(pythonCode))
+            .setCode(encodeBase64(pythonCode))
             .setRules(null)
             .createRequest();
         Response response = this.restTemplate.postForObject(
@@ -160,7 +160,7 @@ public class ProtocolTest {
             .setFilename("bla.py")
             .setLanguage(LANGUAGE_PYTHON)
             .setFileEncoding("utf-8")
-            .setCodeBase64("][^#@#")
+            .setCode("][^#@#")
             .setRules(
                 List.of(
                     new RuleBuilder()
@@ -187,7 +187,7 @@ public class ProtocolTest {
             .setFilename("bla.py")
             .setLanguage(LANGUAGE_PYTHON)
             .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(pythonCode))
+            .setCode(encodeBase64(pythonCode))
             .setRules(
                 List.of(
                     new RuleBuilder()

@@ -62,7 +62,7 @@ public class E2EBase {
                 .setFilename(filename)
                 .setLanguage(stringFromLanguage(language))
                 .setFileEncoding("utf-8")
-                .setCodeBase64(encodeBase64(code))
+                .setCode(encodeBase64(code))
                 .setOptions(requestOptions)
                 .setRules(
                         List.of(
@@ -99,7 +99,7 @@ public class E2EBase {
                 .setFilename(filename)
                 .setLanguage(stringFromLanguage(language))
                 .setFileEncoding("utf-8")
-                .setCodeBase64(encodeBase64(code))
+                .setCode(encodeBase64(code))
                 .setOptions(requestOptions)
                 .setRules(
                         List.of(
@@ -197,7 +197,7 @@ public class E2EBase {
                 .setFilename(filename)
                 .setLanguage(stringFromLanguage(codeLanguage))
                 .setFileEncoding("utf-8")
-                .setCodeBase64(encodeBase64(code))
+                .setCode(encodeBase64(code))
                 .setOptions(requestOptions)
                 .setRules(
                         List.of(
@@ -242,7 +242,7 @@ public class E2EBase {
                 .setFilename(filename)
                 .setLanguage(stringFromLanguage(language))
                 .setFileEncoding("utf-8")
-                .setCodeBase64(encodeBase64(code))
+                .setCode(encodeBase64(code))
                 .setOptions(requestOptions)
                 .setRules(rules)
                 .createRequest();
@@ -259,7 +259,7 @@ public class E2EBase {
                 .builder()
                 .language(stringFromLanguage(language))
                 .fileEncoding(fileEncoding)
-                .codeBase64(encodeBase64(decodedCode))
+                .code(encodeBase64(decodedCode))
                 .build();
 
         GetTreeSitterAstResponse response = this.restTemplate.postForObject(

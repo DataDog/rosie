@@ -7,7 +7,7 @@ Rosie communicates using JSON. All inputs and outputs are JSON documents.
 The request has the following structure
 
 - `language`: language of the code submitted
-- `codeBase64`: base64 encoding of the code
+- `code`: base64 encoding of the code
 - `codeEncoding`: encoding of the code. This is optional, by default, the server will usse UTF-8
 - `rules`: array of rules to check
 
@@ -21,7 +21,7 @@ Each rules is defined as below:
 
 ```json
 {
-  "codeBase64": "ICAgICAgICByID0gcmVxdWVzdHMuZ2V0KHcsIHZlcmlmeT1GYWxzZSkKICAgICAgICByID0gcmVxdWVzdHMuZ2V0KHcsIHZlcmlmeT1GYWxzZSwgdGltZW91dD0xMCk=",
+  "code": "ICAgICAgICByID0gcmVxdWVzdHMuZ2V0KHcsIHZlcmlmeT1GYWxzZSkKICAgICAgICByID0gcmVxdWVzdHMuZ2V0KHcsIHZlcmlmeT1GYWxzZSwgdGltZW91dD0xMCk=",
   "codeEncoding": "utf-8",
   "rules": [
     {
