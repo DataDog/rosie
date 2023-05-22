@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.codiga.constants.Languages.RULE_TYPE_PATTERN;
+import static io.codiga.constants.Languages.RULE_TYPE_REGEX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -39,7 +39,7 @@ public class UseVarTest extends E2EBase {
     @DisplayName("Do not use var in javascript using a pattern")
     public void testDoNotUseVar() throws Exception {
         Response response = executeTest("myfile.js", code, Language.JAVASCRIPT, rule, "do-not-use-var",
-            RULE_TYPE_PATTERN, null, pattern, true);
+            RULE_TYPE_REGEX, null, pattern, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

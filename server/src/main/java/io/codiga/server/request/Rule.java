@@ -10,7 +10,7 @@ public class Rule {
     public String type;
     public String entityChecked;
     public String tsQueryBase64;
-    public String pattern;
+    public String regex;
     public Map<String, String> variables;
 
     public Rule() {
@@ -23,7 +23,7 @@ public class Rule {
                 String type,
                 String entityChecked,
                 String tsQueryBase64,
-                String pattern,
+                String regex,
                 String contentBase64,
                 Map<String, String> variables) {
         this.id = id;
@@ -32,12 +32,12 @@ public class Rule {
         this.language = language;
         this.type = type;
         this.entityChecked = entityChecked;
-        this.pattern = pattern;
+        this.regex = regex;
         this.tsQueryBase64 = tsQueryBase64;
         this.variables = variables;
     }
 
     public String toString() {
-        return String.format("%s %s %s %s %s %s %s", id, description, language, type, entityChecked, pattern, variables);
+        return String.format("%s %s %s %s %s %s %s", id, description, language, type, entityChecked, regex, variables);
     }
 }

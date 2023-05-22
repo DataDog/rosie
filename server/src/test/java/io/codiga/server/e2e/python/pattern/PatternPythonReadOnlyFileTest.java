@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.codiga.constants.Languages.RULE_TYPE_PATTERN;
+import static io.codiga.constants.Languages.RULE_TYPE_REGEX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -41,8 +41,8 @@ public class PatternPythonReadOnlyFileTest extends E2EBase {
     @Test
     @DisplayName("Remove the read-only flag when opening a file - update version")
     public void testPythonPatternReadOnlyFlagUpdate() throws Exception {
-        String pattern = "open(\"${file}\", \"r\")";
-        Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-file-read-only", RULE_TYPE_PATTERN, null, pattern, false);
+        String regex = "open(\"${file}\", \"r\")";
+        Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-file-read-only", RULE_TYPE_REGEX, null, regex, false);
 
         logger.info("response: " + response);
 

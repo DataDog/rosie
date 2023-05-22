@@ -47,7 +47,7 @@ public class AnalyzerWarmup {
                                                     analyzerRule.language(),
                                                     analyzerRule.ruleType(),
                                                     analyzerRule.entityChecked(),
-                                                    new String(Base64.getDecoder().decode(analyzerRule.code())), analyzerRule.pattern(), null, analyzerRule.variables())
+                                                    new String(Base64.getDecoder().decode(analyzerRule.code())), analyzerRule.regex(), null, analyzerRule.variables())
                                     ).collect(Collectors.toList()),
                             options);
                     AnalysisResult analysisResult = futureResult.join();

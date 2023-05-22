@@ -14,7 +14,7 @@ public class Languages {
     public final static String LANGUAGE_JAVASCRIPT = "javascript";
     public final static String LANGUAGE_TYPESCRIPT = "typescript";
     public final static String RULE_TYPE_AST = "ast";
-    public final static String RULE_TYPE_PATTERN = "pattern";
+    public final static String RULE_TYPE_REGEX = "regex";
     public final static String RULE_TYPE_TREE_SITTER_QUERY = "tsquery";
     public final static String ENTITY_CHECKED_FUNCTION_CALL = "functioncall";
     public final static String ENTITY_CHECKED_ANY = "any";

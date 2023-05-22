@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.codiga.constants.Languages.RULE_TYPE_PATTERN;
+import static io.codiga.constants.Languages.RULE_TYPE_REGEX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -63,14 +63,14 @@ public class SpreadOperatorTest extends E2EBase {
         """;
 
 
-    String pattern = "...requests.get(...verify=${verify}...)";
+    String regex = "...requests.get(...verify=${verify}...)";
 
 
     @Test
     @DisplayName("Report two issues")
     public void testPythonAssertTwoViolations() throws Exception {
         Response response = executeTest("bla.py", codeWithTwoErrors, Language.PYTHON, ruleCodeUpdate, "requests",
-            RULE_TYPE_PATTERN, null, pattern, true);
+            RULE_TYPE_REGEX, null, regex, true);
         // finally check the verified code
         logger.info("" + response);
         assertEquals(2, response.ruleResponses.get(0).violations.size());

@@ -79,7 +79,7 @@ public class ModelUtils {
         if (ruleType.equalsIgnoreCase(RULE_TYPE_AST)) {
             return RuleType.AST_CHECK;
         }
-        if (ruleType.equalsIgnoreCase(RULE_TYPE_PATTERN)) {
+        if (ruleType.equalsIgnoreCase(RULE_TYPE_REGEX)) {
             return RuleType.REGEX;
         }
         if (ruleType.equalsIgnoreCase(RULE_TYPE_TREE_SITTER_QUERY)) {

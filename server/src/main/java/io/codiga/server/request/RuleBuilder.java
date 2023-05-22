@@ -8,7 +8,7 @@ public class RuleBuilder {
     private String language;
     private String type;
     private String entityChecked;
-    private String pattern;
+    private String regex;
     private String contentBase64;
     private String tsQueryBase64;
     private Map<String, String> variables;
@@ -38,8 +38,8 @@ public class RuleBuilder {
         return this;
     }
 
-    public RuleBuilder setPattern(String pattern) {
-        this.pattern = pattern;
+    public RuleBuilder setRegex(String regex) {
+        this.regex = regex;
         return this;
     }
 
@@ -59,6 +59,6 @@ public class RuleBuilder {
     }
 
     public Rule createRule() {
-        return new Rule(id, description, language, type, entityChecked, tsQueryBase64, pattern, contentBase64, variables);
+        return new Rule(id, description, language, type, entityChecked, tsQueryBase64, regex, contentBase64, variables);
     }
 }

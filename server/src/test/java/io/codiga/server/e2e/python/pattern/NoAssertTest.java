@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static io.codiga.constants.Languages.RULE_TYPE_PATTERN;
+import static io.codiga.constants.Languages.RULE_TYPE_REGEX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -53,13 +53,13 @@ public class NoAssertTest extends E2EBase {
         """;
 
 
-    String pattern = "assert ${arguments}";
+    String regex = "assert ${arguments}";
 
     @Test
     @DisplayName("Remove other permissions for write")
     public void testPythonRemoveWriteUsers() throws Exception {
         Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "no-assert",
-            RULE_TYPE_PATTERN, null, pattern, true);
+            RULE_TYPE_REGEX, null, regex, true);
         // finally check the verified code
         assertEquals(fixedCode, applyFix(code, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
         assertEquals(3, response.ruleResponses.get(0).violations.get(0).start.line);
@@ -69,7 +69,7 @@ public class NoAssertTest extends E2EBase {
     @DisplayName("Report 2 issues with having 2 occurrences in the code")
     public void testPythonAssertTwoViolations() throws Exception {
         Response response = executeTest("bla.py", codeWithTwoViolations, Language.PYTHON, ruleCodeUpdate, "no-assert",
-            RULE_TYPE_PATTERN, null, pattern, true);
+            RULE_TYPE_REGEX, null, regex, true);
         // finally check the verified code
         assertEquals(2, response.ruleResponses.get(0).violations.size());
         assertEquals(3, response.ruleResponses.get(0).violations.get(0).start.line);
@@ -81,7 +81,7 @@ public class NoAssertTest extends E2EBase {
     public void testPythonRemoveWriteIgnoredForTests() throws Exception {
         for (String filename : List.of("bla_test.py", "test_bla.py")) {
             Response response = executeTest(filename, code, Language.PYTHON, ruleCodeUpdate, "no-assert",
-                RULE_TYPE_PATTERN, null, pattern, true);
+                RULE_TYPE_REGEX, null, regex, true);
             assertEquals(1, response.ruleResponses.size());
             assertEquals(0, response.ruleResponses.get(0).violations.size());
         }

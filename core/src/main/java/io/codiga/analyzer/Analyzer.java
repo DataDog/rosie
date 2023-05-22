@@ -64,7 +64,7 @@ public class Analyzer {
         // Distinguish between rules with valid languages and invalid ones.
         List<AnalyzerRule> rulesWithValidLanguage = rules.stream().filter(f -> f.validForLanguage(language)).toList();
         List<AnalyzerRule> rulesWithValidLanguageForAst = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.AST_CHECK).toList();
-        List<AnalyzerRule> rulesWithValidLanguageForPattern = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.REGEX && r.pattern() != null).toList();
+        List<AnalyzerRule> rulesWithValidLanguageForPattern = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.REGEX && r.regex() != null).toList();
         List<AnalyzerRule> rulesWithValidLanguageForTreeSitterPatternMatching = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.TREE_SITTER_QUERY && r.treeSitterQuery() != null).toList();
 
 

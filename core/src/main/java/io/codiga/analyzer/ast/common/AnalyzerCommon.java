@@ -123,8 +123,8 @@ public abstract class AnalyzerCommon {
 //                        logger.info(String.format("rule %s took %s ms to execute", rule.name(), executionTime));
                         return res;
                     } catch (PatternSyntaxException patternSyntaxException) {
-                        logger.error(String.format("reporting rule %s as invalid-pattern", rule.name()));
-                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_INVALID_PATTERN), null, null, 0);
+                        logger.error(String.format("reporting rule %s as invalid-regex", rule.name()));
+                        return new RuleResult(rule.name(), List.of(), List.of(ERROR_INVALID_REGEX), null, null, 0);
                     } catch (PolyglotException polyglotException) {
                         long endTime = System.currentTimeMillis();
                         long executionTime = endTime - startTime;

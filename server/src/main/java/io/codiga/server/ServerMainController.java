@@ -160,7 +160,7 @@ public class ServerMainController {
                         if (r.description != null) {
                             description = new String(Base64.getDecoder().decode(r.description.getBytes()));
                         }
-                        return new AnalyzerRule(r.id, description, language, ruleType, entityChecked, decodedRuleCode, r.pattern, tsQuery, r.variables);
+                        return new AnalyzerRule(r.id, description, language, ruleType, entityChecked, decodedRuleCode, r.regex, tsQuery, r.variables);
                     }).toList();
         } catch (IllegalArgumentException iae) {
             logger.error("rule is not base64: " + request.rules);

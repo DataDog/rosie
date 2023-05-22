@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.codiga.constants.Languages.RULE_TYPE_PATTERN;
+import static io.codiga.constants.Languages.RULE_TYPE_REGEX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -42,13 +42,13 @@ public class RaiseNotImplementedTest extends E2EBase {
         """;
 
 
-    String pattern = "raise ${exceptionName}";
+    String regex = "raise ${exceptionName}";
 
     @Test
     @DisplayName("Remove NotImplemented by NotImplementedError")
     public void testNotImplementedError() throws Exception {
         Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "not-implemented",
-            RULE_TYPE_PATTERN, null, pattern, true);
+            RULE_TYPE_REGEX, null, regex, true);
         logger.info(String.format("response: %s", response));
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

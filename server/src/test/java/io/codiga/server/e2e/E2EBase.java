@@ -54,7 +54,7 @@ public class E2EBase {
                                 String ruleName,
                                 String ruleType,
                                 String entityChecked,
-                                String pattern,
+                                String regex,
                                 Map<String, String> variables,
                                 boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, false);
@@ -72,7 +72,7 @@ public class E2EBase {
                                         .setLanguage(stringFromLanguage(language))
                                         .setType(ruleType)
                                         .setEntityChecked(entityChecked)
-                                        .setPattern(pattern)
+                                        .setRegex(regex)
                                         .setVariables(variables)
                                         .createRule()
                         )
@@ -90,7 +90,7 @@ public class E2EBase {
                                               String ruleName,
                                               String ruleType,
                                               String entityChecked,
-                                              String pattern,
+                                              String regex,
                                               String tsQueryBase64,
                                               Map<String, String> variables,
                                               boolean logOutput) {
@@ -109,7 +109,7 @@ public class E2EBase {
                                         .setLanguage(stringFromLanguage(language))
                                         .setType(ruleType)
                                         .setEntityChecked(entityChecked)
-                                        .setPattern(pattern)
+                                        .setRegex(regex)
                                         .setTsQueryBase64(tsQueryBase64)
                                         .setVariables(variables)
                                         .createRule()
@@ -128,10 +128,10 @@ public class E2EBase {
                                               String ruleName,
                                               String ruleType,
                                               String entityChecked,
-                                              String pattern,
+                                              String regex,
                                               Map<String, String> variables,
                                               boolean logOutput) {
-        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, pattern, null, variables, logOutput);
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, regex, null, variables, logOutput);
     }
 
     public Response executeTestWithTreeSitter(String filename,
@@ -141,9 +141,9 @@ public class E2EBase {
                                               String ruleName,
                                               String ruleType,
                                               String entityChecked,
-                                              String pattern,
+                                              String regex,
                                               boolean logOutput) {
-        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, pattern, null, null, logOutput);
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, regex, null, null, logOutput);
     }
 
     public Response executeTest(String filename,
@@ -153,9 +153,9 @@ public class E2EBase {
                                 String ruleName,
                                 String ruleType,
                                 String entityChecked,
-                                String pattern,
+                                String regex,
                                 boolean logOutput) {
-        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, pattern, null, null, logOutput);
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, regex, null, null, logOutput);
     }
 
     public Response executeTestTsQuery(String filename,
@@ -189,7 +189,7 @@ public class E2EBase {
                                 String ruleName,
                                 String ruleType,
                                 String entityChecked,
-                                String pattern,
+                                String regex,
                                 Map<String, String> variables,
                                 boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, false);
@@ -207,7 +207,7 @@ public class E2EBase {
                                         .setLanguage(stringFromLanguage(ruleLanguage))
                                         .setType(ruleType)
                                         .setEntityChecked(entityChecked)
-                                        .setPattern(pattern)
+                                        .setRegex(regex)
                                         .setVariables(variables)
                                         .createRule()
                         )
@@ -226,9 +226,9 @@ public class E2EBase {
                                 String ruleName,
                                 String ruleType,
                                 String entityChecked,
-                                String pattern,
+                                String regex,
                                 boolean logOutput) {
-        return executeTest(filename, code, codeLanguage, ruleLanguage, ruleCode, ruleName, ruleType, entityChecked, pattern, null, logOutput);
+        return executeTest(filename, code, codeLanguage, ruleLanguage, ruleCode, ruleName, ruleType, entityChecked, regex, null, logOutput);
     }
 
 

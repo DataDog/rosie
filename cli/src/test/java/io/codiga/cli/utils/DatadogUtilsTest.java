@@ -31,10 +31,10 @@ public class DatadogUtilsTest {
 
 
     @Test
-    @DisplayName("map a pattern")
+    @DisplayName("map a rule type of regex")
     public void testMappingRulePattern() throws JsonProcessingException {
         String definition = """
-                   {"id":"3","name":"no-datetime-today","description":"QXZvaWQgdXNpbmcgYGRhdGV0aW1lLnRvZGF5KClgIGFuZCB1c2UgaW5zdGVhZCBgZGF0ZXRpbWUubm93KClgLiBUaGUgdHdvIGNhbGxzIGFyZSBlcXVpdmFsZW50IChhcyBtZW50aW9uZWQgaW4gdGhlIFtvZmZpY2lhbCBkb2N1bWVudGF0aW9uXShodHRwczovL2RvY3MucHl0aG9uLm9yZy8zL2xpYnJhcnkvZGF0ZXRpbWUuaHRtbCNkYXRldGltZS5kYXRlLnRvZGF5KSkgYW5kIHRoZSB1c2Ugb2YgYG5vdygpYCBpcyBtb3JlIGV4cGxpY2l0IHRoYW4gYHRvZGF5KClgLg==","content":"ZnVuY3Rpb24gdmlzaXQocGF0dGVybiwgZmlsZW5hbWUsIGNvZGUpIHsKICBjb25zdCBlcnJvciA9IGJ1aWxkRXJyb3IocGF0dGVybi5zdGFydC5saW5lLCBwYXR0ZXJuLnN0YXJ0LmNvbCwgcGF0dGVybi5lbmQubGluZSwgcGF0dGVybi5lbmQuY29sLCAidXNlIGRhdGV0aW1lLm5vdygpIGluc3RlYWQgb2YgZGF0ZXRpbWUudG9kYXkoKSIsICJJTkZPIiwgIkJFU1RfUFJBQ1RJQ0VTIik7CiAgY29uc3QgZWRpdCA9IGJ1aWxkRWRpdChwYXR0ZXJuLnN0YXJ0LmxpbmUsIHBhdHRlcm4uc3RhcnQuY29sLCBwYXR0ZXJuLmVuZC5saW5lLCBwYXR0ZXJuLmVuZC5jb2wsICJ1cGRhdGUiLCAiZGF0ZXRpbWUubm93KCkiKTsKICBjb25zdCBmaXggPSBidWlsZEZpeCgidXNlIGRhdGV0aW1lLm5vdygpIiwgW2VkaXRdKTsKICBhZGRFcnJvcihlcnJvci5hZGRGaXgoZml4KSk7Cn0=","language":"PYTHON","ruleType":"PATTERN","pattern":"datetime.today()"}     
+                   {"id":"3","name":"no-datetime-today","description":"QXZvaWQgdXNpbmcgYGRhdGV0aW1lLnRvZGF5KClgIGFuZCB1c2UgaW5zdGVhZCBgZGF0ZXRpbWUubm93KClgLiBUaGUgdHdvIGNhbGxzIGFyZSBlcXVpdmFsZW50IChhcyBtZW50aW9uZWQgaW4gdGhlIFtvZmZpY2lhbCBkb2N1bWVudGF0aW9uXShodHRwczovL2RvY3MucHl0aG9uLm9yZy8zL2xpYnJhcnkvZGF0ZXRpbWUuaHRtbCNkYXRldGltZS5kYXRlLnRvZGF5KSkgYW5kIHRoZSB1c2Ugb2YgYG5vdygpYCBpcyBtb3JlIGV4cGxpY2l0IHRoYW4gYHRvZGF5KClgLg==","content":"ZnVuY3Rpb24gdmlzaXQocGF0dGVybiwgZmlsZW5hbWUsIGNvZGUpIHsKICBjb25zdCBlcnJvciA9IGJ1aWxkRXJyb3IocGF0dGVybi5zdGFydC5saW5lLCBwYXR0ZXJuLnN0YXJ0LmNvbCwgcGF0dGVybi5lbmQubGluZSwgcGF0dGVybi5lbmQuY29sLCAidXNlIGRhdGV0aW1lLm5vdygpIGluc3RlYWQgb2YgZGF0ZXRpbWUudG9kYXkoKSIsICJJTkZPIiwgIkJFU1RfUFJBQ1RJQ0VTIik7CiAgY29uc3QgZWRpdCA9IGJ1aWxkRWRpdChwYXR0ZXJuLnN0YXJ0LmxpbmUsIHBhdHRlcm4uc3RhcnQuY29sLCBwYXR0ZXJuLmVuZC5saW5lLCBwYXR0ZXJuLmVuZC5jb2wsICJ1cGRhdGUiLCAiZGF0ZXRpbWUubm93KCkiKTsKICBjb25zdCBmaXggPSBidWlsZEZpeCgidXNlIGRhdGV0aW1lLm5vdygpIiwgW2VkaXRdKTsKICBhZGRFcnJvcihlcnJvci5hZGRGaXgoZml4KSk7Cn0=","language":"PYTHON","ruleType":"REGEX","regex":"datetime.today()"}     
             """;
         ObjectMapper mapper = new ObjectMapper();
         var def = mapper.readTree(definition);
@@ -42,7 +42,7 @@ public class DatadogUtilsTest {
         assertTrue(res.isPresent());
         assertEquals("bla/no-datetime-today", res.get().name());
         assertEquals(Language.PYTHON, res.get().language());
-        assertEquals("datetime.today()", res.get().pattern());
+        assertEquals("datetime.today()", res.get().regex());
     }
 
     @Test
@@ -58,6 +58,6 @@ public class DatadogUtilsTest {
         assertEquals("bla/no-exit", res.get().name());
         assertEquals(Language.PYTHON, res.get().language());
         assertEquals(EntityChecked.FUNCTION_CALL, res.get().entityChecked());
-        assertNull(res.get().pattern());
+        assertNull(res.get().regex());
     }
 }
