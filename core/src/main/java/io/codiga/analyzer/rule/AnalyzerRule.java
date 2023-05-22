@@ -14,6 +14,7 @@ public record AnalyzerRule(String name,
                            EntityChecked entityChecked, // defined/used only when ruleType is an AST rule
                            String code, // JavaScript code of the rule
                            String regex, // only defined when using a pattern
+                           @JsonProperty("tree_sitter_query")
                            String treeSitterQuery, // the tree-sitter query when we are using pattern matching
                            Map<String, String> variables) {
     /**
