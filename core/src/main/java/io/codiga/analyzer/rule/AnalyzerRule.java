@@ -1,5 +1,6 @@
 package io.codiga.analyzer.rule;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
@@ -9,6 +10,7 @@ public record AnalyzerRule(String name,
                            String description,
                            Language language,
                            RuleType type,
+                           @JsonProperty("entity_checked")
                            EntityChecked entityChecked, // defined/used only when ruleType is an AST rule
                            String code, // JavaScript code of the rule
                            String regex, // only defined when using a pattern
