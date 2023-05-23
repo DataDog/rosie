@@ -47,7 +47,7 @@ trigger_internal_rosie_image:
   variables:
     IMAGE_VERSION: current
     IMAGE_NAME: rosie
-    RELEASE_TAG: 20230523
+    RELEASE_TAG: 2023052302
     BUILD_TAG: 20230523
     TMPL_SRC_IMAGE: v${CI_PIPELINE_ID}-${CI_COMMIT_SHORT_SHA}
     RELEASE_STAGING: "true"
