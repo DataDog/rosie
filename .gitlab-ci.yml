@@ -45,7 +45,7 @@ trigger_internal_operator_image:
     branch: master
     strategy: depend
   variables:
-    IMAGE_VERSION: latest
+    IMAGE_VERSION: current
     IMAGE_NAME: rosie
     RELEASE_TAG: ${CI_COMMIT_REF_SLUG}
     BUILD_TAG: ${CI_COMMIT_REF_SLUG}
