@@ -36,7 +36,7 @@ test:
   tags:
     - arch:arm64
 
-trigger_internal_operator_image:
+trigger_internal_rosie_image:
   stage: release
   only:
     - main
@@ -45,10 +45,10 @@ trigger_internal_operator_image:
     branch: master
     strategy: depend
   variables:
-    IMAGE_VERSION: latest
+    IMAGE_VERSION: current
     IMAGE_NAME: rosie
-    RELEASE_TAG: ${CI_COMMIT_REF_SLUG}
-    BUILD_TAG: ${CI_COMMIT_REF_SLUG}
+    RELEASE_TAG: 20230523
+    BUILD_TAG: 20230523
     TMPL_SRC_IMAGE: v${CI_PIPELINE_ID}-${CI_COMMIT_SHORT_SHA}
     RELEASE_STAGING: "true"
     RELEASE_PROD: "true"
