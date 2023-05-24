@@ -14,3 +14,4 @@ ENV JAVA_OPTS -javaagent:/dd-java-agent.jar -Ddd.profiling.enabled=true -XX:Flig
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java", "-javaagent:/dd-java-agent.jar", "-Ddd.profiling.enabled=true",  "-XX:FlightRecorderOptions=stackdepth=256",  "-Ddd.logs.injection=true", "-Ddd.service=rosie", "-jar","/app.jar"]
+
