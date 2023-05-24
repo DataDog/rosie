@@ -1,20 +1,18 @@
 package io.codiga.server.e2e.typescript.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_DEFINITION;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 public class MaxParametersFunctionDefinitionTest extends E2EBase {
 
@@ -49,7 +47,7 @@ public class MaxParametersFunctionDefinitionTest extends E2EBase {
     @Test
     @DisplayName("Check that the number of parameters is below the max set")
     public void testMaxParametersInFunctionAcceptable() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.ts", javascriptCode, Language.TYPESCRIPT, ruleCode, "max-params-function-def", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, null, Map.of("maxParams", "4"), true);
+        Response response = executeTestWithTreeSitter("bla.ts", javascriptCode, Language.TYPESCRIPT, ruleCode, "max-params-function-def", RuleType.AST_CHECK, EntityChecked.FUNCTION_DEFINITION, null, Map.of("maxParams", "4"), true);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
         assertEquals(0, response.ruleResponses.get(0).errors.size());
@@ -59,7 +57,7 @@ public class MaxParametersFunctionDefinitionTest extends E2EBase {
     @Test
     @DisplayName("Catch violations for the number of parameters when the maxParams variable is set")
     public void testMaxParametersInFunctionLowerMaxParams() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.ts", javascriptCode, Language.TYPESCRIPT, ruleCode, "max-params-function-def", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_DEFINITION, null, Map.of("maxParams", "3"), true);
+        Response response = executeTestWithTreeSitter("bla.ts", javascriptCode, Language.TYPESCRIPT, ruleCode, "max-params-function-def", RuleType.AST_CHECK, EntityChecked.FUNCTION_DEFINITION, null, Map.of("maxParams", "3"), true);
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).errors.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

@@ -1,5 +1,14 @@
 package io.codiga.server;
 
+import static io.codiga.constants.Languages.SUPPORTED_LANGUAGES;
+import static io.codiga.metrics.MetricsName.*;
+import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
+import static io.codiga.server.response.ResponseErrors.*;
+import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
+import static io.codiga.utils.TreeSitterUtils.getFullAstTree;
+import static io.codiga.utils.Version.CURRENT_VERSION;
+import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.Analyzer;
@@ -17,27 +26,16 @@ import io.codiga.server.response.*;
 import io.codiga.server.services.InjectorService;
 import io.codiga.utils.EnvironmentUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import static io.codiga.constants.Languages.SUPPORTED_LANGUAGES;
-import static io.codiga.metrics.MetricsName.*;
-import static io.codiga.model.utils.ModelUtils.*;
-import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
-import static io.codiga.server.response.ResponseErrors.*;
-import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
-import static io.codiga.utils.TreeSitterUtils.getFullAstTree;
-import static io.codiga.utils.Version.CURRENT_VERSION;
-import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 
 @RestController
 public class ServerMainController {
@@ -61,7 +59,7 @@ public class ServerMainController {
     }
 
     private boolean shouldUseTreeSitter(Request request) {
-        if (languageFromString(request.language) == Language.PYTHON) {
+        if (request.language == Language.PYTHON) {
             if (PYTHON_FORCE_ANTLR) {
                 return false;
             }
@@ -135,7 +133,7 @@ public class ServerMainController {
         String decodedCode = null;
 
         try {
-            decodedCode = new String(Base64.getDecoder().decode(request.codeBase64.getBytes()));
+            decodedCode = new String(Base64.getDecoder().decode(request.code.getBytes()));
         } catch (IllegalArgumentException iae) {
             logger.info("code is not base64");
             return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_CODE_NOT_BASE64)));
@@ -143,24 +141,24 @@ public class ServerMainController {
 
         try {
             rules = request.rules.stream()
-                    .filter(r -> r.contentBase64 != null && r.language != null)
+                    .filter(r -> r.code != null && r.language != null)
                     .map(r -> {
-                        String decodedRuleCode = new String(Base64.getDecoder().decode(r.contentBase64.getBytes()));
+                        String decodedRuleCode = new String(Base64.getDecoder().decode(r.code.getBytes()));
                         String tsQuery = null;
 
-                        if (r.tsQueryBase64 != null) {
-                            tsQuery = new String(Base64.getDecoder().decode(r.tsQueryBase64.getBytes()));
+                        if (r.treeSitterQuery != null) {
+                            tsQuery = new String(Base64.getDecoder().decode(r.treeSitterQuery.getBytes()));
                         }
 
-                        Language language = languageFromString(r.language);
-                        EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
-                        RuleType ruleType = ruleTypeFromString(r.type);
+                        Language language = r.language;
+                        EntityChecked entityChecked = r.entityChecked;
+                        RuleType ruleType = r.type;
 
                         String description = null;
                         if (r.description != null) {
                             description = new String(Base64.getDecoder().decode(r.description.getBytes()));
                         }
-                        return new AnalyzerRule(r.id, description, language, ruleType, entityChecked, decodedRuleCode, r.pattern, tsQuery, r.variables);
+                        return new AnalyzerRule(r.id, description, language, ruleType, entityChecked, decodedRuleCode, r.regex, tsQuery, r.variables);
                     }).toList();
         } catch (IllegalArgumentException iae) {
             logger.error("rule is not base64: " + request.rules);
@@ -170,7 +168,7 @@ public class ServerMainController {
                 .logOutput(request.options != null && request.options.logOutput)
                 .useTreeSitter(shouldUseTreeSitter(request))
                 .build();
-        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language), request.filename, decodedCode, rules, options);
+        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(request.language, request.filename, decodedCode, rules, options);
 
 
         return violationsFuture.thenApply(analysisResult -> {
@@ -180,7 +178,7 @@ public class ServerMainController {
                                 List<ViolationFixEdit> edits = fix.edits.stream().map(edit -> new ViolationFixEdit(
                                         edit.start,
                                         edit.end,
-                                        editTypeToString(edit.editType),
+                                        edit.editType,
                                         edit.content
                                 )).toList();
                                 return new ViolationFix(fix.description, edits);
@@ -188,7 +186,7 @@ public class ServerMainController {
                             }).toList();
 
                             return new Violation(ruleViolation.start, ruleViolation.end, ruleViolation.message,
-                                    ruleViolation.severity.toString(), ruleViolation.category.toString(), fixes);
+                                    ruleViolation.severity.toString(), ruleViolation.category, fixes);
 
                         }).toList();
                         return new RuleResponse(ruleResult.identifier(), violations, ruleResult.errors(), ruleResult.executionError(), ruleResult.output(), ruleResult.executionTimeMs());
@@ -222,7 +220,7 @@ public class ServerMainController {
         String decodedCode = null;
 
         try {
-            decodedCode = new String(Base64.getDecoder().decode(request.codeBase64.getBytes()));
+            decodedCode = new String(Base64.getDecoder().decode(request.code.getBytes()));
         } catch (IllegalArgumentException iae) {
             logger.info("code is not base64");
             return CompletableFuture.completedFuture(new GetTreeSitterAstResponse(null, List.of(ERROR_CODE_NOT_BASE64)));

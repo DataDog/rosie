@@ -63,9 +63,9 @@ public class Analyzer {
         long startAnalysisTimestampMs = System.currentTimeMillis();
         // Distinguish between rules with valid languages and invalid ones.
         List<AnalyzerRule> rulesWithValidLanguage = rules.stream().filter(f -> f.validForLanguage(language)).toList();
-        List<AnalyzerRule> rulesWithValidLanguageForAst = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.AST_CHECK).toList();
-        List<AnalyzerRule> rulesWithValidLanguageForPattern = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.PATTERN && r.pattern() != null).toList();
-        List<AnalyzerRule> rulesWithValidLanguageForTreeSitterPatternMatching = rulesWithValidLanguage.stream().filter(r -> r.ruleType() == RuleType.TREE_SITTER_QUERY && r.treeSitterQuery() != null).toList();
+        List<AnalyzerRule> rulesWithValidLanguageForAst = rulesWithValidLanguage.stream().filter(r -> r.type() == RuleType.AST_CHECK).toList();
+        List<AnalyzerRule> rulesWithValidLanguageForPattern = rulesWithValidLanguage.stream().filter(r -> r.type() == RuleType.REGEX && r.regex() != null).toList();
+        List<AnalyzerRule> rulesWithValidLanguageForTreeSitterPatternMatching = rulesWithValidLanguage.stream().filter(r -> r.type() == RuleType.TREE_SITTER_QUERY && r.treeSitterQuery() != null).toList();
 
 
         List<AnalyzerRule> rulesWithInvalidLanguage = rules.stream().filter(f -> !f.validForLanguage(language)).toList();
@@ -101,7 +101,7 @@ public class Analyzer {
             List<RuleResult> invalidLanguagesRuleResults = rulesWithInvalidLanguage.stream().map(r -> new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_LANGUAGE_MISMATCH), null, null, 0)).toList();
 
             List<RuleResult> invalidRuleTypeResults = rulesWithValidLanguage.stream()
-                .filter(r -> r.ruleType() == RuleType.UNKNOWN)
+                .filter(r -> r.type() == RuleType.UNKNOWN)
                 .map(r -> new RuleResult(r.name(), List.of(), List.of(ERROR_RULE_INVALID_RULE_TYPE), null, null, 0)).toList();
 
             List<RuleResult> allRuleResult = ImmutableList

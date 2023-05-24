@@ -1,5 +1,6 @@
 package io.codiga.analyzer.rule;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
@@ -8,10 +9,12 @@ import java.util.Map;
 public record AnalyzerRule(String name,
                            String description,
                            Language language,
-                           RuleType ruleType,
+                           RuleType type,
+                           @JsonProperty("entity_checked")
                            EntityChecked entityChecked, // defined/used only when ruleType is an AST rule
                            String code, // JavaScript code of the rule
-                           String pattern, // only defined when using a pattern
+                           String regex, // only defined when using a pattern
+                           @JsonProperty("tree_sitter_query")
                            String treeSitterQuery, // the tree-sitter query when we are using pattern matching
                            Map<String, String> variables) {
     /**

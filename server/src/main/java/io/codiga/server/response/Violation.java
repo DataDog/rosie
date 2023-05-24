@@ -1,7 +1,7 @@
 package io.codiga.server.response;
 
 import io.codiga.model.common.Position;
-
+import io.codiga.model.error.Category;
 import java.util.List;
 
 public class Violation {
@@ -9,11 +9,12 @@ public class Violation {
     public Position start;
     public Position end;
     public String severity;
-    public String category;
+    public Category category;
     public List<ViolationFix> fixes;
 
+    public Violation() {}
 
-    public Violation(Position start, Position end, String message, String severity, String category, List<ViolationFix> fixes) {
+    public Violation(Position start, Position end, String message, String severity, Category category, List<ViolationFix> fixes) {
         this.message = message;
         this.start = start;
         this.end = end;

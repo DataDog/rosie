@@ -1,17 +1,16 @@
 package io.codiga.server.e2e.javascript.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_IMPORT;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class ImportTest extends E2EBase {
 
@@ -47,7 +46,7 @@ public class ImportTest extends E2EBase {
     @Test
     @DisplayName("do not import export1, always import export2")
     public void testImportRule() throws Exception {
-        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "import-rule", RULE_TYPE_AST, ENTITY_CHECKED_IMPORT, null, true);
+        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "import-rule", RuleType.AST_CHECK, EntityChecked.IMPORT_STATEMENT, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

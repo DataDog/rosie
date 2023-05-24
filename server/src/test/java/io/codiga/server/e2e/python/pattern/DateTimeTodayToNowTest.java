@@ -1,16 +1,17 @@
 package io.codiga.server.e2e.python.pattern;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
+import io.codiga.model.error.Category;
+import io.codiga.model.error.EditType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.RULE_TYPE_PATTERN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class DateTimeTodayToNowTest extends E2EBase {
 
@@ -37,24 +38,24 @@ public class DateTimeTodayToNowTest extends E2EBase {
         """;
 
 
-    String pattern = "datetime.today()";
+    String regex = "datetime.today()";
 
     @Test
     @DisplayName("Replace datetime.today() with datetime.now()")
     public void testNotImplementedError() throws Exception {
         Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "no-datetime-today()",
-            RULE_TYPE_PATTERN, null, pattern, true);
+            RuleType.REGEX, null, regex, true);
         logger.info(String.format("response: %s", response));
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(3, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals("use datetime.now() instead of datetime.today()", response.ruleResponses.get(0).violations.get(0).message);
-        assertEquals("BEST_PRACTICE", response.ruleResponses.get(0).violations.get(0).category);
+        assertEquals(Category.BEST_PRACTICES, response.ruleResponses.get(0).violations.get(0).category);
         assertEquals("INFORMATIONAL", response.ruleResponses.get(0).violations.get(0).severity);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.size());
         assertEquals("use datetime.now()", response.ruleResponses.get(0).violations.get(0).fixes.get(0).description);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.size());
-        assertEquals("update", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
+        assertEquals(EditType.UPDATE, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
         assertEquals(7, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.col);
         assertEquals(3, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.line);
         assertEquals(23, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);

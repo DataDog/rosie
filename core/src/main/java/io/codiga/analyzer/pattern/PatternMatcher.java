@@ -96,7 +96,7 @@ public class PatternMatcher {
             }
         }).toList();
 
-        String regularExpression = prepareStringForRegularExpression(this.analyzerRule.pattern());
+        String regularExpression = prepareStringForRegularExpression(this.analyzerRule.regex());
         for (PatternVariable patternVariable : orderedPatternVariables) {
             regularExpression = regularExpression.substring(0, patternVariable.start()) + "(.+)" + regularExpression.substring(patternVariable.end());
         }
@@ -113,7 +113,7 @@ public class PatternMatcher {
      */
     public List<PatternObject> getPatternObjects() {
         List<PatternObject> patternObjects = new ArrayList<>();
-        List<PatternVariable> patternVariables = this.getVariablesFromPattern(analyzerRule.pattern());
+        List<PatternVariable> patternVariables = this.getVariablesFromPattern(analyzerRule.regex());
         String regularExpression = this.getRegularExpression(patternVariables);
 
 //        logger.info(String.format("regular expression: %s", regularExpression));

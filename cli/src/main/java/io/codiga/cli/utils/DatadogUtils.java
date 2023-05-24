@@ -47,7 +47,7 @@ public class DatadogUtils {
             if (code != null) {
                 String decodedCode = new String(Base64.getDecoder().decode(code));
                 return Optional.of(
-                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), res.description(), res.language(), res.ruleType(), res.entityChecked(), decodedCode, res.pattern(), res.treeSitterQuery(), res.variables())
+                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), res.description(), res.language(), res.type(), res.entityChecked(), decodedCode, res.regex(), res.treeSitterQuery(), res.variables())
                 );
             }
         } catch (IllegalArgumentException e) {

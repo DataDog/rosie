@@ -1,16 +1,20 @@
 package io.codiga.server.request;
 
+import io.codiga.model.EntityChecked;
+import io.codiga.model.Language;
+import io.codiga.model.RuleType;
+
 import java.util.Map;
 
 public class RuleBuilder {
     private String id;
     private String description;
-    private String language;
-    private String type;
-    private String entityChecked;
-    private String pattern;
-    private String contentBase64;
-    private String tsQueryBase64;
+    private Language language;
+    private RuleType type;
+    private EntityChecked entityChecked;
+    private String regex;
+    private String code;
+    private String treeSitterQuery;
     private Map<String, String> variables;
 
     public RuleBuilder setId(String id) {
@@ -23,33 +27,33 @@ public class RuleBuilder {
         return this;
     }
 
-    public RuleBuilder setLanguage(String language) {
+    public RuleBuilder setLanguage(Language language) {
         this.language = language;
         return this;
     }
 
-    public RuleBuilder setType(String type) {
+    public RuleBuilder setType(RuleType type) {
         this.type = type;
         return this;
     }
 
-    public RuleBuilder setEntityChecked(String entityChecked) {
+    public RuleBuilder setEntityChecked(EntityChecked entityChecked) {
         this.entityChecked = entityChecked;
         return this;
     }
 
-    public RuleBuilder setPattern(String pattern) {
-        this.pattern = pattern;
+    public RuleBuilder setRegex(String regex) {
+        this.regex = regex;
         return this;
     }
 
-    public RuleBuilder setContentBase64(String contentBase64) {
-        this.contentBase64 = contentBase64;
+    public RuleBuilder setCode(String code) {
+        this.code = code;
         return this;
     }
 
-    public RuleBuilder setTsQueryBase64(String tsQueryBase64) {
-        this.tsQueryBase64 = tsQueryBase64;
+    public RuleBuilder setTreeSitterQuery(String treeSitterQuery) {
+        this.treeSitterQuery = treeSitterQuery;
         return this;
     }
 
@@ -59,6 +63,6 @@ public class RuleBuilder {
     }
 
     public Rule createRule() {
-        return new Rule(id, description, language, type, entityChecked, tsQueryBase64, pattern, contentBase64, variables);
+        return new Rule(id, description, language, type, entityChecked, treeSitterQuery, regex, code, variables);
     }
 }

@@ -8,13 +8,13 @@ import java.util.List;
 public class AnalyzerWarmupCodeData {
 
     public List<AnalyzerRule> analyzerRuleList;
-    public String codeBase64;
+    public String code;
     public Language language;
     public String filename;
 
-    public AnalyzerWarmupCodeData(List<AnalyzerRule> analyzerRuleList, String codeBase64, Language language, String filename) {
+    public AnalyzerWarmupCodeData(List<AnalyzerRule> analyzerRuleList, String code, Language language, String filename) {
         this.analyzerRuleList = analyzerRuleList;
-        this.codeBase64 = codeBase64;
+        this.code = code;
         this.language = language;
         this.filename = filename;
     }

@@ -2,7 +2,6 @@ package io.codiga.analyzer.pattern;
 
 import datadog.trace.api.Trace;
 import io.codiga.analyzer.AnalysisOptions;
-import io.codiga.analyzer.AnalyzerFuturePool;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
 import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.ast.vm.VmContext;
@@ -13,10 +12,6 @@ import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.Language;
 import io.codiga.model.error.RuleResult;
 import io.codiga.model.pattern.PatternObject;
-import org.graalvm.polyglot.Engine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 
 public class PatternAnalyzer extends AnalyzerCommon {

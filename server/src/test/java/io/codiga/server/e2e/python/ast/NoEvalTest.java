@@ -1,16 +1,16 @@
 package io.codiga.server.e2e.python.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
+import io.codiga.model.error.EditType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 public class NoEvalTest extends E2EBase {
 
@@ -52,7 +52,7 @@ public class NoEvalTest extends E2EBase {
     @Test
     @DisplayName("Do not use eval()")
     public void testPythonNoEval() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-eval", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-eval", RuleType.AST_CHECK, EntityChecked.FUNCTION_CALL, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -62,7 +62,7 @@ public class NoEvalTest extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.size());
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.size());
 
-        assertEquals("update", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
+        assertEquals(EditType.UPDATE, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
         assertEquals("literal_eval('[1, 2, 3]')", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).content);
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.line);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.col);
@@ -70,7 +70,7 @@ public class NoEvalTest extends E2EBase {
         assertEquals(18, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);
 
 
-        assertEquals("add", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).editType);
+        assertEquals(EditType.ADD, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).editType);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).start.line);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).start.col);
         assertEquals("from ast import literal_eval\n", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).content);
@@ -82,7 +82,7 @@ public class NoEvalTest extends E2EBase {
     @Test
     @DisplayName("Make sure we catch multiple instances of the issue")
     public void testPythonNoEvalMultiple() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithTwoErrors, Language.PYTHON, ruleCode, "no-eval", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithTwoErrors, Language.PYTHON, ruleCode, "no-eval", RuleType.AST_CHECK, EntityChecked.FUNCTION_CALL, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(2, response.ruleResponses.get(0).violations.size());
@@ -94,7 +94,7 @@ public class NoEvalTest extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.size());
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.size());
 
-        assertEquals("update", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
+        assertEquals(EditType.UPDATE, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
         assertEquals("literal_eval('[1, 2, 3]')", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).content);
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.line);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.col);
@@ -102,7 +102,7 @@ public class NoEvalTest extends E2EBase {
         assertEquals(18, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);
 
 
-        assertEquals("add", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).editType);
+        assertEquals(EditType.ADD, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).editType);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).start.line);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).start.col);
         assertEquals("from ast import literal_eval\n", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).content);
@@ -113,7 +113,7 @@ public class NoEvalTest extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.get(1).fixes.size());
         assertEquals(2, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.size());
 
-        assertEquals("update", response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).editType);
+        assertEquals(EditType.UPDATE, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).editType);
         assertEquals("literal_eval('[1, 2, 3]')", response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).content);
         assertEquals(3, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).start.line);
         assertEquals(1, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).start.col);
@@ -121,7 +121,7 @@ public class NoEvalTest extends E2EBase {
         assertEquals(18, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(0).end.col);
 
 
-        assertEquals("add", response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(1).editType);
+        assertEquals(EditType.ADD, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(1).editType);
         assertEquals(1, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(1).start.line);
         assertEquals(1, response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(1).start.col);
         assertEquals("from ast import literal_eval\n", response.ruleResponses.get(0).violations.get(1).fixes.get(0).edits.get(1).content);

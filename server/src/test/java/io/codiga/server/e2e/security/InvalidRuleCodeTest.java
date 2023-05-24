@@ -1,15 +1,15 @@
 package io.codiga.server.e2e.security;
 
+import static io.codiga.model.RuleErrorCode.ERROR_RULE_EXECUTION;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static io.codiga.model.RuleErrorCode.ERROR_RULE_EXECUTION;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InvalidRuleCodeTest extends E2EBase {
     String pythonCode = """            
@@ -31,7 +31,7 @@ public class InvalidRuleCodeTest extends E2EBase {
     @Test
     @DisplayName("Report execution error when javascript code is invalid")
     public void testInvalidCode() throws Exception {
-        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "python-infinite", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
+        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "python-infinite", RuleType.AST_CHECK, EntityChecked.FUNCTION_CALL, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(ERROR_RULE_EXECUTION, response.ruleResponses.get(0).errors.get(0));

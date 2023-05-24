@@ -6,6 +6,8 @@ public class Response {
     public List<RuleResponse> ruleResponses;
     public List<String> errors;
 
+    public Response() {}
+
     public Response(List<RuleResponse> ruleResponses, List<String> errors) {
         this.ruleResponses = ruleResponses;
         this.errors = errors;

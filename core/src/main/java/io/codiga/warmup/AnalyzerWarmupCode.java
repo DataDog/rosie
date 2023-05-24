@@ -12,14 +12,14 @@ public class AnalyzerWarmupCode {
     public final static List<AnalyzerWarmupCodeData> WARMUP_CODE = List.of(
         new AnalyzerWarmupCodeDataBuilder()
             .setFilename("pythoncode.py")
-            .setCodeBase64("YSA9IDEKYiA9IDIKcmFpc2UgTm90SW1wbGVtZW50ZWQKYyA9IDM=")
+            .setCode("YSA9IDEKYiA9IDIKcmFpc2UgTm90SW1wbGVtZW50ZWQKYyA9IDM=")
             .setLanguage(Language.PYTHON)
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(
                     "raising-not-implemented",
                     "raising-not-implemented description",
                     Language.PYTHON,
-                    RuleType.PATTERN,
+                    RuleType.REGEX,
                     null,
                     "ZnVuY3Rpb24gdmlzaXQocGF0dGVybiwgZmlsZW5hbWUsIGNvZGUpIHsKICBjb25zdCBleGNlcHRpb25OYW1lID0gcGF0dGVybi52YXJpYWJsZXMuZ2V0KCJleGNlcHRpb25OYW1lIik7CiAgaWYgKGV4Y2VwdGlvbk5hbWUgJiYgZXhjZXB0aW9uTmFtZS52YWx1ZSA9PT0gIk5vdEltcGxlbWVudGVkIikgewogICAgY29uc3QgZXJyb3IgPSBidWlsZEVycm9yKHBhdHRlcm4uc3RhcnQubGluZSwgcGF0dGVybi5zdGFydC5jb2wsIHBhdHRlcm4uZW5kLmxpbmUsIHBhdHRlcm4uZW5kLmNvbCwgInJhaXNlIE5vdEltcGxlbWVudGVkIGlzIG5vdCBhIHZhbGlkIGVycm9yIiwgIklORk8iLCAiQkVTVF9QUkFDVElDRVMiKTsKICAgIGNvbnN0IGVkaXQgPSBidWlsZEVkaXQocGF0dGVybi5zdGFydC5saW5lLCBwYXR0ZXJuLnN0YXJ0LmNvbCwgcGF0dGVybi5lbmQubGluZSwgcGF0dGVybi5lbmQuY29sLCAidXBkYXRlIiwgInJhaXNlIE5vdEltcGxlbWVudGVkRXJyb3IiKTsKICAgIGNvbnN0IGZpeCA9IGJ1aWxkRml4KCJyYWlzZSBOb3RJbXBsZW1lbnRlZEVycm9yIiwgW2VkaXRdKTsKICAgIGFkZEVycm9yKGVycm9yLmFkZEZpeChmaXgpKTsKICB9Cn0=",
                     "raise ${exceptionName}",
@@ -29,7 +29,7 @@ public class AnalyzerWarmupCode {
             ).createAnalyzerWarmupCodeData(),
         new AnalyzerWarmupCodeDataBuilder()
             .setFilename("pythoncode.py")
-            .setCodeBase64("cHJpbnQoImJsYSIpCmV2YWwoJ1sxLCAyLCAzXScp")
+            .setCode("cHJpbnQoImJsYSIpCmV2YWwoJ1sxLCAyLCAzXScp")
             .setLanguage(Language.PYTHON)
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(
@@ -46,7 +46,7 @@ public class AnalyzerWarmupCode {
             ).createAnalyzerWarmupCodeData(),
         new AnalyzerWarmupCodeDataBuilder()
             .setFilename("pythoncode.py")
-            .setCodeBase64("aW1wb3J0IHJlcXVlc3RzCnIgPSByZXF1ZXN0cy5nZXQodywgdmVyaWZ5PUZhbHNlKQpyID0gcmVxdWVzdHMuZ2V0KHcsIHZlcmlmeT1GYWxzZSwgdGltZW91dD0xMCk=")
+            .setCode("aW1wb3J0IHJlcXVlc3RzCnIgPSByZXF1ZXN0cy5nZXQodywgdmVyaWZ5PUZhbHNlKQpyID0gcmVxdWVzdHMuZ2V0KHcsIHZlcmlmeT1GYWxzZSwgdGltZW91dD0xMCk=")
             .setLanguage(Language.PYTHON)
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(
@@ -63,7 +63,7 @@ public class AnalyzerWarmupCode {
             ).createAnalyzerWarmupCodeData(),
         new AnalyzerWarmupCodeDataBuilder()
             .setFilename("pythoncode.py")
-            .setCodeBase64("aW1wb3J0IHN1YnByb2Nlc3MKc3VicHJvY2Vzcy5Qb3BlbignL2Jpbi9scyAlcycgJSAoJ3NvbWV0aGluZycsKSwgc2hlbGw9VHJ1ZSk=")
+            .setCode("aW1wb3J0IHN1YnByb2Nlc3MKc3VicHJvY2Vzcy5Qb3BlbignL2Jpbi9scyAlcycgJSAoJ3NvbWV0aGluZycsKSwgc2hlbGw9VHJ1ZSk=")
             .setLanguage(Language.PYTHON)
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(

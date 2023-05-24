@@ -1,12 +1,14 @@
 package io.codiga.server.request;
 
+import io.codiga.model.Language;
+
 import java.util.List;
 
 public class RequestBuilder {
     private String filename;
-    private String language;
+    private Language language;
     private String fileEncoding;
-    private String codeBase64;
+    private String code;
     private List<Rule> rules;
 
     private RequestOptions requestOptions = null;
@@ -16,7 +18,7 @@ public class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder setLanguage(String language) {
+    public RequestBuilder setLanguage(Language language) {
         this.language = language;
         return this;
     }
@@ -26,8 +28,8 @@ public class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder setCodeBase64(String codeBase64) {
-        this.codeBase64 = codeBase64;
+    public RequestBuilder setCode(String code) {
+        this.code = code;
         return this;
     }
 
@@ -44,6 +46,6 @@ public class RequestBuilder {
     }
 
     public Request createRequest() {
-        return new Request(filename, language, fileEncoding, codeBase64, rules, requestOptions);
+        return new Request(filename, language, fileEncoding, code, rules, requestOptions);
     }
 }

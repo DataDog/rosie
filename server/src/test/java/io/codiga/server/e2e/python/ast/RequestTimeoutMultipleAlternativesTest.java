@@ -1,14 +1,13 @@
 package io.codiga.server.e2e.python.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.Test;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class RequestTimeoutMultipleAlternativesTest extends E2EBase {
 
@@ -49,7 +48,7 @@ public class RequestTimeoutMultipleAlternativesTest extends E2EBase {
 
     @Test
     public void testPythonRequestTimeout() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-timeout", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-timeout", RuleType.AST_CHECK, EntityChecked.FUNCTION_CALL, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

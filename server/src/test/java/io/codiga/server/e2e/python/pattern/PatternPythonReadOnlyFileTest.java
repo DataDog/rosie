@@ -1,16 +1,17 @@
 package io.codiga.server.e2e.python.pattern;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
+import io.codiga.model.error.Category;
+import io.codiga.model.error.EditType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.RULE_TYPE_PATTERN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class PatternPythonReadOnlyFileTest extends E2EBase {
 
@@ -41,8 +42,8 @@ public class PatternPythonReadOnlyFileTest extends E2EBase {
     @Test
     @DisplayName("Remove the read-only flag when opening a file - update version")
     public void testPythonPatternReadOnlyFlagUpdate() throws Exception {
-        String pattern = "open(\"${file}\", \"r\")";
-        Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-file-read-only", RULE_TYPE_PATTERN, null, pattern, false);
+        String regex = "open(\"${file}\", \"r\")";
+        Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "remove-file-read-only", RuleType.REGEX, null, regex, false);
 
         logger.info("response: " + response);
 
@@ -50,12 +51,12 @@ public class PatternPythonReadOnlyFileTest extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals("file with read-only defined", response.ruleResponses.get(0).violations.get(0).message);
-        assertEquals("BEST_PRACTICE", response.ruleResponses.get(0).violations.get(0).category);
+        assertEquals(Category.BEST_PRACTICES, response.ruleResponses.get(0).violations.get(0).category);
         assertEquals("WARNING", response.ruleResponses.get(0).violations.get(0).severity);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.size());
         assertEquals("remove the read-only flag", response.ruleResponses.get(0).violations.get(0).fixes.get(0).description);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.size());
-        assertEquals("update", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
+        assertEquals(EditType.UPDATE, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
         assertEquals(8, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.col);
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.line);
         assertEquals(31, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);

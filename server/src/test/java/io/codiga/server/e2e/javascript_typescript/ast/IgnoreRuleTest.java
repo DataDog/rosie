@@ -1,15 +1,15 @@
 package io.codiga.server.e2e.javascript_typescript.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_ASSIGNMENT;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IgnoreRuleTest extends E2EBase {
 
@@ -153,21 +153,41 @@ public class IgnoreRuleTest extends E2EBase {
         }
                 """;
 
-    @Test
-    @DisplayName("ignore rules when comment is here")
-    public void testIgnoreRules() throws Exception {
-        JAVASCRIPT_TYPESCRIPT.forEach(l -> {
-            logger.info("Running test with language: " + l);
-            Response responseOneError = executeTest("bla.js", codeWithOneError, l, ruleCode, "no-child-as-prop", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
-            logger.info(responseOneError.toString());
-            assertEquals(1, responseOneError.ruleResponses.size());
-            assertEquals(1, responseOneError.ruleResponses.get(0).violations.size());
+  @Test
+  @DisplayName("ignore rules when comment is here")
+  public void testIgnoreRules() throws Exception {
+    JAVASCRIPT_TYPESCRIPT.forEach(
+        l -> {
+          logger.info("Running test with language: " + l);
+          Response responseOneError =
+              executeTest(
+                  "bla.js",
+                  codeWithOneError,
+                  l,
+                  ruleCode,
+                  "no-child-as-prop",
+                  RuleType.AST_CHECK,
+                  EntityChecked.ASSIGNMENT,
+                  null,
+                  true);
+          logger.info(responseOneError.toString());
+          assertEquals(1, responseOneError.ruleResponses.size());
+          assertEquals(1, responseOneError.ruleResponses.get(0).violations.size());
 
-            Response responseTwoErrors = executeTest("bla.js", codeWithTwoErrors, l, ruleCode, "no-child-as-prop", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
-            logger.info(responseTwoErrors.toString());
-            assertEquals(1, responseTwoErrors.ruleResponses.size());
-            assertEquals(2, responseTwoErrors.ruleResponses.get(0).violations.size());
+          Response responseTwoErrors =
+              executeTest(
+                  "bla.js",
+                  codeWithTwoErrors,
+                  l,
+                  ruleCode,
+                  "no-child-as-prop",
+                  RuleType.AST_CHECK,
+                  EntityChecked.ASSIGNMENT,
+                  null,
+                  true);
+          logger.info(responseTwoErrors.toString());
+          assertEquals(1, responseTwoErrors.ruleResponses.size());
+          assertEquals(2, responseTwoErrors.ruleResponses.get(0).violations.size());
         });
-
-    }
+  }
 }

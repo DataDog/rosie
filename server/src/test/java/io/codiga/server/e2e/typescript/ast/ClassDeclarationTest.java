@@ -1,17 +1,16 @@
 package io.codiga.server.e2e.typescript.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_CLASS_DEFINITION;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class ClassDeclarationTest extends E2EBase {
 
@@ -50,7 +49,7 @@ public class ClassDeclarationTest extends E2EBase {
     @Test
     @DisplayName("change Rabbit to Cow")
     public void testClassDeclarationRule() throws Exception {
-        Response response = executeTest("bla.js", code, Language.TYPESCRIPT, ruleCode, "class-declaration", RULE_TYPE_AST, ENTITY_CHECKED_CLASS_DEFINITION, null, true);
+        Response response = executeTest("bla.js", code, Language.TYPESCRIPT, ruleCode, "class-declaration", RuleType.AST_CHECK, EntityChecked.CLASS_DEFINITION, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

@@ -1,6 +1,11 @@
 package io.codiga.server.e2e;
 
+import static io.codiga.utils.Base64Utils.encodeBase64;
+
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
+import io.codiga.model.error.EditType;
 import io.codiga.server.ServerMainController;
 import io.codiga.server.configuration.ServerTestConfiguration;
 import io.codiga.server.request.*;
@@ -8,6 +13,10 @@ import io.codiga.server.response.GetTreeSitterAstResponse;
 import io.codiga.server.response.Response;
 import io.codiga.server.response.ViolationFix;
 import io.codiga.server.response.ViolationFixEdit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +25,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-
-import static io.codiga.constants.Languages.RULE_TYPE_TREE_SITTER_QUERY;
-import static io.codiga.model.utils.ModelUtils.stringFromLanguage;
-import static io.codiga.utils.Base64Utils.encodeBase64;
 
 /**
  * Base class for all tests.
@@ -52,27 +52,27 @@ public class E2EBase {
                                 Language language,
                                 String ruleCode,
                                 String ruleName,
-                                String ruleType,
-                                String entityChecked,
-                                String pattern,
+                                RuleType ruleType,
+                                EntityChecked entityChecked,
+                                String regex,
                                 Map<String, String> variables,
                                 boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
                 .setFilename(filename)
-                .setLanguage(stringFromLanguage(language))
+                .setLanguage(language)
                 .setFileEncoding("utf-8")
-                .setCodeBase64(encodeBase64(code))
+                .setCode(encodeBase64(code))
                 .setOptions(requestOptions)
                 .setRules(
                         List.of(
                                 new RuleBuilder()
                                         .setId(ruleName)
-                                        .setContentBase64(encodeBase64(ruleCode))
-                                        .setLanguage(stringFromLanguage(language))
+                                        .setCode(encodeBase64(ruleCode))
+                                        .setLanguage(language)
                                         .setType(ruleType)
                                         .setEntityChecked(entityChecked)
-                                        .setPattern(pattern)
+                                        .setRegex(regex)
                                         .setVariables(variables)
                                         .createRule()
                         )
@@ -88,50 +88,50 @@ public class E2EBase {
                                               Language language,
                                               String ruleCode,
                                               String ruleName,
-                                              String ruleType,
-                                              String entityChecked,
-                                              String pattern,
-                                              String tsQueryBase64,
+                                              RuleType ruleType,
+                                              EntityChecked entityChecked,
+                                              String regex,
+                                              String treeSitterQuery,
                                               Map<String, String> variables,
                                               boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, true);
-        Request request = new RequestBuilder()
-                .setFilename(filename)
-                .setLanguage(stringFromLanguage(language))
-                .setFileEncoding("utf-8")
-                .setCodeBase64(encodeBase64(code))
-                .setOptions(requestOptions)
-                .setRules(
-                        List.of(
-                                new RuleBuilder()
-                                        .setId(ruleName)
-                                        .setContentBase64(encodeBase64(ruleCode))
-                                        .setLanguage(stringFromLanguage(language))
-                                        .setType(ruleType)
-                                        .setEntityChecked(entityChecked)
-                                        .setPattern(pattern)
-                                        .setTsQueryBase64(tsQueryBase64)
-                                        .setVariables(variables)
-                                        .createRule()
-                        )
-                ).createRequest();
-        Response response = this.restTemplate.postForObject(
-                "http://localhost:" + port + "/analyze", request,
-                Response.class);
-        return response;
-    }
+    Request request =
+        new RequestBuilder()
+            .setFilename(filename)
+            .setLanguage(language)
+            .setFileEncoding("utf-8")
+            .setCode(encodeBase64(code))
+            .setOptions(requestOptions)
+            .setRules(
+                List.of(
+                    new RuleBuilder()
+                        .setId(ruleName)
+                        .setCode(encodeBase64(ruleCode))
+                        .setLanguage(language)
+                        .setType(ruleType)
+                        .setEntityChecked(entityChecked)
+                        .setRegex(regex)
+                        .setTreeSitterQuery(treeSitterQuery)
+                        .setVariables(variables)
+                        .createRule()))
+            .createRequest();
+    Response response =
+        this.restTemplate.postForObject(
+            "http://localhost:" + port + "/analyze", request, Response.class);
+    return response;
+  }
 
     public Response executeTestWithTreeSitter(String filename,
                                               String code,
                                               Language language,
                                               String ruleCode,
                                               String ruleName,
-                                              String ruleType,
-                                              String entityChecked,
-                                              String pattern,
+                                              RuleType ruleType,
+                                              EntityChecked entityChecked,
+                                              String regex,
                                               Map<String, String> variables,
                                               boolean logOutput) {
-        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, pattern, null, variables, logOutput);
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, regex, null, variables, logOutput);
     }
 
     public Response executeTestWithTreeSitter(String filename,
@@ -139,11 +139,11 @@ public class E2EBase {
                                               Language language,
                                               String ruleCode,
                                               String ruleName,
-                                              String ruleType,
-                                              String entityChecked,
-                                              String pattern,
+                                              RuleType ruleType,
+                                              EntityChecked entityChecked,
+                                              String regex,
                                               boolean logOutput) {
-        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, pattern, null, null, logOutput);
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, regex, null, null, logOutput);
     }
 
     public Response executeTest(String filename,
@@ -151,11 +151,11 @@ public class E2EBase {
                                 Language language,
                                 String ruleCode,
                                 String ruleName,
-                                String ruleType,
-                                String entityChecked,
-                                String pattern,
+                                RuleType ruleType,
+                                EntityChecked entityChecked,
+                                String regex,
                                 boolean logOutput) {
-        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, pattern, null, null, logOutput);
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, ruleType, entityChecked, regex, null, null, logOutput);
     }
 
     public Response executeTestTsQuery(String filename,
@@ -163,10 +163,10 @@ public class E2EBase {
                                        Language language,
                                        String ruleCode,
                                        String ruleName,
-                                       String tsQuery,
+                                       String treeSitterQuery,
                                        boolean logOutput) {
-        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, RULE_TYPE_TREE_SITTER_QUERY,
-                null, null, encodeBase64(tsQuery), null, logOutput);
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, RuleType.TREE_SITTER_QUERY,
+                null, null, encodeBase64(treeSitterQuery), null, logOutput);
     }
 
     public Response executeTestTsQuery(String filename,
@@ -174,11 +174,11 @@ public class E2EBase {
                                        Language language,
                                        String ruleCode,
                                        String ruleName,
-                                       String tsQuery,
+                                       String treeSitterQuery,
                                        Map<String, String> variables,
                                        boolean logOutput) {
-        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, RULE_TYPE_TREE_SITTER_QUERY,
-                null, null, encodeBase64(tsQuery), variables, logOutput);
+        return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, RuleType.TREE_SITTER_QUERY,
+                null, null, encodeBase64(treeSitterQuery), variables, logOutput);
     }
 
     public Response executeTest(String filename,
@@ -187,27 +187,27 @@ public class E2EBase {
                                 Language ruleLanguage,
                                 String ruleCode,
                                 String ruleName,
-                                String ruleType,
-                                String entityChecked,
-                                String pattern,
+                                RuleType ruleType,
+                                EntityChecked entityChecked,
+                                String regex,
                                 Map<String, String> variables,
                                 boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
                 .setFilename(filename)
-                .setLanguage(stringFromLanguage(codeLanguage))
+                .setLanguage(codeLanguage)
                 .setFileEncoding("utf-8")
-                .setCodeBase64(encodeBase64(code))
+                .setCode(encodeBase64(code))
                 .setOptions(requestOptions)
                 .setRules(
                         List.of(
                                 new RuleBuilder()
                                         .setId(ruleName)
-                                        .setContentBase64(encodeBase64(ruleCode))
-                                        .setLanguage(stringFromLanguage(ruleLanguage))
+                                        .setCode(encodeBase64(ruleCode))
+                                        .setLanguage(ruleLanguage)
                                         .setType(ruleType)
                                         .setEntityChecked(entityChecked)
-                                        .setPattern(pattern)
+                                        .setRegex(regex)
                                         .setVariables(variables)
                                         .createRule()
                         )
@@ -224,11 +224,11 @@ public class E2EBase {
                                 Language ruleLanguage,
                                 String ruleCode,
                                 String ruleName,
-                                String ruleType,
-                                String entityChecked,
-                                String pattern,
+                                RuleType ruleType,
+                                EntityChecked entityChecked,
+                                String regex,
                                 boolean logOutput) {
-        return executeTest(filename, code, codeLanguage, ruleLanguage, ruleCode, ruleName, ruleType, entityChecked, pattern, null, logOutput);
+        return executeTest(filename, code, codeLanguage, ruleLanguage, ruleCode, ruleName, ruleType, entityChecked, regex, null, logOutput);
     }
 
 
@@ -240,9 +240,9 @@ public class E2EBase {
         RequestOptions requestOptions = new RequestOptions(logOutput, false);
         Request request = new RequestBuilder()
                 .setFilename(filename)
-                .setLanguage(stringFromLanguage(language))
+                .setLanguage(language)
                 .setFileEncoding("utf-8")
-                .setCodeBase64(encodeBase64(code))
+                .setCode(encodeBase64(code))
                 .setOptions(requestOptions)
                 .setRules(rules)
                 .createRequest();
@@ -257,9 +257,9 @@ public class E2EBase {
                                              String fileEncoding) {
         GetTreeSitterAstRequest request = GetTreeSitterAstRequest
                 .builder()
-                .language(stringFromLanguage(language))
+                .language(language)
                 .fileEncoding(fileEncoding)
-                .codeBase64(encodeBase64(decodedCode))
+                .code(encodeBase64(decodedCode))
                 .build();
 
         GetTreeSitterAstResponse response = this.restTemplate.postForObject(
@@ -279,7 +279,7 @@ public class E2EBase {
         }
 
         for (ViolationFixEdit violationFixEdit : violationFix.edits) {
-            if (violationFixEdit.editType.equalsIgnoreCase("update")) {
+            if (violationFixEdit.editType == EditType.UPDATE) {
 
                 if (violationFixEdit.start.line == violationFixEdit.end.line) {
                     int lineIndex = violationFixEdit.start.line - 1;
@@ -289,13 +289,13 @@ public class E2EBase {
                     lines.set(lineIndex, line);
                 }
             }
-            if (violationFixEdit.editType.equalsIgnoreCase("add")) {
+            if (violationFixEdit.editType == EditType.ADD) {
                 int lineIndex = violationFixEdit.start.line - 1;
                 String line = lines.get(lineIndex);
                 line = line.substring(0, violationFixEdit.start.col - 1) + violationFixEdit.content + line.substring(violationFixEdit.start.col - 1);
                 lines.set(lineIndex, line);
             }
-            if (violationFixEdit.editType.equalsIgnoreCase("remove")) {
+            if (violationFixEdit.editType == EditType.REMOVE) {
                 int lineIndex = violationFixEdit.start.line - 1;
                 String line = lines.get(lineIndex);
                 line = line.substring(0, violationFixEdit.start.col - 1) + line.substring(violationFixEdit.end.col - 1);

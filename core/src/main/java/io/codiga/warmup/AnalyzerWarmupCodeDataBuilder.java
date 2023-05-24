@@ -7,7 +7,7 @@ import java.util.List;
 
 public class AnalyzerWarmupCodeDataBuilder {
     private List<AnalyzerRule> analyzerRuleList;
-    private String codeBase64;
+    private String code;
     private Language language;
     private String filename;
 
@@ -16,8 +16,8 @@ public class AnalyzerWarmupCodeDataBuilder {
         return this;
     }
 
-    public AnalyzerWarmupCodeDataBuilder setCodeBase64(String codeBase64) {
-        this.codeBase64 = codeBase64;
+    public AnalyzerWarmupCodeDataBuilder setCode(String code) {
+        this.code = code;
         return this;
     }
 
@@ -32,6 +32,6 @@ public class AnalyzerWarmupCodeDataBuilder {
     }
 
     public AnalyzerWarmupCodeData createAnalyzerWarmupCodeData() {
-        return new AnalyzerWarmupCodeData(analyzerRuleList, codeBase64, language, filename);
+        return new AnalyzerWarmupCodeData(analyzerRuleList, code, language, filename);
     }
 }

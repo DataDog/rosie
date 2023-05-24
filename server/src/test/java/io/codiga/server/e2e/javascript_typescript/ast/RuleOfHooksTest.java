@@ -1,16 +1,15 @@
 package io.codiga.server.e2e.javascript_typescript.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_ASSIGNMENT;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class RuleOfHooksTest extends E2EBase {
 
@@ -254,23 +253,23 @@ public class RuleOfHooksTest extends E2EBase {
     public void testHookRule() throws Exception {
         JAVASCRIPT_TYPESCRIPT.forEach(l -> {
             logger.info("Running test with language: " + l);
-            Response responseWithError1 = executeTest("bla.js", codeWithError1, l, ruleCode, "rule-of-hooks", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
+            Response responseWithError1 = executeTest("bla.js", codeWithError1, l, ruleCode, "rule-of-hooks", RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, null, true);
             logger.info(responseWithError1.toString());
             assertEquals(1, responseWithError1.ruleResponses.size());
             assertEquals(1, responseWithError1.ruleResponses.get(0).violations.size());
 
 
-            Response responseWithError2 = executeTest("bla.js", codeWithError2, l, ruleCode, "rule-of-hooks", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
+            Response responseWithError2 = executeTest("bla.js", codeWithError2, l, ruleCode, "rule-of-hooks", RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, null, true);
             logger.info(responseWithError2.toString());
             assertEquals(1, responseWithError2.ruleResponses.size());
             assertEquals(3, responseWithError2.ruleResponses.get(0).violations.size());
 
-            Response responseWithError3 = executeTest("bla.js", codeWithError3, l, ruleCode, "rule-of-hooks", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
+            Response responseWithError3 = executeTest("bla.js", codeWithError3, l, ruleCode, "rule-of-hooks", RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, null, true);
             logger.info(responseWithError3.toString());
             assertEquals(1, responseWithError3.ruleResponses.size());
             assertEquals(1, responseWithError3.ruleResponses.get(0).violations.size());
 
-            Response responseWithoutError = executeTest("bla.js", codeWithoutError, l, ruleCode, "rule-of-hooks", RULE_TYPE_AST, ENTITY_CHECKED_ASSIGNMENT, null, true);
+            Response responseWithoutError = executeTest("bla.js", codeWithoutError, l, ruleCode, "rule-of-hooks", RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, null, true);
             logger.info(responseWithError1.toString());
             assertEquals(1, responseWithoutError.ruleResponses.size());
             assertEquals(0, responseWithoutError.ruleResponses.get(0).violations.size());

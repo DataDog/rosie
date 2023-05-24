@@ -1,11 +1,22 @@
 package io.codiga.server.e2e.protocol;
 
+import static io.codiga.constants.Languages.*;
+import static io.codiga.model.RuleErrorCode.ERROR_RULE_INVALID_RULE_TYPE;
+import static io.codiga.model.RuleErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
+import static io.codiga.server.response.ResponseErrors.*;
+import static io.codiga.utils.Base64Utils.encodeBase64;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
+import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.server.ServerMainController;
 import io.codiga.server.configuration.ServerTestConfiguration;
 import io.codiga.server.request.Request;
 import io.codiga.server.request.RequestBuilder;
 import io.codiga.server.request.RuleBuilder;
 import io.codiga.server.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +25,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
-
-import java.util.List;
-
-import static io.codiga.constants.Languages.*;
-import static io.codiga.model.RuleErrorCode.ERROR_RULE_INVALID_RULE_TYPE;
-import static io.codiga.model.RuleErrorCode.ERROR_RULE_LANGUAGE_MISMATCH;
-import static io.codiga.server.response.ResponseErrors.*;
-import static io.codiga.utils.Base64Utils.encodeBase64;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ServerTestConfiguration.class})
 @TestPropertySource(locations = "classpath:test.properties")
@@ -57,17 +59,17 @@ public class ProtocolTest {
     public void testLanguageNotSupported() throws Exception {
         RequestBuilder requestBuilder = new RequestBuilder();
         requestBuilder.setFilename("bla.py");
-        requestBuilder.setLanguage(LANGUAGE_JAVA);
+        requestBuilder.setLanguage(Language.UNKNOWN);
         requestBuilder.setFileEncoding("utf-8");
-        requestBuilder.setCodeBase64(encodeBase64(pythonCode));
+        requestBuilder.setCode(encodeBase64(pythonCode));
         requestBuilder.setRules(
             List.of(
                 new RuleBuilder()
                     .setId("python-timeout")
-                    .setContentBase64(encodeBase64(ruleCode))
-                    .setLanguage(LANGUAGE_PYTHON)
-                    .setType(RULE_TYPE_AST)
-                    .setEntityChecked(ENTITY_CHECKED_FUNCTION_CALL)
+                    .setCode(encodeBase64(ruleCode))
+                    .setLanguage(Language.PYTHON)
+                    .setType(RuleType.AST_CHECK)
+                    .setEntityChecked(EntityChecked.FUNCTION_CALL)
                     .createRule()
             )
         );
@@ -85,17 +87,17 @@ public class ProtocolTest {
     public void testLanguageMismatch() throws Exception {
         Request request = new RequestBuilder()
             .setFilename("bla.py")
-            .setLanguage(LANGUAGE_PYTHON)
+            .setLanguage(Language.PYTHON)
             .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(pythonCode))
+            .setCode(encodeBase64(pythonCode))
             .setRules(
                 List.of(
                     new RuleBuilder()
                         .setId("python-timeout")
-                        .setContentBase64(encodeBase64(ruleCode))
-                        .setLanguage(LANGUAGE_JAVA)
-                        .setType(RULE_TYPE_AST)
-                        .setEntityChecked(ENTITY_CHECKED_FUNCTION_CALL)
+                        .setCode(encodeBase64(ruleCode))
+                        .setLanguage(Language.UNKNOWN)
+                        .setType(RuleType.AST_CHECK)
+                        .setEntityChecked(EntityChecked.FUNCTION_CALL)
                         .createRule()
                 )
             ).createRequest();
@@ -113,17 +115,17 @@ public class ProtocolTest {
     public void testInvalidRuleType() throws Exception {
         Request request = new RequestBuilder()
             .setFilename("bla.py")
-            .setLanguage(LANGUAGE_PYTHON)
+            .setLanguage(Language.PYTHON)
             .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(pythonCode))
+            .setCode(encodeBase64(pythonCode))
             .setRules(
                 List.of(
                     new RuleBuilder()
                         .setId("python-timeout")
-                        .setContentBase64(encodeBase64(ruleCode))
-                        .setLanguage(LANGUAGE_PYTHON)
-                        .setType("foobar")
-                        .setEntityChecked(ENTITY_CHECKED_FUNCTION_CALL)
+                        .setCode(encodeBase64(ruleCode))
+                        .setLanguage(Language.PYTHON)
+                        .setType(RuleType.UNKNOWN)
+                        .setEntityChecked(EntityChecked.FUNCTION_CALL)
                         .createRule()
                 )
             ).createRequest();
@@ -141,9 +143,9 @@ public class ProtocolTest {
     public void testNoRules() throws Exception {
         Request request = new RequestBuilder()
             .setFilename("bla.py")
-            .setLanguage(LANGUAGE_PYTHON)
+            .setLanguage(Language.PYTHON)
             .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(pythonCode))
+            .setCode(encodeBase64(pythonCode))
             .setRules(null)
             .createRequest();
         Response response = this.restTemplate.postForObject(
@@ -158,17 +160,17 @@ public class ProtocolTest {
     public void testInvalidCode() throws Exception {
         Request request = new RequestBuilder()
             .setFilename("bla.py")
-            .setLanguage(LANGUAGE_PYTHON)
+            .setLanguage(Language.PYTHON)
             .setFileEncoding("utf-8")
-            .setCodeBase64("][^#@#")
+            .setCode("][^#@#")
             .setRules(
                 List.of(
                     new RuleBuilder()
                         .setId("python-timeout")
-                        .setContentBase64(encodeBase64(ruleCode))
-                        .setLanguage(LANGUAGE_PYTHON)
-                        .setType(RULE_TYPE_AST)
-                        .setEntityChecked(ENTITY_CHECKED_FUNCTION_CALL)
+                        .setCode(encodeBase64(ruleCode))
+                        .setLanguage(Language.PYTHON)
+                        .setType(RuleType.AST_CHECK)
+                        .setEntityChecked(EntityChecked.FUNCTION_CALL)
                         .createRule()
                 )
             ).createRequest();
@@ -185,17 +187,17 @@ public class ProtocolTest {
     public void testInvalidRuleCode() throws Exception {
         Request request = new RequestBuilder()
             .setFilename("bla.py")
-            .setLanguage(LANGUAGE_PYTHON)
+            .setLanguage(Language.PYTHON)
             .setFileEncoding("utf-8")
-            .setCodeBase64(encodeBase64(pythonCode))
+            .setCode(encodeBase64(pythonCode))
             .setRules(
                 List.of(
                     new RuleBuilder()
                         .setId("python-timeout")
-                        .setContentBase64("22#@#@#232@@#%%")
-                        .setLanguage(LANGUAGE_PYTHON)
-                        .setType(RULE_TYPE_AST)
-                        .setEntityChecked(ENTITY_CHECKED_FUNCTION_CALL)
+                        .setCode("22#@#@#232@@#%%")
+                        .setLanguage(Language.PYTHON)
+                        .setType(RuleType.AST_CHECK)
+                        .setEntityChecked(EntityChecked.FUNCTION_CALL)
                         .createRule()
                 )
             ).createRequest();

@@ -12,8 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static io.codiga.model.error.CategoryUtils.categoryFromString;
+import static io.codiga.model.error.EditTypeUtils.editTypeFromString;
 import static io.codiga.model.error.SeverityUtils.severityFromString;
-import static io.codiga.model.utils.ModelUtils.editTypeFromString;
 
 public class ErrorReporting {
 
