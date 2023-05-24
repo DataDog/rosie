@@ -6,6 +6,10 @@ public class ViolationFix {
     public String description;
     public List<ViolationFixEdit> edits;
 
+    public ViolationFix() {
+        this.description = null;
+        this.edits = null;
+    }
 
     public ViolationFix(String description, List<ViolationFixEdit> edits) {
         this.description = description;

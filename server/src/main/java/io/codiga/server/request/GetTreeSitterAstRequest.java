@@ -8,7 +8,6 @@ import lombok.extern.jackson.Jacksonized;
  * The request structure and utils needed to get a TreeSitter AST
  */
 @Builder
-@Jacksonized
 public class GetTreeSitterAstRequest {
     public Language language;
     public String fileEncoding;

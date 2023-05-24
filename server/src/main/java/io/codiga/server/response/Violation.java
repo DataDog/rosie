@@ -12,6 +12,14 @@ public class Violation {
     public String category;
     public List<ViolationFix> fixes;
 
+    public Violation() {
+        this.message = null;
+        this.start = null;
+        this.end = null;
+        this.severity = null;
+        this.category = null;
+        this.fixes = null;
+    }
 
     public Violation(Position start, Position end, String message, String severity, String category, List<ViolationFix> fixes) {
         this.message = message;

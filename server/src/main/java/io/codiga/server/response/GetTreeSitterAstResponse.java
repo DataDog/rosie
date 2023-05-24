@@ -11,6 +11,10 @@ public class GetTreeSitterAstResponse {
     public TreeSitterAstElement result;
     public List<String> errors;
 
+    public GetTreeSitterAstResponse() {
+        this.result = null;
+        this.errors = null;
+    }
 
     public GetTreeSitterAstResponse(TreeSitterAstElement result, List<String> errors) {
         this.result = result;
