@@ -5,6 +5,7 @@ import static io.codiga.utils.Base64Utils.encodeBase64;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
+import io.codiga.model.error.EditType;
 import io.codiga.server.ServerMainController;
 import io.codiga.server.configuration.ServerTestConfiguration;
 import io.codiga.server.request.*;
@@ -278,7 +279,7 @@ public class E2EBase {
         }
 
         for (ViolationFixEdit violationFixEdit : violationFix.edits) {
-            if (violationFixEdit.editType.equalsIgnoreCase("update")) {
+            if (violationFixEdit.editType == EditType.UPDATE) {
 
                 if (violationFixEdit.start.line == violationFixEdit.end.line) {
                     int lineIndex = violationFixEdit.start.line - 1;
@@ -288,13 +289,13 @@ public class E2EBase {
                     lines.set(lineIndex, line);
                 }
             }
-            if (violationFixEdit.editType.equalsIgnoreCase("add")) {
+            if (violationFixEdit.editType == EditType.ADD) {
                 int lineIndex = violationFixEdit.start.line - 1;
                 String line = lines.get(lineIndex);
                 line = line.substring(0, violationFixEdit.start.col - 1) + violationFixEdit.content + line.substring(violationFixEdit.start.col - 1);
                 lines.set(lineIndex, line);
             }
-            if (violationFixEdit.editType.equalsIgnoreCase("remove")) {
+            if (violationFixEdit.editType == EditType.REMOVE) {
                 int lineIndex = violationFixEdit.start.line - 1;
                 String line = lines.get(lineIndex);
                 line = line.substring(0, violationFixEdit.start.col - 1) + line.substring(violationFixEdit.end.col - 1);

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
+import io.codiga.model.error.EditType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -63,7 +64,7 @@ public class Chmod777Test extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.size());
         assertEquals("remove the write flag", response.ruleResponses.get(0).violations.get(0).fixes.get(0).description);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.size());
-        assertEquals("update", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
+        assertEquals(EditType.UPDATE, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
         assertEquals(27, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.col);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.line);
         assertEquals(84, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);

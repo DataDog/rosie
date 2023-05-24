@@ -1,5 +1,15 @@
 package io.codiga.server;
 
+import static io.codiga.constants.Languages.SUPPORTED_LANGUAGES;
+import static io.codiga.metrics.MetricsName.*;
+import static io.codiga.model.utils.ModelUtils.*;
+import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
+import static io.codiga.server.response.ResponseErrors.*;
+import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
+import static io.codiga.utils.TreeSitterUtils.getFullAstTree;
+import static io.codiga.utils.Version.CURRENT_VERSION;
+import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.Analyzer;
@@ -17,27 +27,16 @@ import io.codiga.server.response.*;
 import io.codiga.server.services.InjectorService;
 import io.codiga.utils.EnvironmentUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import static io.codiga.constants.Languages.SUPPORTED_LANGUAGES;
-import static io.codiga.metrics.MetricsName.*;
-import static io.codiga.model.utils.ModelUtils.*;
-import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
-import static io.codiga.server.response.ResponseErrors.*;
-import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
-import static io.codiga.utils.TreeSitterUtils.getFullAstTree;
-import static io.codiga.utils.Version.CURRENT_VERSION;
-import static io.codiga.warmup.AnalyzerWarmup.warmupAnalyzer;
 
 @RestController
 public class ServerMainController {
@@ -180,7 +179,7 @@ public class ServerMainController {
                                 List<ViolationFixEdit> edits = fix.edits.stream().map(edit -> new ViolationFixEdit(
                                         edit.start,
                                         edit.end,
-                                        editTypeToString(edit.editType),
+                                        edit.editType,
                                         edit.content
                                 )).toList();
                                 return new ViolationFix(fix.description, edits);

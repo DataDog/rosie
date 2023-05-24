@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
+import io.codiga.model.error.EditType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +55,7 @@ public class NoExitTest extends E2EBase {
 
 
         assertEquals("replace with sys.exit()", response.ruleResponses.get(0).violations.get(0).fixes.get(0).description);
-        assertEquals("update", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
+        assertEquals(EditType.UPDATE, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).editType);
         assertEquals("sys.exit(0)", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).content);
         assertEquals(2, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.line);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).start.col);
@@ -62,7 +63,7 @@ public class NoExitTest extends E2EBase {
         assertEquals(8, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(0).end.col);
 
 
-        assertEquals("add", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).editType);
+        assertEquals(EditType.ADD, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).editType);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).start.line);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).start.col);
         assertEquals("import sys\n", response.ruleResponses.get(0).violations.get(0).fixes.get(0).edits.get(1).content);
