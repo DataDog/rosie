@@ -8,12 +8,7 @@ public class ViolationFixEdit {
     public String content;
     public String editType;
 
-    public ViolationFixEdit() {
-        this.start = null;
-        this.end = null;
-        this.content = null;
-        this.editType = null;
-    }
+    public ViolationFixEdit() { }
 
     public ViolationFixEdit(Position start, Position end, String editType, String content) {
         this.start = start;

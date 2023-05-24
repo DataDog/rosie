@@ -3,7 +3,6 @@ package io.codiga.server.configuration;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.codiga.server.services.InjectorService;
 import io.codiga.server.services.InjectorServiceImpl;
 import org.slf4j.Logger;

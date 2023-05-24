@@ -16,8 +16,8 @@ public class Response {
     @Override
     public String toString() {
         return "Response{" +
-            "ruleResponses=" + ruleResponses == null ? "null" : ruleResponses +
-            ", errors=" + errors == null ? "null" : errors.toString() +
+            "ruleResponses=" + ruleResponses +
+            ", errors=" + errors +
             '}';
     }
 }

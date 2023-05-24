@@ -37,7 +37,6 @@ public class Request {
     }
 
     public String toString() {
-        if(this.fileEncoding == null && this.filename == null && this.language == null && this.code == null && this.rules == null) return "";
         return String.format("%s %s %s %s", filename, language, fileEncoding, String.join(", ", rules.stream().map(r -> r.id).toList()));
     }
 }

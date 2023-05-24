@@ -82,9 +82,6 @@ public class ServerMainController {
      */
     @ExceptionHandler(Exception.class)
     public String handleError(HttpServletRequest req, Exception exception) {
-        System.out.println("====REQUESTS====");
-        System.out.println(req);
-        System.out.println(exception);
         if (exception instanceof JsonParseException || exception instanceof HttpMessageNotReadableException) {
             metrics.incrementMetric(METRIC_EXCEPTION_INVALID_INPUT_JSON);
             return "invalid JSON input";
