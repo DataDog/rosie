@@ -79,17 +79,26 @@ public class FunctionCallTest extends E2EBase {
         });
     }
 
-
-    @Test
-    @DisplayName("ensure the error variable is defined in GraphQL")
-    public void testFunctionCallAlone() throws Exception {
+  @Test
+  @DisplayName("ensure the error variable is defined in GraphQL")
+  public void testFunctionCallAlone() throws Exception {
     JAVASCRIPT_TYPESCRIPT.forEach(
         l -> {
           logger.info("Running test with language: " + l);
-          Response response = executeTest("bla.js", codeWithError2, l, ruleCode, "errorUseQuery", RuleType.AST_CHECK, EntityChecked.FUNCTION_CALL, null, true);
+          Response response =
+              executeTest(
+                  "bla.js",
+                  codeWithError2,
+                  l,
+                  ruleCode,
+                  "errorUseQuery",
+                  RuleType.AST_CHECK,
+                  EntityChecked.FUNCTION_CALL,
+                  null,
+                  true);
           logger.info(response.toString());
           assertEquals(1, response.ruleResponses.size());
           assertEquals(2, response.ruleResponses.get(0).violations.size());
         });
-    }
+  }
 }

@@ -93,15 +93,24 @@ public class FunctionCallAwaitTest extends E2EBase {
         }
                         """;
 
-    @Test
-    @DisplayName("test with code that has await")
-    public void testWithAwait() throws Exception {
+  @Test
+  @DisplayName("test with code that has await")
+  public void testWithAwait() throws Exception {
     JAVASCRIPT_TYPESCRIPT.forEach(
         l -> {
           logger.info("Running test with language: " + l);
-          Response response = executeTest("bla.js", codeWithError, l, ruleCode, "errorUseQuery", RuleType.AST_CHECK, EntityChecked.FUNCTION_CALL, null, true);
+          Response response =
+              executeTest(
+                  "bla.js",
+                  codeWithError,
+                  l,
+                  ruleCode,
+                  "errorUseQuery",
+                  RuleType.AST_CHECK,
+                  EntityChecked.FUNCTION_CALL,
+                  null,
+                  true);
           logger.info(response.toString());
         });
-    }
-
+  }
 }

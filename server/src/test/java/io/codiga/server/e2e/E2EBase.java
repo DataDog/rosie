@@ -94,31 +94,31 @@ public class E2EBase {
                                               Map<String, String> variables,
                                               boolean logOutput) {
         RequestOptions requestOptions = new RequestOptions(logOutput, true);
-        Request request = new RequestBuilder()
-                .setFilename(filename)
-                .setLanguage(language)
-                .setFileEncoding("utf-8")
-                .setCode(encodeBase64(code))
-                .setOptions(requestOptions)
-                .setRules(
-                        List.of(
-                                new RuleBuilder()
-                                        .setId(ruleName)
-                                        .setCode(encodeBase64(ruleCode))
-                                        .setLanguage(language)
-                                        .setType(ruleType)
-                                        .setEntityChecked(entityChecked)
-                                        .setRegex(regex)
-                                        .setTreeSitterQuery(treeSitterQuery)
-                                        .setVariables(variables)
-                                        .createRule()
-                        )
-                ).createRequest();
-            Response response = restTemplate.postForObject("http://localhost:" + port +
-                "/analyze", request,
-            Response.class);
-            return response;
-    }
+    Request request =
+        new RequestBuilder()
+            .setFilename(filename)
+            .setLanguage(language)
+            .setFileEncoding("utf-8")
+            .setCode(encodeBase64(code))
+            .setOptions(requestOptions)
+            .setRules(
+                List.of(
+                    new RuleBuilder()
+                        .setId(ruleName)
+                        .setCode(encodeBase64(ruleCode))
+                        .setLanguage(language)
+                        .setType(ruleType)
+                        .setEntityChecked(entityChecked)
+                        .setRegex(regex)
+                        .setTreeSitterQuery(treeSitterQuery)
+                        .setVariables(variables)
+                        .createRule()))
+            .createRequest();
+    Response response =
+        this.restTemplate.postForObject(
+            "http://localhost:" + port + "/analyze", request, Response.class);
+    return response;
+  }
 
     public Response executeTestWithTreeSitter(String filename,
                                               String code,

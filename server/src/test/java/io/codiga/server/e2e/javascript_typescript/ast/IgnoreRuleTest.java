@@ -153,21 +153,41 @@ public class IgnoreRuleTest extends E2EBase {
         }
                 """;
 
-    @Test
-    @DisplayName("ignore rules when comment is here")
-    public void testIgnoreRules() throws Exception {
+  @Test
+  @DisplayName("ignore rules when comment is here")
+  public void testIgnoreRules() throws Exception {
     JAVASCRIPT_TYPESCRIPT.forEach(
         l -> {
           logger.info("Running test with language: " + l);
-          Response responseOneError = executeTest("bla.js", codeWithOneError, l, ruleCode, "no-child-as-prop", RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, null, true);
+          Response responseOneError =
+              executeTest(
+                  "bla.js",
+                  codeWithOneError,
+                  l,
+                  ruleCode,
+                  "no-child-as-prop",
+                  RuleType.AST_CHECK,
+                  EntityChecked.ASSIGNMENT,
+                  null,
+                  true);
           logger.info(responseOneError.toString());
           assertEquals(1, responseOneError.ruleResponses.size());
           assertEquals(1, responseOneError.ruleResponses.get(0).violations.size());
 
-          Response responseTwoErrors = executeTest("bla.js", codeWithTwoErrors, l, ruleCode, "no-child-as-prop", RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, null, true);
+          Response responseTwoErrors =
+              executeTest(
+                  "bla.js",
+                  codeWithTwoErrors,
+                  l,
+                  ruleCode,
+                  "no-child-as-prop",
+                  RuleType.AST_CHECK,
+                  EntityChecked.ASSIGNMENT,
+                  null,
+                  true);
           logger.info(responseTwoErrors.toString());
           assertEquals(1, responseTwoErrors.ruleResponses.size());
           assertEquals(2, responseTwoErrors.ruleResponses.get(0).violations.size());
         });
-    }
+  }
 }

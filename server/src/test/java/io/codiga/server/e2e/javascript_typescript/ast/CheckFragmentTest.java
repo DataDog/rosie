@@ -84,16 +84,26 @@ public class CheckFragmentTest extends E2EBase {
         }
                         """;
 
-    @Test
-    @DisplayName("ensure that we correctly implement the no fragment rule")
-    public void testNoSingleFragment() throws Exception {
+  @Test
+  @DisplayName("ensure that we correctly implement the no fragment rule")
+  public void testNoSingleFragment() throws Exception {
     JAVASCRIPT_TYPESCRIPT.forEach(
         l -> {
           logger.info("Running test with language: " + l);
-          Response responseOneError = executeTest("bla.js", codeToCheck, l, ruleCode, "no-child-as-prop", RuleType.AST_CHECK, EntityChecked.HTML_ELEMENT, null, true);
+          Response responseOneError =
+              executeTest(
+                  "bla.js",
+                  codeToCheck,
+                  l,
+                  ruleCode,
+                  "no-child-as-prop",
+                  RuleType.AST_CHECK,
+                  EntityChecked.HTML_ELEMENT,
+                  null,
+                  true);
           logger.info(responseOneError.toString());
           assertEquals(1, responseOneError.ruleResponses.size());
           assertEquals(0, responseOneError.ruleResponses.get(0).violations.size());
         });
-    }
+  }
 }

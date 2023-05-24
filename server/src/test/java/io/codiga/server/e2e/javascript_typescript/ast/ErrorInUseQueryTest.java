@@ -58,17 +58,26 @@ public class ErrorInUseQueryTest extends E2EBase {
         }
                 """;
 
-    @Test
-    @DisplayName("ensure the error variable is defined in GraphQL")
-    public void testUseQueryHasError() throws Exception {
+  @Test
+  @DisplayName("ensure the error variable is defined in GraphQL")
+  public void testUseQueryHasError() throws Exception {
     JAVASCRIPT_TYPESCRIPT.forEach(
         l -> {
           logger.info("Running test with language: " + l);
-          Response response = executeTest("bla.js", codeWithEror, l, ruleCode, "errorUseQuery", RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, null, true);
+          Response response =
+              executeTest(
+                  "bla.js",
+                  codeWithEror,
+                  l,
+                  ruleCode,
+                  "errorUseQuery",
+                  RuleType.AST_CHECK,
+                  EntityChecked.ASSIGNMENT,
+                  null,
+                  true);
           logger.info(response.toString());
           assertEquals(1, response.ruleResponses.size());
           assertEquals(1, response.ruleResponses.get(0).violations.size());
         });
-    }
-
+  }
 }

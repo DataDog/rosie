@@ -64,18 +64,26 @@ public class AnyElementTypeTest extends E2EBase {
         }
                         """;
 
-    @Test
-    @DisplayName("test a rule with the element checked set to ANY")
-    public void testAnyElementChecked() throws Exception {
+  @Test
+  @DisplayName("test a rule with the element checked set to ANY")
+  public void testAnyElementChecked() throws Exception {
     JAVASCRIPT_TYPESCRIPT.forEach(
         l -> {
           logger.info("Running test with language: " + l);
-          Response response = executeTest("bla.js", codeWithError1, l, ruleCode, "errorUseQuery", RuleType.AST_CHECK, EntityChecked.ANY, null, true);
+          Response response =
+              executeTest(
+                  "bla.js",
+                  codeWithError1,
+                  l,
+                  ruleCode,
+                  "errorUseQuery",
+                  RuleType.AST_CHECK,
+                  EntityChecked.ANY,
+                  null,
+                  true);
           logger.info(response.toString());
           assertEquals(1, response.ruleResponses.size());
           assertEquals(2, response.ruleResponses.get(0).violations.size());
         });
-    }
-
-
+  }
 }

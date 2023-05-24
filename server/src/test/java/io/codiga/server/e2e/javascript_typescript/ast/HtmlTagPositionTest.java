@@ -93,23 +93,54 @@ public class HtmlTagPositionTest extends E2EBase {
             }
         }""";
 
-    @Test
-    @DisplayName("htmlTagPosition")
-    public void testHtmlTagPosition() throws Exception {
+  @Test
+  @DisplayName("htmlTagPosition")
+  public void testHtmlTagPosition() throws Exception {
     JAVASCRIPT_TYPESCRIPT.forEach(
         l -> {
           logger.info("Running test with language: " + l);
-          Response response = executeTest("bla.js", code1WithError, l, ruleCode, "htmltagposition", RuleType.AST_CHECK, EntityChecked.HTML_ELEMENT, null, true);
+          Response response =
+              executeTest(
+                  "bla.js",
+                  code1WithError,
+                  l,
+                  ruleCode,
+                  "htmltagposition",
+                  RuleType.AST_CHECK,
+                  EntityChecked.HTML_ELEMENT,
+                  null,
+                  true);
           logger.info(response.toString());
           assertEquals(1, response.ruleResponses.size());
           assertEquals(1, response.ruleResponses.get(0).violations.size());
-          assertEquals(code1Fixed1, applyFix(code1WithError, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
-          assertEquals(code1Fixed2, applyFix(code1WithError, response.ruleResponses.get(0).violations.get(0).fixes.get(1)));
+          assertEquals(
+              code1Fixed1,
+              applyFix(
+                  code1WithError, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
+          assertEquals(
+              code1Fixed2,
+              applyFix(
+                  code1WithError, response.ruleResponses.get(0).violations.get(0).fixes.get(1)));
 
-          response = executeTest("bla.js", code2WithError, l, ruleCode, "htmltagposition", RuleType.AST_CHECK, EntityChecked.HTML_ELEMENT, null, true);
-          assertEquals(code2Fixed1, applyFix(code2WithError, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
-          assertEquals(code2Fixed2, applyFix(code2WithError, response.ruleResponses.get(0).violations.get(0).fixes.get(1)));
+          response =
+              executeTest(
+                  "bla.js",
+                  code2WithError,
+                  l,
+                  ruleCode,
+                  "htmltagposition",
+                  RuleType.AST_CHECK,
+                  EntityChecked.HTML_ELEMENT,
+                  null,
+                  true);
+          assertEquals(
+              code2Fixed1,
+              applyFix(
+                  code2WithError, response.ruleResponses.get(0).violations.get(0).fixes.get(0)));
+          assertEquals(
+              code2Fixed2,
+              applyFix(
+                  code2WithError, response.ruleResponses.get(0).violations.get(0).fixes.get(1)));
         });
-    }
-
+  }
 }
