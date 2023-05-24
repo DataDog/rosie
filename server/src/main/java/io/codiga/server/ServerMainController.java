@@ -2,7 +2,6 @@ package io.codiga.server;
 
 import static io.codiga.constants.Languages.SUPPORTED_LANGUAGES;
 import static io.codiga.metrics.MetricsName.*;
-import static io.codiga.model.utils.ModelUtils.*;
 import static io.codiga.server.configuration.ServerConfiguration.WARMUP_LOOPS;
 import static io.codiga.server.response.ResponseErrors.*;
 import static io.codiga.utils.EnvironmentUtils.getEnvironmentValue;
