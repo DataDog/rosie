@@ -5,17 +5,12 @@ import io.codiga.model.Language;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.TreeSitterAstElement;
 import io.codiga.parser.treesitter.python.TreeSitterPythonParser;
-import io.codiga.parser.treesitter.python.types.TreeSitterPythonTypes;
-import io.codiga.parser.treesitter.utils.TreeSitterNodeUtils;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Optional;
-
-import static io.codiga.model.utils.ModelUtils.languageFromString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TreeSitterUtils {
     private final static Logger logger = LoggerFactory.getLogger(TreeSitterUtils.class);
@@ -40,8 +35,8 @@ public class TreeSitterUtils {
         return Optional.empty();
     }
 
-    public static Optional<TreeSitterAstElement> getFullAstTree(String code, String language) {
-        Optional<Long> treeSitterLanguage = languageToTreeSitterLanguage(languageFromString(language));
+    public static Optional<TreeSitterAstElement> getFullAstTree(String code, Language language) {
+        Optional<Long> treeSitterLanguage = languageToTreeSitterLanguage(language);
         TreeCursor treeCursor;
         if (treeSitterLanguage.isEmpty()) {
             return Optional.empty();

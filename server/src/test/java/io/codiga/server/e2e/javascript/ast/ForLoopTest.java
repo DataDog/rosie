@@ -1,17 +1,16 @@
 package io.codiga.server.e2e.javascript.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FOR_LOOP;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class ForLoopTest extends E2EBase {
 
@@ -46,7 +45,7 @@ public class ForLoopTest extends E2EBase {
     @Test
     @DisplayName("test loop detection")
     public void testConditionEquality() throws Exception {
-        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RULE_TYPE_AST, ENTITY_CHECKED_FOR_LOOP, null, true);
+        Response response = executeTest("bla.js", code, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RuleType.AST_CHECK, EntityChecked.FOR_LOOP, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

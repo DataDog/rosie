@@ -1,15 +1,18 @@
 package io.codiga.server.request;
 
+import io.codiga.model.EntityChecked;
+import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import java.util.Map;
 
 public class Rule {
     public String id;
     public String description;
-    public String contentBase64;
-    public String language;
-    public String type;
-    public String entityChecked;
-    public String tsQueryBase64;
+    public String code;
+    public Language language;
+    public RuleType type;
+    public EntityChecked entityChecked;
+    public String treeSitterQuery;
     public String regex;
     public Map<String, String> variables;
 
@@ -19,21 +22,21 @@ public class Rule {
 
     public Rule(String id,
                 String description,
-                String language,
-                String type,
-                String entityChecked,
-                String tsQueryBase64,
+                Language language,
+                RuleType type,
+                EntityChecked entityChecked,
+                String treeSitterQuery,
                 String regex,
-                String contentBase64,
+                String code,
                 Map<String, String> variables) {
         this.id = id;
         this.description = description;
-        this.contentBase64 = contentBase64;
+        this.code = code;
         this.language = language;
         this.type = type;
         this.entityChecked = entityChecked;
         this.regex = regex;
-        this.tsQueryBase64 = tsQueryBase64;
+        this.treeSitterQuery = treeSitterQuery;
         this.variables = variables;
     }
 

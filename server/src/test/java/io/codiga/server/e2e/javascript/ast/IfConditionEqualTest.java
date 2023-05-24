@@ -1,17 +1,16 @@
 package io.codiga.server.e2e.javascript.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_IF_CONDITION;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class IfConditionEqualTest extends E2EBase {
 
@@ -53,7 +52,7 @@ public class IfConditionEqualTest extends E2EBase {
     @Test
     @DisplayName("make sure we use === instead of ==")
     public void testConditionEquality() throws Exception {
-        Response response = executeTest("bla.js", code1, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, null, true);
+        Response response = executeTest("bla.js", code1, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RuleType.AST_CHECK, EntityChecked.IF_STATEMENT, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -69,7 +68,7 @@ public class IfConditionEqualTest extends E2EBase {
     @Test
     @DisplayName("make sure we use === instead of =")
     public void testConditionAssign() throws Exception {
-        Response response = executeTest("bla.js", code2, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, null, true);
+        Response response = executeTest("bla.js", code2, Language.JAVASCRIPT, ruleCode, "replace-equal-equal", RuleType.AST_CHECK, EntityChecked.IF_STATEMENT, null, true);
         logger.info(response.toString());
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

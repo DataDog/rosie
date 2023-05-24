@@ -1,16 +1,15 @@
 package io.codiga.server.e2e.python.pattern;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.RULE_TYPE_REGEX;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class RaiseNotImplementedTest extends E2EBase {
 
@@ -48,7 +47,7 @@ public class RaiseNotImplementedTest extends E2EBase {
     @DisplayName("Remove NotImplemented by NotImplementedError")
     public void testNotImplementedError() throws Exception {
         Response response = executeTest("bla.py", code, Language.PYTHON, ruleCodeUpdate, "not-implemented",
-            RULE_TYPE_REGEX, null, regex, true);
+            RuleType.REGEX, null, regex, true);
         logger.info(String.format("response: %s", response));
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

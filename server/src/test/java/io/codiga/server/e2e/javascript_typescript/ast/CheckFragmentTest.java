@@ -1,15 +1,15 @@
 package io.codiga.server.e2e.javascript_typescript.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_HTML_ELEMENT;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CheckFragmentTest extends E2EBase {
 
@@ -87,14 +87,13 @@ public class CheckFragmentTest extends E2EBase {
     @Test
     @DisplayName("ensure that we correctly implement the no fragment rule")
     public void testNoSingleFragment() throws Exception {
-        JAVASCRIPT_TYPESCRIPT.forEach(l -> {
-            logger.info("Running test with language: " + l);
-            Response responseOneError = executeTest("bla.js", codeToCheck, l, ruleCode, "no-child-as-prop", RULE_TYPE_AST, ENTITY_CHECKED_HTML_ELEMENT, null, true);
-            logger.info(responseOneError.toString());
-            assertEquals(1, responseOneError.ruleResponses.size());
-            assertEquals(0, responseOneError.ruleResponses.get(0).violations.size());
-
+    JAVASCRIPT_TYPESCRIPT.forEach(
+        l -> {
+          logger.info("Running test with language: " + l);
+          Response responseOneError = executeTest("bla.js", codeToCheck, l, ruleCode, "no-child-as-prop", RuleType.AST_CHECK, EntityChecked.HTML_ELEMENT, null, true);
+          logger.info(responseOneError.toString());
+          assertEquals(1, responseOneError.ruleResponses.size());
+          assertEquals(0, responseOneError.ruleResponses.get(0).violations.size());
         });
-
     }
 }

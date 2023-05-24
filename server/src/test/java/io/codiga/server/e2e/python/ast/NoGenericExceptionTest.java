@@ -1,15 +1,14 @@
 package io.codiga.server.e2e.python.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_TRY_BLOCK;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class NoGenericExceptionTest extends E2EBase {
 
@@ -44,7 +43,7 @@ public class NoGenericExceptionTest extends E2EBase {
     @Test
     @DisplayName("Detect generic exceptions")
     public void testGenericExceptionError() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-generic-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, null, false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "python-generic-exceptions", RuleType.AST_CHECK, EntityChecked.TRY_BLOCK, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());
@@ -60,7 +59,7 @@ public class NoGenericExceptionTest extends E2EBase {
     @Test
     @DisplayName("No issue when specific errors are used")
     public void testGenericExceptionNoError() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "python-generic-exceptions", RULE_TYPE_AST, ENTITY_CHECKED_TRY_BLOCK, null, false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithNoError, Language.PYTHON, ruleCode, "python-generic-exceptions", RuleType.AST_CHECK, EntityChecked.TRY_BLOCK, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());

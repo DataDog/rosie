@@ -1,18 +1,16 @@
 package io.codiga.server.e2e.javascript_typescript.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.codiga.model.EntityChecked;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
+import java.util.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Base64;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class LargeFileTest extends E2EBase {
 
@@ -69,7 +67,7 @@ public class LargeFileTest extends E2EBase {
         JAVASCRIPT_TYPESCRIPT.forEach(l -> {
             logger.info("Running test with language: " + l);
             logger.info(decoded);
-            Response response = executeTest("bla.js", decoded + decoded, l, ruleCode, "errorUseQuery", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
+            Response response = executeTest("bla.js", decoded + decoded, l, ruleCode, "errorUseQuery", RuleType.AST_CHECK, EntityChecked.FUNCTION_CALL, null, true);
             logger.info(response.toString());
             assertEquals(1, response.ruleResponses.size());
         });

@@ -1,15 +1,15 @@
 package io.codiga.server.e2e.security;
 
-import io.codiga.model.Language;
-import io.codiga.server.e2e.E2EBase;
-import io.codiga.server.response.Response;
-import org.junit.jupiter.api.Test;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
 import static io.codiga.model.RuleErrorCode.ERROR_RULE_TIMEOUT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import io.codiga.model.EntityChecked;
+import io.codiga.model.Language;
+import io.codiga.model.RuleType;
+import io.codiga.server.e2e.E2EBase;
+import io.codiga.server.response.Response;
+import org.junit.jupiter.api.Test;
 
 public class InfiniteLoopTest extends E2EBase {
     String pythonCode = """            
@@ -28,7 +28,7 @@ public class InfiniteLoopTest extends E2EBase {
 
     @Test
     public void testInfiniteLoop() throws Exception {
-        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "python-infinite", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, false);
+        Response response = executeTest("bla.py", pythonCode, Language.PYTHON, ruleCode, "python-infinite", RuleType.AST_CHECK, EntityChecked.FUNCTION_CALL, null, false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(ERROR_RULE_TIMEOUT, response.ruleResponses.get(0).errors.get(0));

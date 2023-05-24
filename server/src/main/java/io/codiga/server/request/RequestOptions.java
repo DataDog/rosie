@@ -7,6 +7,7 @@ public class RequestOptions {
     public boolean useTreeSitter;
     public boolean logOutput;
 
+    public RequestOptions() {}
 
     public RequestOptions(boolean logOutput, boolean useTreeSitter) {
         this.logOutput = logOutput;

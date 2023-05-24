@@ -1,10 +1,12 @@
 package io.codiga.server.request;
 
+import io.codiga.model.Language;
+
 import java.util.List;
 
 public class RequestBuilder {
     private String filename;
-    private String language;
+    private Language language;
     private String fileEncoding;
     private String code;
     private List<Rule> rules;
@@ -16,7 +18,7 @@ public class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder setLanguage(String language) {
+    public RequestBuilder setLanguage(Language language) {
         this.language = language;
         return this;
     }

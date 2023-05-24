@@ -1,18 +1,16 @@
 package io.codiga.server.e2e.python.ast;
 
-import io.codiga.model.Language;
-import io.codiga.server.e2e.E2EBase;
-import io.codiga.server.response.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_ANY;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.codiga.model.EntityChecked;
+import io.codiga.model.Language;
+import io.codiga.model.RuleType;
+import io.codiga.server.e2e.E2EBase;
+import io.codiga.server.response.Response;
+import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class NestedBlocksTest extends E2EBase {
 
@@ -84,7 +82,7 @@ for v in bla:
     @Test
     @DisplayName("Check the nested blocks depth")
     public void testPythonNestedBlocksAccepted() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithFourNestedBlocks, Language.PYTHON, ruleCode, "nested-blocks", RULE_TYPE_AST, ENTITY_CHECKED_ANY, null, Map.of("maxNestingLevel", "5"), false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithFourNestedBlocks, Language.PYTHON, ruleCode, "nested-blocks", RuleType.AST_CHECK, EntityChecked.ANY, null, Map.of("maxNestingLevel", "5"), false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(0, response.ruleResponses.get(0).violations.size());
@@ -95,7 +93,7 @@ for v in bla:
     @Test
     @DisplayName("Catch nested blocks depth with lowered max level variable")
     public void testPythonNestedBlocksLowerMaxLevel() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithFourNestedBlocks, Language.PYTHON, ruleCode, "nested-blocks", RULE_TYPE_AST, ENTITY_CHECKED_ANY, null, Map.of("maxNestingLevel", "4"), false);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithFourNestedBlocks, Language.PYTHON, ruleCode, "nested-blocks", RuleType.AST_CHECK, EntityChecked.ANY, null, Map.of("maxNestingLevel", "4"), false);
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(1, response.ruleResponses.get(0).violations.size());

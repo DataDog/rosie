@@ -61,7 +61,7 @@ public class ServerMainController {
     }
 
     private boolean shouldUseTreeSitter(Request request) {
-        if (languageFromString(request.language) == Language.PYTHON) {
+        if (request.language == Language.PYTHON) {
             if (PYTHON_FORCE_ANTLR) {
                 return false;
             }
@@ -82,6 +82,9 @@ public class ServerMainController {
      */
     @ExceptionHandler(Exception.class)
     public String handleError(HttpServletRequest req, Exception exception) {
+        System.out.println("====REQUESTS====");
+        System.out.println(req);
+        System.out.println(exception);
         if (exception instanceof JsonParseException || exception instanceof HttpMessageNotReadableException) {
             metrics.incrementMetric(METRIC_EXCEPTION_INVALID_INPUT_JSON);
             return "invalid JSON input";
@@ -143,18 +146,18 @@ public class ServerMainController {
 
         try {
             rules = request.rules.stream()
-                    .filter(r -> r.contentBase64 != null && r.language != null)
+                    .filter(r -> r.code != null && r.language != null)
                     .map(r -> {
-                        String decodedRuleCode = new String(Base64.getDecoder().decode(r.contentBase64.getBytes()));
+                        String decodedRuleCode = new String(Base64.getDecoder().decode(r.code.getBytes()));
                         String tsQuery = null;
 
-                        if (r.tsQueryBase64 != null) {
-                            tsQuery = new String(Base64.getDecoder().decode(r.tsQueryBase64.getBytes()));
+                        if (r.treeSitterQuery != null) {
+                            tsQuery = new String(Base64.getDecoder().decode(r.treeSitterQuery.getBytes()));
                         }
 
-                        Language language = languageFromString(r.language);
-                        EntityChecked entityChecked = entityCheckedFromString(r.entityChecked);
-                        RuleType ruleType = ruleTypeFromString(r.type);
+                        Language language = r.language;
+                        EntityChecked entityChecked = r.entityChecked;
+                        RuleType ruleType = r.type;
 
                         String description = null;
                         if (r.description != null) {
@@ -170,7 +173,7 @@ public class ServerMainController {
                 .logOutput(request.options != null && request.options.logOutput)
                 .useTreeSitter(shouldUseTreeSitter(request))
                 .build();
-        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(languageFromString(request.language), request.filename, decodedCode, rules, options);
+        CompletableFuture<AnalysisResult> violationsFuture = analyzer.analyze(request.language, request.filename, decodedCode, rules, options);
 
 
         return violationsFuture.thenApply(analysisResult -> {

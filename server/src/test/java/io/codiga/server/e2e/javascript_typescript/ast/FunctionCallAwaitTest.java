@@ -1,15 +1,13 @@
 package io.codiga.server.e2e.javascript_typescript.ast;
 
+import io.codiga.model.EntityChecked;
+import io.codiga.model.RuleType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_FUNCTION_CALL;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
-
 
 public class FunctionCallAwaitTest extends E2EBase {
 
@@ -98,13 +96,12 @@ public class FunctionCallAwaitTest extends E2EBase {
     @Test
     @DisplayName("test with code that has await")
     public void testWithAwait() throws Exception {
-        JAVASCRIPT_TYPESCRIPT.forEach(l -> {
-            logger.info("Running test with language: " + l);
-            Response response = executeTest("bla.js", codeWithError, l, ruleCode, "errorUseQuery", RULE_TYPE_AST, ENTITY_CHECKED_FUNCTION_CALL, null, true);
-            logger.info(response.toString());
-
+    JAVASCRIPT_TYPESCRIPT.forEach(
+        l -> {
+          logger.info("Running test with language: " + l);
+          Response response = executeTest("bla.js", codeWithError, l, ruleCode, "errorUseQuery", RuleType.AST_CHECK, EntityChecked.FUNCTION_CALL, null, true);
+          logger.info(response.toString());
         });
-
     }
 
 }

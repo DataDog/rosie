@@ -1,17 +1,15 @@
 package io.codiga.server.e2e.python.ast;
 
-import io.codiga.model.Language;
-import io.codiga.server.e2e.E2EBase;
-import io.codiga.server.response.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.logging.Logger;
-
-import static io.codiga.constants.Languages.ENTITY_CHECKED_IF_CONDITION;
-import static io.codiga.constants.Languages.RULE_TYPE_AST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.codiga.model.EntityChecked;
+import io.codiga.model.Language;
+import io.codiga.model.RuleType;
+import io.codiga.server.e2e.E2EBase;
+import io.codiga.server.response.Response;
+import java.util.logging.Logger;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class NoIfWithEqualTrueTest extends E2EBase {
     private final Logger log = Logger.getLogger("Test");
@@ -45,7 +43,7 @@ public class NoIfWithEqualTrueTest extends E2EBase {
     @Test
     @DisplayName("Do not use == True in an if condition")
     public void testPythonIfTrue() throws Exception {
-        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-if-with-equal-true", RULE_TYPE_AST, ENTITY_CHECKED_IF_CONDITION, null, true);
+        Response response = executeTestWithTreeSitter("bla.py", pythonCodeWithError, Language.PYTHON, ruleCode, "no-if-with-equal-true", RuleType.AST_CHECK, EntityChecked.IF_STATEMENT, null, true);
 
         log.info("response: " + response);
         assertEquals(1, response.ruleResponses.size());
