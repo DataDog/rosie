@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
+import io.codiga.model.error.Category;
 import io.codiga.model.error.EditType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
@@ -59,7 +60,7 @@ public class Chmod777Test extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals("file can be written by others", response.ruleResponses.get(0).violations.get(0).message);
-        assertEquals("SECURITY", response.ruleResponses.get(0).violations.get(0).category);
+        assertEquals(Category.SECURITY, response.ruleResponses.get(0).violations.get(0).category);
         assertEquals("CRITICAL", response.ruleResponses.get(0).violations.get(0).severity);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.size());
         assertEquals("remove the write flag", response.ruleResponses.get(0).violations.get(0).fixes.get(0).description);

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
+import io.codiga.model.error.Category;
 import io.codiga.model.error.EditType;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
@@ -49,7 +50,7 @@ public class DateTimeTodayToNowTest extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(3, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals("use datetime.now() instead of datetime.today()", response.ruleResponses.get(0).violations.get(0).message);
-        assertEquals("BEST_PRACTICE", response.ruleResponses.get(0).violations.get(0).category);
+        assertEquals(Category.BEST_PRACTICES, response.ruleResponses.get(0).violations.get(0).category);
         assertEquals("INFORMATIONAL", response.ruleResponses.get(0).violations.get(0).severity);
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).fixes.size());
         assertEquals("use datetime.now()", response.ruleResponses.get(0).violations.get(0).fixes.get(0).description);

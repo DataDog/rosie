@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.codiga.model.Language;
 import io.codiga.model.RuleType;
+import io.codiga.model.error.Category;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +45,7 @@ public class UseVarTest extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals("should be a const", response.ruleResponses.get(0).violations.get(0).message);
-        assertEquals("CODE_STYLE", response.ruleResponses.get(0).violations.get(0).category);
+        assertEquals(Category.CODE_STYLE, response.ruleResponses.get(0).violations.get(0).category);
         assertEquals("INFORMATIONAL", response.ruleResponses.get(0).violations.get(0).severity);
     }
 
@@ -59,7 +60,7 @@ public class UseVarTest extends E2EBase {
         assertEquals(1, response.ruleResponses.get(0).violations.size());
         assertEquals(1, response.ruleResponses.get(0).violations.get(0).start.line);
         assertEquals("should be a const", response.ruleResponses.get(0).violations.get(0).message);
-        assertEquals("CODE_STYLE", response.ruleResponses.get(0).violations.get(0).category);
+        assertEquals(Category.CODE_STYLE, response.ruleResponses.get(0).violations.get(0).category);
         assertEquals("INFORMATIONAL", response.ruleResponses.get(0).violations.get(0).severity);
     }
 

@@ -8,9 +8,9 @@ public class CategoryUtils {
         "errorprone", Category.ERROR_PRONE,
         "security", Category.SECURITY,
         "safety", Category.SAFETY,
-        "best_practices", Category.BEST_PRACTICE,
-        "bestpractices", Category.BEST_PRACTICE,
-        "best_practice", Category.BEST_PRACTICE,
+        "best_practices", Category.BEST_PRACTICES,
+        "bestpractices", Category.BEST_PRACTICES,
+        "best_practice", Category.BEST_PRACTICES,
         "code_style", Category.CODE_STYLE,
         "design", Category.DESIGN,
         "deployment", Category.DEPLOYMENT

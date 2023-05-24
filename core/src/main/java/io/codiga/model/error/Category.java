@@ -4,7 +4,7 @@ public enum Category {
     UNKNOWN,
     ERROR_PRONE,
     CODE_STYLE,
-    BEST_PRACTICE,
+    BEST_PRACTICES,
     SAFETY,
     SECURITY,
     DESIGN,

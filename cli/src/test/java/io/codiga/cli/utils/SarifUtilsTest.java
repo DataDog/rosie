@@ -83,7 +83,7 @@ public class SarifUtilsTest {
             .end(new Position(2, 3))
             .message("error message")
             .severity(Severity.CRITICAL)
-            .category(Category.BEST_PRACTICE)
+            .category(Category.BEST_PRACTICES)
             .filename("myfile")
             .rule("myrule")
             .build();
@@ -104,7 +104,7 @@ public class SarifUtilsTest {
             .end(new Position(2, 3))
             .message("error message")
             .severity(Severity.CRITICAL)
-            .category(Category.BEST_PRACTICE)
+            .category(Category.BEST_PRACTICES)
             .filename("myfile")
             .rule("myrule")
             .fixes(
@@ -129,7 +129,7 @@ public class SarifUtilsTest {
             .end(new Position(2, 3))
             .message("error message")
             .severity(Severity.CRITICAL)
-            .category(Category.BEST_PRACTICE)
+            .category(Category.BEST_PRACTICES)
             .filename("myfile")
             .rule("myrule")
             .fixes(
@@ -154,7 +154,7 @@ public class SarifUtilsTest {
             .end(new Position(2, 3))
             .message("error message")
             .severity(Severity.CRITICAL)
-            .category(Category.BEST_PRACTICE)
+            .category(Category.BEST_PRACTICES)
             .filename("myfile")
             .rule("myrule2")
             .fixes(
@@ -168,7 +168,7 @@ public class SarifUtilsTest {
             .end(new Position(2, 3))
             .message("error message")
             .severity(Severity.CRITICAL)
-            .category(Category.BEST_PRACTICE)
+            .category(Category.BEST_PRACTICES)
             .filename("myfile")
             .rule("myrule3")
             .fixes(
@@ -207,7 +207,7 @@ public class SarifUtilsTest {
             .end(new Position(2, 3))
             .message("error message")
             .severity(Severity.CRITICAL)
-            .category(Category.BEST_PRACTICE)
+            .category(Category.BEST_PRACTICES)
             .filename("myfile")
             .rule("myrule")
             .fixes(
@@ -232,7 +232,7 @@ public class SarifUtilsTest {
             .end(new Position(2, 3))
             .message("error message")
             .severity(Severity.CRITICAL)
-            .category(Category.BEST_PRACTICE)
+            .category(Category.BEST_PRACTICES)
             .filename("myfile")
             .rule("myrule")
             .build();
