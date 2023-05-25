@@ -1,8 +1,8 @@
 package io.codiga.server.configuration;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import static io.codiga.utils.SnakeCaseMapperUtils.getSnakeCaseMapper;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import io.codiga.server.services.InjectorService;
 import io.codiga.server.services.InjectorServiceImpl;
 import org.slf4j.Logger;
@@ -26,10 +26,6 @@ public class ServerConfiguration {
     @Bean
     @Primary
     public ObjectMapper objectMapper() {
-        return new ObjectMapper()
-            // converts Java variables to snake_case JSON; and vice-versa
-            .setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy())
-            // converts unknown values to a default enum value (i.e. UNKNOWN)
-            .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
+        return getSnakeCaseMapper();
     }
 }
