@@ -1,5 +1,8 @@
 package io.codiga.cli;
 
+import static io.codiga.cli.utils.SarifUtils.generateReport;
+import static io.codiga.utils.SnakeCaseMapperUtils.getSnakeCaseMapper;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
 import io.codiga.analyzer.rule.AnalyzerRule;
@@ -7,13 +10,10 @@ import io.codiga.cli.model.Result;
 import io.codiga.cli.model.ViolationWithFilename;
 import io.codiga.cli.utils.SarifUtils;
 import io.codiga.model.error.RuleResult;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static io.codiga.cli.utils.SarifUtils.generateReport;
 
 public class FileUtils {
 
@@ -31,7 +31,7 @@ public class FileUtils {
 
 
     public static void writeViolationsToFile(Path path, Result result) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = getSnakeCaseMapper();
         objectMapper.writeValue(path.toFile(), result);
     }
 
