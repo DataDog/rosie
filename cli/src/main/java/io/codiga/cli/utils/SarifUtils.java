@@ -21,20 +21,21 @@ public class SarifUtils {
     public static final String SARIF_VERSION = "2.1.0";
 
     /**
-     * Convert the Severity enumeration from Rosie into the String
+     * Convert the Severity enumeration from Rosie into a SARIF accepted string
+     * <a href="https://github.com/DataDog/datadog-ci/blob/master/src/commands/sarif/json-schema/sarif-schema-2.1.0.json#L1575">SARIF Schema Link</a>
      *
      * @param severity
      * @return
      */
     public static String severityToSarifLevel(Severity severity) {
         switch (severity) {
-            case ERROR, CRITICAL -> {
+            case ERROR -> {
                 return "error";
             }
             case WARNING -> {
                 return "warning";
             }
-            case INFORMATIONAL -> {
+            case NOTICE -> {
                 return "note";
             }
             case UNKNOWN -> {
