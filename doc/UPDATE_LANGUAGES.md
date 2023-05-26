@@ -1,5 +1,8 @@
 # Update Languages
 
+Updating the languages consists in starting docker containers for a specific architecture and building a library that is later started by our Java wrapper.
+In the following sections, we explain each step for building the shared library on a developer laptop.
+
 ## Step 1: spin up a docker container for the architecture you want
 
 Start a linux distribution in a docker container with the architecture you want (`linux/amd64` or `linux/arm64`).
