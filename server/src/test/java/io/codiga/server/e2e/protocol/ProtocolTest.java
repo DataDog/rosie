@@ -207,6 +207,6 @@ public class ProtocolTest {
         logger.info("response: " + response.errors);
         assertEquals(0, response.ruleResponses.size());
         assertEquals(1, response.errors.size());
-        assertEquals(ERROR_RULE_NOT_BASE64, response.errors.get(0));
+        assertEquals(ERROR_DECODING_BASE64, response.errors.get(0));
     }
 }

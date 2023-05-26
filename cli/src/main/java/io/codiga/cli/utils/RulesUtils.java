@@ -4,7 +4,6 @@ package io.codiga.cli.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.model.Rules;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +19,9 @@ public class RulesUtils {
         return mapper.readValue(new File(path), Rules.class).rules.stream().map(r -> {
             String decodedCode = new String(Base64.getDecoder().decode(r.code()));
             String decodedDescription = r.description() != null ? new String(Base64.getDecoder().decode(r.description())):"";
-            return new AnalyzerRule(r.name(), decodedDescription, r.language(), r.type(), r.entityChecked(), decodedCode, r.regex(), r.treeSitterQuery(), r.variables());
+            String decodedRegex = r.regex() != null ? new String(Base64.getDecoder().decode(r.regex())):null;
+            String decodedTreeSitterQuery = r.treeSitterQuery() != null ? new String(Base64.getDecoder().decode(r.treeSitterQuery())):null;
+            return new AnalyzerRule(r.name(), decodedDescription, r.language(), r.type(), r.entityChecked(), decodedCode, decodedRegex, decodedTreeSitterQuery, r.variables());
         }).collect(Collectors.toList());
     }
 

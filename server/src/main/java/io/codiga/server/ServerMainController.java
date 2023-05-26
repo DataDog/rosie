@@ -16,9 +16,7 @@ import io.codiga.analyzer.config.AnalyzerConfiguration;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
-import io.codiga.model.EntityChecked;
 import io.codiga.model.Language;
-import io.codiga.model.RuleType;
 import io.codiga.model.error.AnalysisResult;
 import io.codiga.server.request.GetTreeSitterAstRequest;
 import io.codiga.server.request.Request;
@@ -144,25 +142,27 @@ public class ServerMainController {
                     .filter(r -> r.code != null && r.language != null)
                     .map(r -> {
                         String decodedRuleCode = new String(Base64.getDecoder().decode(r.code.getBytes()));
-                        String tsQuery = null;
-
+                        
+                        String decodedTreeSitterQuery = null;
                         if (r.treeSitterQuery != null) {
-                            tsQuery = new String(Base64.getDecoder().decode(r.treeSitterQuery.getBytes()));
+                            decodedTreeSitterQuery = new String(Base64.getDecoder().decode(r.treeSitterQuery.getBytes()));
+                        }
+                        
+                        String decodedRegex = null;
+                        if (r.regex != null) {
+                            decodedRegex = new String(Base64.getDecoder().decode(r.regex.getBytes()));
                         }
 
-                        Language language = r.language;
-                        EntityChecked entityChecked = r.entityChecked;
-                        RuleType ruleType = r.type;
-
-                        String description = null;
+                        String decodedDescription = null;
                         if (r.description != null) {
-                            description = new String(Base64.getDecoder().decode(r.description.getBytes()));
+                            decodedDescription = new String(Base64.getDecoder().decode(r.description.getBytes()));
                         }
-                        return new AnalyzerRule(r.id, description, language, ruleType, entityChecked, decodedRuleCode, r.regex, tsQuery, r.variables);
+
+                        return new AnalyzerRule(r.id, decodedDescription, r.language, r.type, r.entityChecked, decodedRuleCode, decodedRegex, decodedTreeSitterQuery, r.variables);
                     }).toList();
         } catch (IllegalArgumentException iae) {
-            logger.error("rule is not base64: " + request.rules);
-            return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_RULE_NOT_BASE64)));
+            logger.error("error decoding a rule field: " + request.rules);
+            return CompletableFuture.completedFuture(new Response(List.of(), List.of(ERROR_DECODING_BASE64)));
         }
         AnalysisOptions options = AnalysisOptions.builder()
                 .logOutput(request.options != null && request.options.logOutput)

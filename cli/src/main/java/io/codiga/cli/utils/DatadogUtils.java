@@ -43,11 +43,19 @@ public class DatadogUtils {
                 return Optional.empty();
             }
 
-            String code = node.get("content").asText();
+            String code = node.get("code").asText();
+            JsonNode description = node.get("description");
+            JsonNode regex = node.get("regex");
+            JsonNode treeSitterQuery = node.get("tree_sitter_query");
+            
             if (code != null) {
                 String decodedCode = new String(Base64.getDecoder().decode(code));
+                String decodedDescription = description != null ? new String(Base64.getDecoder().decode(description.asText())) : null;
+                String decodedRegex = regex != null ? new String(Base64.getDecoder().decode(regex.asText())) : null;
+                String decodedTreeSitterQuery = treeSitterQuery != null ? new String(Base64.getDecoder().decode(treeSitterQuery.asText())) : null;
+
                 return Optional.of(
-                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), res.description(), res.language(), res.type(), res.entityChecked(), decodedCode, res.regex(), res.treeSitterQuery(), res.variables())
+                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), decodedDescription, res.language(), res.type(), res.entityChecked(), decodedCode, decodedRegex, decodedTreeSitterQuery, res.variables())
                 );
             }
         } catch (IllegalArgumentException e) {
@@ -121,7 +129,8 @@ public class DatadogUtils {
 
 
             var request = HttpRequest.newBuilder(
-                    URI.create(String.format("https://api.%s/api/v2/static-analysis/rulesets/%s", site, ruleset)))
+                    URI.create(String.format("https://api.datad0g.com/api/v2/static-analysis/rulesets/%s", ruleset)))
+//                    URI.create(String.format("https://api.%s/api/v2/static-analysis/rulesets/%s", site, ruleset)))
                 .header("accept", "application/json")
                 .header("dd-api-key", apiKey.get())
                 .header("dd-application-key", appKey.get())
