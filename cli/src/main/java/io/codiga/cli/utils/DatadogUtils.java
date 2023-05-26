@@ -129,8 +129,7 @@ public class DatadogUtils {
 
 
             var request = HttpRequest.newBuilder(
-                    URI.create(String.format("https://api.datad0g.com/api/v2/static-analysis/rulesets/%s", ruleset)))
-//                    URI.create(String.format("https://api.%s/api/v2/static-analysis/rulesets/%s", site, ruleset)))
+                    URI.create(String.format("https://api.%s/api/v2/static-analysis/rulesets/%s", site, ruleset)))
                 .header("accept", "application/json")
                 .header("dd-api-key", apiKey.get())
                 .header("dd-application-key", appKey.get())
