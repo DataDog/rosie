@@ -80,7 +80,7 @@ public class Rules {
         .setType(RuleType.REGEX)
         .setLanguage(Language.PYTHON)
         .setId("array-no-empty-parameters")
-        .setRegex("os.chmod(${file}, ${mode})")
+        .setRegex("b3MuY2htb2QoJHtmaWxlfSwgJHttb2RlfSk=")
         .createRule();
 
     public static Rule RULE_JINJA2_AUTOESCAPE = new RuleBuilder()
