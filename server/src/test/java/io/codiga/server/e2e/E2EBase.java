@@ -110,8 +110,8 @@ public class E2EBase {
                         .setLanguage(language)
                         .setType(ruleType)
                         .setEntityChecked(entityChecked)
-                        .setRegex(regex)
-                        .setTreeSitterQuery(treeSitterQuery)
+                        .setRegex(regex != null ? encodeBase64(regex) : null)
+                        .setTreeSitterQuery(treeSitterQuery != null ? encodeBase64(treeSitterQuery) : null)
                         .setVariables(variables)
                         .createRule()))
             .createRequest();
@@ -166,7 +166,7 @@ public class E2EBase {
                                        String treeSitterQuery,
                                        boolean logOutput) {
         return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, RuleType.TREE_SITTER_QUERY,
-                null, null, encodeBase64(treeSitterQuery), null, logOutput);
+                null, null, treeSitterQuery, null, logOutput);
     }
 
     public Response executeTestTsQuery(String filename,
@@ -178,7 +178,7 @@ public class E2EBase {
                                        Map<String, String> variables,
                                        boolean logOutput) {
         return executeTestWithTreeSitter(filename, code, language, ruleCode, ruleName, RuleType.TREE_SITTER_QUERY,
-                null, null, encodeBase64(treeSitterQuery), variables, logOutput);
+                null, null, treeSitterQuery, variables, logOutput);
     }
 
     public Response executeTest(String filename,
@@ -207,7 +207,7 @@ public class E2EBase {
                                         .setLanguage(ruleLanguage)
                                         .setType(ruleType)
                                         .setEntityChecked(entityChecked)
-                                        .setRegex(regex)
+                                        .setRegex(regex != null ? encodeBase64(regex) : null)
                                         .setVariables(variables)
                                         .createRule()
                         )
