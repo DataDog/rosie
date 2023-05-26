@@ -16,7 +16,7 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
       - name: Set the version
-        run: echo "package io.codiga.utils;\npublic final class Version {\n    public static final String CURRENT_VERSION = \"$GITHUB_SHA\";\n}" > > core/src/main/java/io/codiga/utils/Version.java
+        run: echo "package io.codiga.utils;\npublic final class Version {\n    public static final String CURRENT_VERSION = \"$GITHUB_SHA\";\n}" > core/src/main/java/io/codiga/utils/Version.java
       - name: Build with Gradle
         run: ./gradlew cli:build
       - name: Upload to release
