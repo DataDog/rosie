@@ -2,19 +2,21 @@ package io.codiga.server.response;
 
 import io.codiga.model.common.Position;
 import io.codiga.model.error.Category;
+import io.codiga.model.error.Severity;
+
 import java.util.List;
 
 public class Violation {
     public String message;
     public Position start;
     public Position end;
-    public String severity;
+    public Severity severity;
     public Category category;
     public List<ViolationFix> fixes;
 
     public Violation() {}
 
-    public Violation(Position start, Position end, String message, String severity, Category category, List<ViolationFix> fixes) {
+    public Violation(Position start, Position end, String message, Severity severity, Category category, List<ViolationFix> fixes) {
         this.message = message;
         this.start = start;
         this.end = end;
