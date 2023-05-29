@@ -1,5 +1,7 @@
 package io.codiga.server.e2e.python.tsast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.codiga.model.Language;
 import io.codiga.server.e2e.E2EBase;
 import io.codiga.server.response.GetTreeSitterAstResponse;
@@ -7,10 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.codiga.server.response.ResponseErrors.ERROR_LANGUAGE_NOT_SUPPORTED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class GetTsAstTest extends E2EBase {
 
@@ -36,10 +34,10 @@ public class GetTsAstTest extends E2EBase {
 
         assertEquals(response.errors.size(), 0);
         assertEquals(response.result.astType, "module");
-        assertEquals(response.result.start.line, 0);
-        assertEquals(response.result.start.col, 0);
-        assertEquals(response.result.end.line, 0);
-        assertEquals(response.result.end.col, 0);
+        assertEquals(response.result.start.line, 1);
+        assertEquals(response.result.start.col, 1);
+        assertEquals(response.result.end.line, 1);
+        assertEquals(response.result.end.col, 1);
         assertEquals(response.result.children.size(), 0);
     }
 
@@ -54,10 +52,10 @@ public class GetTsAstTest extends E2EBase {
         assertEquals(response.result.children.get(0).astType, "expression_statement");
         assertEquals(response.result.children.get(0).children.size(), 1);
         assertEquals(response.result.children.get(0).children.get(0).astType, "assignment");
-        assertEquals(response.result.children.get(0).children.get(0).start.line, 0);
-        assertEquals(response.result.children.get(0).children.get(0).start.col, 0);
-        assertEquals(response.result.children.get(0).children.get(0).end.line, 0);
-        assertEquals(response.result.children.get(0).children.get(0).end.col, 20);
+        assertEquals(response.result.children.get(0).children.get(0).start.line, 1);
+        assertEquals(response.result.children.get(0).children.get(0).start.col, 1);
+        assertEquals(response.result.children.get(0).children.get(0).end.line, 1);
+        assertEquals(response.result.children.get(0).children.get(0).end.col, 21);
         assertEquals(response.result.children.get(0).children.get(0).children.size(), 2);
         assertEquals(response.result.children.get(0).children.get(0).children.get(0).astType, "identifier");
         assertEquals(response.result.children.get(0).children.get(0).children.get(0).fieldName, "left");
@@ -71,10 +69,10 @@ public class GetTsAstTest extends E2EBase {
         assertEquals(response.result.children.get(1).children.get(1).children.size(), 0);
         assertEquals(response.result.children.get(1).children.get(2).astType, "block");
         assertEquals(response.result.children.get(1).children.get(2).fieldName, "body");
-        assertEquals(response.result.children.get(1).children.get(2).start.line, 3);
-        assertEquals(response.result.children.get(1).children.get(2).start.col, 1);
-        assertEquals(response.result.children.get(1).children.get(2).end.line, 3);
-        assertEquals(response.result.children.get(1).children.get(2).end.col, 6);
+        assertEquals(response.result.children.get(1).children.get(2).start.line, 4);
+        assertEquals(response.result.children.get(1).children.get(2).start.col, 2);
+        assertEquals(response.result.children.get(1).children.get(2).end.line, 4);
+        assertEquals(response.result.children.get(1).children.get(2).end.col, 7);
         assertEquals(response.result.children.get(1).children.get(2).children.size(), 1);
         assertEquals(response.result.children.get(1).children.get(2).children.get(0).astType, "pass_statement");
         assertEquals(response.result.children.get(1).children.get(2).children.get(0).children.size(), 0);
@@ -89,20 +87,20 @@ public class GetTsAstTest extends E2EBase {
         assertEquals(response.result.astType, "module");
         assertEquals(response.result.children.size(), 2);
         assertEquals(response.result.children.get(0).astType, "ERROR");
-        assertEquals(response.result.children.get(0).start.line, 0);
-        assertEquals(response.result.children.get(0).start.col, 0);
-        assertEquals(response.result.children.get(0).end.line, 2);
-        assertEquals(response.result.children.get(0).end.col, 5);
+        assertEquals(response.result.children.get(0).start.line, 1);
+        assertEquals(response.result.children.get(0).start.col, 1);
+        assertEquals(response.result.children.get(0).end.line, 3);
+        assertEquals(response.result.children.get(0).end.col, 6);
         assertEquals(response.result.children.get(0).children.size(), 1);
         assertEquals(response.result.children.get(0).children.get(0).astType, "identifier");
         assertEquals(response.result.children.get(0).children.get(0).children.size(), 0);
         assertEquals(response.result.children.get(1).astType, "expression_statement");
         assertEquals(response.result.children.get(1).children.size(), 1);
         assertEquals(response.result.children.get(1).children.get(0).astType, "string");
-        assertEquals(response.result.children.get(1).children.get(0).start.line, 2);
-        assertEquals(response.result.children.get(1).children.get(0).start.col, 6);
-        assertEquals(response.result.children.get(1).children.get(0).end.line, 2);
-        assertEquals(response.result.children.get(1).children.get(0).end.col, 11);
+        assertEquals(response.result.children.get(1).children.get(0).start.line, 3);
+        assertEquals(response.result.children.get(1).children.get(0).start.col, 7);
+        assertEquals(response.result.children.get(1).children.get(0).end.line, 3);
+        assertEquals(response.result.children.get(1).children.get(0).end.col, 12);
         assertEquals(response.result.children.get(1).children.get(0).children.size(), 1);
         assertEquals(response.result.children.get(1).children.get(0).children.get(0).astType, "string_content");
     }

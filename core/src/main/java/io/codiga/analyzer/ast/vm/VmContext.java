@@ -6,18 +6,17 @@ import io.codiga.analyzer.ast.common.ErrorReporting;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.Language;
 import io.codiga.model.error.Violation;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.List;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.ResourceLimits;
 import org.graalvm.polyglot.Source;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.List;
 
 public class VmContext {
     private static final Logger logger = LoggerFactory.getLogger(VmContext.class);
@@ -36,14 +35,36 @@ public class VmContext {
     private static final int MAX_STATEMENTS = 1000000;
     private final ErrorReporting errorReporting;
 
-    private final String[] helperFunctions = new String[]{
-        "function printObject(object) {\n" +
-            "  for (const property in object) {\n" +
-            "    console.log(`${property}: ${JSON.stringify(object[property])}`);\n" +
-            "  }\n" +
-            "}"
-    };
-
+  private final String[] helperFunctions =
+      new String[] {
+        "function printObject(object) {\n"
+            + "  for (const property in object) {\n"
+            + "    console.log(`${property}: ${JSON.stringify(object[property])}`);\n"
+            + "  }\n"
+            + "}\n",
+          """
+            function getCode(start, end, code) {
+              const lines = code.split("\\n");
+              const startLine = start.line - 1;
+              const startCol = start.col - 1;
+              const endLine = end.line - 1;
+              const endCol = end.col - 1;
+              
+              var startChar = 0;
+              for (var i = 0 ; i < startLine ; i++) {
+                startChar = startChar + lines[i].length + 1;
+              }
+              startChar = startChar + startCol;
+              
+              var endChar = 0;
+              for (var i = 0 ; i < startLine ; i++) {
+                endChar = endChar + lines[i].length + 1;
+              }
+              endChar = endChar + endCol;
+              
+              return code.substring(startChar, endChar);
+            };"""
+      };
 
     private final String[] PYTHON_HELPER_FUNCTIONS = new String[]{
         """
@@ -94,7 +115,7 @@ public class VmContext {
             "buildEditUpdate = addError.buildEditUpdate; " +
             "buildEditRemove = addError.buildEditRemove; " +
             "addError = addError.addViolation; " +
-            String.join(",", helperFunctions) + ";";
+            String.join(";", helperFunctions) + ";";
     private final AnalyzerContext analyzerContext;
     Source executeSource;
     private OutputStream outputStream;
