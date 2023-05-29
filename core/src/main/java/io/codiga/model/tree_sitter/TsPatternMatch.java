@@ -1,6 +1,7 @@
-package io.codiga.model.tsquery;
+package io.codiga.model.tree_sitter;
 
 import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.TreeSitterAstElement;
 import io.codiga.model.context.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.proxy.ProxyHashMap;
@@ -16,7 +17,7 @@ public class TsPatternMatch {
     public ProxyHashMap captures;
 
 
-    public TsPatternMatch(Map<String, AstElement> matches, Context context) {
+    public TsPatternMatch(Map<String, TreeSitterAstElement> matches, Context context) {
         this.captures = ProxyHashMap.from(Collections.unmodifiableMap(matches));
         this.context = context;
     }

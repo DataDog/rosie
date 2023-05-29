@@ -1,5 +1,9 @@
 package io.codiga.analyzer.treesitterpm;
 
+import static io.codiga.model.RuleErrorCode.ERROR_RULE_INVALID_QUERY;
+import static io.codiga.utils.TreeSitterUtils.getTreeFromNode;
+import static io.codiga.utils.TreeSitterUtils.languageToTreeSitterLanguage;
+
 import ai.serenade.treesitter.Node;
 import ai.serenade.treesitter.Parser;
 import ai.serenade.treesitter.Tree;
@@ -16,20 +20,15 @@ import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.errorreporting.ErrorReportingInterface;
 import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.Language;
-import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.TreeSitterAstElement;
 import io.codiga.model.context.Context;
 import io.codiga.model.error.RuleResult;
-import io.codiga.model.tsquery.TsPatternMatch;
+import io.codiga.model.tree_sitter.TsPatternMatch;
 import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-
-import static io.codiga.model.RuleErrorCode.ERROR_RULE_INVALID_QUERY;
-import static io.codiga.utils.TreeSitterUtils.getAstElement;
-import static io.codiga.utils.TreeSitterUtils.languageToTreeSitterLanguage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TreeSitterPatternMatching extends AnalyzerCommon {
 
@@ -75,12 +74,12 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
                      *  - add the match to the list of matches
                      */
                     while (queryMatch != null) {
-                        Map<String, AstElement> match = new HashMap<>();
+                        Map<String, TreeSitterAstElement> match = new HashMap<>();
                         for (QueryMatchCapture queryMatchCapture : queryMatch.getCaptures()) {
                             int idx = queryMatchCapture.index;
                             String name = captures.get(idx).getName();
                             Node node = queryMatchCapture.node;
-                            Optional<AstElement> astElementOptional = getAstElement(node, rule.language(), treeSitterParsingContext);
+                            Optional<TreeSitterAstElement> astElementOptional = getTreeFromNode(node);
                             match.put(name, astElementOptional.orElse(null));
                         }
                         matches.add(new TsPatternMatch(match, ruleContext));

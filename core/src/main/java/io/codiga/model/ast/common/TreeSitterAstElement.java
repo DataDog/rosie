@@ -3,10 +3,9 @@ package io.codiga.model.ast.common;
 import ai.serenade.treesitter.Node;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.codiga.model.common.Position;
+import java.util.List;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
-
-import java.util.List;
 
 /**
  * Represents a TreeSitter AST element
@@ -25,8 +24,8 @@ public class TreeSitterAstElement {
         return TreeSitterAstElement
                 .builder()
                 .astType(node.getType())
-                .start(new Position(node.getStartPosition().row, node.getStartPosition().column))
-                .end(new Position(node.getEndPosition().row, node.getEndPosition().column))
+                .start(new Position(node.getStartPosition().row + 1, node.getStartPosition().column + 1))
+                .end(new Position(node.getEndPosition().row + 1, node.getEndPosition().column + 1))
                 .fieldName(fieldName)
                 .children(children)
                 .parent(parent)
