@@ -24,7 +24,6 @@ import io.codiga.model.ast.common.TreeSitterAstElement;
 import io.codiga.model.context.Context;
 import io.codiga.model.error.RuleResult;
 import io.codiga.model.tree_sitter.TsPatternMatch;
-import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 import org.slf4j.Logger;
@@ -66,8 +65,7 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
                     QueryCursor queryCursor = query.execute(tree.getRootNode());
                     QueryMatch queryMatch = queryCursor.nextMatch();
                     List<TsPatternMatch> matches = new ArrayList<>();
-                    TreeSitterParsingContext treeSitterParsingContext = new TreeSitterParsingContext(analyzerContext.getCode(), tree.getRootNode());
-
+                    
                     /**
                      * For each match
                      *  - build an object that contains each match for each capture
