@@ -2,8 +2,6 @@ package io.codiga.cli.model.sarif;
 
 import lombok.Builder;
 
-import java.util.Base64;
-
 /**
  * Encapsulates a multiformat message intended to be read by the end user.
  * <br>
@@ -18,6 +16,6 @@ public class SarifMultiformatMessage {
             return null;
         }
 
-        return SarifMultiformatMessage.builder().text(new String(Base64.getDecoder().decode(str.getBytes()))).build();
+        return SarifMultiformatMessage.builder().text(str).build();
     }
 }

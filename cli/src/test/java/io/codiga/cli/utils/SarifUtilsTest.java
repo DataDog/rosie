@@ -1,5 +1,9 @@
 package io.codiga.cli.utils;
 
+import static io.codiga.cli.utils.SarifUtils.generateReport;
+import static io.codiga.cli.utils.SarifUtils.uriReference;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.model.ViolationWithFilename;
@@ -9,6 +13,13 @@ import io.codiga.model.Language;
 import io.codiga.model.RuleType;
 import io.codiga.model.common.Position;
 import io.codiga.model.error.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 import net.jimblackler.jsonschemafriend.Schema;
 import net.jimblackler.jsonschemafriend.SchemaException;
 import net.jimblackler.jsonschemafriend.SchemaStore;
@@ -21,23 +32,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
-
-import static io.codiga.cli.utils.SarifUtils.generateReport;
-import static io.codiga.cli.utils.SarifUtils.uriReference;
-import static org.junit.jupiter.api.Assertions.*;
-
 public class SarifUtilsTest {
 
     private static final String SARIF_SCHEMA_PATH = "src/test/resources/sarif-standard/sarif-schema-2.1.0.json";
-    private static final String ENCODED_DESCRIPTION = new String(Base64.getEncoder().encode("myruledescription".getBytes()));
     private final Logger log = Logger.getLogger("Test");
 
     @BeforeAll
@@ -90,7 +87,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -115,7 +112,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -140,7 +137,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule",ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -179,8 +176,8 @@ public class SarifUtilsTest {
 
         SarifReport sarifReport = generateReport(
             List.of(
-                new AnalyzerRule("myrule1",ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of()),
-                new AnalyzerRule("myrule2",ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                new AnalyzerRule("myrule1","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of()),
+                new AnalyzerRule("myrule2","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
             List.of(new File("foo/bar").toPath()),
             List.of(violation1, violation2),
             List.of());
@@ -218,7 +215,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule",ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -239,7 +236,7 @@ public class SarifUtilsTest {
 
         assertFalse(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", ENCODED_DESCRIPTION, Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
