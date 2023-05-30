@@ -37,6 +37,9 @@ public class TreeSitterUtils {
     if (language == Language.YAML) {
       return Optional.of(Languages.yaml());
     }
+    if (language == Language.JAVA) {
+      return Optional.of(Languages.java());
+    }
     return Optional.empty();
   }
 

@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 
 public enum Language {
     GO,
-    PYTHON,
+    JAVA,
     JAVASCRIPT,
+    PYTHON,
     TYPESCRIPT,
     YAML,
     @JsonEnumDefaultValue UNKNOWN
