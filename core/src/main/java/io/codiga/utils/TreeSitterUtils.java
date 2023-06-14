@@ -73,12 +73,11 @@ public class TreeSitterUtils {
   }
 
   public static Optional<TreeSitterAstElement> getTreeFromNode(Node node) {
+    var visitedChildren = false;
+    var isFinished = false;
+    TreeSitterAstElement current = null;
+    TreeSitterAstElement parent = null;
     try (TreeCursor treeCursor = node.walk()) {
-      var visitedChildren = false;
-      var isFinished = false;
-      TreeSitterAstElement current = null;
-      TreeSitterAstElement parent = null;
-
       while (!isFinished) {
 
         if (visitedChildren) {
@@ -111,8 +110,7 @@ public class TreeSitterUtils {
           }
         }
       }
-      treeCursor.close();
-      return Optional.ofNullable(parent);
     }
+    return Optional.ofNullable(parent);
   }
 }
