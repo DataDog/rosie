@@ -1,6 +1,10 @@
 package io.codiga.utils;
 
-import ai.serenade.treesitter.*;
+import ai.serenade.treesitter.Languages;
+import ai.serenade.treesitter.Node;
+import ai.serenade.treesitter.Parser;
+import ai.serenade.treesitter.Tree;
+import ai.serenade.treesitter.TreeCursor;
 import io.codiga.model.Language;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.ast.common.TreeSitterAstElement;
@@ -53,65 +57,60 @@ public class TreeSitterUtils {
 
   public static Optional<TreeSitterAstElement> getFullAstTree(String code, Language language) {
     Optional<Long> treeSitterLanguage = languageToTreeSitterLanguage(language);
-    TreeCursor treeCursor;
     if (treeSitterLanguage.isEmpty()) {
       return Optional.empty();
     }
 
-    try(Parser parser = new Parser()) {
+    try (Parser parser = new Parser()) {
       parser.setLanguage(treeSitterLanguage.get());
-      Tree tree = parser.parseString(code);
-      return getTreeFromNode(tree.getRootNode());
+      try (Tree tree = parser.parseString(code)) {
+        return getTreeFromNode(tree.getRootNode());
+      }
     } catch (UnsupportedEncodingException e) {
       logger.info("error when decoding the code");
       return Optional.empty();
     }
   }
 
-    public static Optional<TreeSitterAstElement> getTreeFromNode(Node node) {
-        TreeCursor treeCursor = node.walk();
-        var visitedChildren = false;
-        var isFinished = false;
-        TreeSitterAstElement current = null;
-        TreeSitterAstElement parent = null;
+  public static Optional<TreeSitterAstElement> getTreeFromNode(Node node) {
+    var visitedChildren = false;
+    var isFinished = false;
+    TreeSitterAstElement current = null;
+    TreeSitterAstElement parent = null;
+    try (TreeCursor treeCursor = node.walk()) {
+      while (!isFinished) {
 
-        while (!isFinished) {
-
-            if (visitedChildren) {
-                if (treeCursor.gotoNextSibling()) {
-                    visitedChildren = false;
-                } else if (treeCursor.gotoParent() && parent != null && parent.parent != null) {
-                    parent = parent.parent;
-                    visitedChildren = true;
-                } else {
-                    if (parent == null && current != null) {
-                        parent = current;
-                    }
-                    isFinished = true;
-                    treeCursor.close();
-                }
-            } else {
-                if (treeCursor.getCurrentNode().isNamed()) {
-                    current =
-                        TreeSitterAstElement.create(
-                            treeCursor.getCurrentNode(),
-                            treeCursor.getCurrentFieldName(),
-                            new ArrayList<>(),
-                            parent);
-                    if (parent != null) {
-                        parent.children.add(current);
-                    }
-                }
-
-                if (treeCursor.gotoFirstChild()) {
-                    parent = current;
-                    visitedChildren = false;
-                } else {
-                    visitedChildren = true;
-                }
+        if (visitedChildren) {
+          if (treeCursor.gotoNextSibling()) {
+            visitedChildren = false;
+          } else if (treeCursor.gotoParent() && parent != null && parent.parent != null) {
+            parent = parent.parent;
+          } else {
+            if (parent == null && current != null) {
+              parent = current;
             }
+            isFinished = true;
+          }
+        } else {
+          if (treeCursor.getCurrentNode().isNamed()) {
+            current =
+                TreeSitterAstElement.create(
+                    treeCursor.getCurrentNode(),
+                    treeCursor.getCurrentFieldName(),
+                    new ArrayList<>(),
+                    parent);
+            if (parent != null) {
+              parent.children.add(current);
+            }
+          }
+          if (treeCursor.gotoFirstChild()) {
+            parent = current;
+          } else {
+            visitedChildren = true;
+          }
         }
-
-        return Optional.ofNullable(parent);
+      }
     }
+    return Optional.ofNullable(parent);
+  }
 }

@@ -1,20 +1,5 @@
 package io.codiga.parser.treesitter.python;
 
-import ai.serenade.treesitter.Languages;
-import ai.serenade.treesitter.Node;
-import ai.serenade.treesitter.Parser;
-import io.codiga.model.ast.common.Assignment;
-import io.codiga.model.ast.common.AstElement;
-import io.codiga.model.ast.common.FunctionCall;
-import io.codiga.model.ast.python.*;
-import io.codiga.model.context.PythonNodeContext;
-import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
 import static io.codiga.parser.treesitter.python.transformation.AssertTransformation.transformAssert;
 import static io.codiga.parser.treesitter.python.transformation.AssignmentTransformation.transformAssignment;
 import static io.codiga.parser.treesitter.python.transformation.CallTransformation.transformCall;
@@ -28,6 +13,28 @@ import static io.codiga.parser.treesitter.python.transformation.ImportStatement.
 import static io.codiga.parser.treesitter.python.transformation.TryStatementTransformation.transformTryStatement;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeChildren;
 import static io.codiga.parser.treesitter.utils.TreeSitterNodeUtils.getNodeType;
+
+import ai.serenade.treesitter.Languages;
+import ai.serenade.treesitter.Node;
+import ai.serenade.treesitter.Parser;
+import ai.serenade.treesitter.Tree;
+import io.codiga.model.ast.common.Assignment;
+import io.codiga.model.ast.common.AstElement;
+import io.codiga.model.ast.common.FunctionCall;
+import io.codiga.model.ast.python.FromStatement;
+import io.codiga.model.ast.python.ImportStatement;
+import io.codiga.model.ast.python.PythonAssertStatement;
+import io.codiga.model.ast.python.PythonClassDefinition;
+import io.codiga.model.ast.python.PythonForStatement;
+import io.codiga.model.ast.python.PythonFunctionDefinition;
+import io.codiga.model.ast.python.PythonIfStatement;
+import io.codiga.model.ast.python.TryStatement;
+import io.codiga.model.context.PythonNodeContext;
+import io.codiga.parser.treesitter.utils.TreeSitterParsingContext;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 public class CodigaVisitor {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(CodigaVisitor.class.getName());
@@ -75,28 +82,34 @@ public class CodigaVisitor {
         visitedClassDefinitions = new Stack();
     }
 
-
     public void parse() {
-        try {
-            Parser parser = new Parser();
+        try (Parser parser = new Parser()) {
             parser.setLanguage(Languages.python());
-            Node rootNode = parser.parseString(code).getRootNode();
-            TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
-            walk(rootNode, parsingContext);
+            try (Tree tree = parser.parseString(code)) {
+                Node rootNode = tree.getRootNode();
+                TreeSitterParsingContext parsingContext = new TreeSitterParsingContext(code, rootNode);
+                walk(rootNode, parsingContext);
+            }
         } catch (UnsupportedEncodingException unsupportedEncodingException) {
             LOGGER.severe("cannot decode and parse the code");
         }
     }
 
     private PythonNodeContext buildContext() {
-        PythonNodeContext res = PythonNodeContext.buildPythonNodeContext()
-            .currentFunction(visitedFunctionDefinitions.isEmpty() ? null : visitedFunctionDefinitions.lastElement())
-            .currentTryBlock(visitedTryStatements.size() > 0 ? visitedTryStatements.lastElement() : null)
-            .currentClass(visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
-            .code(this.code)
-            .importsList(visitedImportStatements)
-            .assignmentsList(assignments)
-            .build();
+        PythonNodeContext res =
+            PythonNodeContext.buildPythonNodeContext()
+                .currentFunction(
+                    visitedFunctionDefinitions.isEmpty()
+                        ? null
+                        : visitedFunctionDefinitions.lastElement())
+                .currentTryBlock(
+                    visitedTryStatements.size() > 0 ? visitedTryStatements.lastElement() : null)
+                .currentClass(
+                    visitedClassDefinitions.size() > 0 ? visitedClassDefinitions.lastElement() : null)
+                .code(this.code)
+                .importsList(visitedImportStatements)
+                .assignmentsList(assignments)
+                .build();
         return res;
     }
 
@@ -110,27 +123,27 @@ public class CodigaVisitor {
         var nodeType = getNodeType(node);
 
         switch (nodeType) {
-
             case ASSIGNMENT: {
                 var transformedElementOptional = transformAssignment(node, parsingContext);
-                transformedElementOptional.ifPresent(transformedElement -> {
-                    transformedElement.setContext(buildContext());
-                    this.assignments.add(transformedElement);
-                });
+                transformedElementOptional.ifPresent(
+                    transformedElement -> {
+                        transformedElement.setContext(buildContext());
+                        this.assignments.add(transformedElement);
+                    });
                 walkChildren(node, parsingContext);
                 break;
             }
 
             case ASSERT_STATEMENT: {
                 var transformedElementOptional = transformAssert(node, parsingContext);
-                transformedElementOptional.ifPresent(transformedElement -> {
-                    transformedElement.setContext(buildContext());
-                    this.assertStatements.add(transformedElement);
-                });
+                transformedElementOptional.ifPresent(
+                    transformedElement -> {
+                        transformedElement.setContext(buildContext());
+                        this.assertStatements.add(transformedElement);
+                    });
                 walkChildren(node, parsingContext);
                 break;
             }
-
 
             case CALL: {
                 var functionCallOptional = transformCall(node, parsingContext);
@@ -158,7 +171,6 @@ public class CodigaVisitor {
                 break;
             }
 
-
             case DECORATED_DEFINITION: {
                 var transformedElementOptional = transformDecoratedDefinition(node, parsingContext);
                 if (transformedElementOptional.isPresent()) {
@@ -175,7 +187,6 @@ public class CodigaVisitor {
                          * the decorated element and walk through its children.
                          */
                         getNodeChildren(node).forEach(n -> walkChildren(n, parsingContext));
-
 
                         this.visitedFunctionDefinitions.pop();
                     }
@@ -200,7 +211,6 @@ public class CodigaVisitor {
                 }
                 break;
             }
-
 
             case FOR_STATEMENT: {
                 var transformedOptional = transformForStatement(node, parsingContext);
@@ -245,32 +255,35 @@ public class CodigaVisitor {
 
             case IMPORT_FROM_STATEMENT: {
                 var transformedElementOptional = transformImportFromStatement(node, parsingContext);
-                transformedElementOptional.ifPresent(res -> {
-                    res.setContext(buildContext());
-                    this.fromStatements.add(res);
-                    this.visitedImportStatements.add(res);
-                });
+                transformedElementOptional.ifPresent(
+                    res -> {
+                        res.setContext(buildContext());
+                        this.fromStatements.add(res);
+                        this.visitedImportStatements.add(res);
+                    });
                 walkChildren(node, parsingContext);
                 break;
             }
 
             case IMPORT_STATEMENT: {
                 var transformationResUltOptional = transformImportStatement(node, parsingContext);
-                transformationResUltOptional.ifPresent(res -> {
-                    res.setContext(buildContext());
-                    this.importStatements.add(res);
-                    this.visitedImportStatements.add(res);
-                });
+                transformationResUltOptional.ifPresent(
+                    res -> {
+                        res.setContext(buildContext());
+                        this.importStatements.add(res);
+                        this.visitedImportStatements.add(res);
+                    });
                 walkChildren(node, parsingContext);
                 break;
             }
 
             case TRY_STATEMENT: {
                 var tryStatementOptional = transformTryStatement(node, parsingContext);
-                tryStatementOptional.ifPresent(tryStatement -> {
-                    tryStatement.setContext(buildContext());
-                    this.tryStatements.add(tryStatement);
-                });
+                tryStatementOptional.ifPresent(
+                    tryStatement -> {
+                        tryStatement.setContext(buildContext());
+                        this.tryStatements.add(tryStatement);
+                    });
                 walkChildren(node, parsingContext);
                 break;
             }
@@ -279,7 +292,6 @@ public class CodigaVisitor {
                 walkChildren(node, parsingContext);
                 break;
             }
-
         }
     }
 }

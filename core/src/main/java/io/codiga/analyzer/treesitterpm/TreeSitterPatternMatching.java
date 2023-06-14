@@ -7,7 +7,11 @@ import static io.codiga.utils.TreeSitterUtils.languageToTreeSitterLanguage;
 import ai.serenade.treesitter.Node;
 import ai.serenade.treesitter.Parser;
 import ai.serenade.treesitter.Tree;
-import ai.serenade.treesitter.query.*;
+import ai.serenade.treesitter.query.Query;
+import ai.serenade.treesitter.query.QueryCapture;
+import ai.serenade.treesitter.query.QueryCursor;
+import ai.serenade.treesitter.query.QueryMatch;
+import ai.serenade.treesitter.query.QueryMatchCapture;
 import ai.serenade.treesitter.query.exceptions.QueryException;
 import datadog.trace.api.Trace;
 import io.codiga.analyzer.AnalysisOptions;
@@ -25,7 +29,11 @@ import io.codiga.model.context.Context;
 import io.codiga.model.error.RuleResult;
 import io.codiga.model.tree_sitter.TsPatternMatch;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +42,6 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
     private final AnalyzerFuturePool pool = AnalyzerFuturePool.getInstance();
 
     private final Logger logger = LoggerFactory.getLogger(TreeSitterPatternMatching.class);
-
 
     public TreeSitterPatternMatching(MetricsInterface metrics, ErrorReportingInterface errorReporting, AnalyzerConfiguration configuration) {
         super(metrics, errorReporting, configuration);
@@ -62,34 +69,35 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
             try (Tree tree = parser.parseString(analyzerContext.getCode())) {
                 try (Query query = new Query(treeSitterLanguage.get(), rule.treeSitterQuery())) {
                     List<QueryCapture> captures = query.getCaptures();
-                    QueryCursor queryCursor = query.execute(tree.getRootNode());
-                    QueryMatch queryMatch = queryCursor.nextMatch();
-                    List<TsPatternMatch> matches = new ArrayList<>();
-                    
-                    /**
-                     * For each match
-                     *  - build an object that contains each match for each capture
-                     *  - add the match to the list of matches
-                     */
-                    while (queryMatch != null) {
-                        Map<String, TreeSitterAstElement> match = new HashMap<>();
-                        for (QueryMatchCapture queryMatchCapture : queryMatch.getCaptures()) {
-                            int idx = queryMatchCapture.index;
-                            String name = captures.get(idx).getName();
-                            Node node = queryMatchCapture.node;
-                            Optional<TreeSitterAstElement> astElementOptional = getTreeFromNode(node);
-                            match.put(name, astElementOptional.orElse(null));
+                    try (QueryCursor queryCursor = query.execute(tree.getRootNode())) {
+                        QueryMatch queryMatch = queryCursor.nextMatch();
+                        List<TsPatternMatch> matches = new ArrayList<>();
+
+                        /**
+                         * For each match - build an object that contains each match for each capture - add the
+                         * match to the list of matches
+                         */
+                        while (queryMatch != null) {
+                            Map<String, TreeSitterAstElement> match = new HashMap<>();
+                            for (QueryMatchCapture queryMatchCapture : queryMatch.getCaptures()) {
+                                int idx = queryMatchCapture.index;
+                                String name = captures.get(idx).getName();
+                                Node node = queryMatchCapture.node;
+                                Optional<TreeSitterAstElement> astElementOptional = getTreeFromNode(node);
+                                match.put(name, astElementOptional.orElse(null));
+                            }
+                            matches.add(new TsPatternMatch(match, ruleContext));
+                            queryMatch = queryCursor.nextMatch();
                         }
-                        matches.add(new TsPatternMatch(match, ruleContext));
-                        queryMatch = queryCursor.nextMatch();
+
+                        /**
+                         * We have the list of matches in the variable matches. Invoke the JavaScript rule on
+                         * all these matches.
+                         */
+                        vmContext.prepareForExecution(analyzerContext, matches);
+                        vmContext.execute(rule);
                     }
 
-                    /**
-                     * We have the list of matches in the variable matches.
-                     * Invoke the JavaScript rule on all these matches.
-                     */
-                    vmContext.prepareForExecution(analyzerContext, matches);
-                    vmContext.execute(rule);
                 } catch (QueryException e) {
                     error = Optional.of(ERROR_RULE_INVALID_QUERY);
                 }

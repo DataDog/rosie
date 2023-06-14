@@ -6,7 +6,11 @@ import io.codiga.analyzer.ast.common.ErrorReporting;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.Language;
 import io.codiga.model.error.Violation;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -32,7 +36,7 @@ public class VmContext {
         .denyAccess(Proxy.class)
         .denyAccess(Object.class, false)
         .build();
-    private static final int MAX_STATEMENTS = 1000000;
+    private static final int MAX_STATEMENTS = 10000000;
     private final ErrorReporting errorReporting;
 
   private final String[] helperFunctions =
