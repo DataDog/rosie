@@ -36,7 +36,7 @@ public class VmContext {
         .denyAccess(Proxy.class)
         .denyAccess(Object.class, false)
         .build();
-    private static final int MAX_STATEMENTS = 1000000;
+    private static final int MAX_STATEMENTS = 10000000;
     private final ErrorReporting errorReporting;
 
   private final String[] helperFunctions =
