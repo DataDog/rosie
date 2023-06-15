@@ -75,6 +75,7 @@ public class TsQueryListTest extends E2EBase {
 
         assertEquals(1, response.ruleResponses.size());
         assertEquals(2, response.ruleResponses.get(0).violations.size());
+        logger.info("output: " + response.ruleResponses.stream().map(r -> r.output).toList());
     }
 
 }
