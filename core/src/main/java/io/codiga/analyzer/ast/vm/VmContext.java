@@ -46,28 +46,33 @@ public class VmContext {
             + "    console.log(`${property}: ${JSON.stringify(object[property])}`);\n"
             + "  }\n"
             + "}\n",
-          """
+        """
             function getCode(start, end, code) {
               const lines = code.split("\\n");
               const startLine = start.line - 1;
               const startCol = start.col - 1;
               const endLine = end.line - 1;
               const endCol = end.col - 1;
-              
+
               var startChar = 0;
               for (var i = 0 ; i < startLine ; i++) {
                 startChar = startChar + lines[i].length + 1;
               }
               startChar = startChar + startCol;
-              
+
               var endChar = 0;
               for (var i = 0 ; i < startLine ; i++) {
                 endChar = endChar + lines[i].length + 1;
               }
               endChar = endChar + endCol;
-              
+
               return code.substring(startChar, endChar);
-            };"""
+            };""",
+        """
+        function getCodeForNode(node, code){
+            return getCode(node.start, node.end, code);
+        }
+        """
       };
 
     private final String[] PYTHON_HELPER_FUNCTIONS = new String[]{
