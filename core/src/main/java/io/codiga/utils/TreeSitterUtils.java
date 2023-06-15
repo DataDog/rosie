@@ -81,7 +81,7 @@ public class TreeSitterUtils {
       while (!isFinished) {
 
         if (visitedChildren) {
-          if (treeCursor.gotoNextSibling()) {
+          if (treeCursor.gotoNextSibling()) { 
             visitedChildren = false;
           } else if (treeCursor.gotoParent() && parent != null && parent.parent != null) {
             parent = parent.parent;

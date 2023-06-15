@@ -79,14 +79,22 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
                          */
                         while (queryMatch != null) {
                             Map<String, TreeSitterAstElement> match = new HashMap<>();
+                            Map<String, List<TreeSitterAstElement>> matchesList = new HashMap<>();
                             for (QueryMatchCapture queryMatchCapture : queryMatch.getCaptures()) {
                                 int idx = queryMatchCapture.index;
                                 String name = captures.get(idx).getName();
                                 Node node = queryMatchCapture.node;
                                 Optional<TreeSitterAstElement> astElementOptional = getTreeFromNode(node);
-                                match.put(name, astElementOptional.orElse(null));
+                                if (astElementOptional.isPresent()) {
+                                    match.put(name, astElementOptional.get());
+                                    if(!matchesList.containsKey(name)) {
+                                        matchesList.put(name, new ArrayList<>());
+                                    }
+                                    matchesList.get(name).add(astElementOptional.get());
+                                }
+
                             }
-                            matches.add(new TsPatternMatch(match, ruleContext));
+                            matches.add(new TsPatternMatch(match, matchesList, ruleContext));
                             queryMatch = queryCursor.nextMatch();
                         }
 
