@@ -32,20 +32,6 @@ public class EnvironmentUtils {
         return Optional.ofNullable(System.getenv(variable));
     }
 
-    /**
-     * Get an environment variable. If it does not exits, returns the default value
-     *
-     * @param variable
-     * @return
-     */
-    public static String getEnvironmentValue(String variable, String defaultVal) {
-        var envVar = System.getenv(variable);
-        if (envVar == null) {
-            return defaultVal;
-        }
-        return envVar;
-    }
-
     public static Optional<Integer> getEnvironmentValueAsNumber(String variable) {
         try {
             return getEnvironmentValue(variable).map(Integer::parseInt);

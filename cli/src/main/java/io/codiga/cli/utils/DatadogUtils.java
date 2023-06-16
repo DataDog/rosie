@@ -107,22 +107,12 @@ public class DatadogUtils {
      * @return the list of rules to use
      */
     public static List<AnalyzerRule> getRulesFromDatadog(Configuration configuration) {
-        var appKey = EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.DATADOG_APP_KEY, EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.DD_APP_KEY, ""));
-        var apiKey = EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.DATADOG_API_KEY, EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.DD_API_KEY, ""));
+        var appKey = getCredential(EnvironmentUtils.DATADOG_APP_KEY, EnvironmentUtils.DD_APP_KEY);
+        var apiKey = getCredential(EnvironmentUtils.DATADOG_API_KEY, EnvironmentUtils.DD_API_KEY);
+
         var siteOptional = EnvironmentUtils.getEnvironmentValue(DD_SITE);
         final String site = siteOptional.orElse(DEFAULT_SITE);
         List<AnalyzerRule> result = new ArrayList<>();
-
-
-        if (apiKey.isEmpty()) {
-            System.err.println(String.format("Variable %s not defined", EnvironmentUtils.DATADOG_API_KEY));
-            System.exit(2);
-        }
- 
-        if (appKey.isEmpty()) {
-            System.err.println(String.format("Variable %s not defined", EnvironmentUtils.DATADOG_APP_KEY));
-            System.exit(2);
-        }
 
         for (String ruleset : configuration.getRulesets()) {
             var client = HttpClient.newHttpClient();
@@ -148,5 +138,27 @@ public class DatadogUtils {
             }
         }
         return result;
+    }
+
+    /**
+     * Get a Datadog credential from Environment Variables using both prefixes `DATADOG_` and `DD_`.
+     * If none variable is set, the process exists with status=2.
+     * If both variables are set, the variable that has the `DATADOG_` prefix is used.
+     * @param datadogKey The environment variable key with the `DATADOG_` prefix.
+     * @param ddKey The environment variable key with the `DD_` prefix.
+     * @return The credential
+     */
+    private static String getCredential(String datadogKey, String ddKey) {
+        var datadogCredentialKey = EnvironmentUtils.getEnvironmentValue(datadogKey);
+        var ddCredentialKey = EnvironmentUtils.getEnvironmentValue(ddKey);
+
+        if (datadogCredentialKey.isEmpty() && ddCredentialKey.isEmpty()) {
+            System.err.println(String.format("Variable %s not defined", datadogKey));
+            System.exit(2);
+            return null;
+        } else if(datadogCredentialKey.isPresent() && ddCredentialKey.isPresent()) {
+            System.out.println(String.format("WARNING: both %s and %s environment variables are defined, using %s", datadogKey, ddKey, datadogKey));
+            return datadogCredentialKey.get();
+        } else return datadogCredentialKey.orElseGet(ddCredentialKey::get);
     }
 }
