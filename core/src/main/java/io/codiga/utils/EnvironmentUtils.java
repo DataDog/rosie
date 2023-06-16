@@ -10,9 +10,11 @@ public class EnvironmentUtils {
 
     public final static String DATADOG_HOSTNAME = "localhost";
     public final static String DATADOG_PORT = "8125";
-    public static final String DATADOG_API_KEY = "DD_API_KEY";
-    public static final String DATADOG_APP_KEY = "DD_APP_KEY";
-    public static final String DATADOG_SITE = "DD_SITE";
+    public static final String DATADOG_API_KEY = "DATADOG_API_KEY";
+    public static final String DATADOG_APP_KEY = "DATADOG_APP_KEY";
+    public static final String DD_API_KEY = "DD_API_KEY";
+    public static final String DD_APP_KEY = "DD_APP_KEY";
+    public static final String DD_SITE = "DD_SITE";
 
     public final static String PYTHON_FORCE_ANTLR = "PYTHON_FORCE_ANTLR";
 
