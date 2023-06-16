@@ -1,6 +1,6 @@
 package io.codiga.cli.utils;
 
-import static io.codiga.utils.EnvironmentUtils.DATADOG_SITE;
+import static io.codiga.utils.EnvironmentUtils.DD_SITE;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -107,9 +107,9 @@ public class DatadogUtils {
      * @return the list of rules to use
      */
     public static List<AnalyzerRule> getRulesFromDatadog(Configuration configuration) {
-        var appKey = EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.DATADOG_APP_KEY);
-        var apiKey = EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.DATADOG_API_KEY);
-        var siteOptional = EnvironmentUtils.getEnvironmentValue(DATADOG_SITE);
+        var appKey = EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.DATADOG_APP_KEY, EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.DD_APP_KEY, ""));
+        var apiKey = EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.DATADOG_API_KEY, EnvironmentUtils.getEnvironmentValue(EnvironmentUtils.DD_API_KEY, ""));
+        var siteOptional = EnvironmentUtils.getEnvironmentValue(DD_SITE);
         final String site = siteOptional.orElse(DEFAULT_SITE);
         List<AnalyzerRule> result = new ArrayList<>();
 
@@ -131,8 +131,8 @@ public class DatadogUtils {
             var request = HttpRequest.newBuilder(
                     URI.create(String.format("https://api.%s/api/v2/static-analysis/rulesets/%s", site, ruleset)))
                 .header("accept", "application/json")
-                .header("dd-api-key", apiKey.get())
-                .header("dd-application-key", appKey.get())
+                .header("dd-api-key", apiKey)
+                .header("dd-application-key", appKey)
                 .build();
 
             try {
