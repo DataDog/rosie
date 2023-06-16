@@ -158,7 +158,18 @@ public class ServerMainController {
                             decodedDescription = new String(Base64.getDecoder().decode(r.description.getBytes()));
                         }
 
-                        return new AnalyzerRule(r.id, decodedDescription, r.language, r.type, r.entityChecked, decodedRuleCode, decodedRegex, decodedTreeSitterQuery, r.variables);
+                        return AnalyzerRule
+                            .builder()
+                            .name(r.id)
+                            .description(decodedDescription)
+                            .language(r.language)
+                            .entityChecked(r.entityChecked)
+                            .type(r.type)
+                            .code(decodedRuleCode)
+                            .regex(decodedRegex)
+                            .treeSitterQuery(decodedTreeSitterQuery)
+                            .variables(r.variables)
+                            .build();
                     }).toList();
         } catch (IllegalArgumentException iae) {
             logger.error("error decoding a rule field: " + request.rules);

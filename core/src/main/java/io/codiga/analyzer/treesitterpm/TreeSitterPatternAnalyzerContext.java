@@ -10,7 +10,6 @@ import io.codiga.analyzer.ast.common.AnalyzerContext;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.model.Language;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.Cleaner;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
@@ -26,12 +25,14 @@ public class TreeSitterPatternAnalyzerContext extends AnalyzerContext {
     @Getter
     private Optional<Tree> tree = Optional.empty();
 
+    @Getter
+    private String inlineCode;
+
     private final Logger logger = LoggerFactory.getLogger(TreeSitterPatternAnalyzerContext.class);
 
-    private static final Cleaner CLEANER = Cleaner.create();
 
     @Override
-    public void finalize() {
+    protected void finalize() {
         this.tree.ifPresent(ResourceWithPointer::close);
     }
 

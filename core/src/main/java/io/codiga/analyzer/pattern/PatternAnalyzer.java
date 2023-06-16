@@ -31,7 +31,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
 
         // no pattern to match, return directly
         if (patternObjects.isEmpty()) {
-            return new RuleResult(rule.name(), List.of(), List.of(), null, null, 0);
+            return new RuleResult(rule.name, List.of(), List.of(), null, null, 0);
         }
 
         VmContext vmContext = new VmContext(analyzerContext);
@@ -47,7 +47,7 @@ public class PatternAnalyzer extends AnalyzerCommon {
 
         long endTimestamp = System.currentTimeMillis();
         long executionTimeMs = endTimestamp - startTimestamp;
-        return new RuleResult(rule.name(), vmContext.getViolations(), List.of(), null, output, executionTimeMs);
+        return new RuleResult(rule.name, vmContext.getViolations(), List.of(), null, output, executionTimeMs);
     }
 
 

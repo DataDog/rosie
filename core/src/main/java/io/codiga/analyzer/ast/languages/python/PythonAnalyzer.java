@@ -1,5 +1,7 @@
 package io.codiga.analyzer.ast.languages.python;
 
+import static io.codiga.metrics.MetricsName.METRIC_DISTRIBUTION_PARSING_TIME_PER_LANGUAGE;
+
 import datadog.trace.api.Trace;
 import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.ast.common.AnalyzerCommon;
@@ -12,12 +14,9 @@ import io.codiga.metrics.MetricsInterface;
 import io.codiga.model.Language;
 import io.codiga.model.ast.common.AstElement;
 import io.codiga.model.error.RuleResult;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-
-import static io.codiga.metrics.MetricsName.METRIC_DISTRIBUTION_PARSING_TIME_PER_LANGUAGE;
 
 public class PythonAnalyzer extends AnalyzerCommon {
 
@@ -54,13 +53,13 @@ public class PythonAnalyzer extends AnalyzerCommon {
 
         vmContext.initializeRule(rule);
 
-        List<AstElement> astElements = context.getElementsToCheck(rule.entityChecked());
+        List<AstElement> astElements = context.getElementsToCheck(rule.entityChecked);
 
-        addVariablesToElements(astElements, rule.variables());
+        addVariablesToElements(astElements, rule.variables);
 
         // no object to analyze, return directly and do not waste resource allocating a VM
         if (astElements.isEmpty()) {
-            return new RuleResult(rule.name(), List.of(), List.of(), null, null, 0);
+            return new RuleResult(rule.name, List.of(), List.of(), null, null, 0);
         }
 
         vmContext.prepareForExecution(analyzerContext, astElements);
@@ -74,7 +73,7 @@ public class PythonAnalyzer extends AnalyzerCommon {
         vmContext.shutdown();
         long endTimestamp = System.currentTimeMillis();
         long executionTimeMs = endTimestamp - startTimestamp;
-        return new RuleResult(rule.name(), vmContext.getViolations(), List.of(), null, finalOutput, executionTimeMs);
+        return new RuleResult(rule.name, vmContext.getViolations(), List.of(), null, finalOutput, executionTimeMs);
     }
 
 

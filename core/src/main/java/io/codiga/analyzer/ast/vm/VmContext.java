@@ -47,8 +47,13 @@ public class VmContext {
             + "  }\n"
             + "}\n",
         """
+            var lines = null;
+            var linesLength = [];
             function getCode(start, end, code) {
-              const lines = code.split("\\n");
+              if (!lines) {
+                lines = code.split("\\n");
+              }
+              
               const startLine = start.line - 1;
               const startCol = start.col - 1;
               const endLine = end.line - 1;
@@ -56,13 +61,19 @@ public class VmContext {
 
               var startChar = 0;
               for (var i = 0 ; i < startLine ; i++) {
+                if(!linesLength[i]) {
+                    linesLength[i] = lines[i].length;
+                }
                 startChar = startChar + lines[i].length + 1;
               }
               startChar = startChar + startCol;
 
               var endChar = 0;
-              for (var i = 0 ; i < startLine ; i++) {
-                endChar = endChar + lines[i].length + 1;
+              for (var i = 0 ; i < endLine ; i++) {
+                if(!linesLength[i]) {
+                    linesLength[i] = lines[i].length;
+                }
+                endChar = endChar + linesLength[i] + 1;
               }
               endChar = endChar + endCol;
 
@@ -208,7 +219,7 @@ public class VmContext {
      */
     public void initializeRule(AnalyzerRule analyzerRule) {
 
-        context.eval("js", analyzerRule.code());
+        context.eval("js", analyzerRule.code);
     }
 
     @Trace(operationName = "VmContext.prepareForExecution")

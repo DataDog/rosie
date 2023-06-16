@@ -6,15 +6,14 @@ import io.codiga.model.pattern.PatternObject;
 import io.codiga.model.pattern.PatternVariable;
 import io.codiga.model.pattern.PatternVariableValue;
 import io.codiga.utils.PositionFinder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PatternMatcher {
 
@@ -96,7 +95,7 @@ public class PatternMatcher {
             }
         }).toList();
 
-        String regularExpression = prepareStringForRegularExpression(this.analyzerRule.regex());
+        String regularExpression = prepareStringForRegularExpression(this.analyzerRule.regex);
         for (PatternVariable patternVariable : orderedPatternVariables) {
             regularExpression = regularExpression.substring(0, patternVariable.start()) + "(.+)" + regularExpression.substring(patternVariable.end());
         }
@@ -113,7 +112,7 @@ public class PatternMatcher {
      */
     public List<PatternObject> getPatternObjects() {
         List<PatternObject> patternObjects = new ArrayList<>();
-        List<PatternVariable> patternVariables = this.getVariablesFromPattern(analyzerRule.regex());
+        List<PatternVariable> patternVariables = this.getVariablesFromPattern(analyzerRule.regex);
         String regularExpression = this.getRegularExpression(patternVariables);
 
 //        logger.info(String.format("regular expression: %s", regularExpression));

@@ -69,7 +69,7 @@ public class Main {
     System.out.println("============");
     rules.forEach(
         r -> {
-          System.out.println(r.name());
+          System.out.println(r.name);
         });
   }
 
@@ -228,10 +228,10 @@ public class Main {
     }
 
     // ignore paths and configuration specified = no analysis
-    if (!ignorePaths.isEmpty() && configurationFile.isPresent()) {
-      System.err.println("cannot specify ignore path when a configuration file is detected");
-      System.exit(1);
-    }
+//    if (!ignorePaths.isEmpty() && configurationFile.isPresent()) {
+//      System.err.println("cannot specify ignore path when a configuration file is detected");
+//      System.exit(1);
+//    }
 
     // read the rules
     List<AnalyzerRule> rules = List.of();
@@ -312,7 +312,7 @@ public class Main {
 
       // Get the list of rules for this language
       List<AnalyzerRule> rulesForLanguage =
-          rules.stream().filter(r -> r.language() == entry.getKey()).toList();
+          rules.stream().filter(r -> r.language == entry.getKey()).toList();
 
       // For each file
       for (Path path : filesForLanguage) {
@@ -333,7 +333,7 @@ public class Main {
                   .get(i)
                   .forEach(
                       r -> {
-                        System.out.printf("   %s%n", r.name());
+                        System.out.printf("   %s%n", r.name);
                       });
             }
           }

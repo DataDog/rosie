@@ -19,9 +19,9 @@ public class SarifToolDriverRule {
     public static SarifToolDriverRule fromAnalyzerRule(AnalyzerRule analyzerRule) {
         return SarifToolDriverRule
                 .builder()
-                .fullDescription(SarifMultiformatMessage.from(analyzerRule.description()))
-                .helpUri(String.format("https://static-analysis.datadoghq.com/%s", analyzerRule.name()))
-                .id(analyzerRule.name())
+                .fullDescription(SarifMultiformatMessage.from(analyzerRule.description))
+                .helpUri(String.format("https://static-analysis.datadoghq.com/%s", analyzerRule.name))
+                .id(analyzerRule.name)
                 .build();
     }
 }

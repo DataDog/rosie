@@ -31,8 +31,6 @@ public class DatadogUtils {
      * @return
      */
     public static Optional<AnalyzerRule> getRuleFromJson(JsonNode node, String rulesetName) {
-        System.out.println(node.toString());
-
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
@@ -53,12 +51,22 @@ public class DatadogUtils {
                 String decodedDescription = description != null ? new String(Base64.getDecoder().decode(description.asText())) : null;
                 String decodedRegex = regex != null ? new String(Base64.getDecoder().decode(regex.asText())) : null;
                 String decodedTreeSitterQuery = treeSitterQuery != null ? new String(Base64.getDecoder().decode(treeSitterQuery.asText())) : null;
-
-                return Optional.of(
-                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), decodedDescription, res.language(), res.type(), res.entityChecked(), decodedCode, decodedRegex, decodedTreeSitterQuery, res.variables())
-                );
+                var analysisRule = AnalyzerRule
+                    .builder()
+                    .name(String.format("%s/%s", rulesetName, res.name))
+                    .description(decodedDescription)
+                    .language(res.language)
+                    .entityChecked(res.entityChecked)
+                    .code(decodedCode)
+                    .type(res.type)
+                    .regex(decodedRegex)
+                    .treeSitterQuery(decodedTreeSitterQuery)
+                    .variables(res.variables)
+                    .build();
+                return Optional.of(analysisRule);
             }
         } catch (IllegalArgumentException e) {
+            e.printStackTrace();
             System.err.println(String.format("error when trying to convert rule from ruleset %s", rulesetName));
         }
         return Optional.empty();

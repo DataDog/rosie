@@ -48,11 +48,13 @@ public class TsQueryListTest extends E2EBase {
                     if(f) {
                         const functionName = f.children.filter(c => c.fieldName === "name")[0];
                         const name = getCodeForNode(functionName, code);
-                        
-                        const error = buildError(functionName.start.line, functionName.start.col, functionName.end.line, functionName.end.col, 
-                                                 "invalid name", "CRITICAL", "security");
-    
-                        addError(error);
+                        if(name === "foo" || name === "foo2") {
+                            const error = buildError(functionName.start.line, functionName.start.col, 
+                            functionName.end.line, functionName.end.col, 
+                                                     "invalid name", "CRITICAL", "security");
+        
+                            addError(error);
+                        }
                     }       
                 });
                          

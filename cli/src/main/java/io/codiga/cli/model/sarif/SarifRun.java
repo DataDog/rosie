@@ -3,12 +3,11 @@ package io.codiga.cli.model.sarif;
 import io.codiga.analyzer.rule.AnalyzerRule;
 import io.codiga.cli.model.ViolationWithFilename;
 import io.codiga.model.error.RuleResult;
-import lombok.Builder;
-
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Builder;
 
 /**
  * Describes a single run of an analysis tool, and contains the reported output of that run.
@@ -46,7 +45,7 @@ public class SarifRun {
         int index = 0;
         Map<String, Integer> ruleNameToRuleIndex = new HashMap<>();
         for (AnalyzerRule rule : rules) {
-            ruleNameToRuleIndex.put(rule.name(), index);
+            ruleNameToRuleIndex.put(rule.name, index);
             index = index + 1;
         }
         return ruleNameToRuleIndex;

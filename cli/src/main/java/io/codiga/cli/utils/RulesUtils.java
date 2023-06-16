@@ -17,11 +17,22 @@ public class RulesUtils {
     public static List<AnalyzerRule> getRulesFromFile(String path) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(new File(path), Rules.class).rules.stream().map(r -> {
-            String decodedCode = new String(Base64.getDecoder().decode(r.code()));
-            String decodedDescription = r.description() != null ? new String(Base64.getDecoder().decode(r.description())):"";
-            String decodedRegex = r.regex() != null ? new String(Base64.getDecoder().decode(r.regex())):null;
-            String decodedTreeSitterQuery = r.treeSitterQuery() != null ? new String(Base64.getDecoder().decode(r.treeSitterQuery())):null;
-            return new AnalyzerRule(r.name(), decodedDescription, r.language(), r.type(), r.entityChecked(), decodedCode, decodedRegex, decodedTreeSitterQuery, r.variables());
+            String decodedCode = new String(Base64.getDecoder().decode(r.code));
+            String decodedDescription = r.description != null ? new String(Base64.getDecoder().decode(r.description)):"";
+            String decodedRegex = r.regex != null ? new String(Base64.getDecoder().decode(r.regex)):null;
+            String decodedTreeSitterQuery = r.treeSitterQuery != null ? new String(Base64.getDecoder().decode(r.treeSitterQuery)):null;
+            return AnalyzerRule
+                .builder()
+                .name(r.name)
+                .description(decodedDescription)
+                .language(r.language)
+                .type(r.type)
+                .entityChecked(r.entityChecked)
+                .code(decodedCode)
+                .regex(decodedRegex)
+                .treeSitterQuery(decodedTreeSitterQuery)
+                .variables(r.variables)
+                .build();
         }).collect(Collectors.toList());
     }
 

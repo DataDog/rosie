@@ -1,6 +1,5 @@
 package io.codiga.analyzer.treesitterpm;
 
-import static io.codiga.model.RuleErrorCode.ERROR_RULE_INVALID_QUERY;
 import static io.codiga.utils.TreeSitterUtils.getTreeFromNode;
 import static io.codiga.utils.TreeSitterUtils.languageToTreeSitterLanguage;
 
@@ -10,7 +9,6 @@ import ai.serenade.treesitter.query.QueryCapture;
 import ai.serenade.treesitter.query.QueryCursor;
 import ai.serenade.treesitter.query.QueryMatch;
 import ai.serenade.treesitter.query.QueryMatchCapture;
-import ai.serenade.treesitter.query.exceptions.QueryException;
 import datadog.trace.api.Trace;
 import io.codiga.analyzer.AnalysisOptions;
 import io.codiga.analyzer.AnalyzerFuturePool;
@@ -57,21 +55,22 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
     long startTimestamp = System.currentTimeMillis();
     Context ruleContext =
         new io.codiga.model.context.Context(
-            treeSitterPatternAnalyzerContext.getCode(), rule.variables());
+            treeSitterPatternAnalyzerContext.getCode(), rule.variables);
 
     Optional<String> error = Optional.empty(); // put the error if any
-    Optional<Long> treeSitterLanguage = languageToTreeSitterLanguage(rule.language());
+    Optional<Long> treeSitterLanguage = languageToTreeSitterLanguage(rule.language);
 
     // Language is not supported
     if (treeSitterLanguage.isEmpty()) {
-      return new RuleResult(rule.name(), List.of(), List.of(), null, null, 0);
+      return new RuleResult(rule.name, List.of(), List.of(), null, null, 0);
     }
 
     VmContext vmContext = new VmContext(treeSitterPatternAnalyzerContext);
     vmContext.initializeRule(rule);
 
     if (treeSitterPatternAnalyzerContext.getTree().isPresent()) {
-      try (Query query = new Query(treeSitterLanguage.get(), rule.treeSitterQuery())) {
+      Query query = rule.getTreeSitterQueryObject();
+      if (query != null) {
         List<QueryCapture> captures = query.getCaptures();
         try (QueryCursor queryCursor =
             query.execute(treeSitterPatternAnalyzerContext.getTree().get().getRootNode())) {
@@ -110,8 +109,6 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
           vmContext.execute(rule);
         }
 
-      } catch (QueryException e) {
-        error = Optional.of(ERROR_RULE_INVALID_QUERY);
       }
     }
 
@@ -124,10 +121,10 @@ public class TreeSitterPatternMatching extends AnalyzerCommon {
     // if there is an error, we return an rule with the error and no violation
     if (error.isPresent()) {
       return new RuleResult(
-          rule.name(), List.of(), error.stream().toList(), null, output, executionTimeMs);
+          rule.name, List.of(), error.stream().toList(), null, output, executionTimeMs);
     }
     return new RuleResult(
-        rule.name(), vmContext.getViolations(), List.of(), null, output, executionTimeMs);
+        rule.name, vmContext.getViolations(), List.of(), null, output, executionTimeMs);
   }
 
   @Trace(operationName = "TreeSitterPatternMatching.buildContext")
