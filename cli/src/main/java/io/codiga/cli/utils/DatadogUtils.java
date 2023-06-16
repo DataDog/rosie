@@ -88,6 +88,12 @@ public class DatadogUtils {
         }
 
         var name = attributesNode.get("name").asText();
+
+        if(attributesNode.get("rules").isNull()) {
+            System.err.println(String.format("ruleset %s has no rule", name));
+            return List.of();
+        }
+
         var rules = (ArrayNode) attributesNode.get("rules");
 
 
@@ -117,7 +123,7 @@ public class DatadogUtils {
         for (String ruleset : configuration.getRulesets()) {
             var client = HttpClient.newHttpClient();
 
-
+            System.out.println("fetching ruleset: " + ruleset);
             var request = HttpRequest.newBuilder(
                     URI.create(String.format("https://api.%s/api/v2/static-analysis/rulesets/%s", site, ruleset)))
                 .header("accept", "application/json")
