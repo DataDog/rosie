@@ -227,10 +227,12 @@ public class Main {
       System.exit(1);
     }
 
+    // TODO(julien.delange) re-enable this logic once we support configuration file and ignore paths
     // ignore paths and configuration specified = no analysis
     if (!ignorePaths.isEmpty() && configurationFile.isPresent()) {
-      System.err.println("cannot specify ignore path when a configuration file is detected");
-      System.exit(1);
+//      System.err.println("cannot specify ignore path when a configuration file is detected");
+//      System.exit(1);
+      System.out.println("ignore paths and configuration file detected together");
     }
 
     // read the rules
