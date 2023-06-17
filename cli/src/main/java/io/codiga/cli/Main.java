@@ -182,29 +182,15 @@ public class Main {
     String output = cmd.getOptionValue(optionOutput);
     String outputFormatString = cmd.getOptionValue(optionOutputFormat);
     String testModeString = cmd.getOptionValue(optionTestMode);
-    String[] ignorePathValues = cmd.getOptionValues(optionIgnorePath);
-    List<String> ignorePaths =
-        ignorePathValues == null ? List.of() : Arrays.stream(ignorePathValues).toList();
+    String[] ignorePathValuesFromOption = cmd.getOptionValues(optionIgnorePath);
+    final List<String> ignorePaths;
+
 
     boolean debug = debugString != null && debugString.equalsIgnoreCase("true");
     boolean useTreeSitter =
         useTreeSitterString != null && useTreeSitterString.equalsIgnoreCase("true");
     OutputFormat outputFormat = getOutputFormatFromString(outputFormatString);
     boolean inTestMode = testModeString != null && testModeString.equalsIgnoreCase("true");
-
-    System.out.println("Configuration");
-    System.out.println("===================");
-    System.out.printf("Version       : %s%n", Version.CURRENT_VERSION);
-    System.out.printf("# cores       : %s%n", Runtime.getRuntime().availableProcessors());
-    System.out.printf("Debug         : %s%n", debug);
-    System.out.printf("Directory     : %s%n", directory);
-    System.out.printf("Rules file    : %s%n", rulesFile);
-    System.out.printf("Debug         : %s%n", debugString);
-    System.out.printf("Tree-Sitter   : %s%n", useTreeSitter);
-    System.out.printf("Output file   : %s%n", output);
-    System.out.printf("Output format : %s%n", outputFormat.name());
-    System.out.printf("Ignore paths  : %s%n", String.join(",", ignorePaths));
-    System.out.printf("Test mode     : %s%n", inTestMode);
 
     Path directoryPath = Paths.get(directory);
 
@@ -220,20 +206,38 @@ public class Main {
     if (Files.isReadable(configurationPath) && Files.isRegularFile(configurationPath)) {
       configurationFile = getConfigurationFromFile(new File(configurationPath.toUri()));
     }
-
+    
     // no configuration and no rule file = no analysis
     if (rulesFile == null && configurationFile.isEmpty()) {
       System.err.println("no valid rule file specified and no configuration file");
       System.exit(1);
     }
 
-    // TODO(julien.delange) re-enable this logic once we support configuration file and ignore paths
     // ignore paths and configuration specified = no analysis
-    if (!ignorePaths.isEmpty() && configurationFile.isPresent()) {
-//      System.err.println("cannot specify ignore path when a configuration file is detected");
-//      System.exit(1);
-      System.out.println("ignore paths and configuration file detected together");
+    if(configurationFile.isPresent() && ignorePathValuesFromOption != null && ignorePathValuesFromOption.length > 0) {
+      System.err.println("configuration file detected, ignore-path option cannot be used");
+      System.exit(1);
     }
+
+    if (configurationFile.isPresent()) {
+      ignorePaths = configurationFile.get().getIgnorePaths();
+    } else {
+      ignorePaths = ignorePathValuesFromOption == null ? List.of() : Arrays.stream(ignorePathValuesFromOption).toList();
+    }
+
+    System.out.println("Configuration");
+    System.out.println("===================");
+    System.out.printf("Version       : %s%n", Version.CURRENT_VERSION);
+    System.out.printf("# cores       : %s%n", Runtime.getRuntime().availableProcessors());
+    System.out.printf("Debug         : %s%n", debug);
+    System.out.printf("Directory     : %s%n", directory);
+    System.out.printf("Rules file    : %s%n", rulesFile);
+    System.out.printf("Debug         : %s%n", debugString);
+    System.out.printf("Tree-Sitter   : %s%n", useTreeSitter);
+    System.out.printf("Output file   : %s%n", output);
+    System.out.printf("Output format : %s%n", outputFormat.name());
+    System.out.printf("Ignore paths  : %s%n", String.join(",", ignorePaths));
+    System.out.printf("Test mode     : %s%n", inTestMode);
 
     // read the rules
     List<AnalyzerRule> rules = List.of();

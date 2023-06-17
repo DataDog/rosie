@@ -31,8 +31,6 @@ public class DatadogUtils {
      * @return
      */
     public static Optional<AnalyzerRule> getRuleFromJson(JsonNode node, String rulesetName) {
-        System.out.println(node.toString());
-
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
@@ -123,7 +121,6 @@ public class DatadogUtils {
         for (String ruleset : configuration.getRulesets()) {
             var client = HttpClient.newHttpClient();
 
-            System.out.println("fetching ruleset: " + ruleset);
             var request = HttpRequest.newBuilder(
                     URI.create(String.format("https://api.%s/api/v2/static-analysis/rulesets/%s", site, ruleset)))
                 .header("accept", "application/json")
