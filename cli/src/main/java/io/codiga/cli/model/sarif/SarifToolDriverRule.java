@@ -20,7 +20,7 @@ public class SarifToolDriverRule {
         return SarifToolDriverRule
                 .builder()
                 .fullDescription(SarifMultiformatMessage.from(analyzerRule.description()))
-                .helpUri(String.format("https://static-analysis.datadoghq.com/%s", analyzerRule.name()))
+                .helpUri(String.format("https://docs.datadoghq.com/continuous_integration/static_analysis/rules/%s", analyzerRule.name()))
                 .id(analyzerRule.name())
                 .build();
     }
