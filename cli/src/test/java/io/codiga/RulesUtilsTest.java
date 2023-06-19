@@ -14,7 +14,9 @@ import java.util.logging.Logger;
 
 import static io.codiga.cli.utils.RulesUtils.getRulesFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class RulesUtilsTest {
@@ -91,5 +93,19 @@ public class RulesUtilsTest {
         assert (rules.size() == 1);
         AnalyzerRule rule = rules.stream().findFirst().get();
         assert (rule.variables() == null);
+    }
+
+    @Test
+    @DisplayName("Parse shouldUseAiFix")
+    public void testRulesWithShouldUseAiFix() throws IOException {
+        String file = "src/test/resources/rules-with-should-use-ai-fixes.json";
+        List<AnalyzerRule> rules = getRulesFromFile(file);
+        assert (rules.size() == 3);
+        AnalyzerRule rule1 = rules.stream().findFirst().get();
+        assertTrue(rule1.shouldUseAiFix());
+        AnalyzerRule rule2 = rules.stream().skip(1).findFirst().get();
+        assertFalse(rule2.shouldUseAiFix());
+        AnalyzerRule rule3 = rules.stream().skip(2).findFirst().get();
+        assertNull(rule3.shouldUseAiFix());
     }
 }

@@ -87,7 +87,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -112,7 +112,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -137,7 +137,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -176,8 +176,8 @@ public class SarifUtilsTest {
 
         SarifReport sarifReport = generateReport(
             List.of(
-                new AnalyzerRule("myrule1","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of()),
-                new AnalyzerRule("myrule2","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                new AnalyzerRule("myrule1","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false),
+                new AnalyzerRule("myrule2","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
             List.of(new File("foo/bar").toPath()),
             List.of(violation1, violation2),
             List.of());
@@ -215,7 +215,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -236,7 +236,28 @@ public class SarifUtilsTest {
 
         assertFalse(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of())),
+                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
+                List.of(new File("foo/bar").toPath()),
+                List.of(violation),
+                List.of())));
+    }
+
+    @Test
+    @DisplayName("Check a report with a rule that has an shouldUseAiFix tag of true")
+    public void testShouldAiFixTag() {
+        var violation = ViolationWithFilename.builder()
+            .start(new Position(0, 2))
+            .end(new Position(2, 3))
+            .message("error message")
+            .severity(Severity.ERROR)
+            .category(Category.BEST_PRACTICES)
+            .filename("myfile")
+            .rule("myrule")
+            .build();
+
+        assertFalse(checkCompliance(
+            generateReport(
+                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), true)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
