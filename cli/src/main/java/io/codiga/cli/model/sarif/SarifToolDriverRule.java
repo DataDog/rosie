@@ -2,6 +2,7 @@ package io.codiga.cli.model.sarif;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.codiga.analyzer.rule.AnalyzerRule;
+import java.util.List;
 import lombok.Builder;
 
 /**
@@ -15,13 +16,29 @@ public class SarifToolDriverRule {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public SarifMultiformatMessage fullDescription;
     public String helpUri;
+    public SarifPropertyBag properties;
 
     public static SarifToolDriverRule fromAnalyzerRule(AnalyzerRule analyzerRule) {
         return SarifToolDriverRule
                 .builder()
                 .fullDescription(SarifMultiformatMessage.from(analyzerRule.description()))
                 .helpUri(String.format("https://static-analysis.datadoghq.com/%s", analyzerRule.name()))
+                .properties(SarifPropertyBag.builder().tags(createPropertyTags(analyzerRule)).build())
                 .id(analyzerRule.name())
                 .build();
+    }
+
+    /**
+     * Create a list of tags for the properties object.
+     * @param analyzerRule The rule that's used to run an analysis
+     * @return A list of tags
+     */
+    public static List<String> createPropertyTags(AnalyzerRule analyzerRule) {
+        List<String> properties = new java.util.ArrayList<>();
+        Boolean shouldUseAiFix = analyzerRule.shouldUseAiFix();
+        if(shouldUseAiFix != null && shouldUseAiFix) {
+            properties.add("shouldUseAiFix:true");
+        }
+        return properties;
     }
 }

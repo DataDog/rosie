@@ -53,7 +53,7 @@ public class DatadogUtils {
                 String decodedTreeSitterQuery = treeSitterQuery != null ? new String(Base64.getDecoder().decode(treeSitterQuery.asText())) : null;
 
                 return Optional.of(
-                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), decodedDescription, res.language(), res.type(), res.entityChecked(), decodedCode, decodedRegex, decodedTreeSitterQuery, res.variables())
+                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), decodedDescription, res.language(), res.type(), res.entityChecked(), decodedCode, decodedRegex, decodedTreeSitterQuery, res.variables(), res.shouldUseAiFix())
                 );
             }
         } catch (IllegalArgumentException e) {

@@ -16,7 +16,10 @@ public record AnalyzerRule(String name,
                            String regex, // only defined when using a pattern
                            @JsonProperty("tree_sitter_query")
                            String treeSitterQuery, // the tree-sitter query when we are using pattern matching
-                           Map<String, String> variables) {
+                           Map<String, String> variables,
+                           @JsonProperty(access = JsonProperty.Access.WRITE_ONLY, value = "should_use_ai_fix")
+                           Boolean shouldUseAiFix
+) {
     /**
      * Indicate is a rule is valid for a given language (or not)
      *
