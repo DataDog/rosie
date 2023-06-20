@@ -25,7 +25,7 @@ public class SarifToolDriverRule {
                 .builder()
                 .shortDescription(SarifMultiformatMessage.from(analyzerRule.shortDescription()))
                 .fullDescription(SarifMultiformatMessage.from(analyzerRule.description()))
-                .helpUri(String.format("https://static-analysis.datadoghq.com/%s", analyzerRule.name()))
+                .helpUri(String.format("https://docs.datadoghq.com/continuous_integration/static_analysis/rules/%s", analyzerRule.name()))
                 .properties(SarifPropertyBag.builder().tags(createPropertyTags(analyzerRule)).build())
                 .id(analyzerRule.name())
                 .build();
