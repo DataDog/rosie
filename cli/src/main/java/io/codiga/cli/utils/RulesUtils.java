@@ -18,10 +18,11 @@ public class RulesUtils {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(new File(path), Rules.class).rules.stream().map(r -> {
             String decodedCode = new String(Base64.getDecoder().decode(r.code()));
+            String decodedShortDescription = r.shortDescription() != null ? new String(Base64.getDecoder().decode(r.shortDescription())):"";
             String decodedDescription = r.description() != null ? new String(Base64.getDecoder().decode(r.description())):"";
             String decodedRegex = r.regex() != null ? new String(Base64.getDecoder().decode(r.regex())):null;
             String decodedTreeSitterQuery = r.treeSitterQuery() != null ? new String(Base64.getDecoder().decode(r.treeSitterQuery())):null;
-            return new AnalyzerRule(r.name(), decodedDescription, r.language(), r.type(), r.entityChecked(), decodedCode, decodedRegex, decodedTreeSitterQuery, r.variables());
+            return new AnalyzerRule(r.name(), decodedShortDescription, decodedDescription, r.language(), r.type(), r.entityChecked(), decodedCode, decodedRegex, decodedTreeSitterQuery, r.variables(), r.shouldUseAiFix());
         }).collect(Collectors.toList());
     }
 

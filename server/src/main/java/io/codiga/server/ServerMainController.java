@@ -153,12 +153,17 @@ public class ServerMainController {
                             decodedRegex = new String(Base64.getDecoder().decode(r.regex.getBytes()));
                         }
 
+                        String decodedShortDescription = null;
+                        if (r.shortDescription != null) {
+                            decodedShortDescription = new String(Base64.getDecoder().decode(r.shortDescription.getBytes()));
+                        }
+                        
                         String decodedDescription = null;
                         if (r.description != null) {
                             decodedDescription = new String(Base64.getDecoder().decode(r.description.getBytes()));
                         }
 
-                        return new AnalyzerRule(r.id, decodedDescription, r.language, r.type, r.entityChecked, decodedRuleCode, decodedRegex, decodedTreeSitterQuery, r.variables);
+                        return new AnalyzerRule(r.id, decodedShortDescription, decodedDescription, r.language, r.type, r.entityChecked, decodedRuleCode, decodedRegex, decodedTreeSitterQuery, r.variables, false);
                     }).toList();
         } catch (IllegalArgumentException iae) {
             logger.error("error decoding a rule field: " + request.rules);

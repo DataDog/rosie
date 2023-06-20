@@ -42,18 +42,20 @@ public class DatadogUtils {
             }
 
             String code = node.get("code").asText();
+            JsonNode shortDescription = node.get("short_description");
             JsonNode description = node.get("description");
             JsonNode regex = node.get("regex");
             JsonNode treeSitterQuery = node.get("tree_sitter_query");
             
             if (code != null) {
                 String decodedCode = new String(Base64.getDecoder().decode(code));
+                String decodedShortDescription = shortDescription != null ? new String(Base64.getDecoder().decode(shortDescription.asText())) : null;
                 String decodedDescription = description != null ? new String(Base64.getDecoder().decode(description.asText())) : null;
                 String decodedRegex = regex != null ? new String(Base64.getDecoder().decode(regex.asText())) : null;
                 String decodedTreeSitterQuery = treeSitterQuery != null ? new String(Base64.getDecoder().decode(treeSitterQuery.asText())) : null;
 
                 return Optional.of(
-                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), decodedDescription, res.language(), res.type(), res.entityChecked(), decodedCode, decodedRegex, decodedTreeSitterQuery, res.variables())
+                    new AnalyzerRule(String.format("%s/%s", rulesetName, res.name()), decodedShortDescription, decodedDescription, res.language(), res.type(), res.entityChecked(), decodedCode, decodedRegex, decodedTreeSitterQuery, res.variables(), res.shouldUseAiFix())
                 );
             }
         } catch (IllegalArgumentException e) {

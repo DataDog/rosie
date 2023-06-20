@@ -43,11 +43,17 @@ public class AnalyzerWarmup {
                                     .map(analyzerRule ->
                                             new AnalyzerRule(
                                                     analyzerRule.name(),
+                                                    analyzerRule.shortDescription(),
                                                     analyzerRule.description(),
                                                     analyzerRule.language(),
                                                     analyzerRule.type(),
                                                     analyzerRule.entityChecked(),
-                                                    new String(Base64.getDecoder().decode(analyzerRule.code())), analyzerRule.regex(), null, analyzerRule.variables())
+                                                    new String(Base64.getDecoder().decode(analyzerRule.code())),
+                                                    analyzerRule.regex(),
+                                                    null,
+                                                    analyzerRule.variables(),
+                                                    analyzerRule.shouldUseAiFix()
+                                            )
                                     ).collect(Collectors.toList()),
                             options);
                     AnalysisResult analysisResult = futureResult.join();
