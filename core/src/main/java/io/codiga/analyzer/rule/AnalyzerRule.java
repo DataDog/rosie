@@ -7,6 +7,8 @@ import io.codiga.model.RuleType;
 import java.util.Map;
 
 public record AnalyzerRule(String name,
+                           @JsonProperty("short_description")
+                           String shortDescription,
                            String description,
                            Language language,
                            RuleType type,

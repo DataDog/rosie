@@ -87,7 +87,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
+                List.of(new AnalyzerRule("myrule", "myshortdescription", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -112,7 +112,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
+                List.of(new AnalyzerRule("myrule", "myshortdescription", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -137,7 +137,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
+                List.of(new AnalyzerRule("myrule", "myshortdescription","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -176,15 +176,17 @@ public class SarifUtilsTest {
 
         SarifReport sarifReport = generateReport(
             List.of(
-                new AnalyzerRule("myrule1","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false),
-                new AnalyzerRule("myrule2","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
+                new AnalyzerRule("myrule1", "myshortdescription","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false),
+                new AnalyzerRule("myrule2", "myshortdescription","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
             List.of(new File("foo/bar").toPath()),
             List.of(violation1, violation2),
             List.of());
 
         assertEquals("myrule1", sarifReport.runs.get(0).tool.driver.rules.get(0).id);
+        assertEquals("myshortdescription", sarifReport.runs.get(0).tool.driver.rules.get(0).shortDescription.text);
         assertEquals("myruledescription", sarifReport.runs.get(0).tool.driver.rules.get(0).fullDescription.text);
         assertEquals("myrule2", sarifReport.runs.get(0).tool.driver.rules.get(1).id);
+        assertEquals("myshortdescription", sarifReport.runs.get(0).tool.driver.rules.get(1).shortDescription.text);
         assertEquals("myruledescription", sarifReport.runs.get(0).tool.driver.rules.get(1).fullDescription.text);
 
         assertEquals("myrule2", sarifReport.runs.get(0).results.get(0).ruleId);
@@ -215,7 +217,7 @@ public class SarifUtilsTest {
 
         assertTrue(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
+                List.of(new AnalyzerRule("myrule", "myshortdescription","myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -236,7 +238,7 @@ public class SarifUtilsTest {
 
         assertFalse(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
+                List.of(new AnalyzerRule("myrule", "myshortdescription", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), false)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));
@@ -257,7 +259,7 @@ public class SarifUtilsTest {
 
         assertFalse(checkCompliance(
             generateReport(
-                List.of(new AnalyzerRule("myrule", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), true)),
+                List.of(new AnalyzerRule("myrule", "myshortdescription", "myruledescription", Language.PYTHON, RuleType.AST_CHECK, EntityChecked.ASSIGNMENT, "code", null, null, Map.of(), true)),
                 List.of(new File("foo/bar").toPath()),
                 List.of(violation),
                 List.of())));

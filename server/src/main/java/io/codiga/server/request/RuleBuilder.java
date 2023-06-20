@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class RuleBuilder {
     private String id;
+    private String shortDescription;
     private String description;
     private Language language;
     private RuleType type;
@@ -19,6 +20,11 @@ public class RuleBuilder {
 
     public RuleBuilder setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public RuleBuilder setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
         return this;
     }
 
@@ -63,6 +69,6 @@ public class RuleBuilder {
     }
 
     public Rule createRule() {
-        return new Rule(id, description, language, type, entityChecked, treeSitterQuery, regex, code, variables);
+        return new Rule(id, shortDescription, description, language, type, entityChecked, treeSitterQuery, regex, code, variables);
     }
 }
