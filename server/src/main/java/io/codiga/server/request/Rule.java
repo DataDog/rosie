@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class Rule {
     public String id;
+    public String shortDescription;
     public String description;
     public String code;
     public Language language;
@@ -21,6 +22,7 @@ public class Rule {
     }
 
     public Rule(String id,
+                String shortDescription,
                 String description,
                 Language language,
                 RuleType type,
@@ -30,6 +32,7 @@ public class Rule {
                 String code,
                 Map<String, String> variables) {
         this.id = id;
+        this.shortDescription = shortDescription;
         this.description = description;
         this.code = code;
         this.language = language;
@@ -41,6 +44,6 @@ public class Rule {
     }
 
     public String toString() {
-        return String.format("%s %s %s %s %s %s %s", id, description, language, type, entityChecked, regex, variables);
+        return String.format("%s %s %s %s %s %s %s %s", id, shortDescription, description, language, type, entityChecked, regex, variables);
     }
 }

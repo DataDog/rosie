@@ -17,6 +17,7 @@ public class AnalyzerWarmupCode {
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(
                     "raising-not-implemented",
+                    "raising-not-implemented short description",
                     "raising-not-implemented description",
                     Language.PYTHON,
                     RuleType.REGEX,
@@ -35,6 +36,7 @@ public class AnalyzerWarmupCode {
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(
                     "no-eval",
+                    "no-eval short description",
                     "no-eval description",
                     Language.PYTHON,
                     RuleType.AST_CHECK,
@@ -53,6 +55,7 @@ public class AnalyzerWarmupCode {
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(
                     "no-timeout",
+                    "no-timeout short description",
                     "no-timeout description",
                     Language.PYTHON,
                     RuleType.AST_CHECK,
@@ -71,6 +74,7 @@ public class AnalyzerWarmupCode {
             .setAnalyzerRuleList(
                 List.of(new AnalyzerRule(
                     "subprocess-shell-true",
+                    "subprocess-shell-true short description",
                     "subprocess-shell-true description",
                     Language.PYTHON,
                     RuleType.AST_CHECK,
