@@ -1,23 +1,21 @@
 package io.codiga;
 
-import io.codiga.analyzer.rule.AnalyzerRule;
-import io.codiga.model.EntityChecked;
-import io.codiga.model.Language;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Logger;
-
 import static io.codiga.cli.utils.RulesUtils.getRulesFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.codiga.analyzer.rule.AnalyzerRule;
+import io.codiga.model.EntityChecked;
+import io.codiga.model.Language;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Logger;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class RulesUtilsTest {
 
@@ -107,5 +105,22 @@ public class RulesUtilsTest {
         assertFalse(rule2.shouldUseAiFix());
         AnalyzerRule rule3 = rules.stream().skip(2).findFirst().get();
         assertNull(rule3.shouldUseAiFix());
+    }
+
+    @Test
+    @DisplayName("Parse descriptions correctly")
+    public void testRulesWithDescriptions() throws IOException {
+        String file = "src/test/resources/rules-with-descriptions.json";
+        List<AnalyzerRule> rules = getRulesFromFile(file);
+        assert (rules.size() == 3);
+        AnalyzerRule rule1 = rules.stream().findFirst().get();
+        assertEquals("short description", rule1.shortDescription());
+        assertEquals("description", rule1.description());
+        AnalyzerRule rule2 = rules.stream().skip(1).findFirst().get();
+        assertEquals("", rule2.shortDescription());
+        assertEquals("", rule2.description());
+        AnalyzerRule rule3 = rules.stream().skip(2).findFirst().get();
+        assertEquals("", rule3.shortDescription());
+        assertEquals("", rule3.description());
     }
 }
