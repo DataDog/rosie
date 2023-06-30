@@ -202,6 +202,10 @@ public class Main {
     // read the datadog configuration
     Optional<Configuration> configurationFile = Optional.empty();
     Path configurationPath = Paths.get(directory, DATADOG_CONFIGURATION_FILE);
+    if (Files.notExists(configurationPath)) {
+      configurationPath = Paths.get(directory, DATADOG_CONFIGURATION_FILE.replaceFirst("\\.yml", ".yaml"));
+    }
+
     System.out.println(configurationPath);
     if (Files.isReadable(configurationPath) && Files.isRegularFile(configurationPath)) {
       configurationFile = getConfigurationFromFile(new File(configurationPath.toUri()));
