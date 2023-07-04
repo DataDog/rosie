@@ -61,7 +61,7 @@ public class VmContext {
               startChar = startChar + startCol;
 
               var endChar = 0;
-              for (var i = 0 ; i < startLine ; i++) {
+              for (var i = 0 ; i < endLine ; i++) {
                 endChar = endChar + lines[i].length + 1;
               }
               endChar = endChar + endCol;
